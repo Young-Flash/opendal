@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Azblob","Azdfs","Cacache","Cos","Dashmap","Dropbox","Etcd","Foundationdb","Fs","Ftp","Gcs","Gdrive","Ghac","Hdfs","Http","Ipfs","Ipmfs","Memcached","Memory","MiniMoka","Moka","Obs","Onedrive","Oss","Persy","Postgresql","Redb","Redis","Rocksdb","S3","Sftp","Sled","Supabase","Tikv","VercelArtifacts","Wasabi","Webdav","Webhdfs"]};
