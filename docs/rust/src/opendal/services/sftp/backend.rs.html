@@ -542,6 +542,9 @@
 <a href="#542" id="542">542</a>
 <a href="#543" id="543">543</a>
 <a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -583,6 +586,9 @@
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// SFTP services support. (only works on unix)
+///
+/// If you are interested in working on windows, please refer to [this](https://github.com/apache/incubator-opendal/issues/2963) issue.
+/// Welcome to leave your comments or make contributions.
 ///
 /// Warning: Maximum number of file holdings is depending on the remote system configuration.
 ///
@@ -776,7 +782,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>am = AccessorInfo::default();
         am.set_root(<span class="self">self</span>.root.as_str())
             .set_scheme(Scheme::Sftp)
-            .set_full_capability(Capability {
+            .set_native_capability(Capability {
                 stat: <span class="bool-val">true</span>,
 
                 read: <span class="bool-val">true</span>,

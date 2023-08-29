@@ -110,6 +110,15 @@
                         <li>
                                 <a class="function" href="#AsyncOperator.scan">scan</a>
                         </li>
+                        <li>
+                                <a class="function" href="#AsyncOperator.presign_stat">presign_stat</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AsyncOperator.presign_read">presign_read</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AsyncOperator.presign_write">presign_write</a>
+                        </li>
                 </ul>
 
             </li>
@@ -156,15 +165,6 @@
                     <a class="class" href="#Metadata">Metadata</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#Metadata.etag">etag</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Metadata.mode">mode</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Metadata.content_length">content_length</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#Metadata.content_disposition">content_disposition</a>
                         </li>
                         <li>
@@ -172,6 +172,30 @@
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.content_type">content_type</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Metadata.content_length">content_length</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Metadata.etag">etag</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Metadata.mode">mode</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#PresignedRequest">PresignedRequest</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#PresignedRequest.method">method</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PresignedRequest.headers">headers</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PresignedRequest.url">url</a>
                         </li>
                 </ul>
 
@@ -686,6 +710,51 @@ a trailing / in the path. Failure to do so may result in
 
 
                             </div>
+                            <div id="AsyncOperator.presign_stat" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">presign_stat</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">expire_second</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#PresignedRequest">opendal.PresignedRequest</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncOperator.presign_stat"></a>
+    
+            <div class="docstring"><p>Presign an operation for stat(head) which expires after <code>expire_second</code> seconds.</p>
+</div>
+
+
+                            </div>
+                            <div id="AsyncOperator.presign_read" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">presign_read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">expire_second</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#PresignedRequest">opendal.PresignedRequest</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncOperator.presign_read"></a>
+    
+            <div class="docstring"><p>Presign an operation for read which expires after <code>expire_second</code> seconds.</p>
+</div>
+
+
+                            </div>
+                            <div id="AsyncOperator.presign_write" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">presign_write</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">expire_second</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#PresignedRequest">opendal.PresignedRequest</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncOperator.presign_write"></a>
+    
+            <div class="docstring"><p>Presign an operation for write which expires after <code>expire_second</code> seconds.</p>
+</div>
+
+
+                            </div>
                 </section>
                 <section id="AsyncReader">
                     <div class="attr class">
@@ -855,45 +924,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
     
 
-                            <div id="Metadata.etag" class="classattr">
-                                <div class="attr variable">
-            <span class="name">etag</span><span class="annotation">: Optional[str]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.etag"></a>
-    
-            <div class="docstring"><p>ETag of this entry.</p>
-</div>
-
-
-                            </div>
-                            <div id="Metadata.mode" class="classattr">
-                                <div class="attr variable">
-            <span class="name">mode</span><span class="annotation">: <a href="#EntryMode">opendal.EntryMode</a></span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.mode"></a>
-    
-            <div class="docstring"><p>mode represent this entry's mode.</p>
-</div>
-
-
-                            </div>
-                            <div id="Metadata.content_length" class="classattr">
-                                <div class="attr variable">
-            <span class="name">content_length</span><span class="annotation">: int</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.content_length"></a>
-    
-            <div class="docstring"><p>Content length of this entry.</p>
-</div>
-
-
-                            </div>
                             <div id="Metadata.content_disposition" class="classattr">
                                 <div class="attr variable">
             <span class="name">content_disposition</span><span class="annotation">: Optional[str]</span>
@@ -927,6 +957,97 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     <a class="headerlink" href="#Metadata.content_type"></a>
     
             <div class="docstring"><p>Content Type of this entry.</p>
+</div>
+
+
+                            </div>
+                            <div id="Metadata.content_length" class="classattr">
+                                <div class="attr variable">
+            <span class="name">content_length</span><span class="annotation">: int</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.content_length"></a>
+    
+            <div class="docstring"><p>Content length of this entry.</p>
+</div>
+
+
+                            </div>
+                            <div id="Metadata.etag" class="classattr">
+                                <div class="attr variable">
+            <span class="name">etag</span><span class="annotation">: Optional[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.etag"></a>
+    
+            <div class="docstring"><p>ETag of this entry.</p>
+</div>
+
+
+                            </div>
+                            <div id="Metadata.mode" class="classattr">
+                                <div class="attr variable">
+            <span class="name">mode</span><span class="annotation">: <a href="#EntryMode">opendal.EntryMode</a></span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.mode"></a>
+    
+            <div class="docstring"><p>mode represent this entry's mode.</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="PresignedRequest">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">PresignedRequest</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#PresignedRequest"></a>
+    
+    
+
+                            <div id="PresignedRequest.method" class="classattr">
+                                <div class="attr variable">
+            <span class="name">method</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PresignedRequest.method"></a>
+    
+            <div class="docstring"><p>Return the HTTP method of this request.</p>
+</div>
+
+
+                            </div>
+                            <div id="PresignedRequest.headers" class="classattr">
+                                <div class="attr variable">
+            <span class="name">headers</span><span class="annotation">: dict[str, str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PresignedRequest.headers"></a>
+    
+            <div class="docstring"><p>Return the HTTP headers of this request.</p>
+</div>
+
+
+                            </div>
+                            <div id="PresignedRequest.url" class="classattr">
+                                <div class="attr variable">
+            <span class="name">url</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PresignedRequest.url"></a>
+    
+            <div class="docstring"><p>Return the URL of this request.</p>
 </div>
 
 

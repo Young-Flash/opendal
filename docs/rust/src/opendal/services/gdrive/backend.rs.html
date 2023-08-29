@@ -305,7 +305,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>ma = AccessorInfo::default();
         ma.set_scheme(Scheme::Gdrive)
             .set_root(<span class="kw-2">&amp;</span><span class="self">self</span>.core.root)
-            .set_full_capability(Capability {
+            .set_native_capability(Capability {
                 stat: <span class="bool-val">true</span>,
 
                 read: <span class="bool-val">true</span>,

@@ -1150,7 +1150,7 @@
         path: <span class="kw-2">&amp;</span>str,
         args: OpRead,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, CompleteReader&lt;A, A::Reader&gt;)&gt; {
-        <span class="kw">let </span>capability = <span class="self">self</span>.meta.full_capability();
+        <span class="kw">let </span>capability = <span class="self">self</span>.meta.native_capability();
         <span class="kw">if </span>!capability.read {
             <span class="kw">return </span>new_capability_unsupported_error(Operation::Read);
         }
@@ -1893,7 +1893,7 @@
 
         <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
             <span class="kw">let </span><span class="kw-2">mut </span>info = AccessorInfo::default();
-            info.set_full_capability(<span class="self">self</span>.capability);
+            info.set_native_capability(<span class="self">self</span>.capability);
 
             info
         }

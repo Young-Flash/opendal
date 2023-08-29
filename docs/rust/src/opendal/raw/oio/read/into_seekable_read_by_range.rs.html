@@ -989,7 +989,7 @@
 
         <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
             <span class="kw">let </span><span class="kw-2">mut </span>am = AccessorInfo::default();
-            am.set_full_capability(Capability {
+            am.set_native_capability(Capability {
                 read: <span class="bool-val">true</span>,
                 ..Default::default()
             });

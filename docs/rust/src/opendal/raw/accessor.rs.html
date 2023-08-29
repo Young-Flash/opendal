@@ -550,6 +550,12 @@
 <a href="#550" id="550">550</a>
 <a href="#551" id="551">551</a>
 <a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
+<a href="#558" id="558">558</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1086,6 +1092,18 @@
         <span class="self">self</span>.native_capability
     }
 
+    <span class="doccomment">/// Set native capabilities for service.
+    ///
+    /// # NOTES
+    ///
+    /// Set native capability will also flush the full capability. The only way to change
+    /// full_capability is via `full_capability_mut`.
+    </span><span class="kw">pub fn </span>set_native_capability(<span class="kw-2">&amp;mut </span><span class="self">self</span>, capability: Capability) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.native_capability = capability;
+        <span class="self">self</span>.full_capability = capability;
+        <span class="self">self
+    </span>}
+
     <span class="doccomment">/// Get service&#39;s full capabilities.
     </span><span class="kw">pub fn </span>full_capability(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Capability {
         <span class="self">self</span>.full_capability
@@ -1095,11 +1113,5 @@
     </span><span class="kw">pub fn </span>full_capability_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Capability {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.full_capability
     }
-
-    <span class="doccomment">/// Set full capabilities for service.
-    </span><span class="kw">pub fn </span>set_full_capability(<span class="kw-2">&amp;mut </span><span class="self">self</span>, capability: Capability) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.full_capability = capability;
-        <span class="self">self
-    </span>}
 }
 </code></pre></div></section></main></body></html>
