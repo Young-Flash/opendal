@@ -75,6 +75,8 @@
 <a href="#75" id="75">75</a>
 <a href="#76" id="76">76</a>
 <a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -117,12 +119,14 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>DropboxWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+        <span class="kw">let </span>size = bs.len();
+
         <span class="kw">let </span>resp = <span class="self">self
             </span>.core
             .dropbox_update(
                 <span class="kw-2">&amp;</span><span class="self">self</span>.path,
-                <span class="prelude-val">Some</span>(bs.len()),
+                <span class="prelude-val">Some</span>(size),
                 <span class="self">self</span>.op.content_type(),
                 AsyncBody::Bytes(bs),
             )
@@ -131,13 +135,13 @@
         <span class="kw">match </span>status {
             StatusCode::OK =&gt; {
                 resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(())
+                <span class="prelude-val">Ok</span>(size <span class="kw">as </span>u64)
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
             <span class="string">&quot;Write::sink is not supported&quot;</span>,

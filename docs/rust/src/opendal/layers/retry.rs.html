@@ -2277,7 +2277,7 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;R: oio::Write, I: RetryInterceptor&gt; oio::Write <span class="kw">for </span>RetryWrapper&lt;R, I&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>backoff = <span class="self">self</span>.builder.build();
 
         <span class="kw">loop </span>{
@@ -2323,14 +2323,14 @@
     /// The overhead is constant, which means the overhead will not increase with the size of
     /// stream. For example, if every `next` call cost 1ms, then the overhead will only take 0.005%
     /// which is acceptable.
-    </span><span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    </span><span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">let </span>s = Arc::new(Mutex::new(s));
 
         <span class="kw">let </span><span class="kw-2">mut </span>backoff = <span class="self">self</span>.builder.build();
 
         <span class="kw">loop </span>{
             <span class="kw">match </span><span class="self">self</span>.inner.sink(size, Box::new(s.clone())).<span class="kw">await </span>{
-                <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(()),
+                <span class="prelude-val">Ok</span>(n) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(n),
                 <span class="prelude-val">Err</span>(e) <span class="kw">if </span>!e.is_temporary() =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e),
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">match </span>backoff.next() {
                     <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e),
@@ -2417,7 +2417,7 @@
 }
 
 <span class="kw">impl</span>&lt;R: oio::BlockingWrite, I: RetryInterceptor&gt; oio::BlockingWrite <span class="kw">for </span>RetryWrapper&lt;R, I&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         { || <span class="self">self</span>.inner.write(bs.clone()) }
             .retry(<span class="kw-2">&amp;</span><span class="self">self</span>.builder)
             .when(|e| e.is_temporary())

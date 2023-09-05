@@ -193,14 +193,14 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;ONE: oio::Write, TWO: oio::Write&gt; oio::Write <span class="kw">for </span>TwoWaysWriter&lt;ONE, TWO&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::One(one) =&gt; one.write(bs).<span class="kw">await</span>,
             <span class="self">Self</span>::Two(two) =&gt; two.write(bs).<span class="kw">await</span>,
         }
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::One(one) =&gt; one.sink(size, s).<span class="kw">await</span>,
             <span class="self">Self</span>::Two(two) =&gt; two.sink(size, s).<span class="kw">await</span>,
@@ -238,7 +238,7 @@
 </span><span class="kw">impl</span>&lt;ONE: oio::Write, TWO: oio::Write, THREE: oio::Write&gt; oio::Write
     <span class="kw">for </span>ThreeWaysWriter&lt;ONE, TWO, THREE&gt;
 {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::One(one) =&gt; one.write(bs).<span class="kw">await</span>,
             <span class="self">Self</span>::Two(two) =&gt; two.write(bs).<span class="kw">await</span>,
@@ -246,7 +246,7 @@
         }
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::One(one) =&gt; one.sink(size, s).<span class="kw">await</span>,
             <span class="self">Self</span>::Two(two) =&gt; two.sink(size, s).<span class="kw">await</span>,

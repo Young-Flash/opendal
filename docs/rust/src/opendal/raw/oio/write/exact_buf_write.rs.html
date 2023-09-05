@@ -283,6 +283,9 @@
 <a href="#283" id="283">283</a>
 <a href="#284" id="284">284</a>
 <a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -369,7 +372,7 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>ExactBufWriter&lt;W&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="self">self</span>.sink(bs.len() <span class="kw">as </span>u64, Box::new(oio::Cursor::from(bs)))
             .<span class="kw">await
     </span>}
@@ -377,7 +380,7 @@
     <span class="doccomment">/// # TODO
     ///
     /// We know every stream size, we can collect them into a buffer without chain them every time.
-    </span><span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: u64, <span class="kw-2">mut </span>s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    </span><span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: u64, <span class="kw-2">mut </span>s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">if </span><span class="self">self</span>.buffer.len() &gt;= <span class="self">self</span>.buffer_size {
             <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buffer.clone();
             <span class="kw">let </span>to_write = buf.split_to(<span class="self">self</span>.buffer_size);
@@ -386,9 +389,10 @@
                 .sink(to_write.len() <span class="kw">as </span>u64, Box::new(to_write))
                 .<span class="kw">await
                 </span><span class="comment">// Replace buffer with remaining if the write is successful.
-                </span>.map(|<span class="kw">_</span>| {
+                </span>.map(|v| {
                     <span class="self">self</span>.buffer = buf;
                     <span class="self">self</span>.chain_stream(s);
+                    v
                 });
         }
 
@@ -405,8 +409,9 @@
         //
         // We don&#39;t need to chain stream here because it must be consumed.
         </span><span class="kw">if </span>buf.len() &lt; <span class="self">self</span>.buffer_size {
+            <span class="kw">let </span>size = buf.len() <span class="kw">as </span>u64;
             <span class="self">self</span>.buffer = buf;
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(size);
         }
 
         <span class="kw">let </span>to_write = buf.split_to(<span class="self">self</span>.buffer_size);
@@ -414,9 +419,10 @@
             .sink(to_write.len() <span class="kw">as </span>u64, Box::new(to_write))
             .<span class="kw">await
             </span><span class="comment">// Replace buffer with remaining if the write is successful.
-            </span>.map(|<span class="kw">_</span>| {
+            </span>.map(|v| {
                 <span class="self">self</span>.buffer = buf;
                 <span class="self">self</span>.chain_stream(s);
+                v
             })
     }
 
@@ -487,14 +493,14 @@
 
     <span class="attr">#[async_trait]
     </span><span class="kw">impl </span>Write <span class="kw">for </span>MockWriter {
-        <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
             <span class="macro">debug!</span>(<span class="string">&quot;test_fuzz_exact_buf_writer: flush size: {}&quot;</span>, bs.len());
 
             <span class="self">self</span>.buf.extend_from_slice(<span class="kw-2">&amp;</span>bs);
-            <span class="prelude-val">Ok</span>(())
+            <span class="prelude-val">Ok</span>(bs.len() <span class="kw">as </span>u64)
         }
 
-        <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
             <span class="kw">let </span>bs = s.collect().<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="macro">assert_eq!</span>(bs.len() <span class="kw">as </span>u64, size);
             <span class="self">self</span>.write(bs).<span class="kw">await

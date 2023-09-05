@@ -734,6 +734,7 @@
 <a href="#734" id="734">734</a>
 <a href="#735" id="735">735</a>
 <a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1398,16 +1399,16 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>PrometheusMetricWrapper&lt;R&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="self">self</span>.inner
             .write(bs)
             .<span class="kw">await
-            </span>.map(|<span class="kw">_</span>| {
+            </span>.map(|n| {
                 <span class="self">self</span>.stats
                     .bytes_total
                     .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.scheme, Operation::Write.into_static()])
-                    .observe(size <span class="kw">as </span>f64)
+                    .observe(n <span class="kw">as </span>f64);
+                n
             })
             .map_err(|err| {
                 <span class="self">self</span>.stats.increment_errors_total(<span class="self">self</span>.op, err.kind());
@@ -1415,15 +1416,16 @@
             })
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="self">self</span>.inner
             .sink(size, s)
             .<span class="kw">await
-            </span>.map(|<span class="kw">_</span>| {
+            </span>.map(|n| {
                 <span class="self">self</span>.stats
                     .bytes_total
                     .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.scheme, Operation::Write.into_static()])
-                    .observe(size <span class="kw">as </span>f64)
+                    .observe(n <span class="kw">as </span>f64);
+                n
             })
             .map_err(|err| {
                 <span class="self">self</span>.stats.increment_errors_total(<span class="self">self</span>.op, err.kind());
@@ -1447,15 +1449,15 @@
 }
 
 <span class="kw">impl</span>&lt;R: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>PrometheusMetricWrapper&lt;R&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="self">self</span>.inner
             .write(bs)
-            .map(|<span class="kw">_</span>| {
+            .map(|n| {
                 <span class="self">self</span>.stats
                     .bytes_total
                     .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.scheme, Operation::BlockingWrite.into_static()])
-                    .observe(size <span class="kw">as </span>f64)
+                    .observe(n <span class="kw">as </span>f64);
+                n
             })
             .map_err(|err| {
                 <span class="self">self</span>.stats.increment_errors_total(<span class="self">self</span>.op, err.kind());

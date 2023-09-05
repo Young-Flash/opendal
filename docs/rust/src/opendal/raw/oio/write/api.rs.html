@@ -196,8 +196,6 @@
 <a href="#196" id="196">196</a>
 <a href="#197" id="197">197</a>
 <a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -274,31 +272,29 @@
 </span><span class="kw">pub type </span>Writer = Box&lt;<span class="kw">dyn </span>Write&gt;;
 
 <span class="doccomment">/// Write is the trait that OpenDAL returns to callers.
-///
-/// # Notes
-///
-/// There are two possible two cases:
-///
-/// - Sized: The total size of the object is known in advance.
-/// - Unsized: The total size of the object is unknown in advance.
-///
-/// And it&#39;s possible that the given bs length is less than the total
-/// content length. Users will call write multiple times to write
-/// the whole data.
 </span><span class="attr">#[async_trait]
 </span><span class="kw">pub trait </span>Write: Unpin + Send + Sync {
     <span class="doccomment">/// Write given bytes into writer.
     ///
-    /// # Notes
+    /// # Behavior
     ///
-    /// It&#39;s possible that the given bs length is less than the total
-    /// content length. And users will call write multiple times.
+    /// - `Ok(n)` means `n` bytes has been written successfully.
+    /// - `Err(err)` means error happens and no bytes has been written.
     ///
-    /// Please make sure `write` is safe to re-enter.
-    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+    /// It&#39;s possible that `n &lt; bs.len()`, caller should pass the remaining bytes
+    /// repeatedly until all bytes has been written.
+    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt;;
 
     <span class="doccomment">/// Sink given stream into writer.
-    </span><span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+    ///
+    /// # Behavior
+    ///
+    /// - `Ok(n)` means `n` bytes has been written successfully.
+    /// - `Err(err)` means error happens and no bytes has been written.
+    ///
+    /// It&#39;s possible that `n &lt; size`, caller should pass the remaining bytes
+    /// repeatedly until all bytes has been written.
+    </span><span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt;;
 
     <span class="doccomment">/// Abort the pending writer.
     </span><span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
@@ -309,13 +305,13 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Write <span class="kw">for </span>() {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">let _ </span>= bs;
 
         <span class="macro">unimplemented!</span>(<span class="string">&quot;write is required to be implemented for oio::Write&quot;</span>)
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: u64, <span class="kw">_</span>: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: u64, <span class="kw">_</span>: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
             <span class="string">&quot;output writer doesn&#39;t support sink&quot;</span>,
@@ -342,11 +338,11 @@
 /// To make Writer work as expected, we must add this impl.
 </span><span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;T: Write + <span class="question-mark">?</span>Sized&gt; Write <span class="kw">for </span>Box&lt;T&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         (<span class="kw-2">**</span><span class="self">self</span>).write(bs).<span class="kw">await
     </span>}
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, n: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, n: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         (<span class="kw-2">**</span><span class="self">self</span>).sink(n, s).<span class="kw">await
     </span>}
 
@@ -365,14 +361,14 @@
 <span class="doccomment">/// BlockingWrite is the trait that OpenDAL returns to callers.
 </span><span class="kw">pub trait </span>BlockingWrite: Send + Sync + <span class="lifetime">&#39;static </span>{
     <span class="doccomment">/// Write whole content at once.
-    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt;;
 
     <span class="doccomment">/// Close the writer and make sure all data has been flushed.
     </span><span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
 }
 
 <span class="kw">impl </span>BlockingWrite <span class="kw">for </span>() {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">let _ </span>= bs;
 
         <span class="macro">unimplemented!</span>(<span class="string">&quot;write is required to be implemented for oio::BlockingWrite&quot;</span>)
@@ -390,7 +386,7 @@
 ///
 /// To make BlockingWriter work as expected, we must add this impl.
 </span><span class="kw">impl</span>&lt;T: BlockingWrite + <span class="question-mark">?</span>Sized&gt; BlockingWrite <span class="kw">for </span>Box&lt;T&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         (<span class="kw-2">**</span><span class="self">self</span>).write(bs)
     }
 

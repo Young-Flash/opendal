@@ -131,7 +131,7 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>GhacWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">let </span>size = bs.len() <span class="kw">as </span>u64;
         <span class="kw">let </span>req = <span class="self">self
             </span>.backend
@@ -143,7 +143,7 @@
         <span class="kw">if </span>resp.status().is_success() {
             resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="self">self</span>.size += size;
-            <span class="prelude-val">Ok</span>(())
+            <span class="prelude-val">Ok</span>(size)
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(parse_error(resp)
                 .<span class="kw">await
@@ -151,7 +151,7 @@
         }
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
             <span class="string">&quot;Write::sink is not supported&quot;</span>,

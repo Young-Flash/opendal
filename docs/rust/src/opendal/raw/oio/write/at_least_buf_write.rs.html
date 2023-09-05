@@ -129,6 +129,15 @@
 <a href="#129" id="129">129</a>
 <a href="#130" id="130">130</a>
 <a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -195,7 +204,7 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>AtLeastBufWriter&lt;W&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="comment">// If total size is known and equals to given bytes, we can write it directly.
         </span><span class="kw">if let </span><span class="prelude-val">Some</span>(total_size) = <span class="self">self</span>.total_size {
             <span class="kw">if </span>total_size == bs.len() <span class="kw">as </span>u64 {
@@ -205,8 +214,9 @@
 
         <span class="comment">// Push the bytes into the buffer if the buffer is not full.
         </span><span class="kw">if </span><span class="self">self</span>.buffer.len() + bs.len() &lt; <span class="self">self</span>.buffer_size {
+            <span class="kw">let </span>size = bs.len();
             <span class="self">self</span>.buffer.push(bs);
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(size <span class="kw">as </span>u64);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buffer.clone();
@@ -216,10 +226,13 @@
             .sink(buf.len() <span class="kw">as </span>u64, Box::new(buf))
             .<span class="kw">await
             </span><span class="comment">// Clear buffer if the write is successful.
-            </span>.map(|<span class="kw">_</span>| <span class="self">self</span>.buffer.clear())
+            </span>.map(|v| {
+                <span class="self">self</span>.buffer.clear();
+                v
+            })
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="comment">// If total size is known and equals to given stream, we can write it directly.
         </span><span class="kw">if let </span><span class="prelude-val">Some</span>(total_size) = <span class="self">self</span>.total_size {
             <span class="kw">if </span>total_size == size {
@@ -229,8 +242,10 @@
 
         <span class="comment">// Push the bytes into the buffer if the buffer is not full.
         </span><span class="kw">if </span><span class="self">self</span>.buffer.len() <span class="kw">as </span>u64 + size &lt; <span class="self">self</span>.buffer_size <span class="kw">as </span>u64 {
-            <span class="self">self</span>.buffer.push(s.collect().<span class="kw">await</span><span class="question-mark">?</span>);
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+            <span class="kw">let </span>bs = s.collect().<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span>size = bs.len() <span class="kw">as </span>u64;
+            <span class="self">self</span>.buffer.push(bs);
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(size);
         }
 
         <span class="kw">let </span>buf = <span class="self">self</span>.buffer.clone();
@@ -241,7 +256,10 @@
             .sink(buffer_size + size, Box::new(stream))
             .<span class="kw">await
             </span><span class="comment">// Clear buffer if the write is successful.
-            </span>.map(|<span class="kw">_</span>| <span class="self">self</span>.buffer.clear())
+            </span>.map(|v| {
+                <span class="self">self</span>.buffer.clear();
+                v
+            })
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

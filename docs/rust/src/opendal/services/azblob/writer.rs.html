@@ -201,6 +201,10 @@
 <a href="#201" id="201">201</a>
 <a href="#202" id="202">202</a>
 <a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -364,11 +368,12 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>AzblobWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+        <span class="kw">let </span>size = bs.len() <span class="kw">as </span>u64;
+
         <span class="kw">if </span><span class="self">self</span>.op.append() {
-            <span class="self">self</span>.append_oneshot(bs.len() <span class="kw">as </span>u64, AsyncBody::Bytes(bs))
-                .<span class="kw">await
-        </span>} <span class="kw">else </span>{
+            <span class="self">self</span>.append_oneshot(size, AsyncBody::Bytes(bs)).<span class="kw">await</span><span class="question-mark">?</span>;
+        } <span class="kw">else </span>{
             <span class="kw">if </span><span class="self">self</span>.op.content_length().is_none() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::Unsupported,
@@ -376,15 +381,16 @@
                 ));
             }
 
-            <span class="self">self</span>.write_oneshot(bs.len() <span class="kw">as </span>u64, AsyncBody::Bytes(bs))
-                .<span class="kw">await
-        </span>}
+            <span class="self">self</span>.write_oneshot(size, AsyncBody::Bytes(bs)).<span class="kw">await</span><span class="question-mark">?</span>;
+        }
+
+        <span class="prelude-val">Ok</span>(size)
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">if </span><span class="self">self</span>.op.append() {
-            <span class="self">self</span>.append_oneshot(size, AsyncBody::Stream(s)).<span class="kw">await
-        </span>} <span class="kw">else </span>{
+            <span class="self">self</span>.append_oneshot(size, AsyncBody::Stream(s)).<span class="kw">await</span><span class="question-mark">?</span>;
+        } <span class="kw">else </span>{
             <span class="kw">if </span><span class="self">self</span>.op.content_length().is_none() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::Unsupported,
@@ -392,8 +398,10 @@
                 ));
             }
 
-            <span class="self">self</span>.write_oneshot(size, AsyncBody::Stream(s)).<span class="kw">await
-        </span>}
+            <span class="self">self</span>.write_oneshot(size, AsyncBody::Stream(s)).<span class="kw">await</span><span class="question-mark">?</span>;
+        }
+
+        <span class="prelude-val">Ok</span>(size)
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

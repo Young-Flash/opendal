@@ -124,6 +124,8 @@
 <a href="#124" id="124">124</a>
 <a href="#125" id="125">125</a>
 <a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -180,18 +182,20 @@
     ///
     /// File could be partial written, so we will seek to start to make sure
     /// we write the same content.
-    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+        <span class="kw">let </span>size = bs.len() <span class="kw">as </span>u64;
+
         <span class="self">self</span>.f
             .seek(SeekFrom::Start(<span class="self">self</span>.pos))
             .<span class="kw">await
             </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
         <span class="self">self</span>.f.write_all(<span class="kw-2">&amp;</span>bs).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.pos += bs.len() <span class="kw">as </span>u64;
+        <span class="self">self</span>.pos += size;
 
-        <span class="prelude-val">Ok</span>(())
+        <span class="prelude-val">Ok</span>(size)
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, <span class="kw-2">mut </span>s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, <span class="kw-2">mut </span>s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">while let </span><span class="prelude-val">Some</span>(bs) = s.next().<span class="kw">await </span>{
             <span class="kw">let </span>bs = bs<span class="question-mark">?</span>;
             <span class="self">self</span>.f
@@ -202,7 +206,7 @@
             <span class="self">self</span>.pos += bs.len() <span class="kw">as </span>u64;
         }
 
-        <span class="prelude-val">Ok</span>(())
+        <span class="prelude-val">Ok</span>(size)
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
@@ -230,14 +234,14 @@
     ///
     /// File could be partial written, so we will seek to start to make sure
     /// we write the same content.
-    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="self">self</span>.f
             .seek(SeekFrom::Start(<span class="self">self</span>.pos))
             .map_err(parse_io_error)<span class="question-mark">?</span>;
         <span class="self">self</span>.f.write_all(<span class="kw-2">&amp;</span>bs).map_err(parse_io_error)<span class="question-mark">?</span>;
         <span class="self">self</span>.pos += bs.len() <span class="kw">as </span>u64;
 
-        <span class="prelude-val">Ok</span>(())
+        <span class="prelude-val">Ok</span>(bs.len() <span class="kw">as </span>u64)
     }
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

@@ -1579,7 +1579,6 @@
 <a href="#1579" id="1579">1579</a>
 <a href="#1580" id="1580">1580</a>
 <a href="#1581" id="1581">1581</a>
-<a href="#1582" id="1582">1582</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2834,11 +2833,10 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>LoggingWriter&lt;W&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">match </span><span class="self">self</span>.inner.write(bs).<span class="kw">await </span>{
-            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
-                <span class="self">self</span>.written += size <span class="kw">as </span>u64;
+            <span class="prelude-val">Ok</span>(n) =&gt; {
+                <span class="self">self</span>.written += n;
                 <span class="macro">trace!</span>(
                     target: LOGGING_TARGET,
                     <span class="string">&quot;service={} operation={} path={} written={} -&gt; data write {}B&quot;</span>,
@@ -2846,9 +2844,9 @@
                     WriteOperation::Write,
                     <span class="self">self</span>.path,
                     <span class="self">self</span>.written,
-                    size
+                    n
                 );
-                <span class="prelude-val">Ok</span>(())
+                <span class="prelude-val">Ok</span>(n)
             }
             <span class="prelude-val">Err</span>(err) =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(lvl) = <span class="self">self</span>.ctx.error_level(<span class="kw-2">&amp;</span>err) {
@@ -2868,10 +2866,10 @@
         }
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">match </span><span class="self">self</span>.inner.sink(size, s).<span class="kw">await </span>{
-            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
-                <span class="self">self</span>.written += size;
+            <span class="prelude-val">Ok</span>(n) =&gt; {
+                <span class="self">self</span>.written += n;
                 <span class="macro">trace!</span>(
                     target: LOGGING_TARGET,
                     <span class="string">&quot;service={} operation={} path={} written={} -&gt; data sink {}B&quot;</span>,
@@ -2879,9 +2877,9 @@
                     WriteOperation::Sink,
                     <span class="self">self</span>.path,
                     <span class="self">self</span>.written,
-                    size
+                    n
                 );
-                <span class="prelude-val">Ok</span>(())
+                <span class="prelude-val">Ok</span>(n)
             }
             <span class="prelude-val">Err</span>(err) =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(lvl) = <span class="self">self</span>.ctx.error_level(<span class="kw-2">&amp;</span>err) {
@@ -2965,11 +2963,11 @@
 }
 
 <span class="kw">impl</span>&lt;W: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>LoggingWriter&lt;W&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">let </span>size = bs.len();
         <span class="kw">match </span><span class="self">self</span>.inner.write(bs) {
-            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
-                <span class="self">self</span>.written += size <span class="kw">as </span>u64;
+            <span class="prelude-val">Ok</span>(n) =&gt; {
+                <span class="self">self</span>.written += n;
                 <span class="macro">trace!</span>(
                     target: LOGGING_TARGET,
                     <span class="string">&quot;service={} operation={} path={} written={} -&gt; data write {}B&quot;</span>,
@@ -2979,7 +2977,7 @@
                     <span class="self">self</span>.written,
                     size
                 );
-                <span class="prelude-val">Ok</span>(())
+                <span class="prelude-val">Ok</span>(n)
             }
             <span class="prelude-val">Err</span>(err) =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(lvl) = <span class="self">self</span>.ctx.error_level(<span class="kw-2">&amp;</span>err) {

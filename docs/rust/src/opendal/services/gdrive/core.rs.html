@@ -530,6 +530,33 @@
 <a href="#530" id="530">530</a>
 <a href="#531" id="531">531</a>
 <a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
+<a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
+<a href="#543" id="543">543</a>
+<a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
+<a href="#548" id="548">548</a>
+<a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
+<a href="#558" id="558">558</a>
+<a href="#559" id="559">559</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -553,6 +580,7 @@
 <span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>bytes;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>chrono::DateTime;
 <span class="kw">use </span>chrono::Utc;
 <span class="kw">use </span>http::header;
@@ -580,6 +608,11 @@
     ///
     /// Google Drive uses file id to identify a file.
     /// As the path is immutable, we can cache the mapping from path to file id.
+    ///
+    /// # Notes
+    ///
+    /// - The path is rooted at the root of the Google Drive.
+    /// - The path is absolute path, like `foo/bar`.
     </span><span class="kw">pub </span>path_cache: Arc&lt;Mutex&lt;HashMap&lt;String, String&gt;&gt;&gt;,
 }
 
@@ -603,7 +636,7 @@
     /// - A file only knows its parent id, but not its name.
     /// - To find the file id of a file, we need to traverse the path from the root to the file.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>get_file_id_by_path(<span class="kw-2">&amp;</span><span class="self">self</span>, file_path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-        <span class="kw">let </span>path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, file_path);
+        <span class="kw">let </span>path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, file_path);
 
         <span class="kw">let </span><span class="kw-2">mut </span>cache = <span class="self">self</span>.path_cache.lock().<span class="kw">await</span>;
 
@@ -680,7 +713,7 @@
     /// - The path is rooted at the root of the Google Drive.
     /// - Will create the parent path recursively.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>ensure_parent_path(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-        <span class="kw">let </span>path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+        <span class="kw">let </span>path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span><span class="kw-2">mut </span>parent: String = <span class="string">&quot;root&quot;</span>.to_owned();
         <span class="kw">let </span><span class="kw-2">mut </span>file_path_items: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = path.split(<span class="string">&#39;/&#39;</span>).filter(|<span class="kw-2">&amp;</span>x| !x.is_empty()).collect();
@@ -851,29 +884,44 @@
         <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
-    <span class="kw">pub async fn </span>gdrive_update(
+    <span class="comment">// Update with content and metadata
+    </span><span class="kw">pub async fn </span>gdrive_patch_metadata_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        body: AsyncBody,
+        source: <span class="kw-2">&amp;</span>str,
+        target: <span class="kw-2">&amp;</span>str,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://www.googleapis.com/upload/drive/v3/files/{}?uploadType=media&quot;</span>,
-            <span class="self">self</span>.get_file_id_by_path(path).<span class="kw">await</span><span class="question-mark">?
-        </span>);
+        <span class="kw">let </span>file_id = <span class="self">self</span>.get_file_id_by_path(source).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(<span class="kw-2">&amp;</span>url);
+        <span class="kw">let </span>parent = <span class="self">self</span>.ensure_parent_path(target).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(size) = size {
-            req = req.header(header::CONTENT_LENGTH, size)
-        }
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;https://www.googleapis.com/drive/v3/files/{}&quot;</span>, file_id);
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
-            req = req.header(header::CONTENT_TYPE, mime)
-        }
+        <span class="kw">let </span>source_abs_path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, source);
+        <span class="kw">let </span><span class="kw-2">mut </span>source_parent: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = source_abs_path
+            .split(<span class="string">&#39;/&#39;</span>)
+            .filter(|<span class="kw-2">&amp;</span>x| !x.is_empty())
+            .collect();
+        source_parent.pop();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>cache = <span class="self">self</span>.path_cache.lock().<span class="kw">await</span>;
+
+        <span class="kw">let </span>file_name = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, target)
+            .split(<span class="string">&#39;/&#39;</span>)
+            .filter(|<span class="kw-2">&amp;</span>x| !x.is_empty())
+            .last()
+            .unwrap()
+            .to_string();
+
+        <span class="kw">let </span>metadata = <span class="kw-2">&amp;</span><span class="macro">json!</span>({
+            <span class="string">&quot;name&quot;</span>: file_name,
+            <span class="string">&quot;removeParents&quot;</span>: [cache.get(<span class="kw-2">&amp;</span>source_parent.join(<span class="string">&quot;/&quot;</span>)).unwrap().to_string()],
+            <span class="string">&quot;addParents&quot;</span>: [parent],
+        });
+
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::patch(url)
+            .body(AsyncBody::Bytes(Bytes::from(metadata.to_string())))
+            .map_err(new_request_build_error)<span class="question-mark">?</span>;
+
         <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="self">self</span>.client.send(req).<span class="kw">await
@@ -894,11 +942,12 @@
         <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
-    <span class="kw">pub async fn </span>gdrive_upload_simple_request(
+    <span class="doccomment">/// Create a file with the content.
+    </span><span class="kw">pub async fn </span>gdrive_upload_simple_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
         size: u64,
-        body: bytes::Bytes,
+        body: Bytes,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>parent = <span class="self">self</span>.ensure_parent_path(path).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -938,11 +987,16 @@
         <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
-    <span class="kw">pub async fn </span>gdrive_upload_overwrite_simple_request(
+    <span class="doccomment">/// Overwrite the file with the content.
+    ///
+    /// # Notes
+    ///
+    /// - The file id is required. Do not use this method to create a file.
+    </span><span class="kw">pub async fn </span>gdrive_upload_overwrite_simple_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         file_id: <span class="kw-2">&amp;</span>str,
         size: u64,
-        body: bytes::Bytes,
+        body: Bytes,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>url = <span class="macro">format!</span>(
             <span class="string">&quot;https://www.googleapis.com/upload/drive/v3/files/{}?uploadType=media&quot;</span>,

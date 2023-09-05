@@ -434,6 +434,8 @@
 <a href="#434" id="434">434</a>
 <a href="#435" id="435">435</a>
 <a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -505,7 +507,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>am: AccessorInfo = <span class="self">self</span>.kv.metadata().into();
         am.set_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>cap = Capability::default();
+        <span class="kw">let </span><span class="kw-2">mut </span>cap = am.native_capability();
         <span class="kw">if </span>cap.read {
             cap.read_can_seek = <span class="bool-val">true</span>;
             cap.read_can_next = <span class="bool-val">true</span>;
@@ -826,13 +828,14 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;S: Adapter&gt; oio::Write <span class="kw">for </span>KvWriter&lt;S&gt; {
     <span class="comment">// TODO: we need to support append in the future.
-    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+        <span class="kw">let </span>size = bs.len();
         <span class="self">self</span>.buf = <span class="prelude-val">Some</span>(bs.into());
 
-        <span class="prelude-val">Ok</span>(())
+        <span class="prelude-val">Ok</span>(size <span class="kw">as </span>u64)
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
             <span class="string">&quot;Write::sink is not supported&quot;</span>,
@@ -856,10 +859,11 @@
 }
 
 <span class="kw">impl</span>&lt;S: Adapter&gt; oio::BlockingWrite <span class="kw">for </span>KvWriter&lt;S&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+        <span class="kw">let </span>size = bs.len();
         <span class="self">self</span>.buf = <span class="prelude-val">Some</span>(bs.into());
 
-        <span class="prelude-val">Ok</span>(())
+        <span class="prelude-val">Ok</span>(size <span class="kw">as </span>u64)
     }
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

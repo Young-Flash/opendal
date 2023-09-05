@@ -612,6 +612,18 @@
 <a href="#612" id="612">612</a>
 <a href="#613" id="613">613</a>
 <a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
+<a href="#626" id="626">626</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -629,7 +641,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::fmt::Debug;
+</span><span class="kw">use </span>std::collections::HashMap;
+<span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::fmt::Formatter;
 <span class="kw">use </span>std::fmt::Write;
 <span class="kw">use </span>std::time::Duration;
@@ -845,19 +858,27 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
         size: <span class="prelude-ty">Option</span>&lt;u64&gt;,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+        op: <span class="kw-2">&amp;</span>OpWrite,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+
+        <span class="kw">let </span><span class="kw-2">mut </span>metadata = HashMap::new();
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(storage_class) = <span class="kw-2">&amp;</span><span class="self">self</span>.default_storage_class {
+            metadata.insert(<span class="string">&quot;storageClass&quot;</span>, storage_class.as_str());
+        }
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = op.cache_control() {
+            metadata.insert(<span class="string">&quot;cacheControl&quot;</span>, cache_control);
+        }
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
             <span class="string">&quot;{}/upload/storage/v1/b/{}/o?uploadType={}&amp;name={}&quot;</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.bucket,
-            <span class="kw">if </span><span class="self">self</span>.default_storage_class.is_some() {
-                <span class="string">&quot;multipart&quot;
-            </span>} <span class="kw">else </span>{
+            <span class="kw">if </span>metadata.is_empty() {
                 <span class="string">&quot;media&quot;
+            </span>} <span class="kw">else </span>{
+                <span class="string">&quot;multipart&quot;
             </span>},
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
@@ -870,7 +891,14 @@
 
         req = req.header(CONTENT_LENGTH, size.unwrap_or_default());
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(storage_class) = <span class="kw-2">&amp;</span><span class="self">self</span>.default_storage_class {
+        <span class="kw">if </span>metadata.is_empty() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(content_type) = op.content_type() {
+                req = req.header(CONTENT_TYPE, content_type);
+            }
+
+            <span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(req)
+        } <span class="kw">else </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>multipart = Multipart::new();
 
             multipart = multipart.part(
@@ -879,16 +907,19 @@
                         CONTENT_TYPE,
                         <span class="string">&quot;application/json; charset=UTF-8&quot;</span>.parse().unwrap(),
                     )
-                    .content(<span class="macro">json!</span>({<span class="string">&quot;storageClass&quot;</span>: storage_class}).to_string()),
+                    .content(<span class="macro">json!</span>(metadata).to_string()),
             );
 
-            <span class="kw">let </span><span class="kw-2">mut </span>media_part = FormDataPart::new(<span class="string">&quot;media&quot;</span>).header(
-                CONTENT_TYPE,
-                content_type
-                    .unwrap_or(<span class="string">&quot;application/octet-stream&quot;</span>)
-                    .parse()
-                    .unwrap(),
-            );
+            <span class="kw">let </span><span class="kw-2">mut </span>media_part = FormDataPart::new(<span class="string">&quot;media&quot;</span>);
+
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(content_type) = op.content_type() {
+                media_part = media_part.header(
+                    CONTENT_TYPE,
+                    content_type
+                        .parse()
+                        .map_err(|<span class="kw">_</span>| Error::new(ErrorKind::Unexpected, <span class="string">&quot;invalid header value&quot;</span>))<span class="question-mark">?</span>,
+                );
+            }
 
             <span class="kw">match </span>body {
                 AsyncBody::Empty =&gt; {}
@@ -903,13 +934,6 @@
             multipart = multipart.part(media_part);
 
             <span class="kw">let </span>req = multipart.apply(Request::post(url))<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(req)
-        } <span class="kw">else </span>{
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(content_type) = content_type {
-                req = req.header(CONTENT_TYPE, content_type);
-            }
-
-            <span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(req)
         }
     }

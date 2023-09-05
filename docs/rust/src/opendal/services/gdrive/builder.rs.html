@@ -248,6 +248,25 @@
 <a href="#248" id="248">248</a>
 <a href="#249" id="249">249</a>
 <a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -289,21 +308,48 @@
 ///
 /// This service can be used to:
 ///
+/// - [x] stat
 /// - [x] read
 /// - [x] write
 /// - [x] delete
-/// - [ ] copy
-/// - [ ] create
+/// - [x] create_dir
 /// - [ ] list
+/// - [ ] copy
 /// - [ ] rename
+/// - [ ] batch
 ///
 /// # Notes
 ///
 ///
 /// # Configuration
 ///
-/// - `access_token`: set the access_token for google drive api
 /// - `root`: Set the work directory for backend
+///
+/// ## Credentials related
+///
+/// ### Just provide Access Token (Temporary)
+///
+/// - `access_token`: set the access_token for google drive api
+/// Please notice its expiration.
+///
+/// ### Or provide Client ID and Client Secret and refresh token (Long Term)
+///
+/// If you want to let OpenDAL to refresh the access token automatically,
+/// please provide the following fields:
+///
+/// - `refresh_token`: set the refresh_token for google drive api
+/// - `client_id`: set the client_id for google drive api
+/// - `client_secret`: set the client_secret for google drive api
+///
+/// OpenDAL is a library, it cannot do the first step of OAuth2 for you.
+/// You need to get authorization code from user by calling GoogleDrive&#39;s authorize url
+/// and exchange it for refresh token.
+///
+/// Make sure you have enabled Google Drive API in your Google Cloud Console.
+/// And your OAuth scope contains `https://www.googleapis.com/auth/drive`.
+///
+/// Please refer to [GoogleDrive OAuth2 Flow](https://developers.google.com/identity/protocols/oauth2/)
+/// for more information.
 ///
 /// You can refer to [`GdriveBuilder`]&#39;s docs for more information
 ///
@@ -311,25 +357,17 @@
 ///
 /// ## Via Builder
 ///
-/// ```no_run
+/// ```rust
 /// use anyhow::Result;
 /// use opendal::services::Gdrive;
 /// use opendal::Operator;
 ///
 /// #[tokio::main]
 /// async fn main() -&gt; Result&lt;()&gt; {
-///     // create backend builder
 ///     let mut builder = Gdrive::default();
+///     builder.root(&quot;/test&quot;);
+///     builder.access_token(&quot;&lt;token&gt;&quot;);
 ///
-///     builder.access_token(&quot;xxx&quot;).root(&quot;/path/to/root&quot;);
-///
-///     let op: Operator = Operator::new(builder)?.finish();
-///
-///     let write = op.write(&quot;abc.txt&quot;, &quot;who are you&quot;).await?;
-///     let read = op.read(&quot;abc.txt&quot;).await?;
-///     let s = String::from_utf8(read).unwrap();
-///     println!(&quot;{}&quot;, s);
-///     let delete = op.delete(&quot;abc.txt&quot;).await?;
 ///     Ok(())
 /// }
 /// ```
