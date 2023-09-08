@@ -63,13 +63,6 @@
 <a href="#63" id="63">63</a>
 <a href="#64" id="64">64</a>
 <a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -88,7 +81,6 @@
 // under the License.
 
 </span><span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>futures::AsyncWriteExt;
 
 <span class="kw">use </span><span class="kw">super</span>::backend::FtpBackend;
@@ -113,8 +105,9 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>FtpWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>size = bs.remaining();
+        <span class="kw">let </span>bs = bs.copy_to_bytes(size);
 
         <span class="kw">let </span><span class="kw-2">mut </span>ftp_stream = <span class="self">self</span>.backend.ftp_connect(Operation::Write).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>data_stream = ftp_stream.append_with_stream(<span class="kw-2">&amp;</span><span class="self">self</span>.path).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -124,14 +117,7 @@
 
         ftp_stream.finalize_put_stream(data_stream).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(size <span class="kw">as </span>u64)
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;Write::sink is not supported&quot;</span>,
-        ))
+        <span class="prelude-val">Ok</span>(size)
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

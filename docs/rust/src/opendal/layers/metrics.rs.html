@@ -897,20 +897,6 @@
 <a href="#897" id="897">897</a>
 <a href="#898" id="898">898</a>
 <a href="#899" id="899">899</a>
-<a href="#900" id="900">900</a>
-<a href="#901" id="901">901</a>
-<a href="#902" id="902">902</a>
-<a href="#903" id="903">903</a>
-<a href="#904" id="904">904</a>
-<a href="#905" id="905">905</a>
-<a href="#906" id="906">906</a>
-<a href="#907" id="907">907</a>
-<a href="#908" id="908">908</a>
-<a href="#909" id="909">909</a>
-<a href="#910" id="910">910</a>
-<a href="#911" id="911">911</a>
-<a href="#912" id="912">912</a>
-<a href="#913" id="913">913</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1760,26 +1746,12 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>MetricWrapper&lt;R&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="self">self</span>.inner
             .write(bs)
             .<span class="kw">await
             </span>.map(|n| {
-                <span class="self">self</span>.bytes += n;
-                n
-            })
-            .map_err(|err| {
-                <span class="self">self</span>.handle.increment_errors_total(<span class="self">self</span>.op, err.kind());
-                err
-            })
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="self">self</span>.inner
-            .sink(size, s)
-            .<span class="kw">await
-            </span>.map(|n| {
-                <span class="self">self</span>.bytes += n;
+                <span class="self">self</span>.bytes += n <span class="kw">as </span>u64;
                 n
             })
             .map_err(|err| {
@@ -1804,11 +1776,11 @@
 }
 
 <span class="kw">impl</span>&lt;R: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>MetricWrapper&lt;R&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="self">self</span>.inner
             .write(bs)
             .map(|n| {
-                <span class="self">self</span>.bytes += n;
+                <span class="self">self</span>.bytes += n <span class="kw">as </span>u64;
                 n
             })
             .map_err(|err| {

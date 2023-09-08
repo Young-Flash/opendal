@@ -72,14 +72,6 @@
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
-<a href="#79" id="79">79</a>
-<a href="#80" id="80">80</a>
-<a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -100,7 +92,6 @@
 </span><span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>http::StatusCode;
 
 <span class="kw">use </span><span class="kw">super</span>::core::<span class="kw-2">*</span>;
@@ -123,8 +114,8 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>WasabiWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>size = bs.remaining();
 
         <span class="kw">let </span>resp = <span class="self">self
             </span>.core
@@ -134,24 +125,17 @@
                 <span class="self">self</span>.op.content_type(),
                 <span class="self">self</span>.op.content_disposition(),
                 <span class="self">self</span>.op.cache_control(),
-                AsyncBody::Bytes(bs),
+                AsyncBody::Bytes(bs.copy_to_bytes(size)),
             )
             .<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">match </span>resp.status() {
             StatusCode::CREATED | StatusCode::OK =&gt; {
                 resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(size <span class="kw">as </span>u64)
+                <span class="prelude-val">Ok</span>(size)
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;Write::sink is not supported&quot;</span>,
-        ))
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

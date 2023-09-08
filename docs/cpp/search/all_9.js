@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['path_22',['path',['../structopendal_1_1Entry.html#a0a305260835f4c01e413282ea458a48e',1,'opendal::Entry']]]
+  ['next_25',['next',['../classopendal_1_1Lister.html#a67448e82f1c4c087d0bafab7ba5108f8',1,'opendal::Lister']]]
 ];

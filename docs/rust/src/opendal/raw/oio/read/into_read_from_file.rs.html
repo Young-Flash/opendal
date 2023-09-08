@@ -233,7 +233,7 @@
     }
 }
 
-<span class="doccomment">/// FdReader is a wrapper of input fd to implement [`oio::Read`].
+<span class="doccomment">/// FromFileReader is a wrapper of input fd to implement [`oio::Read`].
 </span><span class="kw">pub struct </span>FromFileReader&lt;R&gt; {
     inner: R,
 
@@ -318,7 +318,7 @@
 
         Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;output reader doesn&#39;t support seeking&quot;</span>,
+            <span class="string">&quot;output reader doesn&#39;t support next&quot;</span>,
         ))))
     }
 }

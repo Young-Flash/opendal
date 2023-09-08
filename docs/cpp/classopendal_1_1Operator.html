@@ -106,6 +106,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3bfa933634917127b3fdc8027b3ee45b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopendal_1_1Operator.html#a3bfa933634917127b3fdc8027b3ee45b">write</a> (std::string_view path, const std::vector&lt; uint8_t &gt; &amp;data)</td></tr>
 <tr class="memdesc:a3bfa933634917127b3fdc8027b3ee45b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write data to the operator.  <a href="classopendal_1_1Operator.html#a3bfa933634917127b3fdc8027b3ee45b">More...</a><br /></td></tr>
 <tr class="separator:a3bfa933634917127b3fdc8027b3ee45b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb1cc25bef3e5c56045629959ec790e7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classopendal_1_1Reader.html">Reader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopendal_1_1Operator.html#acb1cc25bef3e5c56045629959ec790e7">reader</a> (std::string_view path)</td></tr>
+<tr class="memdesc:acb1cc25bef3e5c56045629959ec790e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read data from the operator.  <a href="classopendal_1_1Operator.html#acb1cc25bef3e5c56045629959ec790e7">More...</a><br /></td></tr>
+<tr class="separator:acb1cc25bef3e5c56045629959ec790e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91e105a6112112586fa699371f270240"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopendal_1_1Operator.html#a91e105a6112112586fa699371f270240">is_exist</a> (std::string_view path)</td></tr>
 <tr class="memdesc:a91e105a6112112586fa699371f270240"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the path exists.  <a href="classopendal_1_1Operator.html#a91e105a6112112586fa699371f270240">More...</a><br /></td></tr>
 <tr class="separator:a91e105a6112112586fa699371f270240"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,6 +130,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6707d6095415cffa28ceb210368a30a0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structopendal_1_1Entry.html">Entry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopendal_1_1Operator.html#a6707d6095415cffa28ceb210368a30a0">list</a> (std::string_view path)</td></tr>
 <tr class="memdesc:a6707d6095415cffa28ceb210368a30a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">List the entries of a directory.  <a href="classopendal_1_1Operator.html#a6707d6095415cffa28ceb210368a30a0">More...</a><br /></td></tr>
 <tr class="separator:a6707d6095415cffa28ceb210368a30a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a211bb0ef86d66d334cf47b9a16525848"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classopendal_1_1Lister.html">Lister</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopendal_1_1Operator.html#a211bb0ef86d66d334cf47b9a16525848">lister</a> (std::string_view path)</td></tr>
+<tr class="separator:a211bb0ef86d66d334cf47b9a16525848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classopendal_1_1Operator.html" title="Operator is the entry for all public APIs.">Operator</a> is the entry for all public APIs. </p>
@@ -409,6 +414,24 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a211bb0ef86d66d334cf47b9a16525848"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a211bb0ef86d66d334cf47b9a16525848">&#9670;&nbsp;</a></span>lister()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classopendal_1_1Lister.html">Lister</a> opendal::Operator::lister </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="abcd6aad18d31f28886def363cc630754"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abcd6aad18d31f28886def363cc630754">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
 
@@ -486,6 +509,33 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The data read from the operator </dd></dl>
+
+</div>
+</div>
+<a id="acb1cc25bef3e5c56045629959ec790e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb1cc25bef3e5c56045629959ec790e7">&#9670;&nbsp;</a></span>reader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classopendal_1_1Reader.html">Reader</a> opendal::Operator::reader </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read data from the operator. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>The path of the data </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The reader of the data </dd></dl>
 
 </div>
 </div>

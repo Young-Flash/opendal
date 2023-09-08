@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['unknown_29',['UNKNOWN',['../namespaceopendal.html#a775d61a6897136a7bcb0cea1a8af4878a3524be472e62f8172244804c48b0c3a4',1,'opendal']]]
+  ['seek_45',['seek',['../classopendal_1_1Reader.html#a9ec1455536ea7d6d6245e0f287048fa7',1,'opendal::Reader']]],
+  ['stat_46',['stat',['../classopendal_1_1Operator.html#a37517487cc2fad6f5f175ce377d7383e',1,'opendal::Operator']]]
 ];

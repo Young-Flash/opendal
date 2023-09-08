@@ -170,32 +170,6 @@
 <a href="#170" id="170">170</a>
 <a href="#171" id="171">171</a>
 <a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a>
-<a href="#185" id="185">185</a>
-<a href="#186" id="186">186</a>
-<a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
-<a href="#197" id="197">197</a>
-<a href="#198" id="198">198</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -217,7 +191,6 @@
 <span class="kw">use </span>std::fmt::Formatter;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Bytes;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -228,8 +201,6 @@
 </span><span class="kw">pub enum </span>WriteOperation {
     <span class="doccomment">/// Operation for [`Write::write`]
     </span>Write,
-    <span class="doccomment">/// Operation for [`Write::sink`]
-    </span>Sink,
     <span class="doccomment">/// Operation for [`Write::abort`]
     </span>Abort,
     <span class="doccomment">/// Operation for [`Write::close`]
@@ -259,7 +230,6 @@
 
         <span class="kw">match </span>v {
             Write =&gt; <span class="string">&quot;Writer::write&quot;</span>,
-            Sink =&gt; <span class="string">&quot;Writer::sink&quot;</span>,
             Abort =&gt; <span class="string">&quot;Writer::abort&quot;</span>,
             Close =&gt; <span class="string">&quot;Writer::close&quot;</span>,
             BlockingWrite =&gt; <span class="string">&quot;BlockingWriter::write&quot;</span>,
@@ -283,18 +253,7 @@
     ///
     /// It&#39;s possible that `n &lt; bs.len()`, caller should pass the remaining bytes
     /// repeatedly until all bytes has been written.
-    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt;;
-
-    <span class="doccomment">/// Sink given stream into writer.
-    ///
-    /// # Behavior
-    ///
-    /// - `Ok(n)` means `n` bytes has been written successfully.
-    /// - `Err(err)` means error happens and no bytes has been written.
-    ///
-    /// It&#39;s possible that `n &lt; size`, caller should pass the remaining bytes
-    /// repeatedly until all bytes has been written.
-    </span><span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt;;
+    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
 
     <span class="doccomment">/// Abort the pending writer.
     </span><span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
@@ -305,17 +264,10 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Write <span class="kw">for </span>() {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">let _ </span>= bs;
 
         <span class="macro">unimplemented!</span>(<span class="string">&quot;write is required to be implemented for oio::Write&quot;</span>)
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: u64, <span class="kw">_</span>: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;output writer doesn&#39;t support sink&quot;</span>,
-        ))
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
@@ -338,12 +290,8 @@
 /// To make Writer work as expected, we must add this impl.
 </span><span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;T: Write + <span class="question-mark">?</span>Sized&gt; Write <span class="kw">for </span>Box&lt;T&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         (<span class="kw-2">**</span><span class="self">self</span>).write(bs).<span class="kw">await
-    </span>}
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, n: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        (<span class="kw-2">**</span><span class="self">self</span>).sink(n, s).<span class="kw">await
     </span>}
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
@@ -361,14 +309,14 @@
 <span class="doccomment">/// BlockingWrite is the trait that OpenDAL returns to callers.
 </span><span class="kw">pub trait </span>BlockingWrite: Send + Sync + <span class="lifetime">&#39;static </span>{
     <span class="doccomment">/// Write whole content at once.
-    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt;;
+    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt;;
 
     <span class="doccomment">/// Close the writer and make sure all data has been flushed.
     </span><span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
 }
 
 <span class="kw">impl </span>BlockingWrite <span class="kw">for </span>() {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">let _ </span>= bs;
 
         <span class="macro">unimplemented!</span>(<span class="string">&quot;write is required to be implemented for oio::BlockingWrite&quot;</span>)
@@ -386,7 +334,7 @@
 ///
 /// To make BlockingWriter work as expected, we must add this impl.
 </span><span class="kw">impl</span>&lt;T: BlockingWrite + <span class="question-mark">?</span>Sized&gt; BlockingWrite <span class="kw">for </span>Box&lt;T&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         (<span class="kw-2">**</span><span class="self">self</span>).write(bs)
     }
 

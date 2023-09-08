@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['is_5fexist_13',['is_exist',['../classopendal_1_1Operator.html#a91e105a6112112586fa699371f270240',1,'opendal::Operator']]]
+  ['file_15',['FILE',['../namespaceopendal.html#a775d61a6897136a7bcb0cea1a8af4878a2afb4c058126f654340802330f779534',1,'opendal']]]
 ];

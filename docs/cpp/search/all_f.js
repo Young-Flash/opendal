@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7eoperator_31',['~Operator',['../classopendal_1_1Operator.html#aa77e710779e1a12f793ed6ab06e5d89e',1,'opendal::Operator']]]
+  ['unknown_48',['UNKNOWN',['../namespaceopendal.html#a775d61a6897136a7bcb0cea1a8af4878a3524be472e62f8172244804c48b0c3a4',1,'opendal']]]
 ];

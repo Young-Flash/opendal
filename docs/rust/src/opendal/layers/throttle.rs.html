@@ -279,11 +279,6 @@
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
-<a href="#282" id="282">282</a>
-<a href="#283" id="283">283</a>
-<a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
-<a href="#286" id="286">286</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -319,7 +314,6 @@
 <span class="kw">use </span>governor::Quota;
 <span class="kw">use </span>governor::RateLimiter;
 
-<span class="kw">use </span><span class="kw">crate</span>::raw::oio::Streamer;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -503,8 +497,8 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>ThrottleWrapper&lt;R&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>buf_length = NonZeroU32::new(bs.len() <span class="kw">as </span>u32).unwrap();
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>buf_length = NonZeroU32::new(bs.remaining() <span class="kw">as </span>u32).unwrap();
 
         <span class="kw">loop </span>{
             <span class="kw">match </span><span class="self">self</span>.limiter.check_n(buf_length) {
@@ -528,10 +522,6 @@
         }
     }
 
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="self">self</span>.inner.sink(size, s).<span class="kw">await
-    </span>}
-
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="self">self</span>.inner.abort().<span class="kw">await
     </span>}
@@ -542,8 +532,8 @@
 }
 
 <span class="kw">impl</span>&lt;R: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>ThrottleWrapper&lt;R&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>buf_length = NonZeroU32::new(bs.len() <span class="kw">as </span>u32).unwrap();
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>buf_length = NonZeroU32::new(bs.remaining() <span class="kw">as </span>u32).unwrap();
 
         <span class="kw">loop </span>{
             <span class="kw">match </span><span class="self">self</span>.limiter.check_n(buf_length) {

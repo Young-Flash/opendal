@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operator_34',['Operator',['../classopendal_1_1Operator.html',1,'opendal']]]
+  ['metadata_55',['Metadata',['../structopendal_1_1Metadata.html',1,'opendal']]]
 ];

@@ -84,9 +84,6 @@
 <a href="#84" id="84">84</a>
 <a href="#85" id="85">85</a>
 <a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -105,7 +102,6 @@
 // under the License.
 
 </span><span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Bytes;
 
 <span class="kw">use </span><span class="kw">super</span>::backend::GhacBackend;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
@@ -131,31 +127,29 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>GhacWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>size = bs.len() <span class="kw">as </span>u64;
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>size = bs.remaining();
+
         <span class="kw">let </span>req = <span class="self">self
             </span>.backend
-            .ghac_upload(<span class="self">self</span>.cache_id, size, AsyncBody::Bytes(bs))
+            .ghac_upload(
+                <span class="self">self</span>.cache_id,
+                size <span class="kw">as </span>u64,
+                AsyncBody::Bytes(bs.copy_to_bytes(size)),
+            )
             .<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>resp = <span class="self">self</span>.backend.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">if </span>resp.status().is_success() {
             resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="self">self</span>.size += size;
+            <span class="self">self</span>.size += size <span class="kw">as </span>u64;
             <span class="prelude-val">Ok</span>(size)
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(parse_error(resp)
                 .<span class="kw">await
                 </span>.map(|err| err.with_operation(<span class="string">&quot;Backend::ghac_upload&quot;</span>))<span class="question-mark">?</span>)
         }
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _size: u64, _s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;Write::sink is not supported&quot;</span>,
-        ))
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

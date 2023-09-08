@@ -1469,6 +1469,10 @@
 <a href="#1469" id="1469">1469</a>
 <a href="#1470" id="1470">1470</a>
 <a href="#1471" id="1471">1471</a>
+<a href="#1472" id="1472">1472</a>
+<a href="#1473" id="1473">1473</a>
+<a href="#1474" id="1474">1474</a>
+<a href="#1475" id="1475">1475</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1488,7 +1492,7 @@
 
 </span><span class="kw">use </span>std::time::Duration;
 
-<span class="kw">use </span>bytes::Bytes;
+<span class="kw">use </span>bytes::{Buf, Bytes};
 <span class="kw">use </span>futures::stream;
 <span class="kw">use </span>futures::AsyncReadExt;
 <span class="kw">use </span>futures::Stream;
@@ -2187,7 +2191,7 @@
             <span class="self">self</span>.inner().clone(),
             path,
             (OpWrite::default().with_content_length(bs.len() <span class="kw">as </span>u64), bs),
-            |inner, path, (args, bs)| {
+            |inner, path, (args, <span class="kw-2">mut </span>bs)| {
                 <span class="kw">let </span>fut = <span class="kw">async move </span>{
                     <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>path, EntryMode::FILE) {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
@@ -2200,7 +2204,11 @@
                     }
 
                     <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw-2">mut </span>w) = inner.write(<span class="kw-2">&amp;</span>path, args).<span class="kw">await</span><span class="question-mark">?</span>;
-                    w.write(bs).<span class="kw">await</span><span class="question-mark">?</span>;
+                    <span class="kw">while </span>bs.remaining() &gt; <span class="number">0 </span>{
+                        <span class="kw">let </span>n = w.write(<span class="kw-2">&amp;</span>bs).<span class="kw">await</span><span class="question-mark">?</span>;
+                        bs.advance(n);
+                    }
+
                     w.close().<span class="kw">await</span><span class="question-mark">?</span>;
 
                     <span class="prelude-val">Ok</span>(())

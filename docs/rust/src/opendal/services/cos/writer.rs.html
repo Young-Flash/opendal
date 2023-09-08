@@ -247,12 +247,10 @@
 </span><span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Buf;
 <span class="kw">use </span>http::StatusCode;
 
 <span class="kw">use </span><span class="kw">super</span>::core::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
-<span class="kw">use </span><span class="kw">crate</span>::raw::oio::Streamer;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -281,14 +279,15 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::OneShotWrite <span class="kw">for </span>CosWriter {
-    <span class="kw">async fn </span>write_once(<span class="kw-2">&amp;</span><span class="self">self</span>, size: u64, stream: Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">async fn </span>write_once(<span class="kw-2">&amp;</span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>size = buf.remaining();
         <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.cos_put_object_request(
             <span class="kw-2">&amp;</span><span class="self">self</span>.path,
-            <span class="prelude-val">Some</span>(size),
+            <span class="prelude-val">Some</span>(size <span class="kw">as </span>u64),
             <span class="self">self</span>.op.content_type(),
             <span class="self">self</span>.op.content_disposition(),
             <span class="self">self</span>.op.cache_control(),
-            AsyncBody::Stream(stream),
+            AsyncBody::Bytes(buf.copy_to_bytes(size)),
         )<span class="question-mark">?</span>;
 
         <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -327,7 +326,8 @@
                 <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let </span>result: InitiateMultipartUploadResult =
-                    quick_xml::de::from_reader(bs.reader()).map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
+                    quick_xml::de::from_reader(bytes::Buf::reader(bs))
+                        .map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
 
                 <span class="prelude-val">Ok</span>(result.upload_id)
             }

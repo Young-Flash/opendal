@@ -1545,40 +1545,6 @@
 <a href="#1545" id="1545">1545</a>
 <a href="#1546" id="1546">1546</a>
 <a href="#1547" id="1547">1547</a>
-<a href="#1548" id="1548">1548</a>
-<a href="#1549" id="1549">1549</a>
-<a href="#1550" id="1550">1550</a>
-<a href="#1551" id="1551">1551</a>
-<a href="#1552" id="1552">1552</a>
-<a href="#1553" id="1553">1553</a>
-<a href="#1554" id="1554">1554</a>
-<a href="#1555" id="1555">1555</a>
-<a href="#1556" id="1556">1556</a>
-<a href="#1557" id="1557">1557</a>
-<a href="#1558" id="1558">1558</a>
-<a href="#1559" id="1559">1559</a>
-<a href="#1560" id="1560">1560</a>
-<a href="#1561" id="1561">1561</a>
-<a href="#1562" id="1562">1562</a>
-<a href="#1563" id="1563">1563</a>
-<a href="#1564" id="1564">1564</a>
-<a href="#1565" id="1565">1565</a>
-<a href="#1566" id="1566">1566</a>
-<a href="#1567" id="1567">1567</a>
-<a href="#1568" id="1568">1568</a>
-<a href="#1569" id="1569">1569</a>
-<a href="#1570" id="1570">1570</a>
-<a href="#1571" id="1571">1571</a>
-<a href="#1572" id="1572">1572</a>
-<a href="#1573" id="1573">1573</a>
-<a href="#1574" id="1574">1574</a>
-<a href="#1575" id="1575">1575</a>
-<a href="#1576" id="1576">1576</a>
-<a href="#1577" id="1577">1577</a>
-<a href="#1578" id="1578">1578</a>
-<a href="#1579" id="1579">1579</a>
-<a href="#1580" id="1580">1580</a>
-<a href="#1581" id="1581">1581</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2833,10 +2799,10 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>LoggingWriter&lt;W&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">match </span><span class="self">self</span>.inner.write(bs).<span class="kw">await </span>{
             <span class="prelude-val">Ok</span>(n) =&gt; {
-                <span class="self">self</span>.written += n;
+                <span class="self">self</span>.written += n <span class="kw">as </span>u64;
                 <span class="macro">trace!</span>(
                     target: LOGGING_TARGET,
                     <span class="string">&quot;service={} operation={} path={} written={} -&gt; data write {}B&quot;</span>,
@@ -2856,39 +2822,6 @@
                         <span class="string">&quot;service={} operation={} path={} written={} -&gt; data write failed: {}&quot;</span>,
                         <span class="self">self</span>.ctx.scheme,
                         WriteOperation::Write,
-                        <span class="self">self</span>.path,
-                        <span class="self">self</span>.written,
-                        <span class="self">self</span>.ctx.error_print(<span class="kw-2">&amp;</span>err),
-                    )
-                }
-                <span class="prelude-val">Err</span>(err)
-            }
-        }
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">match </span><span class="self">self</span>.inner.sink(size, s).<span class="kw">await </span>{
-            <span class="prelude-val">Ok</span>(n) =&gt; {
-                <span class="self">self</span>.written += n;
-                <span class="macro">trace!</span>(
-                    target: LOGGING_TARGET,
-                    <span class="string">&quot;service={} operation={} path={} written={} -&gt; data sink {}B&quot;</span>,
-                    <span class="self">self</span>.ctx.scheme,
-                    WriteOperation::Sink,
-                    <span class="self">self</span>.path,
-                    <span class="self">self</span>.written,
-                    n
-                );
-                <span class="prelude-val">Ok</span>(n)
-            }
-            <span class="prelude-val">Err</span>(err) =&gt; {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(lvl) = <span class="self">self</span>.ctx.error_level(<span class="kw-2">&amp;</span>err) {
-                    <span class="macro">log!</span>(
-                        target: LOGGING_TARGET,
-                        lvl,
-                        <span class="string">&quot;service={} operation={} path={} written={} -&gt; data sink failed: {}&quot;</span>,
-                        <span class="self">self</span>.ctx.scheme,
-                        WriteOperation::Sink,
                         <span class="self">self</span>.path,
                         <span class="self">self</span>.written,
                         <span class="self">self</span>.ctx.error_print(<span class="kw-2">&amp;</span>err),
@@ -2963,11 +2896,10 @@
 }
 
 <span class="kw">impl</span>&lt;W: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>LoggingWriter&lt;W&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">match </span><span class="self">self</span>.inner.write(bs) {
             <span class="prelude-val">Ok</span>(n) =&gt; {
-                <span class="self">self</span>.written += n;
+                <span class="self">self</span>.written += n <span class="kw">as </span>u64;
                 <span class="macro">trace!</span>(
                     target: LOGGING_TARGET,
                     <span class="string">&quot;service={} operation={} path={} written={} -&gt; data write {}B&quot;</span>,
@@ -2975,7 +2907,7 @@
                     WriteOperation::BlockingWrite,
                     <span class="self">self</span>.path,
                     <span class="self">self</span>.written,
-                    size
+                    n
                 );
                 <span class="prelude-val">Ok</span>(n)
             }

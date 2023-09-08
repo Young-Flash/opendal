@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['list_43',['list',['../classopendal_1_1Operator.html#a6707d6095415cffa28ceb210368a30a0',1,'opendal::Operator']]]
+  ['is_5fexist_68',['is_exist',['../classopendal_1_1Operator.html#a91e105a6112112586fa699371f270240',1,'opendal::Operator']]]
 ];

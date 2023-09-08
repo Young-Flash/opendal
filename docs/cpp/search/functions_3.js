@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['is_5fexist_42',['is_exist',['../classopendal_1_1Operator.html#a91e105a6112112586fa699371f270240',1,'opendal::Operator']]]
+  ['end_66',['end',['../classopendal_1_1Lister.html#a2f84fe66951f247b64c6171eba8ef8d7',1,'opendal::Lister']]],
+  ['entry_67',['Entry',['../structopendal_1_1Entry.html#a6d1eb12504c36cd820aa2f12a1a49bc1',1,'opendal::Entry']]]
 ];

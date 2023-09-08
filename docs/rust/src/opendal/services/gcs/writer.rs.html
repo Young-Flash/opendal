@@ -210,17 +210,6 @@
 <a href="#210" id="210">210</a>
 <a href="#211" id="211">211</a>
 <a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
-<a href="#221" id="221">221</a>
-<a href="#222" id="222">222</a>
-<a href="#223" id="223">223</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -341,16 +330,16 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>GcsWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>size = bs.len() <span class="kw">as </span>u64;
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>size = bs.remaining();
 
         <span class="kw">let </span>location = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.location {
             <span class="prelude-val">Some</span>(location) =&gt; location,
             <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">if </span><span class="self">self</span>.op.content_length().unwrap_or_default() == bs.len() <span class="kw">as </span>u64
-                    &amp;&amp; <span class="self">self</span>.written == <span class="number">0
+                <span class="kw">if </span><span class="self">self</span>.op.content_length().unwrap_or_default() == size <span class="kw">as </span>u64 &amp;&amp; <span class="self">self</span>.written == <span class="number">0
                 </span>{
-                    <span class="self">self</span>.write_oneshot(size, AsyncBody::Bytes(bs)).<span class="kw">await</span><span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_oneshot(size <span class="kw">as </span>u64, AsyncBody::Bytes(bs.copy_to_bytes(size)))
+                        .<span class="kw">await</span><span class="question-mark">?</span>;
 
                     <span class="kw">return </span><span class="prelude-val">Ok</span>(size);
                 } <span class="kw">else </span>{
@@ -361,19 +350,13 @@
             }
         };
 
-        <span class="comment">// Ignore empty bytes
-        </span><span class="kw">if </span>bs.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="number">0</span>);
-        }
-
-        <span class="self">self</span>.buffer.push(bs);
+        <span class="self">self</span>.buffer.push(bs.copy_to_bytes(size));
         <span class="comment">// Return directly if the buffer is not full
         </span><span class="kw">if </span><span class="self">self</span>.buffer.len() &lt;= <span class="self">self</span>.write_fixed_size {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(size);
         }
 
         <span class="kw">let </span>bs = <span class="self">self</span>.buffer.peak_exact(<span class="self">self</span>.write_fixed_size);
-        <span class="kw">let </span>size = bs.len() <span class="kw">as </span>u64;
 
         <span class="kw">match </span><span class="self">self</span>.write_part(location, bs).<span class="kw">await </span>{
             <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
@@ -388,11 +371,6 @@
                 <span class="prelude-val">Err</span>(e)
             }
         }
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="self">self</span>.write_oneshot(size, AsyncBody::Stream(s)).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(size)
     }
 
     <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

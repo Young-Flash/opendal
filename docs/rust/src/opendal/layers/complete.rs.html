@@ -968,30 +968,6 @@
 <a href="#968" id="968">968</a>
 <a href="#969" id="969">969</a>
 <a href="#970" id="970">970</a>
-<a href="#971" id="971">971</a>
-<a href="#972" id="972">972</a>
-<a href="#973" id="973">973</a>
-<a href="#974" id="974">974</a>
-<a href="#975" id="975">975</a>
-<a href="#976" id="976">976</a>
-<a href="#977" id="977">977</a>
-<a href="#978" id="978">978</a>
-<a href="#979" id="979">979</a>
-<a href="#980" id="980">980</a>
-<a href="#981" id="981">981</a>
-<a href="#982" id="982">982</a>
-<a href="#983" id="983">983</a>
-<a href="#984" id="984">984</a>
-<a href="#985" id="985">985</a>
-<a href="#986" id="986">986</a>
-<a href="#987" id="987">987</a>
-<a href="#988" id="988">988</a>
-<a href="#989" id="989">989</a>
-<a href="#990" id="990">990</a>
-<a href="#991" id="991">991</a>
-<a href="#992" id="992">992</a>
-<a href="#993" id="993">993</a>
-<a href="#994" id="994">994</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1705,11 +1681,15 @@
 <span class="kw">where
     </span>W: oio::Write,
 {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>n = bs.len();
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
+            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
+        })<span class="question-mark">?</span>;
+        <span class="kw">let </span>n = w.write(bs).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="self">self</span>.written += n <span class="kw">as </span>u64;
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(size) = <span class="self">self</span>.size {
-            <span class="kw">if </span><span class="self">self</span>.written + n <span class="kw">as </span>u64 &gt; size {
+            <span class="kw">if </span><span class="self">self</span>.written &gt; size {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::ContentTruncated,
                     <span class="kw-2">&amp;</span><span class="macro">format!</span>(
@@ -1720,32 +1700,6 @@
             }
         }
 
-        <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
-        })<span class="question-mark">?</span>;
-        w.write(bs).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="self">self</span>.written += n <span class="kw">as </span>u64;
-        <span class="prelude-val">Ok</span>(n <span class="kw">as </span>u64)
-    }
-
-    <span class="kw">async fn </span>sink(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, s: oio::Streamer) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(total_size) = <span class="self">self</span>.size {
-            <span class="kw">if </span><span class="self">self</span>.written + size &gt; total_size {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                    ErrorKind::ContentTruncated,
-                    <span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                        <span class="string">&quot;writer got too much data, expect: {size}, actual: {}&quot;</span>,
-                        <span class="self">self</span>.written + size
-                    ),
-                ));
-            }
-        }
-
-        <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>n = w.sink(size, s).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="self">self</span>.written += n;
         <span class="prelude-val">Ok</span>(n)
     }
 
@@ -1788,11 +1742,15 @@
 <span class="kw">where
     </span>W: oio::BlockingWrite,
 {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">let </span>n = bs.len();
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
+            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
+        })<span class="question-mark">?</span>;
+        <span class="kw">let </span>n = w.write(bs)<span class="question-mark">?</span>;
+        <span class="self">self</span>.written += n <span class="kw">as </span>u64;
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(size) = <span class="self">self</span>.size {
-            <span class="kw">if </span><span class="self">self</span>.written + n <span class="kw">as </span>u64 &gt; size {
+            <span class="kw">if </span><span class="self">self</span>.written &gt; size {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::ContentTruncated,
                     <span class="kw-2">&amp;</span><span class="macro">format!</span>(
@@ -1803,13 +1761,7 @@
             }
         }
 
-        <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
-        })<span class="question-mark">?</span>;
-
-        w.write(bs)<span class="question-mark">?</span>;
-        <span class="self">self</span>.written += n <span class="kw">as </span>u64;
-        <span class="prelude-val">Ok</span>(n <span class="kw">as </span>u64)
+        <span class="prelude-val">Ok</span>(n)
     }
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

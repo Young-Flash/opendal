@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['copy_39',['copy',['../classopendal_1_1Operator.html#ad1ec2bbb9f63a726c36a50702ca57dd5',1,'opendal::Operator']]],
-  ['create_5fdir_40',['create_dir',['../classopendal_1_1Operator.html#a2468eddb8de7adbf6f96219e3e0c9c44',1,'opendal::Operator']]]
+  ['begin_63',['begin',['../classopendal_1_1Lister.html#a573ef941c31ac3af265b1e1446605aa2',1,'opendal::Lister']]]
 ];
