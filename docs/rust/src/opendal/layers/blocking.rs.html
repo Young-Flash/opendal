@@ -250,6 +250,9 @@
 <a href="#250" id="250">250</a>
 <a href="#251" id="251">251</a>
 <a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -270,6 +273,7 @@
 </span><span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>bytes;
 <span class="kw">use </span>bytes::Bytes;
+<span class="kw">use </span>futures::future::poll_fn;
 <span class="kw">use </span>tokio::runtime::Handle;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::ReadExt;
@@ -449,11 +453,13 @@
 
 <span class="kw">impl</span>&lt;I: oio::Write + <span class="lifetime">&#39;static</span>&gt; oio::BlockingWrite <span class="kw">for </span>BlockingWrapper&lt;I&gt; {
     <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="self">self</span>.handle.block_on(<span class="self">self</span>.inner.write(bs))
+        <span class="self">self</span>.handle
+            .block_on(poll_fn(|cx| <span class="self">self</span>.inner.poll_write(cx, bs)))
     }
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.handle.block_on(<span class="self">self</span>.inner.close())
+        <span class="self">self</span>.handle
+            .block_on(poll_fn(|cx| <span class="self">self</span>.inner.poll_close(cx)))
     }
 }
 

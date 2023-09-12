@@ -281,6 +281,22 @@
 <a href="#281" id="281">281</a>
 <a href="#282" id="282">282</a>
 <a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -307,6 +323,7 @@
 
 <span class="kw">use </span><span class="kw">super</span>::core::GdriveCore;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
+<span class="kw">use </span><span class="kw">super</span>::pager::GdrivePager;
 <span class="kw">use </span><span class="kw">super</span>::writer::GdriveWriter;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::services::gdrive::core::GdriveFile;
@@ -323,9 +340,9 @@
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>GdriveBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
     <span class="kw">type </span>BlockingReader = ();
-    <span class="kw">type </span>Writer = GdriveWriter;
+    <span class="kw">type </span>Writer = oio::OneShotWriter&lt;GdriveWriter&gt;;
     <span class="kw">type </span>BlockingWriter = ();
-    <span class="kw">type </span>Pager = ();
+    <span class="kw">type </span>Pager = GdrivePager;
     <span class="kw">type </span>BlockingPager = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -336,6 +353,10 @@
                 stat: <span class="bool-val">true</span>,
 
                 read: <span class="bool-val">true</span>,
+
+                list: <span class="bool-val">true</span>,
+
+                list_with_delimiter_slash: <span class="bool-val">true</span>,
 
                 write: <span class="bool-val">true</span>,
 
@@ -477,7 +498,11 @@
 
         <span class="prelude-val">Ok</span>((
             RpWrite::default(),
-            GdriveWriter::new(<span class="self">self</span>.core.clone(), String::from(path), file_id),
+            oio::OneShotWriter::new(GdriveWriter::new(
+                <span class="self">self</span>.core.clone(),
+                String::from(path),
+                file_id,
+            )),
         ))
     }
 
@@ -526,6 +551,13 @@
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(e)
         }
+    }
+
+    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, _args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
+        <span class="prelude-val">Ok</span>((
+            RpList::default(),
+            GdrivePager::new(path.into(), <span class="self">self</span>.core.clone()),
+        ))
     }
 }
 

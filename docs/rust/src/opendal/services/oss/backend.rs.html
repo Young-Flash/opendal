@@ -641,8 +641,6 @@
 <a href="#641" id="641">641</a>
 <a href="#642" id="642">642</a>
 <a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1118,11 +1116,9 @@
         <span class="kw">let </span>writer = OssWriter::new(<span class="self">self</span>.core.clone(), path, args.clone());
 
         <span class="kw">let </span>w = <span class="kw">if </span>args.append() {
-            OssWriters::Three(oio::AppendObjectWriter::new(writer))
-        } <span class="kw">else if </span>args.content_length().is_some() {
-            OssWriters::One(oio::OneShotWriter::new(writer))
+            OssWriters::Two(oio::AppendObjectWriter::new(writer))
         } <span class="kw">else </span>{
-            OssWriters::Two(oio::MultipartUploadWriter::new(writer))
+            OssWriters::One(oio::MultipartUploadWriter::new(writer))
         };
 
         <span class="kw">let </span>w = <span class="kw">if let </span><span class="prelude-val">Some</span>(buffer_size) = args.buffer_size() {

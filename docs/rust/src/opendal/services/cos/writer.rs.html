@@ -220,13 +220,6 @@
 <a href="#220" id="220">220</a>
 <a href="#221" id="221">221</a>
 <a href="#222" id="222">222</a>
-<a href="#223" id="223">223</a>
-<a href="#224" id="224">224</a>
-<a href="#225" id="225">225</a>
-<a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -254,11 +247,8 @@
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="kw">pub type </span>CosWriters = oio::ThreeWaysWriter&lt;
-    oio::OneShotWriter&lt;CosWriter&gt;,
-    oio::MultipartUploadWriter&lt;CosWriter&gt;,
-    oio::AppendObjectWriter&lt;CosWriter&gt;,
-&gt;;
+<span class="kw">pub type </span>CosWriters =
+    oio::TwoWaysWriter&lt;oio::MultipartUploadWriter&lt;CosWriter&gt;, oio::AppendObjectWriter&lt;CosWriter&gt;&gt;;
 
 <span class="kw">pub struct </span>CosWriter {
     core: Arc&lt;CosCore&gt;,
@@ -278,16 +268,15 @@
 }
 
 <span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::OneShotWrite <span class="kw">for </span>CosWriter {
-    <span class="kw">async fn </span>write_once(<span class="kw-2">&amp;</span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = buf.remaining();
+</span><span class="kw">impl </span>oio::MultipartUploadWrite <span class="kw">for </span>CosWriter {
+    <span class="kw">async fn </span>write_once(<span class="kw-2">&amp;</span><span class="self">self</span>, size: u64, body: AsyncBody) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.cos_put_object_request(
             <span class="kw-2">&amp;</span><span class="self">self</span>.path,
-            <span class="prelude-val">Some</span>(size <span class="kw">as </span>u64),
+            <span class="prelude-val">Some</span>(size),
             <span class="self">self</span>.op.content_type(),
             <span class="self">self</span>.op.content_disposition(),
             <span class="self">self</span>.op.cache_control(),
-            AsyncBody::Bytes(buf.copy_to_bytes(size)),
+            body,
         )<span class="question-mark">?</span>;
 
         <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -304,10 +293,7 @@
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
-}
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::MultipartUploadWrite <span class="kw">for </span>CosWriter {
     <span class="kw">async fn </span>initiate_part(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
         <span class="kw">let </span>resp = <span class="self">self
             </span>.core

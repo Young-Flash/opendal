@@ -50,6 +50,34 @@
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
 <a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -69,18 +97,29 @@
 
 </span><span class="kw">use </span>http::Response;
 <span class="kw">use </span>http::StatusCode;
+<span class="kw">use </span>serde::Deserialize;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::Error;
 <span class="kw">use </span><span class="kw">crate</span>::ErrorKind;
 <span class="kw">use </span><span class="kw">crate</span>::Result;
 
+<span class="attr">#[derive(Default, Debug, Deserialize)]
+</span><span class="kw">struct </span>GdriveError {
+    error: GdriveInnerError,
+}
+
+<span class="attr">#[derive(Default, Debug, Deserialize)]
+</span><span class="kw">struct </span>GdriveInnerError {
+    message: String,
+}
+
 <span class="doccomment">/// Parse error response into Error.
 </span><span class="kw">pub async fn </span>parse_error(resp: Response&lt;IncomingAsyncBody&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Error&gt; {
     <span class="kw">let </span>(parts, body) = resp.into_parts();
     <span class="kw">let </span>bs = body.bytes().<span class="kw">await</span><span class="question-mark">?</span>;
 
-    <span class="kw">let </span>(kind, retryable) = <span class="kw">match </span>parts.status {
+    <span class="kw">let </span>(<span class="kw-2">mut </span>kind, <span class="kw-2">mut </span>retryable) = <span class="kw">match </span>parts.status {
         StatusCode::NOT_FOUND =&gt; (ErrorKind::NotFound, <span class="bool-val">false</span>),
         StatusCode::FORBIDDEN =&gt; (ErrorKind::PermissionDenied, <span class="bool-val">false</span>),
         StatusCode::INTERNAL_SERVER_ERROR
@@ -90,7 +129,14 @@
         <span class="kw">_ </span>=&gt; (ErrorKind::Unexpected, <span class="bool-val">false</span>),
     };
 
-    <span class="kw">let </span>message = String::from_utf8_lossy(<span class="kw-2">&amp;</span>bs);
+    <span class="kw">let </span>(message, gdrive_err) = serde_json::from_slice::&lt;GdriveError&gt;(bs.as_ref())
+        .map(|gdrive_err| (<span class="macro">format!</span>(<span class="string">&quot;{gdrive_err:?}&quot;</span>), <span class="prelude-val">Some</span>(gdrive_err)))
+        .unwrap_or_else(|<span class="kw">_</span>| (String::from_utf8_lossy(<span class="kw-2">&amp;</span>bs).into_owned(), <span class="prelude-val">None</span>));
+
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(gdrive_err) = gdrive_err {
+        (kind, retryable) =
+            parse_gdrive_error_code(gdrive_err.error.message.as_str()).unwrap_or((kind, retryable));
+    }
 
     <span class="kw">let </span><span class="kw-2">mut </span>err = Error::new(kind, <span class="kw-2">&amp;</span>message);
 
@@ -101,5 +147,15 @@
     }
 
     <span class="prelude-val">Ok</span>(err)
+}
+
+<span class="kw">pub fn </span>parse_gdrive_error_code(message: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;(ErrorKind, bool)&gt; {
+    <span class="kw">match </span>message {
+        <span class="comment">// &gt; Please reduce your request rate.
+        //
+        // It&#39;s Ok to retry since later on the request rate may get reduced.
+        </span><span class="string">&quot;User rate limit exceeded.&quot; </span>=&gt; <span class="prelude-val">Some</span>((ErrorKind::RateLimited, <span class="bool-val">true</span>)),
+        <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
+    }
 }
 </code></pre></div></section></main></body></html>

@@ -82,18 +82,49 @@ Example</h1>
 <div class="ttc" id="aclassopendal_1_1Operator_html"><div class="ttname"><a href="classopendal_1_1Operator.html">opendal::Operator</a></div><div class="ttdoc">Operator is the entry for all public APIs.</div><div class="ttdef"><b>Definition:</b> opendal.hpp:78</div></div>
 <div class="ttc" id="aopendal_8hpp_html"><div class="ttname"><a href="opendal_8hpp.html">opendal.hpp</a></div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md2"></a>
-Build</h1>
+Compiling</h1>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Prerequisites</h2>
+<ul>
+<li>CMake &gt;= 3.10</li>
+<li>C++ compiler with C++17 support</li>
+<li>The boost library</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md4"></a>
+Build</h2>
 <div class="fragment"><div class="line">mkdir build</div>
 <div class="line">cd build</div>
-<div class="line"> </div>
-<div class="line"># Add -DCMAKE_EXPORT_COMPILE_COMMANDS=1 to generate compile_commands.json for clangd</div>
-<div class="line">cmake -DCMAKE_BUILD_TYPE=Debug -GNinja .. </div>
-<div class="line"> </div>
-<div class="line">ninja</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
-Test</h1>
-<p>You should build the project first. Then run:</p>
-<div class="fragment"><div class="line">ninja test</div>
+<div class="line"># Add -DOPENDAL_DEV=ON to make development environment for OpenDAL</div>
+<div class="line">cmake ..</div>
+<div class="line">make</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
+Test</h2>
+<p>You should build the project with <code>OPENDAL_ENABLE_TESTING</code> option. Then run:</p>
+<div class="fragment"><div class="line">make test</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
+Docs</h2>
+<p>You should build the project with <code>OPENDAL_ENABLE_DOCUMENTATION</code> option. Then run:</p>
+<div class="fragment"><div class="line">make docs</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
+CMake Options</h2>
+<ul>
+<li><code>OPENDAL_DEV</code>: Enable development environment for OpenDAL. It will enable most development options. With this option, you don't need to set other options. Default: <code>OFF</code></li>
+<li><code>OPENDAL_ENABLE_ADDRESS_SANITIZER</code>: Enable address sanitizer. Default: <code>OFF</code></li>
+<li><code>OPENDAL_ENABLE_DOCUMENTATION</code>: Enable documentation. Default: <code>OFF</code></li>
+<li><code>OPENDAL_DOCS_ONLY</code>: Only build documentation. Default: <code>OFF</code></li>
+<li><code>OPENDAL_ENABLE_TESTING</code>: Enable testing. Default: <code>OFF</code></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Using</h1>
+<h2><a class="anchor" id="autotoc_md9"></a>
+CMake</h2>
+<p>Because the project repo includes rust core code, we can't use <code>git submodule</code> directly to add it. So we recommend using <code>FetchContent</code> to add the library.</p>
+<div class="fragment"><div class="line">FetchContent_Declare(</div>
+<div class="line">    opendal-cpp</div>
+<div class="line">    URL     https://github.com/apache/incubator-opendal/releases/download/&lt;newest-tag&gt;/opendal-cpp-&lt;newest-tag&gt;.tar.gz</div>
+<div class="line">    URL_HASH SHA256=&lt;newest-tag-sha256&gt;</div>
+<div class="line">)</div>
+<div class="line">FetchContent_MakeAvailable(opendal-cpp)</div>
 </div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

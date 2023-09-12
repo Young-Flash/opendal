@@ -703,25 +703,25 @@
         parent = <span class="kw-2">&amp;</span><span class="self">self</span>.span,
         level = <span class="string">&quot;trace&quot;</span>,
         skip_all)]
-    </span><span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="self">self</span>.inner.write(bs).<span class="kw">await
-    </span>}
+    </span><span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+        <span class="self">self</span>.inner.poll_write(cx, bs)
+    }
 
     <span class="attr">#[tracing::instrument(
         parent = <span class="kw-2">&amp;</span><span class="self">self</span>.span,
         level = <span class="string">&quot;trace&quot;</span>,
         skip_all)]
-    </span><span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.inner.abort().<span class="kw">await
-    </span>}
+    </span><span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_abort(cx)
+    }
 
     <span class="attr">#[tracing::instrument(
         parent = <span class="kw-2">&amp;</span><span class="self">self</span>.span,
         level = <span class="string">&quot;trace&quot;</span>,
         skip_all)]
-    </span><span class="kw">async fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.inner.close().<span class="kw">await
-    </span>}
+    </span><span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_close(cx)
+    }
 }
 
 <span class="kw">impl</span>&lt;R: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>TracingWrapper&lt;R&gt; {

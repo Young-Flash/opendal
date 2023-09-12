@@ -384,7 +384,7 @@
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>IpmfsBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
     <span class="kw">type </span>BlockingReader = ();
-    <span class="kw">type </span>Writer = IpmfsWriter;
+    <span class="kw">type </span>Writer = oio::OneShotWriter&lt;IpmfsWriter&gt;;
     <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Pager = IpmfsPager;
     <span class="kw">type </span>BlockingPager = ();
@@ -450,7 +450,7 @@
 
         <span class="prelude-val">Ok</span>((
             RpWrite::default(),
-            IpmfsWriter::new(<span class="self">self</span>.clone(), path.to_string()),
+            oio::OneShotWriter::new(IpmfsWriter::new(<span class="self">self</span>.clone(), path.to_string())),
         ))
     }
 

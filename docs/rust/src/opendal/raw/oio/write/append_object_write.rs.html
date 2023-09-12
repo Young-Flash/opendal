@@ -102,6 +102,37 @@
 <a href="#102" id="102">102</a>
 <a href="#103" id="103">103</a>
 <a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -119,7 +150,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>async_trait::async_trait;
+</span><span class="kw">use </span>std::task::ready;
+<span class="kw">use </span>std::task::Context;
+<span class="kw">use </span>std::task::Poll;
+
+<span class="kw">use </span>async_trait::async_trait;
+<span class="kw">use </span>futures::future::BoxFuture;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -134,7 +170,7 @@
 /// - `AppendObjectWriter` impl `Write`
 /// - Expose `AppendObjectWriter` as `Accessor::Writer`
 </span><span class="attr">#[async_trait]
-</span><span class="kw">pub trait </span>AppendObjectWrite: Send + Sync + Unpin {
+</span><span class="kw">pub trait </span>AppendObjectWrite: Send + Sync + Unpin + <span class="lifetime">&#39;static </span>{
     <span class="doccomment">/// Get the current offset of the append object.
     ///
     /// Returns `0` if the object is not exist.
@@ -150,29 +186,29 @@
 ///
 /// - Allow users to switch to un-buffered mode if users write 16MiB every time.
 </span><span class="kw">pub struct </span>AppendObjectWriter&lt;W: AppendObjectWrite&gt; {
-    inner: W,
+    state: State&lt;W&gt;,
 
     offset: <span class="prelude-ty">Option</span>&lt;u64&gt;,
 }
+
+<span class="kw">enum </span>State&lt;W&gt; {
+    Idle(<span class="prelude-ty">Option</span>&lt;W&gt;),
+    Offset(BoxFuture&lt;<span class="lifetime">&#39;static</span>, (W, <span class="prelude-ty">Result</span>&lt;u64&gt;)&gt;),
+    Append(BoxFuture&lt;<span class="lifetime">&#39;static</span>, (W, <span class="prelude-ty">Result</span>&lt;usize&gt;)&gt;),
+}
+
+<span class="doccomment">/// # Safety
+///
+/// We will only take `&amp;mut Self` reference for State.
+</span><span class="kw">unsafe impl</span>&lt;S: AppendObjectWrite&gt; Sync <span class="kw">for </span>State&lt;S&gt; {}
 
 <span class="kw">impl</span>&lt;W: AppendObjectWrite&gt; AppendObjectWriter&lt;W&gt; {
     <span class="doccomment">/// Create a new AppendObjectWriter.
     </span><span class="kw">pub fn </span>new(inner: W) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            inner,
+            state: State::Idle(<span class="prelude-val">Some</span>(inner)),
             offset: <span class="prelude-val">None</span>,
         }
-    }
-
-    <span class="kw">async fn </span>offset(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(offset);
-        }
-
-        <span class="kw">let </span>offset = <span class="self">self</span>.inner.offset().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="self">self</span>.offset = <span class="prelude-val">Some</span>(offset);
-
-        <span class="prelude-val">Ok</span>(offset)
     }
 }
 
@@ -181,29 +217,55 @@
 <span class="kw">where
     </span>W: AppendObjectWrite,
 {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="kw">let </span>offset = <span class="self">self</span>.offset().<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+        <span class="kw">loop </span>{
+            <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.state {
+                State::Idle(w) =&gt; {
+                    <span class="kw">let </span>w = w.take().expect(<span class="string">&quot;writer must be valid&quot;</span>);
+                    <span class="kw">match </span><span class="self">self</span>.offset {
+                        <span class="prelude-val">Some</span>(offset) =&gt; {
+                            <span class="kw">let </span>size = bs.remaining();
+                            <span class="kw">let </span>bs = bs.copy_to_bytes(size);
 
-        <span class="kw">let </span>size = bs.remaining();
+                            <span class="self">self</span>.state = State::Append(Box::pin(<span class="kw">async move </span>{
+                                <span class="kw">let </span>res = w.append(offset, size <span class="kw">as </span>u64, AsyncBody::Bytes(bs)).<span class="kw">await</span>;
 
-        <span class="self">self</span>.inner
-            .append(
-                offset,
-                size <span class="kw">as </span>u64,
-                AsyncBody::Bytes(bs.copy_to_bytes(size)),
-            )
-            .<span class="kw">await
-            </span>.map(|<span class="kw">_</span>| <span class="self">self</span>.offset = <span class="prelude-val">Some</span>(offset + size <span class="kw">as </span>u64))<span class="question-mark">?</span>;
+                                (w, res.map(|<span class="kw">_</span>| size))
+                            }));
+                        }
+                        <span class="prelude-val">None </span>=&gt; {
+                            <span class="self">self</span>.state = State::Offset(Box::pin(<span class="kw">async move </span>{
+                                <span class="kw">let </span>offset = w.offset().<span class="kw">await</span>;
 
-        <span class="prelude-val">Ok</span>(size)
+                                (w, offset)
+                            }));
+                        }
+                    }
+                }
+                State::Offset(fut) =&gt; {
+                    <span class="kw">let </span>(w, offset) = <span class="macro">ready!</span>(fut.as_mut().poll(cx));
+                    <span class="self">self</span>.state = State::Idle(<span class="prelude-val">Some</span>(w));
+                    <span class="self">self</span>.offset = <span class="prelude-val">Some</span>(offset<span class="question-mark">?</span>);
+                }
+                State::Append(fut) =&gt; {
+                    <span class="kw">let </span>(w, size) = <span class="macro">ready!</span>(fut.as_mut().poll(cx));
+                    <span class="self">self</span>.state = State::Idle(<span class="prelude-val">Some</span>(w));
+
+                    <span class="kw">let </span>size = size<span class="question-mark">?</span>;
+                    <span class="comment">// Update offset after succeed.
+                    </span><span class="self">self</span>.offset = <span class="self">self</span>.offset.map(|offset| offset + size <span class="kw">as </span>u64);
+                    <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(size));
+                }
+            }
+        }
     }
 
-    <span class="kw">async fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="prelude-val">Ok</span>(())
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        Poll::Ready(<span class="prelude-val">Ok</span>(()))
     }
 
-    <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="prelude-val">Ok</span>(())
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        Poll::Ready(<span class="prelude-val">Ok</span>(()))
     }
 }
 </code></pre></div></section></main></body></html>

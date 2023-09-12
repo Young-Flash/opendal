@@ -1473,6 +1473,8 @@
 <a href="#1473" id="1473">1473</a>
 <a href="#1474" id="1474">1474</a>
 <a href="#1475" id="1475">1475</a>
+<a href="#1476" id="1476">1476</a>
+<a href="#1477" id="1477">1477</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1492,7 +1494,8 @@
 
 </span><span class="kw">use </span>std::time::Duration;
 
-<span class="kw">use </span>bytes::{Buf, Bytes};
+<span class="kw">use </span>bytes::Buf;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>futures::stream;
 <span class="kw">use </span>futures::AsyncReadExt;
 <span class="kw">use </span>futures::Stream;
@@ -1502,6 +1505,7 @@
 
 <span class="kw">use </span><span class="kw">super</span>::BlockingOperator;
 <span class="kw">use </span><span class="kw">crate</span>::operator_futures::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::WriteExt;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 

@@ -1238,10 +1238,6 @@
 <a href="#1238" id="1238">1238</a>
 <a href="#1239" id="1239">1239</a>
 <a href="#1240" id="1240">1240</a>
-<a href="#1241" id="1241">1241</a>
-<a href="#1242" id="1242">1242</a>
-<a href="#1243" id="1243">1243</a>
-<a href="#1244" id="1244">1244</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2221,11 +2217,7 @@
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
         <span class="kw">let </span>writer = S3Writer::new(<span class="self">self</span>.core.clone(), path, args.clone());
 
-        <span class="kw">let </span>w = <span class="kw">if </span>args.content_length().is_some() {
-            S3Writers::One(oio::OneShotWriter::new(writer))
-        } <span class="kw">else </span>{
-            S3Writers::Two(oio::MultipartUploadWriter::new(writer))
-        };
+        <span class="kw">let </span>w = oio::MultipartUploadWriter::new(writer);
 
         <span class="kw">let </span>w = <span class="kw">if let </span><span class="prelude-val">Some</span>(buffer_size) = args.buffer_size() {
             <span class="kw">let </span>buffer_size = max(MINIMUM_MULTIPART_SIZE, buffer_size);

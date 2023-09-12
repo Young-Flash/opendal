@@ -218,6 +218,9 @@
 <a href="#218" id="218">218</a>
 <a href="#219" id="219">219</a>
 <a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -235,8 +238,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>bytes::{Bytes, BytesMut};
-<span class="kw">use </span>std::{cmp, ptr};
+</span><span class="kw">use </span>std::cmp;
+<span class="kw">use </span>std::ptr;
+
+<span class="kw">use </span>bytes::Bytes;
+<span class="kw">use </span>bytes::BytesMut;
 
 <span class="doccomment">/// WriteBuf is used in [`oio::Write`] to provide a trait similar to [`bytes::Buf`].
 ///

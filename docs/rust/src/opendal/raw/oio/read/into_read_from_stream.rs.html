@@ -81,6 +81,10 @@
 <a href="#81" id="81">81</a>
 <a href="#82" id="82">82</a>
 <a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -98,12 +102,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
-<span class="kw">use crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use </span>bytes::{Buf, Bytes};
+</span><span class="kw">use </span>std::io::SeekFrom;
+<span class="kw">use </span>std::task::Context;
+<span class="kw">use </span>std::task::Poll;
+
+<span class="kw">use </span>bytes::Buf;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>futures::StreamExt;
-<span class="kw">use </span>std::io::SeekFrom;
-<span class="kw">use </span>std::task::{Context, Poll};
+
+<span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Convert given stream `futures::Stream&lt;Item = Result&lt;Bytes&gt;&gt;` into [`oio::Reader`].
 </span><span class="kw">pub fn </span>into_read_from_stream&lt;S&gt;(stream: S) -&gt; FromStreamReader&lt;S&gt; {

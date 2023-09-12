@@ -135,6 +135,9 @@
 <a href="#135" id="135">135</a>
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -152,12 +155,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
-<span class="kw">use crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use </span>bytes::Bytes;
-<span class="kw">use </span>std::io::SeekFrom;
+</span><span class="kw">use </span>std::io::SeekFrom;
 <span class="kw">use </span>std::sync::Arc;
-<span class="kw">use </span>std::task::{Context, Poll};
+<span class="kw">use </span>std::task::Context;
+<span class="kw">use </span>std::task::Poll;
+
+<span class="kw">use </span>bytes::Bytes;
+
+<span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Convert given reader into a wrapper with `std::sync::Mutex` for `Send + Sync + Clone`.
 </span><span class="kw">pub fn </span>into_cloneable_reader_within_std&lt;R&gt;(reader: R) -&gt; CloneableReaderWithinStd&lt;R&gt; {

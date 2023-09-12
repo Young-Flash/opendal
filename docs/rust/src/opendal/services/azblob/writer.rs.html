@@ -139,56 +139,6 @@
 <a href="#139" id="139">139</a>
 <a href="#140" id="140">140</a>
 <a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
-<a href="#155" id="155">155</a>
-<a href="#156" id="156">156</a>
-<a href="#157" id="157">157</a>
-<a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
-<a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
-<a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a>
-<a href="#185" id="185">185</a>
-<a href="#186" id="186">186</a>
-<a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -209,6 +159,7 @@
 </span><span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>async_trait::async_trait;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>http::StatusCode;
 
 <span class="kw">use </span><span class="kw">super</span>::core::AzblobCore;
@@ -217,34 +168,32 @@
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">const </span>X_MS_BLOB_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-blob-type&quot;</span>;
-<span class="kw">const </span>X_MS_BLOB_APPEND_OFFSET: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-blob-append-offset&quot;</span>;
+
+<span class="kw">pub type </span>AzblobWriters =
+    oio::TwoWaysWriter&lt;oio::OneShotWriter&lt;AzblobWriter&gt;, oio::AppendObjectWriter&lt;AzblobWriter&gt;&gt;;
 
 <span class="kw">pub struct </span>AzblobWriter {
     core: Arc&lt;AzblobCore&gt;,
 
     op: OpWrite,
     path: String,
-
-    position: <span class="prelude-ty">Option</span>&lt;u64&gt;,
 }
 
 <span class="kw">impl </span>AzblobWriter {
     <span class="kw">pub fn </span>new(core: Arc&lt;AzblobCore&gt;, op: OpWrite, path: String) -&gt; <span class="self">Self </span>{
-        AzblobWriter {
-            core,
-            op,
-            path,
-            position: <span class="prelude-val">None</span>,
-        }
+        AzblobWriter { core, op, path }
     }
+}
 
-    <span class="kw">async fn </span>write_oneshot(<span class="kw-2">&amp;</span><span class="self">self</span>, size: u64, body: AsyncBody) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<span class="attr">#[async_trait]
+</span><span class="kw">impl </span>oio::OneShotWrite <span class="kw">for </span>AzblobWriter {
+    <span class="kw">async fn </span>write_once(<span class="kw-2">&amp;</span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.azblob_put_blob_request(
             <span class="kw-2">&amp;</span><span class="self">self</span>.path,
-            <span class="prelude-val">Some</span>(size),
+            <span class="prelude-val">Some</span>(bs.len() <span class="kw">as </span>u64),
             <span class="self">self</span>.op.content_type(),
             <span class="self">self</span>.op.cache_control(),
-            body,
+            AsyncBody::Bytes(bs),
         )<span class="question-mark">?</span>;
 
         <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -261,14 +210,12 @@
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
+}
 
-    <span class="kw">async fn </span>current_position(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;u64&gt;&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.position {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(v));
-        }
-
-        <span class="comment">// TODO: we should check with current etag to make sure file not changed.
-        </span><span class="kw">let </span>resp = <span class="self">self
+<span class="attr">#[async_trait]
+</span><span class="kw">impl </span>oio::AppendObjectWrite <span class="kw">for </span>AzblobWriter {
+    <span class="kw">async fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+        <span class="kw">let </span>resp = <span class="self">self
             </span>.core
             .azblob_get_blob_properties(<span class="kw-2">&amp;</span><span class="self">self</span>.path, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
             .<span class="kw">await</span><span class="question-mark">?</span>;
@@ -276,10 +223,7 @@
         <span class="kw">let </span>status = resp.status();
 
         <span class="kw">match </span>status {
-            <span class="comment">// Just check the blob type.
-            // If it is not an appendable blob, return an error.
-            // We can not get the append position of the blob here.
-            </span>StatusCode::OK =&gt; {
+            StatusCode::OK =&gt; {
                 <span class="kw">let </span>headers = resp.headers();
                 <span class="kw">let </span>blob_type = headers.get(X_MS_BLOB_TYPE).and_then(|v| v.to_str().ok());
                 <span class="kw">if </span>blob_type != <span class="prelude-val">Some</span>(<span class="string">&quot;AppendBlob&quot;</span>) {
@@ -288,10 +232,10 @@
                         <span class="string">&quot;the blob is not an appendable blob.&quot;</span>,
                     ));
                 }
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+
+                <span class="prelude-val">Ok</span>(parse_content_length(headers)<span class="question-mark">?</span>.unwrap_or_default())
             }
-            <span class="comment">// If the blob is not existing, we need to create one.
-            </span>StatusCode::NOT_FOUND =&gt; {
+            StatusCode::NOT_FOUND =&gt; {
                 <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.azblob_init_appendable_blob_request(
                     <span class="kw-2">&amp;</span><span class="self">self</span>.path,
                     <span class="self">self</span>.op.content_type(),
@@ -311,20 +255,16 @@
                         <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
                     }
                 }
-
-                <span class="self">self</span>.position = <span class="prelude-val">Some</span>(<span class="number">0</span>);
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="number">0</span>))
+                <span class="prelude-val">Ok</span>(<span class="number">0</span>)
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
 
-    <span class="kw">async fn </span>append_oneshot(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: u64, body: AsyncBody) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let _ </span>= <span class="self">self</span>.current_position().<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span><span class="kw-2">mut </span>req =
-            <span class="self">self</span>.core
-                .azblob_append_blob_request(<span class="kw-2">&amp;</span><span class="self">self</span>.path, size, <span class="self">self</span>.position, body)<span class="question-mark">?</span>;
+    <span class="kw">async fn </span>append(<span class="kw-2">&amp;</span><span class="self">self</span>, offset: u64, size: u64, body: AsyncBody) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self
+            </span>.core
+            .azblob_append_blob_request(<span class="kw-2">&amp;</span><span class="self">self</span>.path, offset, size, body)<span class="question-mark">?</span>;
 
         <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -333,51 +273,11 @@
         <span class="kw">let </span>status = resp.status();
         <span class="kw">match </span>status {
             StatusCode::CREATED =&gt; {
-                <span class="kw">let </span>headers = resp.headers();
-                <span class="kw">let </span>position = headers
-                    .get(X_MS_BLOB_APPEND_OFFSET)
-                    .and_then(|v| v.to_str().ok())
-                    .and_then(|v| v.parse::&lt;u64&gt;().ok());
-                <span class="self">self</span>.position = position.map(|v| v + size);
+                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(())
             }
-            <span class="kw">_ </span>=&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
-            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
-
-        <span class="prelude-val">Ok</span>(())
-    }
-}
-
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::Write <span class="kw">for </span>AzblobWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="kw">let </span>size = bs.remaining();
-
-        <span class="kw">if </span><span class="self">self</span>.op.append() {
-            <span class="self">self</span>.append_oneshot(size <span class="kw">as </span>u64, AsyncBody::Bytes(bs.copy_to_bytes(size)))
-                .<span class="kw">await</span><span class="question-mark">?</span>;
-        } <span class="kw">else </span>{
-            <span class="kw">if </span><span class="self">self</span>.op.content_length().is_none() {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                    ErrorKind::Unsupported,
-                    <span class="string">&quot;write without content length is not supported&quot;</span>,
-                ));
-            }
-
-            <span class="self">self</span>.write_oneshot(size <span class="kw">as </span>u64, AsyncBody::Bytes(bs.copy_to_bytes(size)))
-                .<span class="kw">await</span><span class="question-mark">?</span>;
-        }
-
-        <span class="prelude-val">Ok</span>(size)
-    }
-
-    <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="prelude-val">Ok</span>(())
-    }
-
-    <span class="kw">async fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div></section></main></body></html>

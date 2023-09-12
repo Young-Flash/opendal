@@ -279,6 +279,8 @@
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -497,38 +499,40 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>ThrottleWrapper&lt;R&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">let </span>buf_length = NonZeroU32::new(bs.remaining() <span class="kw">as </span>u32).unwrap();
 
         <span class="kw">loop </span>{
             <span class="kw">match </span><span class="self">self</span>.limiter.check_n(buf_length) {
-                <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="self">self</span>.inner.write(bs).<span class="kw">await</span>,
+                <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="self">self</span>.inner.poll_write(cx, bs),
                 <span class="prelude-val">Err</span>(negative) =&gt; <span class="kw">match </span>negative {
                     <span class="comment">// the query is valid but the Decider can not accommodate them.
                     </span>NegativeMultiDecision::BatchNonConforming(<span class="kw">_</span>, not_until) =&gt; {
-                        <span class="kw">let </span>wait_time = not_until.wait_time_from(DefaultClock::default().now());
+                        <span class="kw">let _ </span>= not_until.wait_time_from(DefaultClock::default().now());
                         <span class="comment">// TODO: Should lock the limiter and wait for the wait_time, or should let other small requests go first?
-                        </span>tokio::time::sleep(wait_time).<span class="kw">await</span>;
-                    }
+
+                        // FIXME: we should sleep here.
+                        // tokio::time::sleep(wait_time).await;
+                    </span>}
                     <span class="comment">// the query was invalid as the rate limit parameters can &quot;never&quot; accommodate the number of cells queried for.
                     </span>NegativeMultiDecision::InsufficientCapacity(<span class="kw">_</span>) =&gt; {
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
                             ErrorKind::RateLimited,
                             <span class="string">&quot;InsufficientCapacity due to burst size being smaller than the request size&quot;</span>,
-                        ))
+                        )))
                     }
                 },
             }
         }
     }
 
-    <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.inner.abort().<span class="kw">await
-    </span>}
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_abort(cx)
+    }
 
-    <span class="kw">async fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.inner.close().<span class="kw">await
-    </span>}
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_close(cx)
+    }
 }
 
 <span class="kw">impl</span>&lt;R: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>ThrottleWrapper&lt;R&gt; {

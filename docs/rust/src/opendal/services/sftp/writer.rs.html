@@ -50,6 +50,19 @@
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
 <a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -67,39 +80,52 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>async_trait::async_trait;
+</span><span class="kw">use </span>std::pin::Pin;
+<span class="kw">use </span>std::task::Context;
+<span class="kw">use </span>std::task::Poll;
+
+<span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>openssh_sftp_client::file::File;
+<span class="kw">use </span>openssh_sftp_client::file::TokioCompatFile;
+<span class="kw">use </span>tokio::io::AsyncWrite;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub struct </span>SftpWriter {
-    file: File,
+    file: Pin&lt;Box&lt;TokioCompatFile&gt;&gt;,
 }
 
 <span class="kw">impl </span>SftpWriter {
     <span class="kw">pub fn </span>new(file: File) -&gt; <span class="self">Self </span>{
-        SftpWriter { file }
+        SftpWriter {
+            file: Box::pin(TokioCompatFile::new(file)),
+        }
     }
 }
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::Write <span class="kw">for </span>SftpWriter {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="kw">let </span>size = <span class="self">self</span>.file.write(bs.chunk()).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(size)
+    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+        <span class="self">self</span>.file
+            .as_mut()
+            .poll_write(cx, bs.chunk())
+            .map_err(parse_io_error)
     }
 
-    <span class="kw">async fn </span>abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="prelude-val">Err</span>(Error::new(
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.file.as_mut().poll_shutdown(cx).map_err(parse_io_error)
+    }
+
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;SFTP does not support aborting writes&quot;</span>,
-        ))
+            <span class="string">&quot;SftpWriter doesn&#39;t support abort&quot;</span>,
+        )))
     }
+}
 
-    <span class="kw">async fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="prelude-val">Ok</span>(())
-    }
+<span class="kw">fn </span>parse_io_error(err: std::io::Error) -&gt; Error {
+    Error::new(ErrorKind::Unexpected, <span class="string">&quot;read from sftp&quot;</span>).set_source(err)
 }
 </code></pre></div></section></main></body></html>

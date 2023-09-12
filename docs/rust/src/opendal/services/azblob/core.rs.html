@@ -550,17 +550,6 @@
 <a href="#550" id="550">550</a>
 <a href="#551" id="551">551</a>
 <a href="#552" id="552">552</a>
-<a href="#553" id="553">553</a>
-<a href="#554" id="554">554</a>
-<a href="#555" id="555">555</a>
-<a href="#556" id="556">556</a>
-<a href="#557" id="557">557</a>
-<a href="#558" id="558">558</a>
-<a href="#559" id="559">559</a>
-<a href="#560" id="560">560</a>
-<a href="#561" id="561">561</a>
-<a href="#562" id="562">562</a>
-<a href="#563" id="563">563</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -915,12 +904,6 @@
     ///
     /// - The maximum size of the content could be appended is 4MB.
     /// - `Append Block` succeeds only if the blob already exists.
-    /// - It does not need to provide append position.
-    /// - But it could use append position to verify the content is appended to the right position.
-    ///
-    /// Since the `appendpos` only returned by the append operation response,
-    /// we could not use it when we want to append content to the blob first time.
-    /// (The first time of the appender, not the blob)
     ///
     /// # Reference
     ///
@@ -928,8 +911,8 @@
     </span><span class="kw">pub fn </span>azblob_append_blob_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
+        position: u64,
         size: u64,
-        position: <span class="prelude-ty">Option</span>&lt;u64&gt;,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
@@ -948,12 +931,7 @@
 
         req = req.header(CONTENT_LENGTH, size);
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = position {
-            req = req.header(
-                HeaderName::from_static(constants::X_MS_BLOB_CONDITION_APPENDPOS),
-                pos.to_string(),
-            );
-        }
+        req = req.header(constants::X_MS_BLOB_CONDITION_APPENDPOS, position);
 
         <span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
 

@@ -688,7 +688,7 @@
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>AzdfsBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
     <span class="kw">type </span>BlockingReader = ();
-    <span class="kw">type </span>Writer = AzdfsWriter;
+    <span class="kw">type </span>Writer = oio::OneShotWriter&lt;AzdfsWriter&gt;;
     <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Pager = AzdfsPager;
     <span class="kw">type </span>BlockingPager = ();
@@ -763,7 +763,7 @@
 
         <span class="prelude-val">Ok</span>((
             RpWrite::default(),
-            AzdfsWriter::new(<span class="self">self</span>.core.clone(), args, path.to_string()),
+            oio::OneShotWriter::new(AzdfsWriter::new(<span class="self">self</span>.core.clone(), args, path.to_string())),
         ))
     }
 
