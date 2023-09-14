@@ -85,11 +85,11 @@
 </span><span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>http::StatusCode;
 
 <span class="kw">use </span><span class="kw">super</span>::core::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::WriteBuf;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -108,18 +108,18 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>oio::OneShotWrite <span class="kw">for </span>WasabiWriter {
-    <span class="kw">async fn </span>write_once(<span class="kw-2">&amp;</span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">async fn </span>write_once(<span class="kw-2">&amp;</span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>bs = oio::ChunkedBytes::from_vec(bs.vectored_bytes(bs.remaining()));
 
         <span class="kw">let </span>resp = <span class="self">self
             </span>.core
             .put_object(
                 <span class="kw-2">&amp;</span><span class="self">self</span>.path,
-                <span class="prelude-val">Some</span>(size),
+                <span class="prelude-val">Some</span>(bs.len()),
                 <span class="self">self</span>.op.content_type(),
                 <span class="self">self</span>.op.content_disposition(),
                 <span class="self">self</span>.op.cache_control(),
-                AsyncBody::Bytes(bs),
+                AsyncBody::ChunkedBytes(bs),
             )
             .<span class="kw">await</span><span class="question-mark">?</span>;
 

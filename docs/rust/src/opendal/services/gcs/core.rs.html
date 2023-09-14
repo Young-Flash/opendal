@@ -613,6 +613,7 @@
 <a href="#613" id="613">613</a>
 <a href="#614" id="614">614</a>
 <a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -670,8 +671,6 @@
 
     <span class="kw">pub </span>predefined_acl: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="kw">pub </span>default_storage_class: <span class="prelude-ty">Option</span>&lt;String&gt;,
-
-    <span class="kw">pub </span>write_fixed_size: usize,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>GcsCore {
@@ -913,6 +912,9 @@
                 AsyncBody::Empty =&gt; {}
                 AsyncBody::Bytes(bytes) =&gt; {
                     media_part = media_part.content(bytes);
+                }
+                AsyncBody::ChunkedBytes(bs) =&gt; {
+                    media_part = media_part.stream(bs.len() <span class="kw">as </span>u64, Box::new(bs));
                 }
                 AsyncBody::Stream(stream) =&gt; {
                     media_part = media_part.stream(size.unwrap(), stream);

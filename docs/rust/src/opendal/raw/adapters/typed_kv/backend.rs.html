@@ -486,6 +486,18 @@
 <a href="#486" id="486">486</a>
 <a href="#487" id="487">487</a>
 <a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
+<a href="#496" id="496">496</a>
+<a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -856,6 +868,7 @@
 
     op: OpWrite,
     buf: <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;,
+    value: <span class="prelude-ty">Option</span>&lt;Value&gt;,
     future: <span class="prelude-ty">Option</span>&lt;BoxFuture&lt;<span class="lifetime">&#39;static</span>, <span class="prelude-ty">Result</span>&lt;()&gt;&gt;&gt;,
 }
 
@@ -871,6 +884,7 @@
             path,
             op,
             buf: <span class="prelude-val">None</span>,
+            value: <span class="prelude-val">None</span>,
             future: <span class="prelude-val">None</span>,
         }
     }
@@ -879,6 +893,8 @@
         <span class="kw">let </span>value = <span class="self">self</span>.buf.take().map(Bytes::from).unwrap_or_default();
 
         <span class="kw">let </span><span class="kw-2">mut </span>metadata = Metadata::new(EntryMode::FILE);
+        metadata.set_content_length(value.len() <span class="kw">as </span>u64);
+
         <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.op.cache_control() {
             metadata.set_cache_control(v);
         }
@@ -888,11 +904,6 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.op.content_type() {
             metadata.set_content_type(v);
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.op.content_length() {
-            metadata.set_content_length(v);
-        } <span class="kw">else </span>{
-            metadata.set_content_length(value.len() <span class="kw">as </span>u64);
-        }
 
         Value { metadata, value }
     }
@@ -900,8 +911,7 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;S: Adapter&gt; oio::Write <span class="kw">for </span>KvWriter&lt;S&gt; {
-    <span class="comment">// TODO: we need to support append in the future.
-    </span><span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">if </span><span class="self">self</span>.future.is_some() {
             <span class="self">self</span>.future = <span class="prelude-val">None</span>;
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
@@ -920,6 +930,33 @@
         Poll::Ready(<span class="prelude-val">Ok</span>(size))
     }
 
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="kw">loop </span>{
+            <span class="kw">match </span><span class="self">self</span>.future.as_mut() {
+                <span class="prelude-val">Some</span>(fut) =&gt; {
+                    <span class="kw">let </span>res = <span class="macro">ready!</span>(fut.poll_unpin(cx));
+                    <span class="self">self</span>.future = <span class="prelude-val">None</span>;
+                    <span class="kw">return </span>Poll::Ready(res);
+                }
+                <span class="prelude-val">None </span>=&gt; {
+                    <span class="kw">let </span>kv = <span class="self">self</span>.kv.clone();
+                    <span class="kw">let </span>path = <span class="self">self</span>.path.clone();
+                    <span class="kw">let </span>value = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.value {
+                        <span class="prelude-val">Some</span>(value) =&gt; value.clone(),
+                        <span class="prelude-val">None </span>=&gt; {
+                            <span class="kw">let </span>value = <span class="self">self</span>.build();
+                            <span class="self">self</span>.value = <span class="prelude-val">Some</span>(value.clone());
+                            value
+                        }
+                    };
+
+                    <span class="kw">let </span>fut = <span class="kw">async move </span>{ kv.set(<span class="kw-2">&amp;</span>path, value).<span class="kw">await </span>};
+                    <span class="self">self</span>.future = <span class="prelude-val">Some</span>(Box::pin(fut));
+                }
+            }
+        }
+    }
+
     <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
         <span class="kw">if </span><span class="self">self</span>.future.is_some() {
             <span class="self">self</span>.future = <span class="prelude-val">None</span>;
@@ -931,26 +968,6 @@
 
         <span class="self">self</span>.buf = <span class="prelude-val">None</span>;
         Poll::Ready(<span class="prelude-val">Ok</span>(()))
-    }
-
-    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        <span class="kw">loop </span>{
-            <span class="kw">match </span><span class="self">self</span>.future.as_mut() {
-                <span class="prelude-val">Some</span>(fut) =&gt; {
-                    <span class="macro">ready!</span>(fut.poll_unpin(cx))<span class="question-mark">?</span>;
-                    <span class="self">self</span>.future = <span class="prelude-val">None</span>;
-                    <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(()));
-                }
-                <span class="prelude-val">None </span>=&gt; {
-                    <span class="kw">let </span>kv = <span class="self">self</span>.kv.clone();
-                    <span class="kw">let </span>path = <span class="self">self</span>.path.clone();
-                    <span class="kw">let </span>value = <span class="self">self</span>.build();
-
-                    <span class="kw">let </span>fut = <span class="kw">async move </span>{ kv.set(<span class="kw-2">&amp;</span>path, value).<span class="kw">await </span>};
-                    <span class="self">self</span>.future = <span class="prelude-val">Some</span>(Box::pin(fut));
-                }
-            }
-        }
     }
 }
 
@@ -968,7 +985,14 @@
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>kv = <span class="self">self</span>.kv.clone();
-        <span class="kw">let </span>value = <span class="self">self</span>.build();
+        <span class="kw">let </span>value = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.value {
+            <span class="prelude-val">Some</span>(value) =&gt; value.clone(),
+            <span class="prelude-val">None </span>=&gt; {
+                <span class="kw">let </span>value = <span class="self">self</span>.build();
+                <span class="self">self</span>.value = <span class="prelude-val">Some</span>(value.clone());
+                value
+            }
+        };
 
         kv.blocking_set(<span class="kw-2">&amp;</span><span class="self">self</span>.path, value)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())

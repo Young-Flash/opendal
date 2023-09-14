@@ -135,6 +135,9 @@
 <a href="#135" id="135">135</a>
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -163,6 +166,7 @@
 <span class="kw">use </span>futures::future::BoxFuture;
 <span class="kw">use </span>futures::FutureExt;
 <span class="kw">use </span>tokio::io::AsyncWrite;
+<span class="kw">use </span>tokio::io::AsyncWriteExt;
 
 <span class="kw">use </span><span class="kw">super</span>::error::parse_io_error;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
@@ -198,7 +202,7 @@
         <span class="kw">let </span>f = <span class="self">self</span>.f.as_mut().expect(<span class="string">&quot;FsWriter must be initialized&quot;</span>);
 
         Pin::new(f)
-            .poll_write(cx, bs.chunk())
+            .poll_write_vectored(cx, <span class="kw-2">&amp;</span>bs.vectored_chunk())
             .map_err(parse_io_error)
     }
 
@@ -210,10 +214,11 @@
                 <span class="kw">return </span>Poll::Ready(res);
             }
 
-            <span class="kw">let </span>f = <span class="self">self</span>.f.take().expect(<span class="string">&quot;FsWriter must be initialized&quot;</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>f = <span class="self">self</span>.f.take().expect(<span class="string">&quot;FsWriter must be initialized&quot;</span>);
             <span class="kw">let </span>tmp_path = <span class="self">self</span>.tmp_path.clone();
             <span class="kw">let </span>target_path = <span class="self">self</span>.target_path.clone();
             <span class="self">self</span>.fut = <span class="prelude-val">Some</span>(Box::pin(<span class="kw">async move </span>{
+                f.flush().<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
                 f.sync_all().<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
 
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(tmp_path) = <span class="kw-2">&amp;</span>tmp_path {
@@ -257,7 +262,8 @@
     <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">let </span>f = <span class="self">self</span>.f.as_mut().expect(<span class="string">&quot;FsWriter must be initialized&quot;</span>);
 
-        f.write(bs.chunk()).map_err(parse_io_error)
+        f.write_vectored(<span class="kw-2">&amp;</span>bs.vectored_chunk())
+            .map_err(parse_io_error)
     }
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {

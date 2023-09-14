@@ -1234,10 +1234,6 @@
 <a href="#1234" id="1234">1234</a>
 <a href="#1235" id="1235">1235</a>
 <a href="#1236" id="1236">1236</a>
-<a href="#1237" id="1237">1237</a>
-<a href="#1238" id="1238">1238</a>
-<a href="#1239" id="1239">1239</a>
-<a href="#1240" id="1240">1240</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1255,8 +1251,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::cmp::max;
-<span class="kw">use </span>std::collections::HashMap;
+</span><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::fmt::Formatter;
 <span class="kw">use </span>std::fmt::Write;
@@ -1298,10 +1293,6 @@
     m
 });
 
-<span class="doccomment">/// The minimum multipart size of S3 is 5 MiB.
-///
-/// ref: &lt;https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html&gt;
-</span><span class="kw">const </span>MINIMUM_MULTIPART_SIZE: usize = <span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024</span>;
 <span class="kw">const </span>DEFAULT_BATCH_MAX_OPERATIONS: usize = <span class="number">1000</span>;
 
 <span class="doccomment">/// Aws S3 and compatible services (including minio, digitalocean space, Tencent Cloud Object Storage(COS) and so on) support.
@@ -2128,7 +2119,7 @@
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>S3Backend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
     <span class="kw">type </span>BlockingReader = ();
-    <span class="kw">type </span>Writer = oio::TwoWaysWriter&lt;S3Writers, oio::ExactBufWriter&lt;S3Writers&gt;&gt;;
+    <span class="kw">type </span>Writer = S3Writers;
     <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Pager = S3Pager;
     <span class="kw">type </span>BlockingPager = ();
@@ -2153,9 +2144,18 @@
                 read_with_override_content_type: <span class="bool-val">true</span>,
 
                 write: <span class="bool-val">true</span>,
+                write_can_multi: <span class="bool-val">true</span>,
                 write_with_cache_control: <span class="bool-val">true</span>,
                 write_with_content_type: <span class="bool-val">true</span>,
-                write_without_content_length: <span class="bool-val">true</span>,
+                <span class="comment">// The min multipart size of S3 is 5 MiB.
+                //
+                // ref: &lt;https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html&gt;
+                </span>write_multi_min_size: <span class="prelude-val">Some</span>(<span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024</span>),
+                <span class="comment">// The max multipart size of S3 is 5 GiB.
+                //
+                // ref: &lt;https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html&gt;
+                </span>write_multi_max_size: <span class="prelude-val">Some</span>(<span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024</span>),
+
                 create_dir: <span class="bool-val">true</span>,
                 delete: <span class="bool-val">true</span>,
                 copy: <span class="bool-val">true</span>,
@@ -2215,17 +2215,9 @@
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
-        <span class="kw">let </span>writer = S3Writer::new(<span class="self">self</span>.core.clone(), path, args.clone());
+        <span class="kw">let </span>writer = S3Writer::new(<span class="self">self</span>.core.clone(), path, args);
 
         <span class="kw">let </span>w = oio::MultipartUploadWriter::new(writer);
-
-        <span class="kw">let </span>w = <span class="kw">if let </span><span class="prelude-val">Some</span>(buffer_size) = args.buffer_size() {
-            <span class="kw">let </span>buffer_size = max(MINIMUM_MULTIPART_SIZE, buffer_size);
-
-            oio::TwoWaysWriter::Two(oio::ExactBufWriter::new(w, buffer_size))
-        } <span class="kw">else </span>{
-            oio::TwoWaysWriter::One(w)
-        };
 
         <span class="prelude-val">Ok</span>((RpWrite::default(), w))
     }

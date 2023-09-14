@@ -232,6 +232,7 @@
 <a href="#232" id="232">232</a>
 <a href="#233" id="233">233</a>
 <a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -338,6 +339,7 @@
             <span class="kw">let </span><span class="kw-2">mut </span>meta = Metadata::new(EntryMode::FILE);
 
             meta.set_etag(<span class="kw-2">&amp;</span>object.etag);
+            meta.set_content_md5(object.etag.trim_matches(<span class="string">&#39;&quot;&#39;</span>));
             meta.set_content_length(object.size);
             meta.set_last_modified(parse_datetime_from_rfc3339(object.last_modified.as_str())<span class="question-mark">?</span>);
 

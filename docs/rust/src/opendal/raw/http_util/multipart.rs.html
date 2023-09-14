@@ -1223,6 +1223,7 @@
 <a href="#1223" id="1223">1223</a>
 <a href="#1224" id="1224">1224</a>
 <a href="#1225" id="1225">1225</a>
+<a href="#1226" id="1226">1226</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1635,6 +1636,7 @@
                 bs.len() <span class="kw">as </span>u64,
                 <span class="prelude-val">Some</span>(Box::new(oio::Cursor::from(bs)) <span class="kw">as </span>Streamer),
             ),
+            AsyncBody::ChunkedBytes(bs) =&gt; (bs.len() <span class="kw">as </span>u64, <span class="prelude-val">Some</span>(Box::new(bs) <span class="kw">as </span>Streamer)),
             AsyncBody::Stream(stream) =&gt; {
                 <span class="kw">let </span>len = parts
                     .headers

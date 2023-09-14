@@ -395,26 +395,6 @@
 <a href="#395" id="395">395</a>
 <a href="#396" id="396">396</a>
 <a href="#397" id="397">397</a>
-<a href="#398" id="398">398</a>
-<a href="#399" id="399">399</a>
-<a href="#400" id="400">400</a>
-<a href="#401" id="401">401</a>
-<a href="#402" id="402">402</a>
-<a href="#403" id="403">403</a>
-<a href="#404" id="404">404</a>
-<a href="#405" id="405">405</a>
-<a href="#406" id="406">406</a>
-<a href="#407" id="407">407</a>
-<a href="#408" id="408">408</a>
-<a href="#409" id="409">409</a>
-<a href="#410" id="410">410</a>
-<a href="#411" id="411">411</a>
-<a href="#412" id="412">412</a>
-<a href="#413" id="413">413</a>
-<a href="#414" id="414">414</a>
-<a href="#415" id="415">415</a>
-<a href="#416" id="416">416</a>
-<a href="#417" id="417">417</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -513,19 +493,8 @@
     ///
     /// Service could have their own minimum buffer size while perform write operations like
     /// multipart uploads. So the buffer size may be larger than the given buffer size.
-    </span><span class="kw">pub fn </span>buffer_size(<span class="kw-2">mut </span><span class="self">self</span>, v: usize) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0</span>.map_args(|(args, bs)| (args.with_buffer_size(v), bs));
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Set the content length of op.
-    ///
-    /// If the content length is not set, the content length will be
-    /// calculated automatically by buffering part of data.
-    </span><span class="kw">pub fn </span>content_length(<span class="kw-2">mut </span><span class="self">self</span>, v: u64) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self
-            </span>.<span class="number">0
-            </span>.map_args(|(args, bs)| (args.with_content_length(v), bs));
+    </span><span class="kw">pub fn </span>buffer(<span class="kw-2">mut </span><span class="self">self</span>, v: usize) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0</span>.map_args(|(args, bs)| (args.with_buffer(v), bs));
         <span class="self">self
     </span>}
 
@@ -590,17 +559,8 @@
     ///
     /// Service could have their own minimum buffer size while perform write operations like
     /// multipart uploads. So the buffer size may be larger than the given buffer size.
-    </span><span class="kw">pub fn </span>buffer_size(<span class="kw-2">mut </span><span class="self">self</span>, v: usize) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0</span>.map_args(|args| args.with_buffer_size(v));
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Set the content length of op.
-    ///
-    /// If the content length is not set, the content length will be
-    /// calculated automatically by buffering part of data.
-    </span><span class="kw">pub fn </span>content_length(<span class="kw-2">mut </span><span class="self">self</span>, v: u64) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0</span>.map_args(|args| args.with_content_length(v));
+    </span><span class="kw">pub fn </span>buffer(<span class="kw-2">mut </span><span class="self">self</span>, v: usize) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.<span class="number">0 </span>= <span class="self">self</span>.<span class="number">0</span>.map_args(|args| args.with_buffer(v));
         <span class="self">self
     </span>}
 

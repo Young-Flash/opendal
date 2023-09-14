@@ -530,8 +530,8 @@
         <span class="kw">let </span>op = <span class="kw">match </span>scheme {
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-azblob&quot;</span>)]
             </span>Scheme::Azblob =&gt; <span class="self">Self</span>::from_map::&lt;services::Azblob&gt;(map)<span class="question-mark">?</span>.finish(),
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-azdfs&quot;</span>)]
-            </span>Scheme::Azdfs =&gt; <span class="self">Self</span>::from_map::&lt;services::Azdfs&gt;(map)<span class="question-mark">?</span>.finish(),
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-Azdls&quot;</span>)]
+            </span>Scheme::Azdls =&gt; <span class="self">Self</span>::from_map::&lt;services::Azdls&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-cacache&quot;</span>)]
             </span>Scheme::Cacache =&gt; <span class="self">Self</span>::from_map::&lt;services::Cacache&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-cos&quot;</span>)]

@@ -42,8 +42,6 @@
 <a href="#42" id="42">42</a>
 <a href="#43" id="43">43</a>
 <a href="#44" id="44">44</a>
-<a href="#45" id="45">45</a>
-<a href="#46" id="46">46</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -81,13 +79,11 @@
 <span class="kw">pub use </span>page::<span class="kw-2">*</span>;
 
 <span class="kw">mod </span>cursor;
-<span class="kw">pub use </span>cursor::ChunkedCursor;
 <span class="kw">pub use </span>cursor::Cursor;
-<span class="kw">pub use </span>cursor::VectorCursor;
 
 <span class="kw">mod </span>entry;
 <span class="kw">pub use </span>entry::Entry;
 
 <span class="kw">mod </span>buf;
-<span class="kw">pub use </span>buf::WriteBuf;
+<span class="kw">pub use </span>buf::<span class="kw-2">*</span>;
 </code></pre></div></section></main></body></html>

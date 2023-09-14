@@ -225,7 +225,7 @@
                     <span class="kw">match </span><span class="self">self</span>.offset {
                         <span class="prelude-val">Some</span>(offset) =&gt; {
                             <span class="kw">let </span>size = bs.remaining();
-                            <span class="kw">let </span>bs = bs.copy_to_bytes(size);
+                            <span class="kw">let </span>bs = bs.bytes(size);
 
                             <span class="self">self</span>.state = State::Append(Box::pin(<span class="kw">async move </span>{
                                 <span class="kw">let </span>res = w.append(offset, size <span class="kw">as </span>u64, AsyncBody::Bytes(bs)).<span class="kw">await</span>;

@@ -640,30 +640,6 @@
 <a href="#640" id="640">640</a>
 <a href="#641" id="641">641</a>
 <a href="#642" id="642">642</a>
-<a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
-<a href="#646" id="646">646</a>
-<a href="#647" id="647">647</a>
-<a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a>
-<a href="#650" id="650">650</a>
-<a href="#651" id="651">651</a>
-<a href="#652" id="652">652</a>
-<a href="#653" id="653">653</a>
-<a href="#654" id="654">654</a>
-<a href="#655" id="655">655</a>
-<a href="#656" id="656">656</a>
-<a href="#657" id="657">657</a>
-<a href="#658" id="658">658</a>
-<a href="#659" id="659">659</a>
-<a href="#660" id="660">660</a>
-<a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -706,8 +682,6 @@
 
 <span class="kw">const </span>DEFAULT_GCS_ENDPOINT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;https://storage.googleapis.com&quot;</span>;
 <span class="kw">const </span>DEFAULT_GCS_SCOPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;https://www.googleapis.com/auth/devstorage.read_write&quot;</span>;
-<span class="doccomment">/// It&#39;s recommended that you use at least 8 MiB for the chunk size.
-</span><span class="kw">const </span>DEFAULT_WRITE_FIXED_SIZE: usize = <span class="number">8 </span>* <span class="number">1024 </span>* <span class="number">1024</span>;
 
 <span class="doccomment">/// [Google Cloud Storage](https://cloud.google.com/storage) services support.
 </span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
@@ -734,9 +708,6 @@
     customed_token_loader: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>GoogleTokenLoad&gt;&gt;,
     predefined_acl: <span class="prelude-ty">Option</span>&lt;String&gt;,
     default_storage_class: <span class="prelude-ty">Option</span>&lt;String&gt;,
-
-    <span class="doccomment">/// the fixed size writer uses to flush into underlying storage.
-    </span>write_fixed_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
 <span class="kw">impl </span>GcsBuilder {
@@ -854,16 +825,6 @@
         };
         <span class="self">self
     </span>}
-
-    <span class="doccomment">/// The buffer size should be a multiple of 256 KiB (256 x 1024 bytes), unless it&#39;s the last chunk that completes the upload.
-    /// Larger chunk sizes typically make uploads faster, but note that there&#39;s a tradeoff between speed and memory usage.
-    /// It&#39;s recommended that you use at least 8 MiB for the chunk size.
-    /// Reference: [Perform resumable uploads](https://cloud.google.com/storage/docs/performing-resumable-uploads)
-    </span><span class="kw">pub fn </span>write_fixed_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fixed_buffer_size: usize) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.write_fixed_size = <span class="prelude-val">Some</span>(fixed_buffer_size);
-
-        <span class="self">self
-    </span>}
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>GcsBuilder {
@@ -963,17 +924,6 @@
 
         <span class="kw">let </span>signer = GoogleSigner::new(<span class="string">&quot;storage&quot;</span>);
 
-        <span class="kw">let </span>write_fixed_size = <span class="self">self</span>.write_fixed_size.unwrap_or(DEFAULT_WRITE_FIXED_SIZE);
-        <span class="comment">// GCS requires write must align with 256 KiB.
-        </span><span class="kw">if </span>write_fixed_size % (<span class="number">256 </span>* <span class="number">1024</span>) != <span class="number">0 </span>{
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                ErrorKind::ConfigInvalid,
-                <span class="string">&quot;The write fixed buffer size is misconfigured&quot;</span>,
-            )
-            .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Gcs)
-            .with_context(<span class="string">&quot;write_fixed_size&quot;</span>, write_fixed_size.to_string()));
-        }
-
         <span class="kw">let </span>backend = GcsBackend {
             core: Arc::new(GcsCore {
                 endpoint,
@@ -985,7 +935,6 @@
                 credential_loader: cred_loader,
                 predefined_acl: <span class="self">self</span>.predefined_acl.clone(),
                 default_storage_class: <span class="self">self</span>.default_storage_class.clone(),
-                write_fixed_size,
             }),
         };
 
@@ -1027,8 +976,15 @@
                 read_with_if_none_match: <span class="bool-val">true</span>,
 
                 write: <span class="bool-val">true</span>,
+                write_can_multi: <span class="bool-val">true</span>,
                 write_with_content_type: <span class="bool-val">true</span>,
-                write_without_content_length: <span class="bool-val">true</span>,
+                <span class="comment">// The buffer size should be a multiple of 256 KiB (256 x 1024 bytes), unless it&#39;s the last chunk that completes the upload.
+                // Larger chunk sizes typically make uploads faster, but note that there&#39;s a tradeoff between speed and memory usage.
+                // It&#39;s recommended that you use at least 8 MiB for the chunk size.
+                //
+                // Reference: [Perform resumable uploads](https://cloud.google.com/storage/docs/performing-resumable-uploads)
+                </span>write_multi_align_size: <span class="prelude-val">Some</span>(<span class="number">256 </span>* <span class="number">1024 </span>* <span class="number">1024</span>),
+
                 delete: <span class="bool-val">true</span>,
                 copy: <span class="bool-val">true</span>,
 
@@ -1085,12 +1041,8 @@
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
-        <span class="kw">let </span>w = GcsWriter::new(<span class="self">self</span>.core.clone(), path, args.clone());
-        <span class="kw">let </span>w = <span class="kw">if </span>args.content_length().is_some() {
-            GcsWriters::One(oio::OneShotWriter::new(w))
-        } <span class="kw">else </span>{
-            GcsWriters::Two(oio::RangeWriter::new(w))
-        };
+        <span class="kw">let </span>w = GcsWriter::new(<span class="self">self</span>.core.clone(), path, args);
+        <span class="kw">let </span>w = oio::RangeWriter::new(w);
 
         <span class="prelude-val">Ok</span>((RpWrite::default(), w))
     }

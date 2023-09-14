@@ -220,7 +220,7 @@
 
                     <span class="kw">let </span>cache_id = <span class="self">self</span>.cache_id;
                     <span class="kw">let </span>size = bs.remaining();
-                    <span class="kw">let </span>bs = bs.copy_to_bytes(size);
+                    <span class="kw">let </span>bs = bs.bytes(size);
 
                     <span class="kw">let </span>fut = <span class="kw">async move </span>{
                         <span class="kw">let </span>res = <span class="kw">async </span>{

@@ -437,14 +437,6 @@
 <a href="#437" id="437">437</a>
 <a href="#438" id="438">438</a>
 <a href="#439" id="439">439</a>
-<a href="#440" id="440">440</a>
-<a href="#441" id="441">441</a>
-<a href="#442" id="442">442</a>
-<a href="#443" id="443">443</a>
-<a href="#444" id="444">444</a>
-<a href="#445" id="445">445</a>
-<a href="#446" id="446">446</a>
-<a href="#447" id="447">447</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -462,8 +454,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::cmp::max;
-<span class="kw">use </span>std::collections::HashMap;
+</span><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::sync::Arc;
 
@@ -482,11 +473,6 @@
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::services::cos::writer::CosWriters;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
-
-<span class="doccomment">/// The minimum multipart size of COS is 1 MiB.
-///
-/// ref: &lt;https://www.tencentcloud.com/document/product/436/14112&gt;
-</span><span class="kw">const </span>MINIMUM_MULTIPART_SIZE: usize = <span class="number">1024 </span>* <span class="number">1024</span>;
 
 <span class="doccomment">/// Tencent-Cloud COS services support.
 </span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
@@ -696,7 +682,7 @@
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>CosBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
     <span class="kw">type </span>BlockingReader = ();
-    <span class="kw">type </span>Writer = oio::TwoWaysWriter&lt;CosWriters, oio::ExactBufWriter&lt;CosWriters&gt;&gt;;
+    <span class="kw">type </span>Writer = CosWriters;
     <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Pager = CosPager;
     <span class="kw">type </span>BlockingPager = ();
@@ -719,10 +705,18 @@
 
                 write: <span class="bool-val">true</span>,
                 write_can_append: <span class="bool-val">true</span>,
+                write_can_multi: <span class="bool-val">true</span>,
                 write_with_content_type: <span class="bool-val">true</span>,
                 write_with_cache_control: <span class="bool-val">true</span>,
                 write_with_content_disposition: <span class="bool-val">true</span>,
-                write_without_content_length: <span class="bool-val">true</span>,
+                <span class="comment">// The min multipart size of COS is 1 MiB.
+                //
+                // ref: &lt;https://www.tencentcloud.com/document/product/436/14112&gt;
+                </span>write_multi_min_size: <span class="prelude-val">Some</span>(<span class="number">1024 </span>* <span class="number">1024</span>),
+                <span class="comment">// The max multipart size of COS is 5 GiB.
+                //
+                // ref: &lt;https://www.tencentcloud.com/document/product/436/14112&gt;
+                </span>write_multi_max_size: <span class="prelude-val">Some</span>(<span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024</span>),
 
                 delete: <span class="bool-val">true</span>,
                 create_dir: <span class="bool-val">true</span>,
@@ -787,16 +781,6 @@
             CosWriters::Two(oio::AppendObjectWriter::new(writer))
         } <span class="kw">else </span>{
             CosWriters::One(oio::MultipartUploadWriter::new(writer))
-        };
-
-        <span class="kw">let </span>w = <span class="kw">if let </span><span class="prelude-val">Some</span>(buffer_size) = args.buffer_size() {
-            <span class="kw">let </span>buffer_size = max(MINIMUM_MULTIPART_SIZE, buffer_size);
-
-            <span class="kw">let </span>w = oio::ExactBufWriter::new(w, buffer_size);
-
-            oio::TwoWaysWriter::Two(w)
-        } <span class="kw">else </span>{
-            oio::TwoWaysWriter::One(w)
         };
 
         <span class="prelude-val">Ok</span>((RpWrite::default(), w))

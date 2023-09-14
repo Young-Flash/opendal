@@ -235,6 +235,10 @@
 <a href="#235" id="235">235</a>
 <a href="#236" id="236">236</a>
 <a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -270,8 +274,8 @@
 </span><span class="kw">pub enum </span>Scheme {
     <span class="doccomment">/// [azblob][crate::services::Azblob]: Azure Storage Blob services.
     </span>Azblob,
-    <span class="doccomment">/// [azdfs][crate::services::Azdfs]: Azure Data Lake Storage Gen2.
-    </span>Azdfs,
+    <span class="doccomment">/// [Azdls][crate::services::Azdls]: Azure Data Lake Storage Gen2.
+    </span>Azdls,
     <span class="doccomment">/// [cacache][crate::services::Cacache]: cacache backend support.
     </span>Cacache,
     <span class="doccomment">/// [cos][crate::services::Cos]: Tencent Cloud Object Storage services.
@@ -380,7 +384,11 @@
         <span class="kw">let </span>s = s.to_lowercase();
         <span class="kw">match </span>s.as_str() {
             <span class="string">&quot;azblob&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azblob),
-            <span class="string">&quot;azdfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azdfs),
+            <span class="comment">// Notes:
+            //
+            // OpenDAL used to call `azdls` as `azdfs`, we keep it for backward compatibility.
+            // And abfs is widely used in hadoop ecosystem, keep it for easy to use.
+            </span><span class="string">&quot;azdls&quot; </span>| <span class="string">&quot;azdfs&quot; </span>| <span class="string">&quot;abfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azdls),
             <span class="string">&quot;cacache&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cacache),
             <span class="string">&quot;cos&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cos),
             <span class="string">&quot;dashmap&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dashmap),
@@ -425,7 +433,7 @@
     <span class="kw">fn </span>from(v: Scheme) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span>v {
             Scheme::Azblob =&gt; <span class="string">&quot;azblob&quot;</span>,
-            Scheme::Azdfs =&gt; <span class="string">&quot;azdfs&quot;</span>,
+            Scheme::Azdls =&gt; <span class="string">&quot;Azdls&quot;</span>,
             Scheme::Cacache =&gt; <span class="string">&quot;cacache&quot;</span>,
             Scheme::Cos =&gt; <span class="string">&quot;cos&quot;</span>,
             Scheme::Dashmap =&gt; <span class="string">&quot;dashmap&quot;</span>,

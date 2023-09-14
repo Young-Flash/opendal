@@ -475,7 +475,6 @@
 <a href="#475" id="475">475</a>
 <a href="#476" id="476">476</a>
 <a href="#477" id="477">477</a>
-<a href="#478" id="478">478</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -499,6 +498,7 @@
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>async_trait::async_trait;
+<span class="kw">use </span>bytes::{Bytes, BytesMut};
 <span class="kw">use </span>futures::future::BoxFuture;
 <span class="kw">use </span>futures::FutureExt;
 
@@ -620,27 +620,13 @@
         <span class="prelude-val">Ok</span>((RpRead::new(bs.len() <span class="kw">as </span>u64), oio::Cursor::from(bs)))
     }
 
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
-        <span class="kw">if </span>args.content_length().is_none() {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                ErrorKind::Unsupported,
-                <span class="string">&quot;write without content length is not supported&quot;</span>,
-            ));
-        }
-
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="prelude-val">Ok</span>((RpWrite::new(), KvWriter::new(<span class="self">self</span>.kv.clone(), p)))
     }
 
-    <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
-        <span class="kw">if </span>args.content_length().is_none() {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                ErrorKind::Unsupported,
-                <span class="string">&quot;write without content length is not supported&quot;</span>,
-            ));
-        }
-
+    <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="prelude-val">Ok</span>((RpWrite::new(), KvWriter::new(<span class="self">self</span>.kv.clone(), p)))
@@ -855,8 +841,7 @@
     kv: Arc&lt;S&gt;,
     path: String,
 
-    <span class="doccomment">/// TODO: if kv supports append, we can use them directly.
-    </span>buf: <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;,
+    buffer: Buffer,
     future: <span class="prelude-ty">Option</span>&lt;BoxFuture&lt;<span class="lifetime">&#39;static</span>, <span class="prelude-ty">Result</span>&lt;()&gt;&gt;&gt;,
 }
 
@@ -865,10 +850,15 @@
         KvWriter {
             kv,
             path,
-            buf: <span class="prelude-val">None</span>,
+            buffer: Buffer::Active(BytesMut::new()),
             future: <span class="prelude-val">None</span>,
         }
     }
+}
+
+<span class="kw">enum </span>Buffer {
+    Active(BytesMut),
+    Frozen(Bytes),
 }
 
 <span class="doccomment">/// # Safety
@@ -878,8 +868,7 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl</span>&lt;S: Adapter&gt; oio::Write <span class="kw">for </span>KvWriter&lt;S&gt; {
-    <span class="comment">// TODO: we need to support append in the future.
-    </span><span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">if </span><span class="self">self</span>.future.is_some() {
             <span class="self">self</span>.future = <span class="prelude-val">None</span>;
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
@@ -888,13 +877,40 @@
             )));
         }
 
-        <span class="kw">let </span>size = bs.chunk().len();
+        <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.buffer {
+            Buffer::Active(buf) =&gt; {
+                buf.extend_from_slice(bs.chunk());
+                Poll::Ready(<span class="prelude-val">Ok</span>(bs.chunk().len()))
+            }
+            Buffer::Frozen(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;KvWriter should not be frozen during poll_write&quot;</span>),
+        }
+    }
 
-        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.take().unwrap_or_else(|| Vec::with_capacity(size));
-        buf.extend_from_slice(bs.chunk());
-        <span class="self">self</span>.buf = <span class="prelude-val">Some</span>(buf);
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="kw">loop </span>{
+            <span class="kw">match </span><span class="self">self</span>.future.as_mut() {
+                <span class="prelude-val">Some</span>(fut) =&gt; {
+                    <span class="kw">let </span>res = <span class="macro">ready!</span>(fut.poll_unpin(cx));
+                    <span class="self">self</span>.future = <span class="prelude-val">None</span>;
+                    <span class="kw">return </span>Poll::Ready(res);
+                }
+                <span class="prelude-val">None </span>=&gt; {
+                    <span class="kw">let </span>kv = <span class="self">self</span>.kv.clone();
+                    <span class="kw">let </span>path = <span class="self">self</span>.path.clone();
+                    <span class="kw">let </span>buf = <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.buffer {
+                        Buffer::Active(buf) =&gt; {
+                            <span class="kw">let </span>buf = buf.split().freeze();
+                            <span class="self">self</span>.buffer = Buffer::Frozen(buf.clone());
+                            buf
+                        }
+                        Buffer::Frozen(buf) =&gt; buf.clone(),
+                    };
 
-        Poll::Ready(<span class="prelude-val">Ok</span>(size))
+                    <span class="kw">let </span>fut = <span class="kw">async move </span>{ kv.set(<span class="kw-2">&amp;</span>path, <span class="kw-2">&amp;</span>buf).<span class="kw">await </span>};
+                    <span class="self">self</span>.future = <span class="prelude-val">Some</span>(Box::pin(fut));
+                }
+            }
+        }
     }
 
     <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
@@ -906,51 +922,33 @@
             )));
         }
 
-        <span class="self">self</span>.buf = <span class="prelude-val">None</span>;
+        <span class="self">self</span>.buffer = Buffer::Active(BytesMut::new());
         Poll::Ready(<span class="prelude-val">Ok</span>(()))
-    }
-
-    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        <span class="kw">loop </span>{
-            <span class="kw">match </span><span class="self">self</span>.future.as_mut() {
-                <span class="prelude-val">Some</span>(fut) =&gt; {
-                    <span class="macro">ready!</span>(fut.poll_unpin(cx))<span class="question-mark">?</span>;
-                    <span class="self">self</span>.future = <span class="prelude-val">None</span>;
-                    <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(()));
-                }
-                <span class="prelude-val">None </span>=&gt; {
-                    <span class="kw">let </span>kv = <span class="self">self</span>.kv.clone();
-                    <span class="kw">let </span>path = <span class="self">self</span>.path.clone();
-                    <span class="kw">let </span>buf = <span class="kw">match </span><span class="self">self</span>.buf.take() {
-                        <span class="prelude-val">Some</span>(buf) =&gt; buf,
-                        <span class="prelude-val">None </span>=&gt; <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(())),
-                    };
-
-                    <span class="kw">let </span>fut = <span class="kw">async move </span>{ kv.set(<span class="kw-2">&amp;</span>path, <span class="kw-2">&amp;</span>buf).<span class="kw">await </span>};
-                    <span class="self">self</span>.future = <span class="prelude-val">Some</span>(Box::pin(fut));
-                }
-            }
-        }
     }
 }
 
 <span class="kw">impl</span>&lt;S: Adapter&gt; oio::BlockingWrite <span class="kw">for </span>KvWriter&lt;S&gt; {
     <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="kw">let </span>size = bs.chunk().len();
-
-        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.take().unwrap_or_else(|| Vec::with_capacity(size));
-        buf.extend_from_slice(bs.chunk());
-
-        <span class="self">self</span>.buf = <span class="prelude-val">Some</span>(buf);
-
-        <span class="prelude-val">Ok</span>(size)
+        <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.buffer {
+            Buffer::Active(buf) =&gt; {
+                buf.extend_from_slice(bs.chunk());
+                <span class="prelude-val">Ok</span>(bs.chunk().len())
+            }
+            Buffer::Frozen(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;KvWriter should not be frozen during poll_write&quot;</span>),
+        }
     }
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(buf) = <span class="self">self</span>.buf.as_deref() {
-            <span class="self">self</span>.kv.blocking_set(<span class="kw-2">&amp;</span><span class="self">self</span>.path, buf)<span class="question-mark">?</span>;
-        }
+        <span class="kw">let </span>buf = <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.buffer {
+            Buffer::Active(buf) =&gt; {
+                <span class="kw">let </span>buf = buf.split().freeze();
+                <span class="self">self</span>.buffer = Buffer::Frozen(buf.clone());
+                buf
+            }
+            Buffer::Frozen(buf) =&gt; buf.clone(),
+        };
 
+        <span class="self">self</span>.kv.blocking_set(<span class="kw-2">&amp;</span><span class="self">self</span>.path, <span class="kw-2">&amp;</span>buf)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 }

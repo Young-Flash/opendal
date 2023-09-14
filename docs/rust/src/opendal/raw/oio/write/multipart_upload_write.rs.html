@@ -316,6 +316,13 @@
 <a href="#316" id="316">316</a>
 <a href="#317" id="317">317</a>
 <a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -339,7 +346,6 @@
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>futures::future::BoxFuture;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
@@ -427,7 +433,7 @@
 </span><span class="kw">pub struct </span>MultipartUploadWriter&lt;W: MultipartUploadWrite&gt; {
     state: State&lt;W&gt;,
 
-    cache: <span class="prelude-ty">Option</span>&lt;Bytes&gt;,
+    cache: <span class="prelude-ty">Option</span>&lt;oio::ChunkedBytes&gt;,
     upload_id: <span class="prelude-ty">Option</span>&lt;Arc&lt;String&gt;&gt;,
     parts: Vec&lt;MultipartUploadPart&gt;,
 }
@@ -481,7 +487,7 @@
                                         <span class="kw-2">&amp;</span>upload_id,
                                         part_number,
                                         size <span class="kw">as </span>u64,
-                                        AsyncBody::Bytes(bs),
+                                        AsyncBody::ChunkedBytes(bs),
                                     )
                                     .<span class="kw">await</span>;
 
@@ -492,7 +498,8 @@
                             <span class="comment">// Fill cache with the first write.
                             </span><span class="kw">if </span><span class="self">self</span>.cache.is_none() {
                                 <span class="kw">let </span>size = bs.remaining();
-                                <span class="self">self</span>.cache = <span class="prelude-val">Some</span>(bs.copy_to_bytes(size));
+                                <span class="kw">let </span>cb = oio::ChunkedBytes::from_vec(bs.vectored_bytes(size));
+                                <span class="self">self</span>.cache = <span class="prelude-val">Some</span>(cb);
                                 <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(size));
                             }
 
@@ -513,9 +520,11 @@
                     <span class="kw">let </span>(w, part) = <span class="macro">ready!</span>(fut.as_mut().poll(cx));
                     <span class="self">self</span>.state = State::Idle(<span class="prelude-val">Some</span>(w));
                     <span class="self">self</span>.parts.push(part<span class="question-mark">?</span>);
+
                     <span class="comment">// Replace the cache when last write succeeded
                     </span><span class="kw">let </span>size = bs.remaining();
-                    <span class="self">self</span>.cache = <span class="prelude-val">Some</span>(bs.copy_to_bytes(size));
+                    <span class="kw">let </span>cb = oio::ChunkedBytes::from_vec(bs.vectored_bytes(size));
+                    <span class="self">self</span>.cache = <span class="prelude-val">Some</span>(cb);
                     <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(size));
                 }
                 State::Close(<span class="kw">_</span>) =&gt; {
@@ -550,7 +559,7 @@
                                                 <span class="kw-2">&amp;</span>upload_id,
                                                 parts.len(),
                                                 size <span class="kw">as </span>u64,
-                                                AsyncBody::Bytes(bs),
+                                                AsyncBody::ChunkedBytes(bs),
                                             )
                                             .<span class="kw">await</span>;
                                         (w, part)
@@ -568,7 +577,9 @@
                             <span class="prelude-val">Some</span>(bs) =&gt; {
                                 <span class="self">self</span>.state = State::Close(Box::pin(<span class="kw">async move </span>{
                                     <span class="kw">let </span>size = bs.len();
-                                    <span class="kw">let </span>res = w.write_once(size <span class="kw">as </span>u64, AsyncBody::Bytes(bs)).<span class="kw">await</span>;
+                                    <span class="kw">let </span>res = w
+                                        .write_once(size <span class="kw">as </span>u64, AsyncBody::ChunkedBytes(bs))
+                                        .<span class="kw">await</span>;
                                     (w, res)
                                 }));
                             }
@@ -579,8 +590,11 @@
                 State::Close(fut) =&gt; {
                     <span class="kw">let </span>(w, res) = <span class="macro">futures::ready!</span>(fut.as_mut().poll(cx));
                     <span class="self">self</span>.state = State::Idle(<span class="prelude-val">Some</span>(w));
+                    <span class="comment">// We should check res first before clean up cache.
+                    </span>res<span class="question-mark">?</span>;
+
                     <span class="self">self</span>.cache = <span class="prelude-val">None</span>;
-                    <span class="kw">return </span>Poll::Ready(res);
+                    <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(()));
                 }
                 State::Init(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(
                     <span class="string">&quot;MultipartUploadWriter must not go into State::Init during poll_close&quot;

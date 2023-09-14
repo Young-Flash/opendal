@@ -174,6 +174,13 @@
 <a href="#174" id="174">174</a>
 <a href="#175" id="175">175</a>
 <a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -222,90 +229,97 @@
 /// - Operation with limitations should be named like `batch_max_operations`.
 </span><span class="attr">#[derive(Copy, Clone, Default)]
 </span><span class="kw">pub struct </span>Capability {
-    <span class="doccomment">/// If operator supports stat , it will be true.
+    <span class="doccomment">/// If operator supports stat.
     </span><span class="kw">pub </span>stat: bool,
-    <span class="doccomment">/// If operator supports stat with if match , it will be true.
+    <span class="doccomment">/// If operator supports stat with if match.
     </span><span class="kw">pub </span>stat_with_if_match: bool,
-    <span class="doccomment">/// If operator supports stat with if none match , it will be true.
+    <span class="doccomment">/// If operator supports stat with if none match.
     </span><span class="kw">pub </span>stat_with_if_none_match: bool,
 
-    <span class="doccomment">/// If operator supports read , it will be true.
+    <span class="doccomment">/// If operator supports read.
     </span><span class="kw">pub </span>read: bool,
-    <span class="doccomment">/// If operator supports seek on returning reader , it will
-    /// be true.
+    <span class="doccomment">/// If operator supports seek on returning reader.
     </span><span class="kw">pub </span>read_can_seek: bool,
-    <span class="doccomment">/// If operator supports next on returning reader , it will
-    /// be true.
+    <span class="doccomment">/// If operator supports next on returning reader.
     </span><span class="kw">pub </span>read_can_next: bool,
-    <span class="doccomment">/// If operator supports read with range , it will be true.
+    <span class="doccomment">/// If operator supports read with range.
     </span><span class="kw">pub </span>read_with_range: bool,
-    <span class="doccomment">/// If operator supports read with if match , it will be true.
+    <span class="doccomment">/// If operator supports read with if match.
     </span><span class="kw">pub </span>read_with_if_match: bool,
-    <span class="doccomment">/// If operator supports read with if none match , it will be true.
+    <span class="doccomment">/// If operator supports read with if none match.
     </span><span class="kw">pub </span>read_with_if_none_match: bool,
-    <span class="doccomment">/// if operator supports read with override cache control , it will be true.
+    <span class="doccomment">/// if operator supports read with override cache control.
     </span><span class="kw">pub </span>read_with_override_cache_control: bool,
-    <span class="doccomment">/// if operator supports read with override content disposition , it will be true.
+    <span class="doccomment">/// if operator supports read with override content disposition.
     </span><span class="kw">pub </span>read_with_override_content_disposition: bool,
-    <span class="doccomment">/// if operator supports read with override content type , it will be true.
+    <span class="doccomment">/// if operator supports read with override content type.
     </span><span class="kw">pub </span>read_with_override_content_type: bool,
 
-    <span class="doccomment">/// If operator supports write , it will be true.
+    <span class="doccomment">/// If operator supports write.
     </span><span class="kw">pub </span>write: bool,
-    <span class="doccomment">/// If operator supports write by append, it will be true.
+    <span class="doccomment">/// If operator supports write can be called in multi times.
+    </span><span class="kw">pub </span>write_can_multi: bool,
+    <span class="doccomment">/// If operator supports write by append.
     </span><span class="kw">pub </span>write_can_append: bool,
-    <span class="doccomment">/// If operator supports write with without content length, it will
-    /// be true.
-    ///
-    /// This feature also be called as `Unsized` write or streaming write.
-    </span><span class="kw">pub </span>write_without_content_length: bool,
-    <span class="doccomment">/// If operator supports write with content type , it will be true.
+    <span class="doccomment">/// If operator supports write with content type.
     </span><span class="kw">pub </span>write_with_content_type: bool,
-    <span class="doccomment">/// If operator supports write with content disposition , it will be true.
+    <span class="doccomment">/// If operator supports write with content disposition.
     </span><span class="kw">pub </span>write_with_content_disposition: bool,
-    <span class="doccomment">/// If operator supports write with cache control , it will be true.
+    <span class="doccomment">/// If operator supports write with cache control.
     </span><span class="kw">pub </span>write_with_cache_control: bool,
+    <span class="doccomment">/// write_multi_max_size is the max size that services support in write_multi.
+    ///
+    /// For example, AWS S3 supports 5GiB as max in write_multi.
+    </span><span class="kw">pub </span>write_multi_max_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    <span class="doccomment">/// write_multi_min_size is the min size that services support in write_multi.
+    ///
+    /// For example, AWS S3 requires at least 5MiB in write_multi expect the last one.
+    </span><span class="kw">pub </span>write_multi_min_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    <span class="doccomment">/// write_multi_align_size is the align size that services required in write_multi.
+    ///
+    /// For example, Google GCS requires align size to 256KiB in write_multi.
+    </span><span class="kw">pub </span>write_multi_align_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 
-    <span class="doccomment">/// If operator supports create dir , it will be true.
+    <span class="doccomment">/// If operator supports create dir.
     </span><span class="kw">pub </span>create_dir: bool,
 
-    <span class="doccomment">/// If operator supports delete , it will be true.
+    <span class="doccomment">/// If operator supports delete.
     </span><span class="kw">pub </span>delete: bool,
 
-    <span class="doccomment">/// If operator supports copy , it will be true.
+    <span class="doccomment">/// If operator supports copy.
     </span><span class="kw">pub </span>copy: bool,
 
-    <span class="doccomment">/// If operator supports rename , it will be true.
+    <span class="doccomment">/// If operator supports rename.
     </span><span class="kw">pub </span>rename: bool,
 
-    <span class="doccomment">/// If operator supports list , it will be true.
+    <span class="doccomment">/// If operator supports list.
     </span><span class="kw">pub </span>list: bool,
-    <span class="doccomment">/// If backend supports list with limit, it will be true.
+    <span class="doccomment">/// If backend supports list with limit.
     </span><span class="kw">pub </span>list_with_limit: bool,
-    <span class="doccomment">/// If backend supports list with start after, it will be true.
+    <span class="doccomment">/// If backend supports list with start after.
     </span><span class="kw">pub </span>list_with_start_after: bool,
     <span class="doccomment">/// If backend support list with using slash as delimiter.
     </span><span class="kw">pub </span>list_with_delimiter_slash: bool,
     <span class="doccomment">/// If backend supports list without delimiter.
     </span><span class="kw">pub </span>list_without_delimiter: bool,
 
-    <span class="doccomment">/// If operator supports presign , it will be true.
+    <span class="doccomment">/// If operator supports presign.
     </span><span class="kw">pub </span>presign: bool,
-    <span class="doccomment">/// If operator supports presign read , it will be true.
+    <span class="doccomment">/// If operator supports presign read.
     </span><span class="kw">pub </span>presign_read: bool,
-    <span class="doccomment">/// If operator supports presign stat , it will be true.
+    <span class="doccomment">/// If operator supports presign stat.
     </span><span class="kw">pub </span>presign_stat: bool,
-    <span class="doccomment">/// If operator supports presign write , it will be true.
+    <span class="doccomment">/// If operator supports presign write.
     </span><span class="kw">pub </span>presign_write: bool,
 
-    <span class="doccomment">/// If operator supports batch , it will be true.
+    <span class="doccomment">/// If operator supports batch.
     </span><span class="kw">pub </span>batch: bool,
-    <span class="doccomment">/// If operator supports batch delete , it will be true.
+    <span class="doccomment">/// If operator supports batch delete.
     </span><span class="kw">pub </span>batch_delete: bool,
     <span class="doccomment">/// The max operations that operator supports in batch.
     </span><span class="kw">pub </span>batch_max_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 
-    <span class="doccomment">/// If operator supports blocking , it will be true.
+    <span class="doccomment">/// If operator supports blocking.
     </span><span class="kw">pub </span>blocking: bool,
 }
 
