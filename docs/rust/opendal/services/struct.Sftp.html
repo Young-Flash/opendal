@@ -41,9 +41,7 @@ blocking</li>
 <li><code>known_hosts_strategy</code>: Set the strategy for known hosts, default to <code>Strict</code></li>
 <li><code>enable_copy</code>: Set whether the remote server has copy-file extension</li>
 </ul>
-<p>It doesn’t support password login, you can use public key instead.</p>
-<p>If you are interested in password login, please refer to <a href="https://github.com/apache/incubator-opendal/issues/2966">this</a> issue.
-Welcome to leave your comments or make contributions.</p>
+<p>For security reasons, it doesn’t support password login, you can use public key or ssh-copy-id instead.</p>
 <p>You can refer to <a href="struct.Sftp.html" title="struct opendal::services::Sftp"><code>SftpBuilder</code></a>’s docs for more information</p>
 <h3 id="example"><a href="#example">Example</a></h3><h4 id="via-builder"><a href="#via-builder">Via Builder</a></h4>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>anyhow::Result;

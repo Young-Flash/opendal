@@ -611,12 +611,12 @@
         <span class="self">self</span>.inner.poll_write(cx, bs)
     }
 
-    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        <span class="self">self</span>.inner.poll_abort(cx)
-    }
-
     <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
         <span class="self">self</span>.inner.poll_close(cx)
+    }
+
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_abort(cx)
     }
 }
 

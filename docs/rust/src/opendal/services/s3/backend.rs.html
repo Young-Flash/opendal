@@ -1234,6 +1234,11 @@
 <a href="#1234" id="1234">1234</a>
 <a href="#1235" id="1235">1235</a>
 <a href="#1236" id="1236">1236</a>
+<a href="#1237" id="1237">1237</a>
+<a href="#1238" id="1238">1238</a>
+<a href="#1239" id="1239">1239</a>
+<a href="#1240" id="1240">1240</a>
+<a href="#1241" id="1241">1241</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2181,9 +2186,12 @@
     }
 
     <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req =
-            <span class="self">self</span>.core
-                .s3_put_object_request(path, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.s3_put_object_request(
+            path,
+            <span class="prelude-val">Some</span>(<span class="number">0</span>),
+            <span class="kw-2">&amp;</span>OpWrite::default(),
+            AsyncBody::Empty,
+        )<span class="question-mark">?</span>;
 
         <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -2297,10 +2305,12 @@
                     .s3_head_object_request(path, v.if_none_match(), v.if_match())<span class="question-mark">?
             </span>}
             PresignOperation::Read(v) =&gt; <span class="self">self</span>.core.s3_get_object_request(path, v.clone())<span class="question-mark">?</span>,
-            PresignOperation::Write(<span class="kw">_</span>) =&gt; {
-                <span class="self">self</span>.core
-                    .s3_put_object_request(path, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)<span class="question-mark">?
-            </span>}
+            PresignOperation::Write(<span class="kw">_</span>) =&gt; <span class="self">self</span>.core.s3_put_object_request(
+                path,
+                <span class="prelude-val">None</span>,
+                <span class="kw-2">&amp;</span>OpWrite::default(),
+                AsyncBody::Empty,
+            )<span class="question-mark">?</span>,
         };
 
         <span class="self">self</span>.core.sign_query(<span class="kw-2">&amp;mut </span>req, args.expire()).<span class="kw">await</span><span class="question-mark">?</span>;

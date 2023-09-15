@@ -63,7 +63,6 @@
 <a href="#63" id="63">63</a>
 <a href="#64" id="64">64</a>
 <a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -113,8 +112,7 @@
             .webdav_put(
                 <span class="kw-2">&amp;</span><span class="self">self</span>.path,
                 <span class="prelude-val">Some</span>(bs.len() <span class="kw">as </span>u64),
-                <span class="self">self</span>.op.content_type(),
-                <span class="self">self</span>.op.content_disposition(),
+                <span class="kw-2">&amp;</span><span class="self">self</span>.op,
                 AsyncBody::ChunkedBytes(bs),
             )
             .<span class="kw">await</span><span class="question-mark">?</span>;

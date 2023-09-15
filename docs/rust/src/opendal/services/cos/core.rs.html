@@ -495,10 +495,6 @@
 <a href="#495" id="495">495</a>
 <a href="#496" id="496">496</a>
 <a href="#497" id="497">497</a>
-<a href="#498" id="498">498</a>
-<a href="#499" id="499">499</a>
-<a href="#500" id="500">500</a>
-<a href="#501" id="501">501</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -652,9 +648,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
         size: <span class="prelude-ty">Option</span>&lt;u64&gt;,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        content_disposition: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        cache_control: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
@@ -666,13 +660,13 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(size) = size {
             req = req.header(CONTENT_LENGTH, size)
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = cache_control {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = args.cache_control() {
             req = req.header(CACHE_CONTROL, cache_control)
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = content_disposition {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = args.content_disposition() {
             req = req.header(CONTENT_DISPOSITION, pos)
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = args.content_type() {
             req = req.header(CONTENT_TYPE, mime)
         }
 
@@ -835,9 +829,7 @@
     <span class="kw">pub async fn </span>cos_initiate_multipart_upload(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        content_disposition: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        cache_control: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
@@ -845,15 +837,15 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = args.content_type() {
             req = req.header(CONTENT_TYPE, mime)
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(content_disposition) = content_disposition {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(content_disposition) = args.content_disposition() {
             req = req.header(CONTENT_DISPOSITION, content_disposition)
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = cache_control {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = args.cache_control() {
             req = req.header(CACHE_CONTROL, cache_control)
         }
 

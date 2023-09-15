@@ -466,6 +466,11 @@
 <a href="#466" id="466">466</a>
 <a href="#467" id="467">467</a>
 <a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -565,13 +570,13 @@
 
         <span class="self">self</span>.inner
             .read(path, args)
-            .map_ok(|(rp, os)| {
+            .map_ok(|(rp, r)| {
                 (
                     rp,
                     ErrorContextWrapper {
                         scheme: <span class="self">self</span>.meta.scheme(),
                         path: path.to_string(),
-                        inner: os,
+                        inner: r,
                     },
                 )
             })
@@ -587,13 +592,13 @@
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
         <span class="self">self</span>.inner
             .write(path, args)
-            .map_ok(|(rp, os)| {
+            .map_ok(|(rp, w)| {
                 (
                     rp,
                     ErrorContextWrapper {
                         scheme: <span class="self">self</span>.meta.scheme(),
                         path: path.to_string(),
-                        inner: os,
+                        inner: w,
                     },
                 )
             })
@@ -654,13 +659,13 @@
     <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
         <span class="self">self</span>.inner
             .list(path, args)
-            .map_ok(|(rp, os)| {
+            .map_ok(|(rp, p)| {
                 (
                     rp,
                     ErrorContextWrapper {
                         scheme: <span class="self">self</span>.meta.scheme(),
                         path: path.to_string(),
-                        inner: os,
+                        inner: p,
                     },
                 )
             })
@@ -671,14 +676,6 @@
             })
             .<span class="kw">await
     </span>}
-
-    <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
-        <span class="self">self</span>.inner.presign(path, args).<span class="kw">await</span>.map_err(|err| {
-            err.with_operation(Operation::Presign)
-                .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.meta.scheme())
-                .with_context(<span class="string">&quot;path&quot;</span>, path)
-        })
-    }
 
     <span class="kw">async fn </span>batch(<span class="kw-2">&amp;</span><span class="self">self</span>, args: OpBatch) -&gt; <span class="prelude-ty">Result</span>&lt;RpBatch&gt; {
         <span class="self">self</span>.inner
@@ -705,6 +702,14 @@
             })
             .<span class="kw">await
     </span>}
+
+    <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
+        <span class="self">self</span>.inner.presign(path, args).<span class="kw">await</span>.map_err(|err| {
+            err.with_operation(Operation::Presign)
+                .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.meta.scheme())
+                .with_context(<span class="string">&quot;path&quot;</span>, path)
+        })
+    }
 
     <span class="kw">fn </span>blocking_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="self">self</span>.inner.blocking_create_dir(path, args).map_err(|err| {
@@ -821,6 +826,7 @@
             err.with_operation(ReadOperation::Read)
                 .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
                 .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
+                .with_context(<span class="string">&quot;read_buf&quot;</span>, buf.len().to_string())
         })
     }
 
@@ -847,6 +853,7 @@
             err.with_operation(ReadOperation::BlockingRead)
                 .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
                 .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
+                .with_context(<span class="string">&quot;read_buf&quot;</span>, buf.len().to_string())
         })
     }
 
@@ -855,6 +862,7 @@
             err.with_operation(ReadOperation::BlockingSeek)
                 .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
                 .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
+                .with_context(<span class="string">&quot;seek&quot;</span>, <span class="macro">format!</span>(<span class="string">&quot;{pos:?}&quot;</span>))
         })
     }
 
@@ -876,20 +884,21 @@
             err.with_operation(WriteOperation::Write)
                 .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
                 .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
-        })
-    }
-
-    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        <span class="self">self</span>.inner.poll_abort(cx).map_err(|err| {
-            err.with_operation(WriteOperation::Abort)
-                .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
-                .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
+                .with_context(<span class="string">&quot;write_buf&quot;</span>, bs.remaining().to_string())
         })
     }
 
     <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
         <span class="self">self</span>.inner.poll_close(cx).map_err(|err| {
             err.with_operation(WriteOperation::Close)
+                .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
+                .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
+        })
+    }
+
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_abort(cx).map_err(|err| {
+            err.with_operation(WriteOperation::Abort)
                 .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
                 .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
         })
@@ -902,6 +911,7 @@
             err.with_operation(WriteOperation::BlockingWrite)
                 .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.scheme)
                 .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path)
+                .with_context(<span class="string">&quot;write_buf&quot;</span>, bs.remaining().to_string())
         })
     }
 

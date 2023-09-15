@@ -103,6 +103,8 @@
 <a href="#103" id="103">103</a>
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -129,6 +131,8 @@
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// TypeEraseLayer will erase the types on internal accessor.
+///
+/// For example, we will erase `Self::Reader` to `oio::Reader` (`Box&lt;dyn oio::Read&gt;`).
 ///
 /// # Notes
 ///
@@ -176,12 +180,6 @@
             </span>.map(|(rp, r)| (rp, Box::new(r) <span class="kw">as </span>oio::Reader))
     }
 
-    <span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
-        <span class="self">self</span>.inner
-            .blocking_read(path, args)
-            .map(|(rp, r)| (rp, Box::new(r) <span class="kw">as </span>oio::BlockingReader))
-    }
-
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
         <span class="self">self</span>.inner
             .write(path, args)
@@ -189,17 +187,23 @@
             </span>.map(|(rp, w)| (rp, Box::new(w) <span class="kw">as </span>oio::Writer))
     }
 
-    <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
-        <span class="self">self</span>.inner
-            .blocking_write(path, args)
-            .map(|(rp, w)| (rp, Box::new(w) <span class="kw">as </span>oio::BlockingWriter))
-    }
-
     <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
         <span class="self">self</span>.inner
             .list(path, args)
             .<span class="kw">await
             </span>.map(|(rp, p)| (rp, Box::new(p) <span class="kw">as </span>oio::Pager))
+    }
+
+    <span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
+        <span class="self">self</span>.inner
+            .blocking_read(path, args)
+            .map(|(rp, r)| (rp, Box::new(r) <span class="kw">as </span>oio::BlockingReader))
+    }
+
+    <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
+        <span class="self">self</span>.inner
+            .blocking_write(path, args)
+            .map(|(rp, w)| (rp, Box::new(w) <span class="kw">as </span>oio::BlockingWriter))
     }
 
     <span class="kw">fn </span>blocking_list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::BlockingPager)&gt; {

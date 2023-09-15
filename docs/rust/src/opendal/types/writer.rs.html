@@ -302,8 +302,6 @@
 <a href="#302" id="302">302</a>
 <a href="#303" id="303">303</a>
 <a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -428,9 +426,7 @@
     ///
     /// #[tokio::main]
     /// async fn sink_example(op: Operator) -&gt; Result&lt;()&gt; {
-    ///     let mut w = op
-    ///         .writer_with(&quot;path/to/file&quot;)
-    ///         .await?;
+    ///     let mut w = op.writer_with(&quot;path/to/file&quot;).await?;
     ///     let stream = stream::iter(vec![vec![0; 4096], vec![1; 4096]]).map(Ok);
     ///     w.sink(stream).await?;
     ///     w.close().await?;

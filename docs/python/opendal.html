@@ -165,10 +165,13 @@
                     <a class="class" href="#Metadata">Metadata</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#Metadata.content_disposition">content_disposition</a>
+                                <a class="variable" href="#Metadata.content_type">content_type</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.content_md5">content_md5</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Metadata.content_disposition">content_disposition</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.etag">etag</a>
@@ -179,9 +182,6 @@
                         <li>
                                 <a class="variable" href="#Metadata.content_length">content_length</a>
                         </li>
-                        <li>
-                                <a class="variable" href="#Metadata.content_type">content_type</a>
-                        </li>
                 </ul>
 
             </li>
@@ -189,13 +189,13 @@
                     <a class="class" href="#PresignedRequest">PresignedRequest</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#PresignedRequest.url">url</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#PresignedRequest.headers">headers</a>
                         </li>
                         <li>
                                 <a class="variable" href="#PresignedRequest.method">method</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PresignedRequest.url">url</a>
                         </li>
                 </ul>
 
@@ -924,15 +924,17 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
     
 
-                            <div id="Metadata.content_disposition" class="classattr">
+                            <div id="Metadata.content_type" class="classattr">
                                 <div class="attr variable">
-            <span class="name">content_disposition</span><span class="annotation">: Optional[str]</span>
+            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
 
         
     </div>
-    <a class="headerlink" href="#Metadata.content_disposition"></a>
+    <a class="headerlink" href="#Metadata.content_type"></a>
     
-    
+            <div class="docstring"><p>Content Type of this entry.</p>
+</div>
+
 
                             </div>
                             <div id="Metadata.content_md5" class="classattr">
@@ -946,6 +948,17 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
             <div class="docstring"><p>Content MD5 of this entry.</p>
 </div>
 
+
+                            </div>
+                            <div id="Metadata.content_disposition" class="classattr">
+                                <div class="attr variable">
+            <span class="name">content_disposition</span><span class="annotation">: Optional[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.content_disposition"></a>
+    
+    
 
                             </div>
                             <div id="Metadata.etag" class="classattr">
@@ -987,19 +1000,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
-                            <div id="Metadata.content_type" class="classattr">
-                                <div class="attr variable">
-            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.content_type"></a>
-    
-            <div class="docstring"><p>Content Type of this entry.</p>
-</div>
-
-
-                            </div>
                 </section>
                 <section id="PresignedRequest">
                     <div class="attr class">
@@ -1013,19 +1013,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
     
 
-                            <div id="PresignedRequest.url" class="classattr">
-                                <div class="attr variable">
-            <span class="name">url</span><span class="annotation">: str</span>
-
-        
-    </div>
-    <a class="headerlink" href="#PresignedRequest.url"></a>
-    
-            <div class="docstring"><p>Return the URL of this request.</p>
-</div>
-
-
-                            </div>
                             <div id="PresignedRequest.headers" class="classattr">
                                 <div class="attr variable">
             <span class="name">headers</span><span class="annotation">: dict[str, str]</span>
@@ -1048,6 +1035,19 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     <a class="headerlink" href="#PresignedRequest.method"></a>
     
             <div class="docstring"><p>Return the HTTP method of this request.</p>
+</div>
+
+
+                            </div>
+                            <div id="PresignedRequest.url" class="classattr">
+                                <div class="attr variable">
+            <span class="name">url</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PresignedRequest.url"></a>
+    
+            <div class="docstring"><p>Return the URL of this request.</p>
 </div>
 
 

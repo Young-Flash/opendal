@@ -335,6 +335,9 @@
 <a href="#335" id="335">335</a>
 <a href="#336" id="336">336</a>
 <a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -479,8 +482,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
         resource: <span class="kw-2">&amp;</span>str,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        content_disposition: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
@@ -499,11 +501,11 @@
         <span class="comment">// Content length must be 0 for create request.
         </span>req = req.header(CONTENT_LENGTH, <span class="number">0</span>);
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(ty) = content_type {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(ty) = args.content_type() {
             req = req.header(CONTENT_TYPE, ty)
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = content_disposition {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = args.content_disposition() {
             req = req.header(CONTENT_DISPOSITION, pos)
         }
 
@@ -661,8 +663,12 @@
 
         <span class="kw">if </span>!parts.is_empty() {
             <span class="kw">let </span>parent_path = parts.join(<span class="string">&quot;/&quot;</span>);
-            <span class="kw">let </span><span class="kw-2">mut </span>req =
-                <span class="self">self</span>.azdls_create_request(<span class="kw-2">&amp;</span>parent_path, <span class="string">&quot;directory&quot;</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)<span class="question-mark">?</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.azdls_create_request(
+                <span class="kw-2">&amp;</span>parent_path,
+                <span class="string">&quot;directory&quot;</span>,
+                <span class="kw-2">&amp;</span>OpWrite::default(),
+                AsyncBody::Empty,
+            )<span class="question-mark">?</span>;
 
             <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 

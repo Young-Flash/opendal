@@ -127,7 +127,6 @@
 <a href="#127" id="127">127</a>
 <a href="#128" id="128">128</a>
 <a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -202,9 +201,9 @@
 </span><span class="kw">pub type </span>Pager = Box&lt;<span class="kw">dyn </span>Page&gt;;
 
 <span class="attr">#[async_trait]
-</span><span class="kw">impl </span>Page <span class="kw">for </span>Pager {
+</span><span class="kw">impl</span>&lt;P: Page + <span class="question-mark">?</span>Sized&gt; Page <span class="kw">for </span>Box&lt;P&gt; {
     <span class="kw">async fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;Entry&gt;&gt;&gt; {
-        <span class="self">self</span>.as_mut().next().<span class="kw">await
+        (<span class="kw-2">**</span><span class="self">self</span>).next().<span class="kw">await
     </span>}
 }
 
@@ -237,9 +236,9 @@
 <span class="doccomment">/// BlockingPager is a boxed [`BlockingPage`]
 </span><span class="kw">pub type </span>BlockingPager = Box&lt;<span class="kw">dyn </span>BlockingPage&gt;;
 
-<span class="kw">impl </span>BlockingPage <span class="kw">for </span>BlockingPager {
+<span class="kw">impl</span>&lt;P: BlockingPage + <span class="question-mark">?</span>Sized&gt; BlockingPage <span class="kw">for </span>Box&lt;P&gt; {
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;Entry&gt;&gt;&gt; {
-        <span class="self">self</span>.as_mut().next()
+        (<span class="kw-2">**</span><span class="self">self</span>).next()
     }
 }
 
@@ -249,8 +248,7 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;P: BlockingPage&gt; BlockingPage <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;P&gt; {
+<span class="kw">impl</span>&lt;P: BlockingPage&gt; BlockingPage <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;P&gt; {
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;Entry&gt;&gt;&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="prelude-val">Some</span>(p) =&gt; p.next(),

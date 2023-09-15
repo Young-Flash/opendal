@@ -925,6 +925,23 @@
 <a href="#925" id="925">925</a>
 <a href="#926" id="926">926</a>
 <a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -959,7 +976,6 @@
 <span class="kw">use </span>sha2::Digest;
 <span class="kw">use </span>sha2::Sha256;
 
-<span class="kw">use </span><span class="kw">super</span>::batch::parse_batch_delete_response;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
 <span class="kw">use </span><span class="kw">super</span>::pager::AzblobPager;
 <span class="kw">use </span><span class="kw">super</span>::writer::AzblobWriter;
@@ -1485,9 +1501,12 @@
     }
 
     <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req =
-            <span class="self">self</span>.core
-                .azblob_put_blob_request(path, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.azblob_put_blob_request(
+            path,
+            <span class="prelude-val">Some</span>(<span class="number">0</span>),
+            <span class="kw-2">&amp;</span>OpWrite::default(),
+            AsyncBody::Empty,
+        )<span class="question-mark">?</span>;
 
         <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -1610,10 +1629,12 @@
                 v.if_match(),
                 v.override_content_disposition(),
             )<span class="question-mark">?</span>,
-            PresignOperation::Write(<span class="kw">_</span>) =&gt; {
-                <span class="self">self</span>.core
-                    .azblob_put_blob_request(path, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)<span class="question-mark">?
-            </span>}
+            PresignOperation::Write(<span class="kw">_</span>) =&gt; <span class="self">self</span>.core.azblob_put_blob_request(
+                path,
+                <span class="prelude-val">None</span>,
+                <span class="kw-2">&amp;</span>OpWrite::default(),
+                AsyncBody::Empty,
+            )<span class="question-mark">?</span>,
         };
 
         <span class="self">self</span>.core.sign_query(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -1669,18 +1690,31 @@
             )
         })<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>body = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>body = String::from_utf8(body.to_vec()).map_err(|e| {
-            Error::new(
-                ErrorKind::Unexpected,
-                <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;get invalid batch response {e:?}&quot;</span>),
-            )
-        })<span class="question-mark">?</span>;
+        <span class="kw">let </span>multipart: Multipart&lt;MixedPart&gt; = Multipart::new()
+            .with_boundary(boundary)
+            .parse(resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>parts = multipart.into_parts();
 
-        <span class="kw">let </span>results = parse_batch_delete_response(boundary, body, paths)<span class="question-mark">?
-            </span>.into_iter()
-            .map(|(path, rp)| (path, rp.map(|v| v.into())))
-            .collect();
+        <span class="kw">if </span>paths.len() != parts.len() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                ErrorKind::Unexpected,
+                <span class="string">&quot;invalid batch response, paths and response parts don&#39;t match&quot;</span>,
+            ));
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>results = Vec::with_capacity(parts.len());
+
+        <span class="kw">for </span>(i, part) <span class="kw">in </span>parts.into_iter().enumerate() {
+            <span class="kw">let </span>resp = part.into_response();
+            <span class="kw">let </span>path = paths[i].clone();
+
+            <span class="comment">// deleting not existing objects is ok
+            </span><span class="kw">if </span>resp.status() == StatusCode::ACCEPTED || resp.status() == StatusCode::NOT_FOUND {
+                results.push((path, <span class="prelude-val">Ok</span>(RpDelete::default().into())));
+            } <span class="kw">else </span>{
+                results.push((path, <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>)));
+            }
+        }
         <span class="prelude-val">Ok</span>(RpBatch::new(results))
     }
 }

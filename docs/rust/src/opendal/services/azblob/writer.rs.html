@@ -136,9 +136,6 @@
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
 <a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -191,8 +188,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.azblob_put_blob_request(
             <span class="kw-2">&amp;</span><span class="self">self</span>.path,
             <span class="prelude-val">Some</span>(bs.len() <span class="kw">as </span>u64),
-            <span class="self">self</span>.op.content_type(),
-            <span class="self">self</span>.op.cache_control(),
+            <span class="kw-2">&amp;</span><span class="self">self</span>.op,
             AsyncBody::ChunkedBytes(bs),
         )<span class="question-mark">?</span>;
 
@@ -236,11 +232,9 @@
                 <span class="prelude-val">Ok</span>(parse_content_length(headers)<span class="question-mark">?</span>.unwrap_or_default())
             }
             StatusCode::NOT_FOUND =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.azblob_init_appendable_blob_request(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>.path,
-                    <span class="self">self</span>.op.content_type(),
-                    <span class="self">self</span>.op.cache_control(),
-                )<span class="question-mark">?</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self
+                    </span>.core
+                    .azblob_init_appendable_blob_request(<span class="kw-2">&amp;</span><span class="self">self</span>.path, <span class="kw-2">&amp;</span><span class="self">self</span>.op)<span class="question-mark">?</span>;
 
                 <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
