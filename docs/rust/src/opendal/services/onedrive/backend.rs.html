@@ -627,7 +627,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
         size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>url = <span class="macro">format!</span>(
@@ -644,7 +644,7 @@
             req = req.header(header::CONTENT_LENGTH, size)
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = args.content_type() {
             req = req.header(header::CONTENT_TYPE, mime)
         }
 
@@ -656,7 +656,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>onedrive_chunked_upload(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         url: <span class="kw-2">&amp;</span>str,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
         offset: usize,
         chunk_end: usize,
         total_len: usize,
@@ -673,7 +673,7 @@
         <span class="kw">let </span>size = chunk_end - offset + <span class="number">1</span>;
         req = req.header(header::CONTENT_LENGTH, size.to_string());
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = args.content_type() {
             req = req.header(header::CONTENT_TYPE, mime)
         }
 

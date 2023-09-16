@@ -213,7 +213,7 @@
     <span class="kw">async fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
         <span class="kw">let </span>resp = <span class="self">self
             </span>.core
-            .azblob_get_blob_properties(<span class="kw-2">&amp;</span><span class="self">self</span>.path, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
+            .azblob_get_blob_properties(<span class="kw-2">&amp;</span><span class="self">self</span>.path, <span class="kw-2">&amp;</span>OpStat::default())
             .<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>status = resp.status();

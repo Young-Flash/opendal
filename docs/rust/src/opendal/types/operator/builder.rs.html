@@ -373,6 +373,8 @@
 <a href="#373" id="373">373</a>
 <a href="#374" id="374">374</a>
 <a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -528,6 +530,8 @@
     /// ```
     </span><span class="kw">pub fn </span>via_map(scheme: Scheme, map: HashMap&lt;String, String&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Operator&gt; {
         <span class="kw">let </span>op = <span class="kw">match </span>scheme {
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-atomicserver&quot;</span>)]
+            </span>Scheme::Atomicserver =&gt; <span class="self">Self</span>::from_map::&lt;services::Atomicserver&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-azblob&quot;</span>)]
             </span>Scheme::Azblob =&gt; <span class="self">Self</span>::from_map::&lt;services::Azblob&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-Azdls&quot;</span>)]
