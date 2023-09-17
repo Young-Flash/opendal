@@ -290,6 +290,60 @@
 <a href="#290" id="290">290</a>
 <a href="#291" id="291">291</a>
 <a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -311,8 +365,11 @@
 <span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>async_trait::async_trait;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>chrono::Utc;
+<span class="kw">use </span>http::Request;
 <span class="kw">use </span>http::StatusCode;
+<span class="kw">use </span>serde_json::json;
 
 <span class="kw">use </span><span class="kw">super</span>::core::GdriveCore;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
@@ -358,6 +415,8 @@
                 rename: <span class="bool-val">true</span>,
 
                 delete: <span class="bool-val">true</span>,
+
+                copy: <span class="bool-val">true</span>,
 
                 ..Default::default()
             });
@@ -545,10 +604,59 @@
             GdrivePager::new(path.into(), <span class="self">self</span>.core.clone()),
         ))
     }
+
+    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>from_file_id = <span class="self">self</span>.core.get_file_id_by_path(from).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="comment">// split `to` into parent and name according to the last `/`
+        </span><span class="kw">let </span><span class="kw-2">mut </span>to_path_items: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = to.split(<span class="string">&#39;/&#39;</span>).filter(|<span class="kw-2">&amp;</span>x| !x.is_empty()).collect();
+
+        <span class="kw">let </span>to_name = <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = to_path_items.pop() {
+            name
+        } <span class="kw">else </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::InvalidInput, <span class="string">&quot;invalid &#39;to&#39; path&quot;</span>));
+        };
+
+        <span class="kw">let </span>to_parent = to_path_items.join(<span class="string">&quot;/&quot;</span>) + <span class="string">&quot;/&quot;</span>;
+
+        <span class="kw">if </span>to_parent != <span class="string">&quot;/&quot; </span>{
+            <span class="self">self</span>.create_dir(<span class="kw-2">&amp;</span>to_parent, OpCreateDir::new()).<span class="kw">await</span><span class="question-mark">?</span>;
+        }
+
+        <span class="kw">let </span>to_parent_id = <span class="self">self</span>.core.get_file_id_by_path(to_parent.as_str()).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="comment">// copy will overwrite `to`, delete it if exist
+        </span><span class="kw">if </span><span class="self">self</span>.core.get_file_id_by_path(to).<span class="kw">await</span>.is_ok() {
+            <span class="self">self</span>.delete(to, OpDelete::new()).<span class="kw">await</span><span class="question-mark">?</span>;
+        }
+
+        <span class="kw">let </span>url = <span class="macro">format!</span>(
+            <span class="string">&quot;https://www.googleapis.com/drive/v3/files/{}/copy&quot;</span>,
+            from_file_id
+        );
+
+        <span class="kw">let </span>request_body = <span class="kw-2">&amp;</span><span class="macro">json!</span>({
+            <span class="string">&quot;name&quot;</span>: to_name,
+            <span class="string">&quot;parents&quot;</span>: [to_parent_id],
+        });
+        <span class="kw">let </span>body = AsyncBody::Bytes(Bytes::from(request_body.to_string()));
+
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url)
+            .body(body)
+            .map_err(new_request_build_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">match </span>resp.status() {
+            StatusCode::OK =&gt; <span class="prelude-val">Ok</span>(RpCopy::default()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
 }
 
 <span class="kw">impl </span>GdriveBackend {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_metadata(<span class="kw-2">&amp;</span><span class="self">self</span>, body: bytes::Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;Metadata&gt; {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_metadata(<span class="kw-2">&amp;</span><span class="self">self</span>, body: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;Metadata&gt; {
         <span class="kw">let </span>metadata =
             serde_json::from_slice::&lt;GdriveFile&gt;(<span class="kw-2">&amp;</span>body).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
 
