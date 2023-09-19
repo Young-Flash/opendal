@@ -68,7 +68,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_README"></a> <img src="https://github.com/apache/incubator-opendal/assets/5351546/87bbf6e5-f19e-449a-b368-3e283016c887" alt="" class="inline"/></p>
-<h1><a class="anchor" id="autotoc_md30"></a>
+<h1><a class="anchor" id="autotoc_md32"></a>
 Example</h1>
 <p>A simple read and write example</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;assert.h&quot;</span></div>
@@ -117,16 +117,16 @@ Example</h1>
 <div class="ttc" id="aopendal_8h_html_a7606349344f0cafa421f8ac71665a2f7"><div class="ttname"><a href="opendal_8h.html#a7606349344f0cafa421f8ac71665a2f7">opendal_operator_blocking_write</a></div><div class="ttdeci">enum opendal_code opendal_operator_blocking_write(const struct opendal_operator_ptr *ptr, const char *path, struct opendal_bytes bytes)</div><div class="ttdoc">Blockingly write raw bytes to path.</div></div>
 <div class="ttc" id="aopendal_8h_html_ae8fc63885af34e53afbb075dfed39732"><div class="ttname"><a href="opendal_8h.html#ae8fc63885af34e53afbb075dfed39732">opendal_operator_blocking_read</a></div><div class="ttdeci">struct opendal_result_read opendal_operator_blocking_read(const struct opendal_operator_ptr *ptr, const char *path)</div><div class="ttdoc">Blockingly read the data from path.</div></div>
 <div class="ttc" id="aopendal_8h_html_aea5253c2bbe9438349eebb68a18a82ea"><div class="ttname"><a href="opendal_8h.html#aea5253c2bbe9438349eebb68a18a82ea">opendal_bytes_free</a></div><div class="ttdeci">void opendal_bytes_free(struct opendal_bytes *ptr)</div><div class="ttdoc">Frees the heap memory used by the opendal_bytes.</div></div>
-<div class="ttc" id="astructopendal__bytes_html"><div class="ttname"><a href="structopendal__bytes.html">opendal_bytes</a></div><div class="ttdoc">opendal_bytes carries raw-bytes with its length</div><div class="ttdef"><b>Definition:</b> opendal.h:229</div></div>
-<div class="ttc" id="astructopendal__bytes_html_a16abed2ad211c076650d1ea81772b851"><div class="ttname"><a href="structopendal__bytes.html#a16abed2ad211c076650d1ea81772b851">opendal_bytes::len</a></div><div class="ttdeci">uintptr_t len</div><div class="ttdef"><b>Definition:</b> opendal.h:237</div></div>
-<div class="ttc" id="astructopendal__bytes_html_af7a7f99a262f8a3912f4d1cddb798c86"><div class="ttname"><a href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">opendal_bytes::data</a></div><div class="ttdeci">const uint8_t * data</div><div class="ttdef"><b>Definition:</b> opendal.h:233</div></div>
-<div class="ttc" id="astructopendal__operator__ptr_html"><div class="ttname"><a href="structopendal__operator__ptr.html">opendal_operator_ptr</a></div><div class="ttdoc">Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...</div><div class="ttdef"><b>Definition:</b> opendal.h:194</div></div>
-<div class="ttc" id="astructopendal__operator__ptr_html_a17b619ae01bb6471f51f8501ab18dd9b"><div class="ttname"><a href="structopendal__operator__ptr.html#a17b619ae01bb6471f51f8501ab18dd9b">opendal_operator_ptr::ptr</a></div><div class="ttdeci">const struct BlockingOperator * ptr</div><div class="ttdef"><b>Definition:</b> opendal.h:199</div></div>
-<div class="ttc" id="astructopendal__result__read_html"><div class="ttname"><a href="structopendal__result__read.html">opendal_result_read</a></div><div class="ttdoc">The result type returned by opendal's read operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:248</div></div>
-<div class="ttc" id="astructopendal__result__read_html_a1f2e1d846a309c327c5cdb485c6dc2a1"><div class="ttname"><a href="structopendal__result__read.html#a1f2e1d846a309c327c5cdb485c6dc2a1">opendal_result_read::code</a></div><div class="ttdeci">enum opendal_code code</div><div class="ttdef"><b>Definition:</b> opendal.h:256</div></div>
-<div class="ttc" id="astructopendal__result__read_html_ad8ca467bcbe6d1768e15fcf64fe78e9f"><div class="ttname"><a href="structopendal__result__read.html#ad8ca467bcbe6d1768e15fcf64fe78e9f">opendal_result_read::data</a></div><div class="ttdeci">struct opendal_bytes * data</div><div class="ttdef"><b>Definition:</b> opendal.h:252</div></div>
+<div class="ttc" id="astructopendal__bytes_html"><div class="ttname"><a href="structopendal__bytes.html">opendal_bytes</a></div><div class="ttdoc">opendal_bytes carries raw-bytes with its length</div><div class="ttdef"><b>Definition:</b> opendal.h:260</div></div>
+<div class="ttc" id="astructopendal__bytes_html_a16abed2ad211c076650d1ea81772b851"><div class="ttname"><a href="structopendal__bytes.html#a16abed2ad211c076650d1ea81772b851">opendal_bytes::len</a></div><div class="ttdeci">uintptr_t len</div><div class="ttdef"><b>Definition:</b> opendal.h:268</div></div>
+<div class="ttc" id="astructopendal__bytes_html_af7a7f99a262f8a3912f4d1cddb798c86"><div class="ttname"><a href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">opendal_bytes::data</a></div><div class="ttdeci">const uint8_t * data</div><div class="ttdef"><b>Definition:</b> opendal.h:264</div></div>
+<div class="ttc" id="astructopendal__operator__ptr_html"><div class="ttname"><a href="structopendal__operator__ptr.html">opendal_operator_ptr</a></div><div class="ttdoc">Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...</div><div class="ttdef"><b>Definition:</b> opendal.h:225</div></div>
+<div class="ttc" id="astructopendal__operator__ptr_html_a17b619ae01bb6471f51f8501ab18dd9b"><div class="ttname"><a href="structopendal__operator__ptr.html#a17b619ae01bb6471f51f8501ab18dd9b">opendal_operator_ptr::ptr</a></div><div class="ttdeci">const struct BlockingOperator * ptr</div><div class="ttdef"><b>Definition:</b> opendal.h:230</div></div>
+<div class="ttc" id="astructopendal__result__read_html"><div class="ttname"><a href="structopendal__result__read.html">opendal_result_read</a></div><div class="ttdoc">The result type returned by opendal's read operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:279</div></div>
+<div class="ttc" id="astructopendal__result__read_html_a1f2e1d846a309c327c5cdb485c6dc2a1"><div class="ttname"><a href="structopendal__result__read.html#a1f2e1d846a309c327c5cdb485c6dc2a1">opendal_result_read::code</a></div><div class="ttdeci">enum opendal_code code</div><div class="ttdef"><b>Definition:</b> opendal.h:287</div></div>
+<div class="ttc" id="astructopendal__result__read_html_ad8ca467bcbe6d1768e15fcf64fe78e9f"><div class="ttname"><a href="structopendal__result__read.html#ad8ca467bcbe6d1768e15fcf64fe78e9f">opendal_result_read::data</a></div><div class="ttdeci">struct opendal_bytes * data</div><div class="ttdef"><b>Definition:</b> opendal.h:283</div></div>
 </div><!-- fragment --><p>For more examples, please refer to <code>./examples</code></p>
-<h1><a class="anchor" id="autotoc_md31"></a>
+<h1><a class="anchor" id="autotoc_md33"></a>
 Prerequisites</h1>
 <p>To build OpenDAL C binding, the following is all you need:</p>
 <ul>
@@ -167,7 +167,7 @@ Prerequisites</h1>
 <div class="line">sudo cp lib/*.a /usr/lib</div>
 <div class="line">sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a</div>
 <div class="line">sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md32"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md34"></a>
 Makefile</h1>
 <ul>
 <li>To <b>build the library and header file</b>.</li>
@@ -187,12 +187,12 @@ Makefile</h1>
 <li>To build the <b>examples</b></li>
 </ul>
 <div class="fragment"><div class="line">make examples</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md33"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md35"></a>
 Documentation</h1>
 <p>The documentation index page source is under <code>./docs/doxygen/html/index.html</code>. If you want to build the documentations yourself, you could use</p>
 <div class="fragment"><div class="line"># this requires you to install doxygen</div>
 <div class="line">make doc</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md34"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md36"></a>
 License</h1>
 <p><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache v2.0</a> </p>
 </div></div><!-- PageDoc -->
