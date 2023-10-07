@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenDAL Cpp Binding: OpenDAL CPP Binding (WIP)</title>
+<title>OpenDAL-CPP: OpenDAL CPP Binding (WIP)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">OpenDAL Cpp Binding
+   <div id="projectname">OpenDAL-CPP
    </div>
    <div id="projectbrief">The Cpp binding for Apache OpenDAL</div>
   </td>
@@ -68,6 +68,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__home_runner_work_opendal_opendal_bindings_cpp_README"></a> <img src="https://github.com/apache/incubator-opendal/assets/5351546/87bbf6e5-f19e-449a-b368-3e283016c887" alt="" class="inline"/></p>
+<p>Documents: <a href="https://opendal.apache.org/docs/cpp/"><img src="https://img.shields.io/badge/opendal-cpp-blue?logo=Apache&amp;logoColor=red" alt="Documents" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Example</h1>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="opendal_8hpp.html">opendal.hpp</a>&quot;</span></div>
@@ -81,51 +82,64 @@ Example</h1>
 <div class="line">}</div>
 <div class="ttc" id="aclassopendal_1_1Operator_html"><div class="ttname"><a href="classopendal_1_1Operator.html">opendal::Operator</a></div><div class="ttdoc">Operator is the entry for all public APIs.</div><div class="ttdef"><b>Definition:</b> opendal.hpp:78</div></div>
 <div class="ttc" id="aopendal_8hpp_html"><div class="ttname"><a href="opendal_8hpp.html">opendal.hpp</a></div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md2"></a>
-Compiling</h1>
+</div><!-- fragment --><p>More examples can be found <a href="../../examples/cpp">here</a>.</p>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Using</h1>
 <h2><a class="anchor" id="autotoc_md3"></a>
+CMake</h2>
+<p>You can use <code>FetchContent</code> to add OpenDAL to your project.</p>
+<div class="fragment"><div class="line">FetchContent_Declare(</div>
+<div class="line">  opendal-cpp</div>
+<div class="line">  GIT_REPOSITORY https://github.com/apache/incubator-opendal.git</div>
+<div class="line">  GIT_TAG        v0.40.0</div>
+<div class="line">  SOURCE_SUBDIR  bindings/cpp</div>
+<div class="line">)</div>
+<div class="line">FetchContent_MakeAvailable(opendal-cpp)</div>
+</div><!-- fragment --><p>Or you can download the source code and add it to your project.</p>
+<div class="fragment"><div class="line">mkdir third_party</div>
+<div class="line">cd third_party</div>
+<div class="line">git clone https://github.com/apache/incubator-opendal.git</div>
+<div class="line">git checkout v0.40.0</div>
+</div><!-- fragment --><div class="fragment"><div class="line">add_subdirectory(third_party/incubator-opendal/bindings/cpp)</div>
+</div><!-- fragment --><p>Now you can use OpenDAL in your project.</p>
+<div class="fragment"><div class="line">target_link_libraries(your_target opendal_cpp)</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+Others</h2>
+<p>Support for more package managers is coming soon!</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Compiling</h1>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Prerequisites</h2>
 <ul>
 <li>CMake &gt;= 3.10</li>
 <li>C++ compiler with C++17 support</li>
 <li>The boost library</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md4"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Build</h2>
 <div class="fragment"><div class="line">mkdir build</div>
 <div class="line">cd build</div>
 <div class="line"># Add -DOPENDAL_DEV=ON to make development environment for OpenDAL</div>
 <div class="line">cmake ..</div>
 <div class="line">make</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
 Test</h2>
 <p>You should build the project with <code>OPENDAL_ENABLE_TESTING</code> option. Then run:</p>
 <div class="fragment"><div class="line">make test</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md9"></a>
 Docs</h2>
 <p>You should build the project with <code>OPENDAL_ENABLE_DOCUMENTATION</code> option. Then run:</p>
 <div class="fragment"><div class="line">make docs</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 CMake Options</h2>
 <ul>
 <li><code>OPENDAL_DEV</code>: Enable development environment for OpenDAL. It will enable most development options. With this option, you don't need to set other options. Default: <code>OFF</code></li>
 <li><code>OPENDAL_ENABLE_ADDRESS_SANITIZER</code>: Enable address sanitizer. Default: <code>OFF</code></li>
 <li><code>OPENDAL_ENABLE_DOCUMENTATION</code>: Enable documentation. Default: <code>OFF</code></li>
 <li><code>OPENDAL_DOCS_ONLY</code>: Only build documentation. Default: <code>OFF</code></li>
-<li><code>OPENDAL_ENABLE_TESTING</code>: Enable testing. Default: <code>OFF</code></li>
+<li><code>OPENDAL_ENABLE_TESTING</code>: Enable testing. Default: <code>OFF</code> </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md8"></a>
-Using</h1>
-<h2><a class="anchor" id="autotoc_md9"></a>
-CMake</h2>
-<p>Because the project repo includes rust core code, we can't use <code>git submodule</code> directly to add it. So we recommend using <code>FetchContent</code> to add the library.</p>
-<div class="fragment"><div class="line">FetchContent_Declare(</div>
-<div class="line">    opendal-cpp</div>
-<div class="line">    URL     https://github.com/apache/incubator-opendal/releases/download/&lt;newest-tag&gt;/opendal-cpp-&lt;newest-tag&gt;.tar.gz</div>
-<div class="line">    URL_HASH SHA256=&lt;newest-tag-sha256&gt;</div>
-<div class="line">)</div>
-<div class="line">FetchContent_MakeAvailable(opendal-cpp)</div>
-</div><!-- fragment --> </div></div><!-- PageDoc -->
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -21,7 +21,7 @@
 <!-- Node0 -->
 <g id="node2" class="node">
 <title>Node0</title>
-<g id="a_node2"><a xlink:href="classopendal_1_1ReaderStream.html" target="_top" xlink:title="ReaderStream is a stream wrapper of Reader which can provide iostream interface.">
+<g id="a_node2"><a xlink:href="classopendal_1_1ReaderStream.html" target="_top" xlink:title="ReaderStream is a stream wrapper of Reader which can provide iostream interface. It will keep a Reade...">
 <polygon fill="white" stroke="black" points="175,-0.5 175,-19.5 306,-19.5 306,-0.5 175,-0.5"/>
 <text text-anchor="middle" x="240.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">opendal::ReaderStream</text>
 </a>

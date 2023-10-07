@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenDAL Cpp Binding: opendal::ReaderStream Class Reference</title>
+<title>OpenDAL-CPP: opendal::ReaderStream Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">OpenDAL Cpp Binding
+   <div id="projectname">OpenDAL-CPP
    </div>
    <div id="projectbrief">The Cpp binding for Apache OpenDAL</div>
   </td>
@@ -75,7 +75,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><a class="el" href="classopendal_1_1ReaderStream.html" title="ReaderStream is a stream wrapper of Reader which can provide iostream interface.">ReaderStream</a> is a stream wrapper of <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a> which can provide <code>iostream</code> interface.  
+<p><a class="el" href="classopendal_1_1ReaderStream.html" title="ReaderStream is a stream wrapper of Reader which can provide iostream interface. It will keep a Reade...">ReaderStream</a> is a stream wrapper of <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a> which can provide <code>iostream</code> interface. It will keep a <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a> inside so that you can ignore the lifetime of original <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a>.  
  <a href="classopendal_1_1ReaderStream.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="opendal_8hpp_source.html">opendal.hpp</a>&gt;</code></p>
@@ -88,15 +88,14 @@ Inheritance diagram for opendal::ReaderStream:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af71bab51de8f4edfe8788313c93af433"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopendal_1_1ReaderStream.html#af71bab51de8f4edfe8788313c93af433">ReaderStream</a> (<a class="el" href="classopendal_1_1Reader.html">Reader</a> &amp;reader)</td></tr>
-<tr class="separator:af71bab51de8f4edfe8788313c93af433"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ffd0887705406ed3c2354631305ac65"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopendal_1_1ReaderStream.html#a2ffd0887705406ed3c2354631305ac65">ReaderStream</a> (<a class="el" href="classopendal_1_1Reader.html">Reader</a> &amp;&amp;reader)</td></tr>
+<tr class="separator:a2ffd0887705406ed3c2354631305ac65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classopendal_1_1ReaderStream.html" title="ReaderStream is a stream wrapper of Reader which can provide iostream interface.">ReaderStream</a> is a stream wrapper of <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a> which can provide <code>iostream</code> interface. </p>
-<dl class="section note"><dt>Note</dt><dd>It's an undefined behavior to make multiple streams from one reader. </dd></dl>
+<div class="textblock"><p><a class="el" href="classopendal_1_1ReaderStream.html" title="ReaderStream is a stream wrapper of Reader which can provide iostream interface. It will keep a Reade...">ReaderStream</a> is a stream wrapper of <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a> which can provide <code>iostream</code> interface. It will keep a <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a> inside so that you can ignore the lifetime of original <a class="el" href="classopendal_1_1Reader.html" title="Reader is designed to read data from the operator.">Reader</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="af71bab51de8f4edfe8788313c93af433"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af71bab51de8f4edfe8788313c93af433">&#9670;&nbsp;</a></span>ReaderStream()</h2>
+<a id="a2ffd0887705406ed3c2354631305ac65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ffd0887705406ed3c2354631305ac65">&#9670;&nbsp;</a></span>ReaderStream()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -107,7 +106,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">opendal::ReaderStream::ReaderStream </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classopendal_1_1Reader.html">Reader</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classopendal_1_1Reader.html">Reader</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>reader</em></td><td>)</td>
           <td></td>
         </tr>
