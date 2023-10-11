@@ -673,6 +673,12 @@
 <a href="#673" id="673">673</a>
 <a href="#674" id="674">674</a>
 <a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -799,12 +805,15 @@
     </span>request_duration_seconds: Family&lt;OperationLabels, Histogram&gt;,
     <span class="doccomment">/// The histogram of bytes
     </span>bytes_histogram: Family&lt;OperationLabels, Histogram&gt;,
+    <span class="doccomment">/// The counter of bytes
+    </span>bytes_total: Family&lt;OperationLabels, Counter&gt;,
 }
 
 <span class="kw">impl </span>PrometheusClientMetrics {
     <span class="kw">pub fn </span>register(registry: <span class="kw-2">&amp;mut </span>Registry) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>requests_total = Family::default();
         <span class="kw">let </span>errors_total = Family::default();
+        <span class="kw">let </span>bytes_total = Family::default();
         <span class="kw">let </span>request_duration_seconds = Family::&lt;OperationLabels, <span class="kw">_</span>&gt;::new_with_constructor(|| {
             <span class="kw">let </span>buckets = histogram::exponential_buckets(<span class="number">0.01</span>, <span class="number">2.0</span>, <span class="number">16</span>);
             Histogram::new(buckets)
@@ -814,19 +823,21 @@
             Histogram::new(buckets)
         });
 
-        registry.register(<span class="string">&quot;opendal_requests_total&quot;</span>, <span class="string">&quot;&quot;</span>, requests_total.clone());
-        registry.register(<span class="string">&quot;opendal_errors_total&quot;</span>, <span class="string">&quot;&quot;</span>, errors_total.clone());
+        registry.register(<span class="string">&quot;opendal_requests&quot;</span>, <span class="string">&quot;&quot;</span>, requests_total.clone());
+        registry.register(<span class="string">&quot;opendal_errors&quot;</span>, <span class="string">&quot;&quot;</span>, errors_total.clone());
         registry.register(
             <span class="string">&quot;opendal_request_duration_seconds&quot;</span>,
             <span class="string">&quot;&quot;</span>,
             request_duration_seconds.clone(),
         );
         registry.register(<span class="string">&quot;opendal_bytes_histogram&quot;</span>, <span class="string">&quot;&quot;</span>, bytes_histogram.clone());
+        registry.register(<span class="string">&quot;opendal_bytes&quot;</span>, <span class="string">&quot;&quot;</span>, bytes_total.clone());
         <span class="self">Self </span>{
             requests_total,
             errors_total,
             request_duration_seconds,
             bytes_histogram,
+            bytes_total,
         }
     }
 
@@ -849,6 +860,7 @@
         <span class="self">self</span>.bytes_histogram
             .get_or_create(<span class="kw-2">&amp;</span>labels)
             .observe(bytes <span class="kw">as </span>f64);
+        <span class="self">self</span>.bytes_total.get_or_create(<span class="kw-2">&amp;</span>labels).inc_by(bytes <span class="kw">as </span>u64);
     }
 
     <span class="kw">fn </span>observe_request_duration(<span class="kw-2">&amp;</span><span class="self">self</span>, scheme: Scheme, op: Operation, duration: Duration) {
