@@ -80,28 +80,13 @@ $(function() {
 Public Attributes</h2></td></tr>
 <tr class="memitem:ad8ca467bcbe6d1768e15fcf64fe78e9f"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__bytes.html">opendal_bytes</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__read.html#ad8ca467bcbe6d1768e15fcf64fe78e9f">data</a></td></tr>
 <tr class="separator:ad8ca467bcbe6d1768e15fcf64fe78e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f2e1d846a309c327c5cdb485c6dc2a1"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="opendal_8h.html#a6715be152766e5b8f840ce10cf9442c2">opendal_code</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__read.html#a1f2e1d846a309c327c5cdb485c6dc2a1">code</a></td></tr>
-<tr class="separator:a1f2e1d846a309c327c5cdb485c6dc2a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cd0e4e83ed4509856de0d1e6b83e2f2"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__error.html">opendal_error</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__read.html#a6cd0e4e83ed4509856de0d1e6b83e2f2">error</a></td></tr>
+<tr class="separator:a6cd0e4e83ed4509856de0d1e6b83e2f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The result type returned by opendal's read operation. </p>
-<p>The result type of read operation in opendal C binding, it contains the data that the read operation returns and a error code. If the read operation failed, the <code>data</code> fields should be a nullptr and the error code is <b>NOT</b> OPENDAL_OK. </p>
+<p>The result type of read operation in opendal C binding, it contains the data that the read operation returns and an NULL error. If the read operation failed, the <code>data</code> fields should be a nullptr and the error is not NULL. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="a1f2e1d846a309c327c5cdb485c6dc2a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f2e1d846a309c327c5cdb485c6dc2a1">&#9670;&nbsp;</a></span>code</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="opendal_8h.html#a6715be152766e5b8f840ce10cf9442c2">opendal_code</a> opendal_result_read::code</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The error code, should be OPENDAL_OK if succeeds </p>
-
-</div>
-</div>
 <a id="ad8ca467bcbe6d1768e15fcf64fe78e9f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad8ca467bcbe6d1768e15fcf64fe78e9f">&#9670;&nbsp;</a></span>data</h2>
 
@@ -114,6 +99,21 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>The byte array with length returned by read operations </p>
+
+</div>
+</div>
+<a id="a6cd0e4e83ed4509856de0d1e6b83e2f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cd0e4e83ed4509856de0d1e6b83e2f2">&#9670;&nbsp;</a></span>error</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structopendal__error.html">opendal_error</a>* opendal_result_read::error</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The error, if ok, it is null </p>
 
 </div>
 </div>

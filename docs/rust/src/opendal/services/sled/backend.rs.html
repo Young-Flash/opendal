@@ -200,6 +200,29 @@
 <a href="#200" id="200">200</a>
 <a href="#201" id="201">201</a>
 <a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -223,8 +246,10 @@
 <span class="kw">use </span>std::str;
 
 <span class="kw">use </span>async_trait::async_trait;
+<span class="kw">use </span>tokio::task;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::adapters::kv;
+<span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::Builder;
 <span class="kw">use </span><span class="kw">crate</span>::Error;
 <span class="kw">use </span><span class="kw">crate</span>::ErrorKind;
@@ -347,8 +372,13 @@
     }
 
     <span class="kw">async fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;&gt; {
-        <span class="self">self</span>.blocking_get(path)
-    }
+        <span class="kw">let </span>cloned_self = <span class="self">self</span>.clone();
+        <span class="kw">let </span>cloned_path = path.to_string();
+
+        task::spawn_blocking(<span class="kw">move </span>|| cloned_self.blocking_get(cloned_path.as_str()))
+            .<span class="kw">await
+            </span>.map_err(new_task_join_error)<span class="question-mark">?
+    </span>}
 
     <span class="kw">fn </span>blocking_get(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">self
@@ -359,8 +389,14 @@
     }
 
     <span class="kw">async fn </span>set(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.blocking_set(path, value)
-    }
+        <span class="kw">let </span>cloned_self = <span class="self">self</span>.clone();
+        <span class="kw">let </span>cloned_path = path.to_string();
+        <span class="kw">let </span>cloned_value = value.to_vec();
+
+        task::spawn_blocking(<span class="kw">move </span>|| cloned_self.blocking_set(cloned_path.as_str(), <span class="kw-2">&amp;</span>cloned_value))
+            .<span class="kw">await
+            </span>.map_err(new_task_join_error)<span class="question-mark">?
+    </span>}
 
     <span class="kw">fn </span>blocking_set(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="self">self</span>.tree.insert(path, value).map_err(parse_error)<span class="question-mark">?</span>;
@@ -369,8 +405,13 @@
     }
 
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.blocking_delete(path)
-    }
+        <span class="kw">let </span>cloned_self = <span class="self">self</span>.clone();
+        <span class="kw">let </span>cloned_path = path.to_string();
+
+        task::spawn_blocking(<span class="kw">move </span>|| cloned_self.blocking_delete(cloned_path.as_str()))
+            .<span class="kw">await
+            </span>.map_err(new_task_join_error)<span class="question-mark">?
+    </span>}
 
     <span class="kw">fn </span>blocking_delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="self">self</span>.tree.remove(path).map_err(parse_error)<span class="question-mark">?</span>;
@@ -379,8 +420,13 @@
     }
 
     <span class="kw">async fn </span>scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;&gt; {
-        <span class="self">self</span>.blocking_scan(path)
-    }
+        <span class="kw">let </span>cloned_self = <span class="self">self</span>.clone();
+        <span class="kw">let </span>cloned_path = path.to_string();
+
+        task::spawn_blocking(<span class="kw">move </span>|| cloned_self.blocking_scan(cloned_path.as_str()))
+            .<span class="kw">await
+            </span>.map_err(new_task_join_error)<span class="question-mark">?
+    </span>}
 
     <span class="kw">fn </span>blocking_scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;&gt; {
         <span class="kw">let </span>it = <span class="self">self</span>.tree.scan_prefix(path).keys();

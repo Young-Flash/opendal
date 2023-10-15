@@ -80,24 +80,25 @@ $(function() {
 Public Attributes</h2></td></tr>
 <tr class="memitem:a1388cb447f532ecd19ff9a13e09daced"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__blocking__lister.html">opendal_blocking_lister</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__list.html#a1388cb447f532ecd19ff9a13e09daced">lister</a></td></tr>
 <tr class="separator:a1388cb447f532ecd19ff9a13e09daced"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a373cafb8f88b5dacfb60e9dd658dfd00"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="opendal_8h.html#a6715be152766e5b8f840ce10cf9442c2">opendal_code</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__list.html#a373cafb8f88b5dacfb60e9dd658dfd00">code</a></td></tr>
-<tr class="separator:a373cafb8f88b5dacfb60e9dd658dfd00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a874bfb5c9d016445698fb59d65b76ed2"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__error.html">opendal_error</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__list.html#a874bfb5c9d016445698fb59d65b76ed2">error</a></td></tr>
+<tr class="separator:a874bfb5c9d016445698fb59d65b76ed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The result type returned by <a class="el" href="opendal_8h.html#a844f3a690078c34af557ae83e1f1513f" title="Blockingly list the objects in path.">opendal_operator_blocking_list()</a>. </p>
-<p>The result type for <a class="el" href="opendal_8h.html#a844f3a690078c34af557ae83e1f1513f" title="Blockingly list the objects in path.">opendal_operator_blocking_list()</a>, the field <code>lister</code> contains the lister of the path, which is an iterator of the objects under the path. the field <code>code</code> represents whether the stat operation is successful. </p>
+<p>The result type for <a class="el" href="opendal_8h.html#a844f3a690078c34af557ae83e1f1513f" title="Blockingly list the objects in path.">opendal_operator_blocking_list()</a>, the field <code>lister</code> contains the lister of the path, which is an iterator of the objects under the path. the field <code>error</code> represents whether the stat operation is successful. If successful, the <code>error</code> field is null. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="a373cafb8f88b5dacfb60e9dd658dfd00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a373cafb8f88b5dacfb60e9dd658dfd00">&#9670;&nbsp;</a></span>code</h2>
+<a id="a874bfb5c9d016445698fb59d65b76ed2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a874bfb5c9d016445698fb59d65b76ed2">&#9670;&nbsp;</a></span>error</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="opendal_8h.html#a6715be152766e5b8f840ce10cf9442c2">opendal_code</a> opendal_result_list::code</td>
+          <td class="memname">struct <a class="el" href="structopendal__error.html">opendal_error</a>* opendal_result_list::error</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The error, if ok, it is null </p>
 
 </div>
 </div>
@@ -112,6 +113,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The lister, used for further listing operations </p>
 
 </div>
 </div>

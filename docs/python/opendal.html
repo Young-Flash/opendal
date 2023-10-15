@@ -168,19 +168,19 @@
                                 <a class="variable" href="#Metadata.content_length">content_length</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Metadata.etag">etag</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#Metadata.content_md5">content_md5</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Metadata.mode">mode</a>
+                                <a class="variable" href="#Metadata.content_type">content_type</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Metadata.etag">etag</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.content_disposition">content_disposition</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Metadata.content_type">content_type</a>
+                                <a class="variable" href="#Metadata.mode">mode</a>
                         </li>
                 </ul>
 
@@ -189,10 +189,10 @@
                     <a class="class" href="#PresignedRequest">PresignedRequest</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#PresignedRequest.headers">headers</a>
+                                <a class="variable" href="#PresignedRequest.method">method</a>
                         </li>
                         <li>
-                                <a class="variable" href="#PresignedRequest.method">method</a>
+                                <a class="variable" href="#PresignedRequest.headers">headers</a>
                         </li>
                         <li>
                                 <a class="variable" href="#PresignedRequest.url">url</a>
@@ -350,7 +350,7 @@ opendal    </h1>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">write</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span></span><span class="return-annotation">):</span></span>
+        <span class="name">write</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">buffer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_disposition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">cache_control</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
 
         
     </div>
@@ -605,7 +605,7 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
                                 <div class="attr function">
             
         <span class="def">async def</span>
-        <span class="name">write</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span></span><span class="return-annotation">):</span></span>
+        <span class="name">write</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">buffer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_disposition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">cache_control</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
 
         
     </div>
@@ -937,19 +937,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
-                            <div id="Metadata.etag" class="classattr">
-                                <div class="attr variable">
-            <span class="name">etag</span><span class="annotation">: Optional[str]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.etag"></a>
-    
-            <div class="docstring"><p>ETag of this entry.</p>
-</div>
-
-
-                            </div>
                             <div id="Metadata.content_md5" class="classattr">
                                 <div class="attr variable">
             <span class="name">content_md5</span><span class="annotation">: Optional[str]</span>
@@ -963,15 +950,28 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
-                            <div id="Metadata.mode" class="classattr">
+                            <div id="Metadata.content_type" class="classattr">
                                 <div class="attr variable">
-            <span class="name">mode</span><span class="annotation">: <a href="#EntryMode">EntryMode</a></span>
+            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
 
         
     </div>
-    <a class="headerlink" href="#Metadata.mode"></a>
+    <a class="headerlink" href="#Metadata.content_type"></a>
     
-            <div class="docstring"><p>mode represent this entry's mode.</p>
+            <div class="docstring"><p>Content Type of this entry.</p>
+</div>
+
+
+                            </div>
+                            <div id="Metadata.etag" class="classattr">
+                                <div class="attr variable">
+            <span class="name">etag</span><span class="annotation">: Optional[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.etag"></a>
+    
+            <div class="docstring"><p>ETag of this entry.</p>
 </div>
 
 
@@ -987,15 +987,15 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
 
                             </div>
-                            <div id="Metadata.content_type" class="classattr">
+                            <div id="Metadata.mode" class="classattr">
                                 <div class="attr variable">
-            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
+            <span class="name">mode</span><span class="annotation">: <a href="#EntryMode">EntryMode</a></span>
 
         
     </div>
-    <a class="headerlink" href="#Metadata.content_type"></a>
+    <a class="headerlink" href="#Metadata.mode"></a>
     
-            <div class="docstring"><p>Content Type of this entry.</p>
+            <div class="docstring"><p>mode represent this entry's mode.</p>
 </div>
 
 
@@ -1013,19 +1013,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
     
 
-                            <div id="PresignedRequest.headers" class="classattr">
-                                <div class="attr variable">
-            <span class="name">headers</span><span class="annotation">: dict[str, str]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#PresignedRequest.headers"></a>
-    
-            <div class="docstring"><p>Return the HTTP headers of this request.</p>
-</div>
-
-
-                            </div>
                             <div id="PresignedRequest.method" class="classattr">
                                 <div class="attr variable">
             <span class="name">method</span><span class="annotation">: str</span>
@@ -1035,6 +1022,19 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     <a class="headerlink" href="#PresignedRequest.method"></a>
     
             <div class="docstring"><p>Return the HTTP method of this request.</p>
+</div>
+
+
+                            </div>
+                            <div id="PresignedRequest.headers" class="classattr">
+                                <div class="attr variable">
+            <span class="name">headers</span><span class="annotation">: dict[str, str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PresignedRequest.headers"></a>
+    
+            <div class="docstring"><p>Return the HTTP headers of this request.</p>
 </div>
 
 

@@ -80,26 +80,26 @@ $(function() {
 Public Attributes</h2></td></tr>
 <tr class="memitem:abe145d68333ea78b438ef92a12d9d295"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__is__exist.html#abe145d68333ea78b438ef92a12d9d295">is_exist</a></td></tr>
 <tr class="separator:abe145d68333ea78b438ef92a12d9d295"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed685ac0a5c564f0cbdbe36e94ef7c7b"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="opendal_8h.html#a6715be152766e5b8f840ce10cf9442c2">opendal_code</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__is__exist.html#aed685ac0a5c564f0cbdbe36e94ef7c7b">code</a></td></tr>
-<tr class="separator:aed685ac0a5c564f0cbdbe36e94ef7c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dc61502ab68ba25bcd56b09a215de6c"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__error.html">opendal_error</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__is__exist.html#a6dc61502ab68ba25bcd56b09a215de6c">error</a></td></tr>
+<tr class="separator:a6dc61502ab68ba25bcd56b09a215de6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The result type returned by <a class="el" href="opendal_8h.html#ae5a3bf403cdf78d5c5b1fa9f623f0d80" title="Check whether the path exists.">opendal_operator_is_exist()</a>. </p>
-<p>The result type for <a class="el" href="opendal_8h.html#ae5a3bf403cdf78d5c5b1fa9f623f0d80" title="Check whether the path exists.">opendal_operator_is_exist()</a>, the field <code>is_exist</code> contains whether the path exists, and the field <code>code</code> contains the corresponding error code.</p>
+<p>The result type for <a class="el" href="opendal_8h.html#ae5a3bf403cdf78d5c5b1fa9f623f0d80" title="Check whether the path exists.">opendal_operator_is_exist()</a>, the field <code>is_exist</code> contains whether the path exists, and the field <code>error</code> contains the corresponding error. If successful, the <code>error</code> field is null.</p>
 <dl class="section note"><dt>Note</dt><dd>If the <a class="el" href="opendal_8h.html#ae5a3bf403cdf78d5c5b1fa9f623f0d80" title="Check whether the path exists.">opendal_operator_is_exist()</a> fails, the <code>is_exist</code> field will be set to false. </dd></dl>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="aed685ac0a5c564f0cbdbe36e94ef7c7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed685ac0a5c564f0cbdbe36e94ef7c7b">&#9670;&nbsp;</a></span>code</h2>
+<a id="a6dc61502ab68ba25bcd56b09a215de6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dc61502ab68ba25bcd56b09a215de6c">&#9670;&nbsp;</a></span>error</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="opendal_8h.html#a6715be152766e5b8f840ce10cf9442c2">opendal_code</a> opendal_result_is_exist::code</td>
+          <td class="memname">struct <a class="el" href="structopendal__error.html">opendal_error</a>* opendal_result_is_exist::error</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The error code, should be OPENDAL_OK if succeeds </p>
+<p>The error, if ok, it is null </p>
 
 </div>
 </div>

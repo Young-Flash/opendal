@@ -292,6 +292,10 @@
 <a href="#292" id="292">292</a>
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -516,12 +520,12 @@
             <span class="string">&quot;SELECT `{}` FROM `{}` WHERE `{}` = :path LIMIT 1&quot;</span>,
             <span class="self">self</span>.value_field, <span class="self">self</span>.table, <span class="self">self</span>.key_field
         );
-        <span class="kw">let </span><span class="kw-2">mut </span>conn = <span class="self">self</span>.connection_pool.get_conn().<span class="kw">await</span>.map_err(|err| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;connection failed&quot;</span>).set_source(err)
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>statement = conn.prep(query).<span class="kw">await</span>.map_err(|err| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;prepare statement failed&quot;</span>).set_source(err)
-        })<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>conn = <span class="self">self
+            </span>.connection_pool
+            .get_conn()
+            .<span class="kw">await
+            </span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>statement = conn.prep(query).<span class="kw">await</span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
         <span class="kw">let </span>result: <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; = conn
             .exec_first(
                 statement,
@@ -530,7 +534,7 @@
                 },
             )
             .<span class="kw">await
-            </span>.map_err(|err| Error::new(ErrorKind::Unexpected, <span class="string">&quot;delete failed&quot;</span>).set_source(err))<span class="question-mark">?</span>;
+            </span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
         <span class="kw">match </span>result {
             <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(v)),
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
@@ -544,12 +548,12 @@
             ON DUPLICATE KEY UPDATE `{}` = VALUES({})&quot;</span>,
             <span class="self">self</span>.table, <span class="self">self</span>.key_field, <span class="self">self</span>.value_field, <span class="self">self</span>.value_field, <span class="self">self</span>.value_field
         );
-        <span class="kw">let </span><span class="kw-2">mut </span>conn = <span class="self">self</span>.connection_pool.get_conn().<span class="kw">await</span>.map_err(|err| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;connection failed&quot;</span>).set_source(err)
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>statement = conn.prep(query).<span class="kw">await</span>.map_err(|err| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;prepare statement failed&quot;</span>).set_source(err)
-        })<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>conn = <span class="self">self
+            </span>.connection_pool
+            .get_conn()
+            .<span class="kw">await
+            </span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>statement = conn.prep(query).<span class="kw">await</span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
 
         conn.exec_drop(
             statement,
@@ -559,7 +563,7 @@
             },
         )
         .<span class="kw">await
-        </span>.map_err(|err| Error::new(ErrorKind::Unexpected, <span class="string">&quot;set failed&quot;</span>).set_source(err))<span class="question-mark">?</span>;
+        </span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -568,12 +572,12 @@
             <span class="string">&quot;DELETE FROM `{}` WHERE `{}` = :path&quot;</span>,
             <span class="self">self</span>.table, <span class="self">self</span>.key_field
         );
-        <span class="kw">let </span><span class="kw-2">mut </span>conn = <span class="self">self</span>.connection_pool.get_conn().<span class="kw">await</span>.map_err(|err| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;connection failed&quot;</span>).set_source(err)
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>statement = conn.prep(query).<span class="kw">await</span>.map_err(|err| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;prepare statement failed&quot;</span>).set_source(err)
-        })<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>conn = <span class="self">self
+            </span>.connection_pool
+            .get_conn()
+            .<span class="kw">await
+            </span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>statement = conn.prep(query).<span class="kw">await</span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
 
         conn.exec_drop(
             statement,
@@ -582,8 +586,12 @@
             },
         )
         .<span class="kw">await
-        </span>.map_err(|err| Error::new(ErrorKind::Unexpected, <span class="string">&quot;delete failed&quot;</span>).set_source(err))<span class="question-mark">?</span>;
+        </span>.map_err(parse_mysql_error)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
+}
+
+<span class="kw">fn </span>parse_mysql_error(err: mysql_async::Error) -&gt; Error {
+    Error::new(ErrorKind::Unexpected, <span class="string">&quot;unhandled error from mysql&quot;</span>).set_source(err)
 }
 </code></pre></div></section></main></body></html>
