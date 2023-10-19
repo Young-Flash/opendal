@@ -2484,7 +2484,7 @@
     /// # }
     /// ```
     </span><span class="kw">pub async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Entry&gt;&gt; {
-        <span class="self">self</span>.lister_with(path).<span class="kw">await</span><span class="question-mark">?</span>.try_collect().<span class="kw">await
+        <span class="self">self</span>.list_with(path).<span class="kw">await
     </span>}
 
     <span class="doccomment">/// List entries within a given directory with options.

@@ -635,6 +635,8 @@
 <a href="#635" id="635">635</a>
 <a href="#636" id="636">636</a>
 <a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -687,17 +689,16 @@
     presign_endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
     bucket: String,
 
-    <span class="comment">// sse options
+    <span class="comment">// OSS features
     </span>server_side_encryption: <span class="prelude-ty">Option</span>&lt;String&gt;,
     server_side_encryption_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    allow_anonymous: bool,
 
     <span class="comment">// authenticate options
     </span>access_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
     access_key_secret: <span class="prelude-ty">Option</span>&lt;String&gt;,
 
     http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
-    <span class="doccomment">/// the size of each part, and the range is 5MB ~ 5 GB.
-    </span>write_min_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
     <span class="doccomment">/// batch_max_operations
     </span>batch_max_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
@@ -707,7 +708,8 @@
         <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
         d.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
+            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">&quot;allow_anonymous&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.allow_anonymous);
 
         d.finish_non_exhaustive()
     }
@@ -870,18 +872,17 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// set the minimum size of unsized write, it should be greater than 5 MB.
-    /// Reference: [OSS Multipart upload](https://www.alibabacloud.com/help/en/object-storage-service/latest/multipart-upload-6)
-    </span><span class="kw">pub fn </span>write_min_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, write_min_size: usize) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.write_min_size = <span class="prelude-val">Some</span>(write_min_size);
-
-        <span class="self">self
-    </span>}
-
     <span class="doccomment">/// Set maximum batch operations of this backend.
     </span><span class="kw">pub fn </span>batch_max_operations(<span class="kw-2">&amp;mut </span><span class="self">self</span>, batch_max_operations: usize) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.batch_max_operations = <span class="prelude-val">Some</span>(batch_max_operations);
 
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Allow anonymous will allow opendal to send request without signing
+    /// when credential is not loaded.
+    </span><span class="kw">pub fn </span>allow_anonymous(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.allow_anonymous = <span class="bool-val">true</span>;
         <span class="self">self
     </span>}
 }
@@ -905,10 +906,12 @@
             .map(|v| builder.server_side_encryption(v));
         map.get(<span class="string">&quot;server_side_encryption_key_id&quot;</span>)
             .map(|v| builder.server_side_encryption_key_id(v));
-        map.get(<span class="string">&quot;write_min_size&quot;</span>)
-            .map(|v| builder.write_min_size(v.parse::&lt;usize&gt;().unwrap()));
         map.get(<span class="string">&quot;batch_max_operations&quot;</span>)
             .map(|v| builder.batch_max_operations(v.parse::&lt;usize&gt;().unwrap()));
+        map.get(<span class="string">&quot;allow_anonymous&quot;</span>)
+            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
+            .map(|<span class="kw">_</span>| builder.allow_anonymous());
+
         builder
     }
 
@@ -992,6 +995,7 @@
                 endpoint,
                 host,
                 presign_endpoint,
+                allow_anonymous: <span class="self">self</span>.allow_anonymous,
                 signer,
                 loader,
                 client,

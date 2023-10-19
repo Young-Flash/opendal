@@ -600,26 +600,6 @@
 <a href="#600" id="600">600</a>
 <a href="#601" id="601">601</a>
 <a href="#602" id="602">602</a>
-<a href="#603" id="603">603</a>
-<a href="#604" id="604">604</a>
-<a href="#605" id="605">605</a>
-<a href="#606" id="606">606</a>
-<a href="#607" id="607">607</a>
-<a href="#608" id="608">608</a>
-<a href="#609" id="609">609</a>
-<a href="#610" id="610">610</a>
-<a href="#611" id="611">611</a>
-<a href="#612" id="612">612</a>
-<a href="#613" id="613">613</a>
-<a href="#614" id="614">614</a>
-<a href="#615" id="615">615</a>
-<a href="#616" id="616">616</a>
-<a href="#617" id="617">617</a>
-<a href="#618" id="618">618</a>
-<a href="#619" id="619">619</a>
-<a href="#620" id="620">620</a>
-<a href="#621" id="621">621</a>
-<a href="#622" id="622">622</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -718,52 +698,24 @@
                 <span class="kw">continue</span>;
             }
 
-            <span class="kw">let </span><span class="kw-2">mut </span>query = <span class="macro">format!</span>(
-                <span class="string">&quot;name = \&quot;{}\&quot; and \&quot;{}\&quot; in parents and trashed = false&quot;</span>,
-                item, parent_id
-            );
-            <span class="kw">if </span>i != file_path_items.len() - <span class="number">1 </span>|| path.ends_with(<span class="string">&#39;/&#39;</span>) {
-                query += <span class="string">&quot; and mimeType = &#39;application/vnd.google-apps.folder&#39;&quot;</span>;
-            }
+            <span class="kw">let </span>id = <span class="kw">if </span>i != file_path_items.len() - <span class="number">1 </span>|| path.ends_with(<span class="string">&#39;/&#39;</span>) {
+                <span class="self">self</span>.gdrive_search_folder(<span class="kw-2">&amp;</span>parent_id, item).<span class="kw">await</span><span class="question-mark">?
+            </span>} <span class="kw">else </span>{
+                <span class="self">self</span>.gdrive_search_file(<span class="kw-2">&amp;</span>parent_id, item)
+                    .<span class="kw">await</span><span class="question-mark">?
+                    </span>.map(|v| v.id)
+            };
 
-            <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="macro">format!</span>(
-                <span class="string">&quot;https://www.googleapis.com/drive/v3/files?q={}&quot;</span>,
-                percent_encode_path(<span class="kw-2">&amp;</span>query)
-            ))
-            .body(AsyncBody::default())
-            .map_err(new_request_build_error)<span class="question-mark">?</span>;
-
-            <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-            <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="kw">let </span>status = resp.status();
-
-            <span class="kw">match </span>status {
-                StatusCode::OK =&gt; {
-                    <span class="kw">let </span>resp_body = <span class="kw-2">&amp;</span>resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-
-                    <span class="kw">let </span>gdrive_file_list: GdriveFileList =
-                        serde_json::from_slice(resp_body).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
-
-                    <span class="kw">if </span>gdrive_file_list.files.is_empty() {
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                            ErrorKind::NotFound,
-                            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;path not found: {}&quot;</span>, item),
-                        ));
-                    }
-
-                    <span class="kw">if </span>gdrive_file_list.files.len() &gt; <span class="number">1 </span>{
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;please ensure that the file corresponding to the path exists and is unique. the response body is {}&quot;</span>, String::from_utf8_lossy(resp_body))));
-                    }
-
-                    parent_id = gdrive_file_list.files[<span class="number">0</span>].id.clone();
-
-                    cache.insert(path_part, parent_id.clone());
-                }
-                <span class="kw">_ </span>=&gt; {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
-                }
-            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(id) = id {
+                parent_id = id;
+                cache.insert(path_part, parent_id.clone());
+            } <span class="kw">else </span>{
+                <span class="comment">// TODO: return None instead of error.
+                </span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                    ErrorKind::NotFound,
+                    <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;path not found: {}&quot;</span>, item),
+                ));
+            };
         }
 
         <span class="prelude-val">Ok</span>(parent_id)
@@ -792,84 +744,72 @@
                 <span class="kw">continue</span>;
             }
 
-            <span class="kw">let </span>query = <span class="macro">format!</span>(
-                <span class="string">&quot;name = \&quot;{}\&quot; and \&quot;{}\&quot; in parents and trashed = false and mimeType = &#39;application/vnd.google-apps.folder&#39;&quot;</span>,
-                item, parent
-            );
+            <span class="kw">let </span>folder_id = <span class="self">self</span>.gdrive_search_folder(<span class="kw-2">&amp;</span>parent, item).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span>folder_id = <span class="kw">if let </span><span class="prelude-val">Some</span>(id) = folder_id {
+                id
+            } <span class="kw">else </span>{
+                <span class="self">self</span>.gdrive_create_folder(<span class="kw-2">&amp;</span>parent, item).<span class="kw">await</span><span class="question-mark">?
+            </span>};
 
-            <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="macro">format!</span>(
-                <span class="string">&quot;https://www.googleapis.com/drive/v3/files?q={}&quot;</span>,
-                percent_encode_path(<span class="kw-2">&amp;</span>query)
-            ))
-            .body(AsyncBody::Empty)
-            .map_err(new_request_build_error)<span class="question-mark">?</span>;
-            <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-            <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="kw">let </span>status = resp.status();
-
-            <span class="kw">match </span>status {
-                StatusCode::OK =&gt; {
-                    <span class="kw">let </span>resp_body = <span class="kw-2">&amp;</span>resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-
-                    <span class="kw">let </span>gdrive_file_list: GdriveFileList =
-                        serde_json::from_slice(resp_body).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
-
-                    <span class="kw">if </span>gdrive_file_list.files.len() != <span class="number">1 </span>{
-                        <span class="kw">let </span>parent_name = file_path_items[i];
-                        <span class="kw">let </span>resp_body = <span class="self">self
-                            </span>.gdrive_create_folder(parent_name, <span class="prelude-val">Some</span>(parent.to_owned()))
-                            .<span class="kw">await</span><span class="question-mark">?
-                            </span>.into_body()
-                            .bytes()
-                            .<span class="kw">await</span><span class="question-mark">?</span>;
-                        <span class="kw">let </span>parent_meta: GdriveFile = serde_json::from_slice(<span class="kw-2">&amp;</span>resp_body)
-                            .map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
-
-                        parent = parent_meta.id;
-                    } <span class="kw">else </span>{
-                        parent = gdrive_file_list.files[<span class="number">0</span>].id.clone();
-                    }
-
-                    cache.insert(path_part, parent.clone());
-                }
-                StatusCode::NOT_FOUND =&gt; {
-                    <span class="kw">let </span>parent_name = file_path_items[i];
-                    <span class="kw">let </span>res = <span class="self">self
-                        </span>.gdrive_create_folder(parent_name, <span class="prelude-val">Some</span>(parent.to_owned()))
-                        .<span class="kw">await</span><span class="question-mark">?</span>;
-
-                    <span class="kw">let </span>status = res.status();
-
-                    <span class="kw">match </span>status {
-                        StatusCode::OK =&gt; {
-                            <span class="kw">let </span>parent_id = res.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-                            parent = String::from_utf8_lossy(<span class="kw-2">&amp;</span>parent_id).to_string();
-
-                            cache.insert(path_part, parent.clone());
-                        }
-                        <span class="kw">_ </span>=&gt; {
-                            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(res).<span class="kw">await</span><span class="question-mark">?</span>);
-                        }
-                    }
-                }
-                <span class="kw">_ </span>=&gt; {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
-                }
-            }
+            parent = folder_id;
+            cache.insert(path_part, parent.clone());
         }
 
         <span class="prelude-val">Ok</span>(parent.to_owned())
     }
 
-    <span class="kw">pub async fn </span>gdrive_search_folder(
+    <span class="doccomment">/// Search a folder by name
+    ///
+    /// returns it&#39;s file id if exists, otherwise returns `None`.
+    </span><span class="kw">pub async fn </span>gdrive_search_file(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        target: <span class="kw-2">&amp;</span>str,
         parent: <span class="kw-2">&amp;</span>str,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
+        basename: <span class="kw-2">&amp;</span>str,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;GdriveFile&gt;&gt; {
+        <span class="kw">let </span>query =
+            <span class="macro">format!</span>(<span class="string">&quot;name = \&quot;{basename}\&quot; and \&quot;{parent}\&quot; in parents and trashed = false&quot;</span>);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(
+            <span class="string">&quot;https://www.googleapis.com/drive/v3/files?q={}&quot;</span>,
+            percent_encode_path(<span class="kw-2">&amp;</span>query)
+        );
+
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url)
+            .body(AsyncBody::Empty)
+            .map_err(new_request_build_error)<span class="question-mark">?</span>;
+
+        <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>status = resp.status();
+        <span class="kw">if </span>!status.is_success() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
+        }
+
+        <span class="kw">let </span>body = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>file_list: GdriveFileList =
+            serde_json::from_slice(<span class="kw-2">&amp;</span>body).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
+
+        <span class="kw">if </span>file_list.files.len() &gt; <span class="number">1 </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                ErrorKind::Unexpected,
+                <span class="string">&quot;please ensure that the file corresponding to the path is unique.&quot;</span>,
+            ));
+        }
+
+        <span class="prelude-val">Ok</span>(file_list.files.pop())
+    }
+
+    <span class="doccomment">/// Search a folder by name
+    ///
+    /// returns it&#39;s file id if exists, otherwise returns `None`.
+    </span><span class="kw">pub async fn </span>gdrive_search_folder(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        parent: <span class="kw-2">&amp;</span>str,
+        basename: <span class="kw-2">&amp;</span>str,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;String&gt;&gt; {
         <span class="kw">let </span>query = <span class="macro">format!</span>(
-            <span class="string">&quot;name = &#39;{}&#39; and &#39;{}&#39; in parents and trashed = false and mimeType = &#39;application/vnd.google-apps.folder&#39;&quot;</span>,
-            target, parent
+            <span class="string">&quot;name = \&quot;{}\&quot; and \&quot;{}\&quot; in parents and trashed = false and mimeType = &#39;application/vnd.google-apps.folder&#39;&quot;</span>,
+            basename, parent
         );
         <span class="kw">let </span>url = <span class="macro">format!</span>(
             <span class="string">&quot;https://www.googleapis.com/drive/v3/files?q={}&quot;</span>,
@@ -882,41 +822,61 @@
 
         <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send(req).<span class="kw">await
-    </span>}
+        <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; {
+                <span class="kw">let </span>body = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>meta: GdriveFileList =
+                    serde_json::from_slice(<span class="kw-2">&amp;</span>body).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
+
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(f) = meta.files.first() {
+                    <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(f.id.clone()))
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+                }
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
 
     <span class="doccomment">/// Create a folder.
-    /// Should provide the parent folder id.
-    /// Or will create the folder in the root folder.
-    </span><span class="kw">pub async fn </span>gdrive_create_folder(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        name: <span class="kw-2">&amp;</span>str,
-        parent: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
+    ///
+    /// # Input
+    ///
+    /// `parent_id` is the parent folder id.
+    ///
+    /// # Output
+    ///
+    /// Returns created folder&#39;s id while success, otherwise returns an error.
+    </span><span class="kw">pub async fn </span>gdrive_create_folder(<span class="kw-2">&amp;</span><span class="self">self</span>, parent_id: <span class="kw-2">&amp;</span>str, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
         <span class="kw">let </span>url = <span class="string">&quot;https://www.googleapis.com/drive/v3/files&quot;</span>;
+
+        <span class="kw">let </span>content = serde_json::to_vec(<span class="kw-2">&amp;</span><span class="macro">json!</span>({
+            <span class="string">&quot;name&quot;</span>: name,
+            <span class="string">&quot;mimeType&quot;</span>: <span class="string">&quot;application/vnd.google-apps.folder&quot;</span>,
+            <span class="comment">// If the parent is not provided, the folder will be created in the root folder.
+            </span><span class="string">&quot;parents&quot;</span>: [parent_id],
+        }))
+        .map_err(new_json_serialize_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(url)
             .header(header::CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>)
-            .body(AsyncBody::Bytes(bytes::Bytes::from(
-                serde_json::to_vec(<span class="kw-2">&amp;</span><span class="macro">json!</span>({
-                    <span class="string">&quot;name&quot;</span>: name,
-                    <span class="string">&quot;mimeType&quot;</span>: <span class="string">&quot;application/vnd.google-apps.folder&quot;</span>,
-                    <span class="comment">// If the parent is not provided, the folder will be created in the root folder.
-                    </span><span class="string">&quot;parents&quot;</span>: [parent.unwrap_or(<span class="string">&quot;root&quot;</span>.to_owned())],
-                }))
-                .map_err(|e| {
-                    Error::new(
-                        ErrorKind::Unexpected,
-                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;failed to serialize json(create folder result): {}&quot;</span>, e),
-                    )
-                })<span class="question-mark">?</span>,
-            )))
+            .body(AsyncBody::Bytes(Bytes::from(content)))
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
         <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send(req).<span class="kw">await
-    </span>}
+        <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">if </span>!resp.status().is_success() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
+        }
+        <span class="kw">let </span>body = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>file: GdriveFile = serde_json::from_slice(<span class="kw-2">&amp;</span>body).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(file.id)
+    }
 
     <span class="kw">pub async fn </span>gdrive_stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>path_id = <span class="self">self</span>.get_file_id_by_path(path).<span class="kw">await</span><span class="question-mark">?</span>;

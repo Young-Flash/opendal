@@ -165,19 +165,19 @@
                     <a class="class" href="#Metadata">Metadata</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="variable" href="#Metadata.content_type">content_type</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Metadata.content_length">content_length</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.content_md5">content_md5</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Metadata.content_type">content_type</a>
+                                <a class="variable" href="#Metadata.content_disposition">content_disposition</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.etag">etag</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Metadata.content_disposition">content_disposition</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.mode">mode</a>
@@ -189,13 +189,13 @@
                     <a class="class" href="#PresignedRequest">PresignedRequest</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#PresignedRequest.method">method</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#PresignedRequest.headers">headers</a>
                         </li>
                         <li>
                                 <a class="variable" href="#PresignedRequest.url">url</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PresignedRequest.method">method</a>
                         </li>
                 </ul>
 
@@ -320,7 +320,7 @@ opendal    </h1>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">bytes</span>:</span></span>
+        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">memoryview</span>:</span></span>
 
         
     </div>
@@ -475,7 +475,7 @@ Can be used as a context manager.</p>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">bytes</span>:</span></span>
+        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">memoryview</span>:</span></span>
 
         
     </div>
@@ -575,7 +575,7 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
                                 <div class="attr function">
             
         <span class="def">async def</span>
-        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">bytes</span>:</span></span>
+        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">memoryview</span>:</span></span>
 
         
     </div>
@@ -775,7 +775,7 @@ Can be used as an async context manager.</p>
                                 <div class="attr function">
             
         <span class="def">async def</span>
-        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">bytes</span>:</span></span>
+        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">memoryview</span>:</span></span>
 
         
     </div>
@@ -924,6 +924,19 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
     
 
+                            <div id="Metadata.content_type" class="classattr">
+                                <div class="attr variable">
+            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.content_type"></a>
+    
+            <div class="docstring"><p>Content Type of this entry.</p>
+</div>
+
+
+                            </div>
                             <div id="Metadata.content_length" class="classattr">
                                 <div class="attr variable">
             <span class="name">content_length</span><span class="annotation">: int</span>
@@ -950,17 +963,15 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
-                            <div id="Metadata.content_type" class="classattr">
+                            <div id="Metadata.content_disposition" class="classattr">
                                 <div class="attr variable">
-            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
+            <span class="name">content_disposition</span><span class="annotation">: Optional[str]</span>
 
         
     </div>
-    <a class="headerlink" href="#Metadata.content_type"></a>
+    <a class="headerlink" href="#Metadata.content_disposition"></a>
     
-            <div class="docstring"><p>Content Type of this entry.</p>
-</div>
-
+    
 
                             </div>
                             <div id="Metadata.etag" class="classattr">
@@ -974,17 +985,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
             <div class="docstring"><p>ETag of this entry.</p>
 </div>
 
-
-                            </div>
-                            <div id="Metadata.content_disposition" class="classattr">
-                                <div class="attr variable">
-            <span class="name">content_disposition</span><span class="annotation">: Optional[str]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.content_disposition"></a>
-    
-    
 
                             </div>
                             <div id="Metadata.mode" class="classattr">
@@ -1013,19 +1013,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
     
 
-                            <div id="PresignedRequest.method" class="classattr">
-                                <div class="attr variable">
-            <span class="name">method</span><span class="annotation">: str</span>
-
-        
-    </div>
-    <a class="headerlink" href="#PresignedRequest.method"></a>
-    
-            <div class="docstring"><p>Return the HTTP method of this request.</p>
-</div>
-
-
-                            </div>
                             <div id="PresignedRequest.headers" class="classattr">
                                 <div class="attr variable">
             <span class="name">headers</span><span class="annotation">: dict[str, str]</span>
@@ -1048,6 +1035,19 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     <a class="headerlink" href="#PresignedRequest.url"></a>
     
             <div class="docstring"><p>Return the URL of this request.</p>
+</div>
+
+
+                            </div>
+                            <div id="PresignedRequest.method" class="classattr">
+                                <div class="attr variable">
+            <span class="name">method</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PresignedRequest.method"></a>
+    
+            <div class="docstring"><p>Return the HTTP method of this request.</p>
 </div>
 
 
