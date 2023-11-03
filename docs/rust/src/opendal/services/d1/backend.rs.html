@@ -329,6 +329,9 @@
 <a href="#329" id="329">329</a>
 <a href="#330" id="330">330</a>
 <a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -602,6 +605,9 @@
             Capability {
                 read: <span class="bool-val">true</span>,
                 write: <span class="bool-val">true</span>,
+                <span class="comment">// Cloudflare D1 supports 1MB as max in write_total.
+                // refer to https://developers.cloudflare.com/d1/platform/limits/
+                </span>write_total_max_size: <span class="prelude-val">Some</span>(<span class="number">1000 </span>* <span class="number">1000</span>),
                 ..Default::default()
             },
         )

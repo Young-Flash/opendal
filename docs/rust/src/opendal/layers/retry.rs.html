@@ -2567,7 +2567,7 @@
 
         <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
             <span class="prelude-val">Ok</span>((
-                RpRead::new(<span class="number">13</span>),
+                RpRead::new(),
                 MockReader {
                     attempt: <span class="self">self</span>.attempt.clone(),
                     pos: <span class="number">0</span>,

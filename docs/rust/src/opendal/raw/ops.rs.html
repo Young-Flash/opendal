@@ -514,6 +514,23 @@
 <a href="#514" id="514">514</a>
 <a href="#515" id="515">515</a>
 <a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -788,6 +805,23 @@
     <span class="doccomment">/// Create a default `OpRead` which will read whole content of path.
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::default()
+    }
+
+    <span class="doccomment">/// The into_deterministic function transforms the OpRead into a deterministic version.
+    ///
+    /// This API is utilized because it allows for internal optimizations such as dividing read
+    /// ranges or retrying the read request from where it failed. In these scenarios, the expected
+    /// `ETag` value differs from what users specify in `If-Match` or `If-None-Match`.Therefore,
+    /// we need to eliminate these conditional headers to ensure that the read operation is
+    /// deterministic.
+    ///
+    /// This API is not intended to be used by users and should never be exposed.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_deterministic(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            if_match: <span class="prelude-val">None</span>,
+            if_none_match: <span class="prelude-val">None</span>,
+            ..<span class="self">self
+        </span>}
     }
 
     <span class="doccomment">/// Create a new OpRead with range.

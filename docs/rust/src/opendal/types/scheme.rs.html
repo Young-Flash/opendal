@@ -368,6 +368,22 @@
 <a href="#368" id="368">368</a>
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -410,6 +426,8 @@
     </span>Azdls,
     <span class="doccomment">/// [cacache][crate::services::Cacache]: cacache backend support.
     </span>Cacache,
+    <span class="doccomment">/// [cloudflare-kv][crate::services::CloudflareKv]: Cloudflare KV services.
+    </span>CloudflareKv,
     <span class="doccomment">/// [cos][crate::services::Cos]: Tencent Cloud Object Storage services.
     </span>Cos,
     <span class="doccomment">/// [d1][crate::services::D1]: D1 services
@@ -420,6 +438,8 @@
     </span>Etcd,
     <span class="doccomment">/// [foundationdb][crate::services::Foundationdb]: Foundationdb services.
     </span>Foundationdb,
+    <span class="doccomment">/// [dbfs][crate::services::Dbfs]: DBFS backend support.
+    </span>Dbfs,
     <span class="doccomment">/// [fs][crate::services::Fs]: POSIX alike file system.
     </span>Fs,
     <span class="doccomment">/// [ftp][crate::services::Ftp]: FTP backend.
@@ -477,10 +497,10 @@
     </span>Sled,
     <span class="doccomment">/// [Supabase][crate::services::Supabase]: Supabase storage service
     </span>Supabase,
+    <span class="doccomment">/// [swift][crate::services::Swift]: Swift backend support.
+    </span>Swift,
     <span class="doccomment">/// [Vercel Artifacts][crate::services::VercelArtifacts]: Vercel Artifacts service, as known as Vercel Remote Caching.
     </span>VercelArtifacts,
-    <span class="doccomment">/// [wasabi][crate::services::Wasabi]: Wasabi service
-    </span>Wasabi,
     <span class="doccomment">/// [webdav][crate::services::Webdav]: WebDAV support.
     </span>Webdav,
     <span class="doccomment">/// [webhdfs][crate::services::Webhdfs]: WebHDFS RESTful API Services
@@ -491,6 +511,8 @@
     </span>Tikv,
     <span class="doccomment">/// [azfile][crate::services::azfile]: Azfile Services
     </span>Azfile,
+    <span class="doccomment">/// [mongodb](crate::services::mongodb): MongoDB Services
+    </span>Mongodb,
     <span class="doccomment">/// Custom that allow users to implement services outside of OpenDAL.
     ///
     /// # NOTE
@@ -529,6 +551,8 @@
             </span>Scheme::Azblob,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-azdls&quot;</span>)]
             </span>Scheme::Azdls,
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-azfile&quot;</span>)]
+            </span>Scheme::Azfile,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-cacache&quot;</span>)]
             </span>Scheme::Cacache,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-cos&quot;</span>)]
@@ -595,18 +619,20 @@
             </span>Scheme::Sqlite,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-supabase&quot;</span>)]
             </span>Scheme::Supabase,
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-swift&quot;</span>)]
+            </span>Scheme::Swift,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-tikv&quot;</span>)]
             </span>Scheme::Tikv,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-vercel-artifacts&quot;</span>)]
             </span>Scheme::VercelArtifacts,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-wasabi&quot;</span>)]
-            </span>Scheme::Wasabi,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-webdav&quot;</span>)]
             </span>Scheme::Webdav,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-webhdfs&quot;</span>)]
             </span>Scheme::Webhdfs,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-redb&quot;</span>)]
             </span>Scheme::Redb,
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-mongodb&quot;</span>)]
+            </span>Scheme::Mongodb,
         ])
     }
 }
@@ -637,11 +663,13 @@
             // And abfs is widely used in hadoop ecosystem, keep it for easy to use.
             </span><span class="string">&quot;azdls&quot; </span>| <span class="string">&quot;azdfs&quot; </span>| <span class="string">&quot;abfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azdls),
             <span class="string">&quot;cacache&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cacache),
+            <span class="string">&quot;cloudflare_kv&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::CloudflareKv),
             <span class="string">&quot;cos&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cos),
             <span class="string">&quot;d1&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::D1),
             <span class="string">&quot;dashmap&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dashmap),
             <span class="string">&quot;dropbox&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dropbox),
             <span class="string">&quot;etcd&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Etcd),
+            <span class="string">&quot;dbfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dbfs),
             <span class="string">&quot;fs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Fs),
             <span class="string">&quot;gcs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gcs),
             <span class="string">&quot;gdrive&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gdrive),
@@ -669,13 +697,14 @@
             <span class="string">&quot;sftp&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sftp),
             <span class="string">&quot;sled&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sled),
             <span class="string">&quot;supabase&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Supabase),
+            <span class="string">&quot;swift&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Swift),
             <span class="string">&quot;oss&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Oss),
             <span class="string">&quot;vercel_artifacts&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::VercelArtifacts),
-            <span class="string">&quot;wasabi&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Wasabi),
             <span class="string">&quot;webdav&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Webdav),
             <span class="string">&quot;webhdfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Webhdfs),
             <span class="string">&quot;tikv&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Tikv),
             <span class="string">&quot;azfile&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azfile),
+            <span class="string">&quot;mongodb&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Mongodb),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Custom(Box::leak(s.into_boxed_str()))),
         }
     }
@@ -688,10 +717,12 @@
             Scheme::Azblob =&gt; <span class="string">&quot;azblob&quot;</span>,
             Scheme::Azdls =&gt; <span class="string">&quot;azdls&quot;</span>,
             Scheme::Cacache =&gt; <span class="string">&quot;cacache&quot;</span>,
+            Scheme::CloudflareKv =&gt; <span class="string">&quot;cloudflare_kv&quot;</span>,
             Scheme::Cos =&gt; <span class="string">&quot;cos&quot;</span>,
             Scheme::D1 =&gt; <span class="string">&quot;d1&quot;</span>,
             Scheme::Dashmap =&gt; <span class="string">&quot;dashmap&quot;</span>,
             Scheme::Etcd =&gt; <span class="string">&quot;etcd&quot;</span>,
+            Scheme::Dbfs =&gt; <span class="string">&quot;dbfs&quot;</span>,
             Scheme::Fs =&gt; <span class="string">&quot;fs&quot;</span>,
             Scheme::Gcs =&gt; <span class="string">&quot;gcs&quot;</span>,
             Scheme::Ghac =&gt; <span class="string">&quot;ghac&quot;</span>,
@@ -719,15 +750,16 @@
             Scheme::Sftp =&gt; <span class="string">&quot;sftp&quot;</span>,
             Scheme::Sled =&gt; <span class="string">&quot;sled&quot;</span>,
             Scheme::Supabase =&gt; <span class="string">&quot;supabase&quot;</span>,
+            Scheme::Swift =&gt; <span class="string">&quot;swift&quot;</span>,
             Scheme::VercelArtifacts =&gt; <span class="string">&quot;vercel_artifacts&quot;</span>,
             Scheme::Oss =&gt; <span class="string">&quot;oss&quot;</span>,
-            Scheme::Wasabi =&gt; <span class="string">&quot;wasabi&quot;</span>,
             Scheme::Webdav =&gt; <span class="string">&quot;webdav&quot;</span>,
             Scheme::Webhdfs =&gt; <span class="string">&quot;webhdfs&quot;</span>,
             Scheme::Redb =&gt; <span class="string">&quot;redb&quot;</span>,
             Scheme::Tikv =&gt; <span class="string">&quot;tikv&quot;</span>,
             Scheme::Azfile =&gt; <span class="string">&quot;azfile&quot;</span>,
             Scheme::Sqlite =&gt; <span class="string">&quot;sqlite&quot;</span>,
+            Scheme::Mongodb =&gt; <span class="string">&quot;mongodb&quot;</span>,
             Scheme::Custom(v) =&gt; v,
         }
     }

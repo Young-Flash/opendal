@@ -824,6 +824,29 @@
 <a href="#824" id="824">824</a>
 <a href="#825" id="825">825</a>
 <a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -841,11 +864,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::fmt::Debug;
-<span class="kw">use </span>std::fmt::Formatter;
-<span class="kw">use </span>std::time::Duration;
-
-<span class="kw">use </span>bytes::Bytes;
+</span><span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>http::header::CACHE_CONTROL;
 <span class="kw">use </span>http::header::CONTENT_DISPOSITION;
 <span class="kw">use </span>http::header::CONTENT_LENGTH;
@@ -862,6 +881,10 @@
 <span class="kw">use </span>reqsign::AliyunOssSigner;
 <span class="kw">use </span>serde::Deserialize;
 <span class="kw">use </span>serde::Serialize;
+<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::fmt::Formatter;
+<span class="kw">use </span>std::fmt::Write;
+<span class="kw">use </span>std::time::Duration;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -1153,19 +1176,41 @@
         token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
         delimiter: <span class="kw-2">&amp;</span>str,
         limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+        start_after: <span class="prelude-ty">Option</span>&lt;String&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>endpoint = <span class="self">self</span>.get_endpoint(<span class="bool-val">false</span>);
-        <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/?list-type=2&amp;delimiter={delimiter}&amp;prefix={}{}{}&quot;</span>,
-            endpoint,
-            percent_encode_path(<span class="kw-2">&amp;</span>p),
-            limit.map(|t| <span class="macro">format!</span>(<span class="string">&quot;&amp;max-keys={t}&quot;</span>)).unwrap_or_default(),
-            token
-                .map(|t| <span class="macro">format!</span>(<span class="string">&quot;&amp;continuation-token={}&quot;</span>, percent_encode_path(t)))
-                .unwrap_or_default(),
-        );
+        <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/?list-type=2&quot;</span>, endpoint);
+
+        <span class="macro">write!</span>(url, <span class="string">&quot;&amp;delimiter={delimiter}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+        <span class="comment">// prefix
+        </span><span class="kw">if </span>!p.is_empty() {
+            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;prefix={}&quot;</span>, percent_encode_path(<span class="kw-2">&amp;</span>p))
+                .expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+        }
+
+        <span class="comment">// max-key
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(limit) = limit {
+            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;max-keys={limit}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+        }
+
+        <span class="comment">// continuation_token
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(continuation_token) = token {
+            <span class="macro">write!</span>(
+                url,
+                <span class="string">&quot;&amp;continuation-token={}&quot;</span>,
+                percent_encode_path(continuation_token)
+            )
+            .expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+        }
+
+        <span class="comment">// start-after
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(start_after) = start_after {
+            <span class="kw">let </span>start_after = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, <span class="kw-2">&amp;</span>start_after);
+            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;start-after={}&quot;</span>, percent_encode_path(<span class="kw-2">&amp;</span>start_after))
+                .expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+        }
 
         <span class="kw">let </span>req = Request::get(<span class="kw-2">&amp;</span>url)
             .body(AsyncBody::Empty)
@@ -1253,8 +1298,9 @@
         token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
         delimiter: <span class="kw-2">&amp;</span>str,
         limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+        start_after: <span class="prelude-ty">Option</span>&lt;String&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.oss_list_object_request(path, token, delimiter, limit)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.oss_list_object_request(path, token, delimiter, limit, start_after)<span class="question-mark">?</span>;
 
         <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="self">self</span>.send(req).<span class="kw">await

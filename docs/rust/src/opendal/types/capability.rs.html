@@ -183,6 +183,9 @@
 <a href="#183" id="183">183</a>
 <a href="#184" id="184">184</a>
 <a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -201,7 +204,6 @@
 // under the License.
 
 </span><span class="kw">use </span>std::fmt::Debug;
-
 <span class="doccomment">/// Capability is used to describe what operations are supported
 /// by current Operator.
 ///
@@ -283,6 +285,10 @@
     ///
     /// For example, Google GCS requires align size to 256KiB in write_multi.
     </span><span class="kw">pub </span>write_multi_align_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    <span class="doccomment">/// write_total_max_size is the max size that services support in write_total.
+    ///
+    /// For example, Cloudflare D1 supports 1MB as max in write_total.
+    </span><span class="kw">pub </span>write_total_max_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 
     <span class="doccomment">/// If operator supports create dir.
     </span><span class="kw">pub </span>create_dir: bool,

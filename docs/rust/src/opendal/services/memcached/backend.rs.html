@@ -262,10 +262,6 @@
 <a href="#262" id="262">262</a>
 <a href="#263" id="263">263</a>
 <a href="#264" id="264">264</a>
-<a href="#265" id="265">265</a>
-<a href="#266" id="266">266</a>
-<a href="#267" id="267">267</a>
-<a href="#268" id="268">268</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -518,7 +514,7 @@
     </span><span class="kw">async fn </span>connect(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::result::Result&lt;<span class="self">Self</span>::Connection, <span class="self">Self</span>::Error&gt; {
         <span class="kw">let </span>conn = TcpStream::connect(<span class="kw-2">&amp;</span><span class="self">self</span>.address)
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(ascii::Connection::new(conn))
     }
 
@@ -529,9 +525,5 @@
     <span class="kw">fn </span>has_broken(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Connection) -&gt; bool {
         <span class="bool-val">false
     </span>}
-}
-
-<span class="kw">pub fn </span>parse_io_error(err: std::io::Error) -&gt; Error {
-    Error::new(ErrorKind::Unexpected, <span class="kw-2">&amp;</span>err.kind().to_string()).set_source(err)
 }
 </code></pre></div></section></main></body></html>

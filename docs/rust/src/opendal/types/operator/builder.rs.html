@@ -387,6 +387,12 @@
 <a href="#387" id="387">387</a>
 <a href="#388" id="388">388</a>
 <a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -548,10 +554,14 @@
             </span>Scheme::Azblob =&gt; <span class="self">Self</span>::from_map::&lt;services::Azblob&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-azdls&quot;</span>)]
             </span>Scheme::Azdls =&gt; <span class="self">Self</span>::from_map::&lt;services::Azdls&gt;(map)<span class="question-mark">?</span>.finish(),
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-azfile&quot;</span>)]
+            </span>Scheme::Azfile =&gt; <span class="self">Self</span>::from_map::&lt;services::Azfile&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-cacache&quot;</span>)]
             </span>Scheme::Cacache =&gt; <span class="self">Self</span>::from_map::&lt;services::Cacache&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-cos&quot;</span>)]
             </span>Scheme::Cos =&gt; <span class="self">Self</span>::from_map::&lt;services::Cos&gt;(map)<span class="question-mark">?</span>.finish(),
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-d1&quot;</span>)]
+            </span>Scheme::D1 =&gt; <span class="self">Self</span>::from_map::&lt;services::D1&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-dashmap&quot;</span>)]
             </span>Scheme::Dashmap =&gt; <span class="self">Self</span>::from_map::&lt;services::Dashmap&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-dropbox&quot;</span>)]
@@ -614,18 +624,20 @@
             </span>Scheme::Sqlite =&gt; <span class="self">Self</span>::from_map::&lt;services::Sqlite&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-supabase&quot;</span>)]
             </span>Scheme::Supabase =&gt; <span class="self">Self</span>::from_map::&lt;services::Supabase&gt;(map)<span class="question-mark">?</span>.finish(),
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-swift&quot;</span>)]
+            </span>Scheme::Swift =&gt; <span class="self">Self</span>::from_map::&lt;services::Swift&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-tikv&quot;</span>)]
             </span>Scheme::Tikv =&gt; <span class="self">Self</span>::from_map::&lt;services::Tikv&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-vercel-artifacts&quot;</span>)]
             </span>Scheme::VercelArtifacts =&gt; <span class="self">Self</span>::from_map::&lt;services::VercelArtifacts&gt;(map)<span class="question-mark">?</span>.finish(),
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-wasabi&quot;</span>)]
-            </span>Scheme::Wasabi =&gt; <span class="self">Self</span>::from_map::&lt;services::Wasabi&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-webdav&quot;</span>)]
             </span>Scheme::Webdav =&gt; <span class="self">Self</span>::from_map::&lt;services::Webdav&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-webhdfs&quot;</span>)]
             </span>Scheme::Webhdfs =&gt; <span class="self">Self</span>::from_map::&lt;services::Webhdfs&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-redb&quot;</span>)]
             </span>Scheme::Redb =&gt; <span class="self">Self</span>::from_map::&lt;services::Redb&gt;(map)<span class="question-mark">?</span>.finish(),
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-mongodb&quot;</span>)]
+            </span>Scheme::Mongodb =&gt; <span class="self">Self</span>::from_map::&lt;services::Mongodb&gt;(map)<span class="question-mark">?</span>.finish(),
             v =&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::Unsupported,

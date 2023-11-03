@@ -527,25 +527,6 @@
 <a href="#527" id="527">527</a>
 <a href="#528" id="528">528</a>
 <a href="#529" id="529">529</a>
-<a href="#530" id="530">530</a>
-<a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
-<a href="#537" id="537">537</a>
-<a href="#538" id="538">538</a>
-<a href="#539" id="539">539</a>
-<a href="#540" id="540">540</a>
-<a href="#541" id="541">541</a>
-<a href="#542" id="542">542</a>
-<a href="#543" id="543">543</a>
-<a href="#544" id="544">544</a>
-<a href="#545" id="545">545</a>
-<a href="#546" id="546">546</a>
-<a href="#547" id="547">547</a>
-<a href="#548" id="548">548</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -563,25 +544,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::cmp::min;
-<span class="kw">use </span>std::collections::HashMap;
+</span><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::fmt::Formatter;
 <span class="kw">use </span>std::path::Path;
 <span class="kw">use </span>std::path::PathBuf;
+<span class="kw">use </span>std::pin::Pin;
 
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>futures::StreamExt;
 <span class="kw">use </span>log::debug;
 <span class="kw">use </span>openssh::KnownHosts;
 <span class="kw">use </span>openssh::SessionBuilder;
+<span class="kw">use </span>openssh_sftp_client::file::TokioCompatFile;
 <span class="kw">use </span>openssh_sftp_client::Sftp;
 <span class="kw">use </span>openssh_sftp_client::SftpOptions;
 
 <span class="kw">use </span><span class="kw">super</span>::error::is_not_found;
 <span class="kw">use </span><span class="kw">super</span>::error::is_sftp_protocol_error;
 <span class="kw">use </span><span class="kw">super</span>::pager::SftpPager;
-<span class="kw">use </span><span class="kw">super</span>::utils::SftpReader;
 <span class="kw">use </span><span class="kw">super</span>::writer::SftpWriter;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -772,7 +753,7 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>SftpBackend {
-    <span class="kw">type </span>Reader = SftpReader;
+    <span class="kw">type </span>Reader = oio::TokioReader&lt;Pin&lt;Box&lt;TokioCompatFile&gt;&gt;&gt;;
     <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = SftpWriter;
     <span class="kw">type </span>BlockingWriter = ();
@@ -787,7 +768,6 @@
                 stat: <span class="bool-val">true</span>,
 
                 read: <span class="bool-val">true</span>,
-                read_with_range: <span class="bool-val">true</span>,
                 read_can_seek: <span class="bool-val">true</span>,
 
                 write: <span class="bool-val">true</span>,
@@ -832,42 +812,24 @@
         <span class="kw">return </span><span class="prelude-val">Ok</span>(RpCreateDir::default());
     }
 
-    <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
+    <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
         <span class="kw">let </span>client = <span class="self">self</span>.connect().<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>fs = client.fs();
         fs.set_cwd(<span class="kw-2">&amp;</span><span class="self">self</span>.root);
         <span class="kw">let </span>path = fs.canonicalize(path).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>file = client.open(path.as_path()).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>f = client.open(path.as_path()).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>total_length = file.metadata().<span class="kw">await</span><span class="question-mark">?</span>.len().ok_or(Error::new(
-            ErrorKind::NotFound,
-            <span class="macro">format!</span>(<span class="string">&quot;file not found: {}&quot;</span>, path.to_str().unwrap()).as_str(),
-        ))<span class="question-mark">?</span>;
+        <span class="comment">// Sorry for the ugly code...
+        //
+        // - `f` is a openssh file.
+        // - `TokioCompatFile::new(f)` makes it implements tokio AsyncRead + AsyncSeek for openssh File.
+        // - `Box::pin(x)` to make sure this reader implements `Unpin`, since `TokioCompatFile` is not.
+        // - `oio::TokioReader::new(x)` makes it a `oio::TokioReader` which implements `oio::Read`.
+        </span><span class="kw">let </span>r = oio::TokioReader::new(Box::pin(TokioCompatFile::new(f)));
 
-        <span class="kw">let </span>br = args.range();
-        <span class="kw">let </span>(start, end) = <span class="kw">match </span>(br.offset(), br.size()) {
-            <span class="comment">// Read a specific range.
-            </span>(<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)) =&gt; (offset, min(offset + size, total_length)),
-            <span class="comment">// Read from offset.
-            </span>(<span class="prelude-val">Some</span>(offset), <span class="prelude-val">None</span>) =&gt; (offset, total_length),
-            <span class="comment">// Read the last size bytes.
-            </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; (
-                <span class="kw">if </span>total_length &gt; size {
-                    total_length - size
-                } <span class="kw">else </span>{
-                    <span class="number">0
-                </span>},
-                total_length,
-            ),
-            <span class="comment">// Read the whole file.
-            </span>(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; (<span class="number">0</span>, total_length),
-        };
-
-        <span class="kw">let </span>r = SftpReader::new(file, start, end).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>((RpRead::new(end - start), r))
+        <span class="prelude-val">Ok</span>((RpRead::new(), r))
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, op: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {

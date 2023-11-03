@@ -1452,29 +1452,6 @@
 <a href="#1452" id="1452">1452</a>
 <a href="#1453" id="1453">1453</a>
 <a href="#1454" id="1454">1454</a>
-<a href="#1455" id="1455">1455</a>
-<a href="#1456" id="1456">1456</a>
-<a href="#1457" id="1457">1457</a>
-<a href="#1458" id="1458">1458</a>
-<a href="#1459" id="1459">1459</a>
-<a href="#1460" id="1460">1460</a>
-<a href="#1461" id="1461">1461</a>
-<a href="#1462" id="1462">1462</a>
-<a href="#1463" id="1463">1463</a>
-<a href="#1464" id="1464">1464</a>
-<a href="#1465" id="1465">1465</a>
-<a href="#1466" id="1466">1466</a>
-<a href="#1467" id="1467">1467</a>
-<a href="#1468" id="1468">1468</a>
-<a href="#1469" id="1469">1469</a>
-<a href="#1470" id="1470">1470</a>
-<a href="#1471" id="1471">1471</a>
-<a href="#1472" id="1472">1472</a>
-<a href="#1473" id="1473">1473</a>
-<a href="#1474" id="1474">1474</a>
-<a href="#1475" id="1475">1475</a>
-<a href="#1476" id="1476">1476</a>
-<a href="#1477" id="1477">1477</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1497,15 +1474,13 @@
 <span class="kw">use </span>bytes::Buf;
 <span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>futures::stream;
-<span class="kw">use </span>futures::AsyncReadExt;
 <span class="kw">use </span>futures::Stream;
 <span class="kw">use </span>futures::StreamExt;
 <span class="kw">use </span>futures::TryStreamExt;
-<span class="kw">use </span>tokio::io::ReadBuf;
 
 <span class="kw">use </span><span class="kw">super</span>::BlockingOperator;
 <span class="kw">use </span><span class="kw">crate</span>::operator_futures::<span class="kw-2">*</span>;
-<span class="kw">use </span><span class="kw">crate</span>::raw::oio::WriteExt;
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::{ReadExt, WriteExt};
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -1845,32 +1820,11 @@
                         .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span>path));
                     }
 
-                    <span class="kw">let </span>br = args.range();
-                    <span class="kw">let </span>(rp, <span class="kw-2">mut </span>s) = inner.read(<span class="kw-2">&amp;</span>path, args).<span class="kw">await</span><span class="question-mark">?</span>;
+                    <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw-2">mut </span>s) = inner.read(<span class="kw-2">&amp;</span>path, args).<span class="kw">await</span><span class="question-mark">?</span>;
+                    <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
+                    s.read_to_end(<span class="kw-2">&amp;mut </span>buf).<span class="kw">await</span><span class="question-mark">?</span>;
 
-                    <span class="kw">let </span>length = rp.into_metadata().content_length() <span class="kw">as </span>usize;
-                    <span class="kw">let </span><span class="kw-2">mut </span>buffer = Vec::with_capacity(length);
-
-                    <span class="kw">let </span>dst = buffer.spare_capacity_mut();
-                    <span class="kw">let </span><span class="kw-2">mut </span>buf = ReadBuf::uninit(dst);
-
-                    <span class="comment">// Safety: the input buffer is created with_capacity(length).
-                    </span><span class="kw">unsafe </span>{ buf.assume_init(length) };
-
-                    <span class="comment">// TODO: use native read api
-                    </span>s.read_exact(buf.initialized_mut()).<span class="kw">await</span>.map_err(|err| {
-                        Error::new(ErrorKind::Unexpected, <span class="string">&quot;read from storage&quot;</span>)
-                            .with_operation(<span class="string">&quot;read&quot;</span>)
-                            .with_context(<span class="string">&quot;service&quot;</span>, inner.info().scheme().into_static())
-                            .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span>path)
-                            .with_context(<span class="string">&quot;range&quot;</span>, br.to_string())
-                            .set_source(err)
-                    })<span class="question-mark">?</span>;
-
-                    <span class="comment">// Safety: read_exact makes sure this buffer has been filled.
-                    </span><span class="kw">unsafe </span>{ buffer.set_len(length) }
-
-                    <span class="prelude-val">Ok</span>(buffer)
+                    <span class="prelude-val">Ok</span>(buf)
                 };
 
                 Box::pin(fut)

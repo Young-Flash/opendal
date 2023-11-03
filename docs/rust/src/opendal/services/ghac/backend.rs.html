@@ -578,34 +578,6 @@
 <a href="#578" id="578">578</a>
 <a href="#579" id="579">579</a>
 <a href="#580" id="580">580</a>
-<a href="#581" id="581">581</a>
-<a href="#582" id="582">582</a>
-<a href="#583" id="583">583</a>
-<a href="#584" id="584">584</a>
-<a href="#585" id="585">585</a>
-<a href="#586" id="586">586</a>
-<a href="#587" id="587">587</a>
-<a href="#588" id="588">588</a>
-<a href="#589" id="589">589</a>
-<a href="#590" id="590">590</a>
-<a href="#591" id="591">591</a>
-<a href="#592" id="592">592</a>
-<a href="#593" id="593">593</a>
-<a href="#594" id="594">594</a>
-<a href="#595" id="595">595</a>
-<a href="#596" id="596">596</a>
-<a href="#597" id="597">597</a>
-<a href="#598" id="598">598</a>
-<a href="#599" id="599">599</a>
-<a href="#600" id="600">600</a>
-<a href="#601" id="601">601</a>
-<a href="#602" id="602">602</a>
-<a href="#603" id="603">603</a>
-<a href="#604" id="604">604</a>
-<a href="#605" id="605">605</a>
-<a href="#606" id="606">606</a>
-<a href="#607" id="607">607</a>
-<a href="#608" id="608">608</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -694,7 +666,6 @@
 </span><span class="kw">pub struct </span>GhacBuilder {
     root: <span class="prelude-ty">Option</span>&lt;String&gt;,
     version: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    enable_create_simulation: bool,
     endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
     runtime_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
 
@@ -722,18 +693,6 @@
             <span class="self">self</span>.version = <span class="prelude-val">Some</span>(version.to_string())
         }
 
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Enable create simulation for ghac service.
-    ///
-    /// ghac service doesn&#39;t support create empty files. By enabling
-    /// create simulation, we will create a 1 byte file to represent
-    /// empty file.
-    ///
-    /// As a side effect, we can&#39;t create file with only 1 byte anymore.
-    </span><span class="kw">pub fn </span>enable_create_simulation(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.enable_create_simulation = <span class="bool-val">true</span>;
         <span class="self">self
     </span>}
 
@@ -783,9 +742,6 @@
 
         map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
         map.get(<span class="string">&quot;version&quot;</span>).map(|v| builder.version(v));
-        map.get(<span class="string">&quot;enable_create_simulation&quot;</span>)
-            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
-            .map(|<span class="kw">_</span>| builder.enable_create_simulation());
 
         builder
     }
@@ -807,7 +763,6 @@
 
         <span class="kw">let </span>backend = GhacBackend {
             root,
-            enable_create_simulation: <span class="self">self</span>.enable_create_simulation,
 
             cache_url: value_or_env(<span class="self">self</span>.endpoint.take(), ACTIONS_CACHE_URL, <span class="string">&quot;Builder::build&quot;</span>)<span class="question-mark">?</span>,
             catch_token: value_or_env(
@@ -837,7 +792,6 @@
 </span><span class="kw">pub struct </span>GhacBackend {
     <span class="comment">// root should end with &quot;/&quot;
     </span>root: String,
-    enable_create_simulation: bool,
 
     cache_url: String,
     catch_token: String,
@@ -885,12 +839,6 @@
         <span class="comment">// ignore creation of dir.
         </span><span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(RpCreateDir::default());
-        }
-        <span class="kw">if </span>!<span class="self">self</span>.enable_create_simulation {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                ErrorKind::Unsupported,
-                <span class="string">&quot;ghac service doesn&#39;t support create empty file&quot;</span>,
-            ));
         }
 
         <span class="kw">let </span>req = <span class="self">self</span>.ghac_reserve(path).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -959,9 +907,10 @@
         <span class="kw">let </span>status = resp.status();
         <span class="kw">match </span>status {
             StatusCode::OK | StatusCode::PARTIAL_CONTENT =&gt; {
-                <span class="kw">let </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((RpRead::with_metadata(meta), resp.into_body()))
+                <span class="kw">let </span>size = parse_content_length(resp.headers())<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((RpRead::new().with_size(size), resp.into_body()))
             }
+            StatusCode::RANGE_NOT_SATISFIABLE =&gt; <span class="prelude-val">Ok</span>((RpRead::new(), IncomingAsyncBody::empty())),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
@@ -1012,12 +961,7 @@
         <span class="kw">let </span>status = resp.status();
         <span class="kw">match </span>status {
             StatusCode::OK =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-
-                <span class="comment">// Hack for enable_create_simulation.
-                </span><span class="kw">if </span><span class="self">self</span>.enable_create_simulation &amp;&amp; meta.content_length_raw() == <span class="prelude-val">Some</span>(<span class="number">1</span>) {
-                    meta.set_content_length(<span class="number">0</span>);
-                }
+                <span class="kw">let </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
 
                 <span class="prelude-val">Ok</span>(RpStat::new(meta))
             }

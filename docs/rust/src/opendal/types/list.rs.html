@@ -342,7 +342,7 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(oe) = <span class="self">self</span>.buf.pop_front() {
             <span class="kw">let </span>(path, metadata) = oe.into_entry().into_parts();
             <span class="comment">// TODO: we can optimize this by checking the provided metakey provided by services.
-            </span><span class="kw">if </span>metadata.contains_bit(<span class="self">self</span>.required_metakey) {
+            </span><span class="kw">if </span>metadata.contains_metakey(<span class="self">self</span>.required_metakey) {
                 <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata))));
             }
 
@@ -429,7 +429,7 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(oe) = <span class="self">self</span>.buf.pop_front() {
             <span class="kw">let </span>(path, metadata) = oe.into_entry().into_parts();
             <span class="comment">// TODO: we can optimize this by checking the provided metakey provided by services.
-            </span><span class="kw">if </span>metadata.contains_bit(<span class="self">self</span>.required_metakey) {
+            </span><span class="kw">if </span>metadata.contains_metakey(<span class="self">self</span>.required_metakey) {
                 <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata)));
             }
 

@@ -551,6 +551,8 @@
 <a href="#551" id="551">551</a>
 <a href="#552" id="552">552</a>
 <a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -584,8 +586,8 @@
 /// a.k.a., `Entry`&#39;s content length could be `None`.
 </span><span class="attr">#[derive(Debug, Clone, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>Metadata {
-    <span class="doccomment">/// bit stores current key store.
-    </span>bit: FlagSet&lt;Metakey&gt;,
+    <span class="doccomment">/// metakey stores current key store.
+    </span>metakey: FlagSet&lt;Metakey&gt;,
 
     mode: EntryMode,
 
@@ -604,14 +606,14 @@
     <span class="doccomment">/// Create a new metadata
     </span><span class="kw">pub fn </span>new(mode: EntryMode) -&gt; <span class="self">Self </span>{
         <span class="comment">// Mode is required to be set for metadata.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>bit: FlagSet&lt;Metakey&gt; = Metakey::Mode.into();
+        </span><span class="kw">let </span><span class="kw-2">mut </span>metakey: FlagSet&lt;Metakey&gt; = Metakey::Mode.into();
         <span class="comment">// If mode is dir, we should always mark it as complete.
         </span><span class="kw">if </span>mode.is_dir() {
-            bit |= Metakey::Complete
+            metakey |= Metakey::Complete
         }
 
         <span class="self">Self </span>{
-            bit,
+            metakey,
 
             mode,
 
@@ -627,33 +629,35 @@
         }
     }
 
-    <span class="doccomment">/// Get the bit from metadata.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>bit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FlagSet&lt;Metakey&gt; {
-        <span class="self">self</span>.bit
+    <span class="doccomment">/// Get the metakey from metadata.
+    ///
+    /// This value describes which metadata has been set.
+    </span><span class="kw">pub fn </span>metakey(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FlagSet&lt;Metakey&gt; {
+        <span class="self">self</span>.metakey
     }
 
-    <span class="doccomment">/// Set bit with given.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>with_bit(<span class="kw-2">mut </span><span class="self">self</span>, bit: <span class="kw">impl </span>Into&lt;FlagSet&lt;Metakey&gt;&gt;) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.bit = bit.into();
+    <span class="doccomment">/// Set metakey with given.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>with_metakey(<span class="kw-2">mut </span><span class="self">self</span>, metakey: <span class="kw">impl </span>Into&lt;FlagSet&lt;Metakey&gt;&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.metakey = metakey.into();
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Check if there metadata already contains given bit.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>contains_bit(<span class="kw-2">&amp;</span><span class="self">self</span>, bit: <span class="kw">impl </span>Into&lt;FlagSet&lt;Metakey&gt;&gt;) -&gt; bool {
-        <span class="kw">let </span>input_bit = bit.into();
+    <span class="doccomment">/// Check if there metadata already contains given metakey.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>contains_metakey(<span class="kw-2">&amp;</span><span class="self">self</span>, metakey: <span class="kw">impl </span>Into&lt;FlagSet&lt;Metakey&gt;&gt;) -&gt; bool {
+        <span class="kw">let </span>input_metakey = metakey.into();
 
         <span class="comment">// If meta already contains complete, we don&#39;t need to check.
-        </span><span class="kw">if </span><span class="self">self</span>.bit.contains(Metakey::Complete) {
+        </span><span class="kw">if </span><span class="self">self</span>.metakey.contains(Metakey::Complete) {
             <span class="kw">return </span><span class="bool-val">true</span>;
         }
 
-        <span class="self">self</span>.bit.contains(input_bit)
+        <span class="self">self</span>.metakey.contains(input_metakey)
     }
 
     <span class="doccomment">/// mode represent this entry&#39;s mode.
     </span><span class="kw">pub fn </span>mode(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; EntryMode {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::Mode) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::Mode) || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: mode, maybe a bug&quot;
         </span>);
 
@@ -673,14 +677,14 @@
     <span class="doccomment">/// Set mode for entry.
     </span><span class="kw">pub fn </span>set_mode(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: EntryMode) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.mode = v;
-        <span class="self">self</span>.bit |= Metakey::Mode;
+        <span class="self">self</span>.metakey |= Metakey::Mode;
         <span class="self">self
     </span>}
 
     <span class="doccomment">/// Set mode for entry.
     </span><span class="kw">pub fn </span>with_mode(<span class="kw-2">mut </span><span class="self">self</span>, v: EntryMode) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.mode = v;
-        <span class="self">self</span>.bit |= Metakey::Mode;
+        <span class="self">self</span>.metakey |= Metakey::Mode;
         <span class="self">self
     </span>}
 
@@ -689,7 +693,8 @@
     /// Refer to [MDN Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) for more information.
     </span><span class="kw">pub fn </span>cache_control(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::CacheControl) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::CacheControl)
+                || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: cache_control, maybe a bug&quot;
         </span>);
 
@@ -702,7 +707,7 @@
     /// Refer to [MDN Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) for more information.
     </span><span class="kw">pub fn </span>set_cache_control(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.cache_control = <span class="prelude-val">Some</span>(v.to_string());
-        <span class="self">self</span>.bit |= Metakey::CacheControl;
+        <span class="self">self</span>.metakey |= Metakey::CacheControl;
         <span class="self">self
     </span>}
 
@@ -712,7 +717,7 @@
     /// Refer to [MDN Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) for more information.
     </span><span class="kw">pub fn </span>with_cache_control(<span class="kw-2">mut </span><span class="self">self</span>, v: String) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.cache_control = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::CacheControl;
+        <span class="self">self</span>.metakey |= Metakey::CacheControl;
         <span class="self">self
     </span>}
 
@@ -727,29 +732,25 @@
     /// [`Metakey::ContentLength`], otherwise it will panic.
     </span><span class="kw">pub fn </span>content_length(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::ContentLength) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::ContentLength)
+                || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: content_length, maybe a bug&quot;
         </span>);
 
         <span class="self">self</span>.content_length.unwrap_or_default()
     }
 
-    <span class="doccomment">/// Fetch the raw content length.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>content_length_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
-        <span class="self">self</span>.content_length
-    }
-
     <span class="doccomment">/// Set content length of this entry.
     </span><span class="kw">pub fn </span>set_content_length(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: u64) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.content_length = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::ContentLength;
+        <span class="self">self</span>.metakey |= Metakey::ContentLength;
         <span class="self">self
     </span>}
 
     <span class="doccomment">/// Set content length of this entry.
     </span><span class="kw">pub fn </span>with_content_length(<span class="kw-2">mut </span><span class="self">self</span>, v: u64) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.content_length = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::ContentLength;
+        <span class="self">self</span>.metakey |= Metakey::ContentLength;
         <span class="self">self
     </span>}
 
@@ -766,7 +767,7 @@
     /// [`Metakey::ContentMd5`], otherwise it will panic.
     </span><span class="kw">pub fn </span>content_md5(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::ContentMd5) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::ContentMd5) || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: content_md5, maybe a bug&quot;
         </span>);
 
@@ -779,7 +780,7 @@
     /// And removed by [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231).
     </span><span class="kw">pub fn </span>set_content_md5(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.content_md5 = <span class="prelude-val">Some</span>(v.to_string());
-        <span class="self">self</span>.bit |= Metakey::ContentMd5;
+        <span class="self">self</span>.metakey |= Metakey::ContentMd5;
         <span class="self">self
     </span>}
 
@@ -789,7 +790,7 @@
     /// And removed by [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231).
     </span><span class="kw">pub fn </span>with_content_md5(<span class="kw-2">mut </span><span class="self">self</span>, v: String) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.content_md5 = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::ContentMd5;
+        <span class="self">self</span>.metakey |= Metakey::ContentMd5;
         <span class="self">self
     </span>}
 
@@ -803,7 +804,7 @@
     /// [`Metakey::ContentType`], otherwise it will panic.
     </span><span class="kw">pub fn </span>content_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::ContentType) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::ContentType) || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: content_type, maybe a bug&quot;
         </span>);
 
@@ -815,7 +816,7 @@
     /// Content Type is defined by [RFC 9110](https://httpwg.org/specs/rfc9110.html#field.content-type).
     </span><span class="kw">pub fn </span>set_content_type(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.content_type = <span class="prelude-val">Some</span>(v.to_string());
-        <span class="self">self</span>.bit |= Metakey::ContentType;
+        <span class="self">self</span>.metakey |= Metakey::ContentType;
         <span class="self">self
     </span>}
 
@@ -824,7 +825,7 @@
     /// Content Type is defined by [RFC 9110](https://httpwg.org/specs/rfc9110.html#field.content-type).
     </span><span class="kw">pub fn </span>with_content_type(<span class="kw-2">mut </span><span class="self">self</span>, v: String) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.content_type = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::ContentType;
+        <span class="self">self</span>.metakey |= Metakey::ContentType;
         <span class="self">self
     </span>}
 
@@ -838,7 +839,8 @@
     /// [`Metakey::ContentRange`], otherwise it will panic.
     </span><span class="kw">pub fn </span>content_range(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;BytesContentRange&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::ContentRange) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::ContentRange)
+                || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: content_range, maybe a bug&quot;
         </span>);
 
@@ -850,7 +852,7 @@
     /// Content Range is defined by [RFC 9110](https://httpwg.org/specs/rfc9110.html#field.content-range).
     </span><span class="kw">pub fn </span>set_content_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: BytesContentRange) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.content_range = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::ContentRange;
+        <span class="self">self</span>.metakey |= Metakey::ContentRange;
         <span class="self">self
     </span>}
 
@@ -859,7 +861,7 @@
     /// Content Range is defined by [RFC 9110](https://httpwg.org/specs/rfc9110.html#field.content-range).
     </span><span class="kw">pub fn </span>with_content_range(<span class="kw-2">mut </span><span class="self">self</span>, v: BytesContentRange) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.content_range = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::ContentRange;
+        <span class="self">self</span>.metakey |= Metakey::ContentRange;
         <span class="self">self
     </span>}
 
@@ -876,7 +878,8 @@
     /// [`Metakey::LastModified`], otherwise it will panic.
     </span><span class="kw">pub fn </span>last_modified(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;DateTime&lt;Utc&gt;&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::LastModified) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::LastModified)
+                || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: last_modified, maybe a bug&quot;
         </span>);
 
@@ -889,7 +892,7 @@
     /// Refer to [MDN Last-Modified](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) for more information.
     </span><span class="kw">pub fn </span>set_last_modified(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: DateTime&lt;Utc&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.last_modified = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::LastModified;
+        <span class="self">self</span>.metakey |= Metakey::LastModified;
         <span class="self">self
     </span>}
 
@@ -899,7 +902,7 @@
     /// Refer to [MDN Last-Modified](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) for more information.
     </span><span class="kw">pub fn </span>with_last_modified(<span class="kw-2">mut </span><span class="self">self</span>, v: DateTime&lt;Utc&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.last_modified = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::LastModified;
+        <span class="self">self</span>.metakey |= Metakey::LastModified;
         <span class="self">self
     </span>}
 
@@ -921,7 +924,7 @@
     /// [`Metakey::Etag`], otherwise it will panic.
     </span><span class="kw">pub fn </span>etag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::Etag) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::Etag) || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: etag, maybe a bug&quot;
         </span>);
 
@@ -941,7 +944,7 @@
     /// `&quot;` is part of etag, don&#39;t trim it before setting.
     </span><span class="kw">pub fn </span>set_etag(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.etag = <span class="prelude-val">Some</span>(v.to_string());
-        <span class="self">self</span>.bit |= Metakey::Etag;
+        <span class="self">self</span>.metakey |= Metakey::Etag;
         <span class="self">self
     </span>}
 
@@ -958,7 +961,7 @@
     /// `&quot;` is part of etag, don&#39;t trim it before setting.
     </span><span class="kw">pub fn </span>with_etag(<span class="kw-2">mut </span><span class="self">self</span>, v: String) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.etag = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::Etag;
+        <span class="self">self</span>.metakey |= Metakey::Etag;
         <span class="self">self
     </span>}
 
@@ -980,7 +983,8 @@
     /// [`Metakey::ContentDisposition`], otherwise it will panic.
     </span><span class="kw">pub fn </span>content_disposition(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::ContentDisposition) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::ContentDisposition)
+                || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: content_disposition, maybe a bug&quot;
         </span>);
 
@@ -1000,7 +1004,7 @@
     /// - &quot;attachment; filename=\&quot;filename.jpg\&quot;&quot;
     </span><span class="kw">pub fn </span>with_content_disposition(<span class="kw-2">mut </span><span class="self">self</span>, v: String) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.content_disposition = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::ContentDisposition;
+        <span class="self">self</span>.metakey |= Metakey::ContentDisposition;
         <span class="self">self
     </span>}
 
@@ -1017,7 +1021,7 @@
     /// - &quot;attachment; filename=\&quot;filename.jpg\&quot;&quot;
     </span><span class="kw">pub fn </span>set_content_disposition(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.content_disposition = <span class="prelude-val">Some</span>(v.to_string());
-        <span class="self">self</span>.bit |= Metakey::ContentDisposition;
+        <span class="self">self</span>.metakey |= Metakey::ContentDisposition;
         <span class="self">self
     </span>}
 
@@ -1033,7 +1037,7 @@
     /// [`Metakey::Version`], otherwise it will panic.
     </span><span class="kw">pub fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="macro">debug_assert!</span>(
-            <span class="self">self</span>.bit.contains(Metakey::Version) || <span class="self">self</span>.bit.contains(Metakey::Complete),
+            <span class="self">self</span>.metakey.contains(Metakey::Version) || <span class="self">self</span>.metakey.contains(Metakey::Complete),
             <span class="string">&quot;visiting not set metadata: version, maybe a bug&quot;
         </span>);
 
@@ -1047,7 +1051,7 @@
     /// This field may come out from the version control system, like object versioning in AWS S3.
     </span><span class="kw">pub fn </span>with_version(<span class="kw-2">mut </span><span class="self">self</span>, v: String) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.version = <span class="prelude-val">Some</span>(v);
-        <span class="self">self</span>.bit |= Metakey::Version;
+        <span class="self">self</span>.metakey |= Metakey::Version;
         <span class="self">self
     </span>}
 
@@ -1058,7 +1062,7 @@
     /// This field may come out from the version control system, like object versioning in AWS S3.
     </span><span class="kw">pub fn </span>set_version(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.version = <span class="prelude-val">Some</span>(v.to_string());
-        <span class="self">self</span>.bit |= Metakey::Version;
+        <span class="self">self</span>.metakey |= Metakey::Version;
         <span class="self">self
     </span>}
 }

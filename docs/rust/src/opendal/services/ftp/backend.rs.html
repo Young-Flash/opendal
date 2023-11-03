@@ -543,8 +543,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::cmp::min;
-<span class="kw">use </span>std::collections::HashMap;
+</span><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::fmt::Formatter;
 <span class="kw">use </span>std::str;
@@ -847,37 +846,38 @@
         <span class="kw">return </span><span class="prelude-val">Ok</span>(RpCreateDir::default());
     }
 
-    <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
+    <span class="doccomment">/// TODO: migrate to FileReader maybe?
+    </span><span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>ftp_stream = <span class="self">self</span>.ftp_connect(Operation::Read).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>meta = <span class="self">self</span>.ftp_stat(path).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>br = args.range();
-        <span class="kw">let </span>(r, size): (Box&lt;<span class="kw">dyn </span>AsyncRead + Send + Unpin&gt;, <span class="kw">_</span>) = <span class="kw">match </span>(br.offset(), br.size()) {
+        <span class="kw">let </span>r: Box&lt;<span class="kw">dyn </span>AsyncRead + Send + Unpin&gt; = <span class="kw">match </span>(br.offset(), br.size()) {
             (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)) =&gt; {
                 ftp_stream.resume_transfer(offset <span class="kw">as </span>usize).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="kw">let </span>ds = ftp_stream.retr_as_stream(path).<span class="kw">await</span><span class="question-mark">?</span>.take(size);
-                (Box::new(ds), min(size, meta.size() <span class="kw">as </span>u64 - offset))
+                Box::new(ds)
             }
             (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">None</span>) =&gt; {
                 ftp_stream.resume_transfer(offset <span class="kw">as </span>usize).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="kw">let </span>ds = ftp_stream.retr_as_stream(path).<span class="kw">await</span><span class="question-mark">?</span>;
-                (Box::new(ds), meta.size() <span class="kw">as </span>u64 - offset)
+                Box::new(ds)
             }
             (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; {
                 ftp_stream
                     .resume_transfer((meta.size() <span class="kw">as </span>u64 - size) <span class="kw">as </span>usize)
                     .<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="kw">let </span>ds = ftp_stream.retr_as_stream(path).<span class="kw">await</span><span class="question-mark">?</span>;
-                (Box::new(ds), size)
+                Box::new(ds)
             }
             (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
                 <span class="kw">let </span>ds = ftp_stream.retr_as_stream(path).<span class="kw">await</span><span class="question-mark">?</span>;
-                (Box::new(ds), meta.size() <span class="kw">as </span>u64)
+                Box::new(ds)
             }
         };
 
-        <span class="prelude-val">Ok</span>((RpRead::new(size), FtpReader::new(r, ftp_stream)))
+        <span class="prelude-val">Ok</span>((RpRead::new(), FtpReader::new(r, ftp_stream)))
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {

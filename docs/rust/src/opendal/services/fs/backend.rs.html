@@ -656,72 +656,6 @@
 <a href="#656" id="656">656</a>
 <a href="#657" id="657">657</a>
 <a href="#658" id="658">658</a>
-<a href="#659" id="659">659</a>
-<a href="#660" id="660">660</a>
-<a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-<a href="#668" id="668">668</a>
-<a href="#669" id="669">669</a>
-<a href="#670" id="670">670</a>
-<a href="#671" id="671">671</a>
-<a href="#672" id="672">672</a>
-<a href="#673" id="673">673</a>
-<a href="#674" id="674">674</a>
-<a href="#675" id="675">675</a>
-<a href="#676" id="676">676</a>
-<a href="#677" id="677">677</a>
-<a href="#678" id="678">678</a>
-<a href="#679" id="679">679</a>
-<a href="#680" id="680">680</a>
-<a href="#681" id="681">681</a>
-<a href="#682" id="682">682</a>
-<a href="#683" id="683">683</a>
-<a href="#684" id="684">684</a>
-<a href="#685" id="685">685</a>
-<a href="#686" id="686">686</a>
-<a href="#687" id="687">687</a>
-<a href="#688" id="688">688</a>
-<a href="#689" id="689">689</a>
-<a href="#690" id="690">690</a>
-<a href="#691" id="691">691</a>
-<a href="#692" id="692">692</a>
-<a href="#693" id="693">693</a>
-<a href="#694" id="694">694</a>
-<a href="#695" id="695">695</a>
-<a href="#696" id="696">696</a>
-<a href="#697" id="697">697</a>
-<a href="#698" id="698">698</a>
-<a href="#699" id="699">699</a>
-<a href="#700" id="700">700</a>
-<a href="#701" id="701">701</a>
-<a href="#702" id="702">702</a>
-<a href="#703" id="703">703</a>
-<a href="#704" id="704">704</a>
-<a href="#705" id="705">705</a>
-<a href="#706" id="706">706</a>
-<a href="#707" id="707">707</a>
-<a href="#708" id="708">708</a>
-<a href="#709" id="709">709</a>
-<a href="#710" id="710">710</a>
-<a href="#711" id="711">711</a>
-<a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
-<a href="#714" id="714">714</a>
-<a href="#715" id="715">715</a>
-<a href="#716" id="716">716</a>
-<a href="#717" id="717">717</a>
-<a href="#718" id="718">718</a>
-<a href="#719" id="719">719</a>
-<a href="#720" id="720">720</a>
-<a href="#721" id="721">721</a>
-<a href="#722" id="722">722</a>
-<a href="#723" id="723">723</a>
-<a href="#724" id="724">724</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -739,19 +673,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::cmp::min;
-<span class="kw">use </span>std::collections::HashMap;
-<span class="kw">use </span>std::io::SeekFrom;
+</span><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::path::Path;
 <span class="kw">use </span>std::path::PathBuf;
 
-<span class="kw">use </span>async_compat::Compat;
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>chrono::DateTime;
 <span class="kw">use </span>log::debug;
 <span class="kw">use </span>uuid::Uuid;
 
-<span class="kw">use </span><span class="kw">super</span>::error::parse_io_error;
 <span class="kw">use </span><span class="kw">super</span>::pager::FsPager;
 <span class="kw">use </span><span class="kw">super</span>::writer::FsWriter;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
@@ -936,7 +866,7 @@
             })<span class="question-mark">?
             </span>.to_path_buf();
 
-        std::fs::create_dir_all(parent).map_err(parse_io_error)<span class="question-mark">?</span>;
+        std::fs::create_dir_all(parent).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(p)
     }
@@ -964,7 +894,7 @@
 
         tokio::fs::create_dir_all(<span class="kw-2">&amp;</span>parent)
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(p)
     }
@@ -972,8 +902,8 @@
 
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>FsBackend {
-    <span class="kw">type </span>Reader = oio::FromFileReader&lt;Compat&lt;tokio::fs::File&gt;&gt;;
-    <span class="kw">type </span>BlockingReader = oio::FromFileReader&lt;std::fs::File&gt;;
+    <span class="kw">type </span>Reader = oio::TokioReader&lt;tokio::fs::File&gt;;
+    <span class="kw">type </span>BlockingReader = oio::StdReader&lt;std::fs::File&gt;;
     <span class="kw">type </span>Writer = FsWriter&lt;tokio::fs::File&gt;;
     <span class="kw">type </span>BlockingWriter = FsWriter&lt;std::fs::File&gt;;
     <span class="kw">type </span>Pager = <span class="prelude-ty">Option</span>&lt;FsPager&lt;tokio::fs::ReadDir&gt;&gt;;
@@ -988,7 +918,6 @@
 
                 read: <span class="bool-val">true</span>,
                 read_can_seek: <span class="bool-val">true</span>,
-                read_with_range: <span class="bool-val">true</span>,
 
                 write: <span class="bool-val">true</span>,
                 write_can_empty: <span class="bool-val">true</span>,
@@ -1015,7 +944,7 @@
 
         tokio::fs::create_dir_all(<span class="kw-2">&amp;</span>p)
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(RpCreateDir::default())
     }
@@ -1029,20 +958,18 @@
     /// - open file first, and than use `seek`. (100ns)
     ///
     /// Benchmark could be found [here](https://gist.github.com/Xuanwo/48f9cfbc3022ea5f865388bb62e1a70f)
-    </span><span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
-        <span class="kw">use </span>oio::ReadExt;
-
+    </span><span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
         <span class="kw">let </span>p = <span class="self">self</span>.root.join(path.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
-        <span class="kw">let </span><span class="kw-2">mut </span>f = tokio::fs::OpenOptions::new()
+        <span class="kw">let </span>f = tokio::fs::OpenOptions::new()
             .read(<span class="bool-val">true</span>)
             .open(<span class="kw-2">&amp;</span>p)
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>total_length = <span class="kw">if </span><span class="self">self</span>.enable_path_check {
+        <span class="kw">if </span><span class="self">self</span>.enable_path_check {
             <span class="comment">// Get fs metadata of file at given path, ensuring it is not a false-positive due to slash normalization.
-            </span><span class="kw">let </span>meta = f.metadata().<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span><span class="kw">let </span>meta = f.metadata().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
             <span class="kw">if </span>meta.is_dir() != path.ends_with(<span class="string">&#39;/&#39;</span>) {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::NotFound,
@@ -1055,41 +982,10 @@
                     <span class="string">&quot;given path is a directory&quot;</span>,
                 ));
             }
+        }
 
-            meta.len()
-        } <span class="kw">else </span>{
-            <span class="kw">use </span>tokio::io::AsyncSeekExt;
-
-            f.seek(SeekFrom::End(<span class="number">0</span>)).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?
-        </span>};
-
-        <span class="kw">let </span>f = Compat::new(f);
-
-        <span class="kw">let </span>br = args.range();
-        <span class="kw">let </span>(start, end) = <span class="kw">match </span>(br.offset(), br.size()) {
-            <span class="comment">// Read a specific range.
-            </span>(<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)) =&gt; (offset, min(offset + size, total_length)),
-            <span class="comment">// Read from offset.
-            </span>(<span class="prelude-val">Some</span>(offset), <span class="prelude-val">None</span>) =&gt; (offset, total_length),
-            <span class="comment">// Read the last size bytes.
-            </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; (
-                <span class="kw">if </span>total_length &gt; size {
-                    total_length - size
-                } <span class="kw">else </span>{
-                    <span class="number">0
-                </span>},
-                total_length,
-            ),
-            <span class="comment">// Read the whole file.
-            </span>(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; (<span class="number">0</span>, total_length),
-        };
-
-        <span class="kw">let </span><span class="kw-2">mut </span>r = oio::into_read_from_file(f, start, end);
-
-        <span class="comment">// Rewind to make sure we are on the correct offset.
-        </span>r.seek(SeekFrom::Start(<span class="number">0</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>((RpRead::new(end - start), r))
+        <span class="kw">let </span>r = oio::TokioReader::new(f);
+        <span class="prelude-val">Ok</span>((RpRead::new(), r))
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, op: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
@@ -1102,7 +998,7 @@
             </span><span class="kw">if </span>op.append()
                 &amp;&amp; tokio::fs::try_exists(<span class="kw-2">&amp;</span>target_path)
                     .<span class="kw">await
-                    </span>.map_err(parse_io_error)<span class="question-mark">?
+                    </span>.map_err(new_std_io_error)<span class="question-mark">?
             </span>{
                 (target_path, <span class="prelude-val">None</span>)
             } <span class="kw">else </span>{
@@ -1125,7 +1021,7 @@
         <span class="kw">let </span>f = open_options
             .open(tmp_path.as_ref().unwrap_or(<span class="kw-2">&amp;</span>target_path))
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>((RpWrite::new(), FsWriter::new(target_path, tmp_path, f)))
     }
@@ -1134,11 +1030,11 @@
         <span class="kw">let </span>from = <span class="self">self</span>.root.join(from.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
         <span class="comment">// try to get the metadata of the source file to ensure it exists
-        </span>tokio::fs::metadata(<span class="kw-2">&amp;</span>from).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+        </span>tokio::fs::metadata(<span class="kw-2">&amp;</span>from).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>to = <span class="self">Self</span>::ensure_write_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to.trim_end_matches(<span class="string">&#39;/&#39;</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        tokio::fs::copy(from, to).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+        tokio::fs::copy(from, to).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(RpCopy::default())
     }
@@ -1147,11 +1043,13 @@
         <span class="kw">let </span>from = <span class="self">self</span>.root.join(from.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
         <span class="comment">// try to get the metadata of the source file to ensure it exists
-        </span>tokio::fs::metadata(<span class="kw-2">&amp;</span>from).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+        </span>tokio::fs::metadata(<span class="kw-2">&amp;</span>from).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>to = <span class="self">Self</span>::ensure_write_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to.trim_end_matches(<span class="string">&#39;/&#39;</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        tokio::fs::rename(from, to).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+        tokio::fs::rename(from, to)
+            .<span class="kw">await
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(RpRename::default())
     }
@@ -1159,7 +1057,7 @@
     <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
         <span class="kw">let </span>p = <span class="self">self</span>.root.join(path.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
-        <span class="kw">let </span>meta = tokio::fs::metadata(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>meta = tokio::fs::metadata(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="kw">if </span><span class="self">self</span>.enable_path_check &amp;&amp; meta.is_dir() != path.ends_with(<span class="string">&#39;/&#39;</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
@@ -1180,7 +1078,7 @@
             .with_last_modified(
                 meta.modified()
                     .map(DateTime::from)
-                    .map_err(parse_io_error)<span class="question-mark">?</span>,
+                    .map_err(new_std_io_error)<span class="question-mark">?</span>,
             );
 
         <span class="prelude-val">Ok</span>(RpStat::new(m))
@@ -1194,15 +1092,15 @@
         <span class="kw">match </span>meta {
             <span class="prelude-val">Ok</span>(meta) =&gt; {
                 <span class="kw">if </span>meta.is_dir() {
-                    tokio::fs::remove_dir(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+                    tokio::fs::remove_dir(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    tokio::fs::remove_file(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+                    tokio::fs::remove_file(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
                 }
 
                 <span class="prelude-val">Ok</span>(RpDelete::default())
             }
             <span class="prelude-val">Err</span>(err) <span class="kw">if </span>err.kind() == std::io::ErrorKind::NotFound =&gt; <span class="prelude-val">Ok</span>(RpDelete::default()),
-            <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(parse_io_error(err)),
+            <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(new_std_io_error(err)),
         }
     }
 
@@ -1215,7 +1113,7 @@
                 <span class="kw">return if </span>e.kind() == std::io::ErrorKind::NotFound {
                     <span class="prelude-val">Ok</span>((RpList::default(), <span class="prelude-val">None</span>))
                 } <span class="kw">else </span>{
-                    <span class="prelude-val">Err</span>(parse_io_error(e))
+                    <span class="prelude-val">Err</span>(new_std_io_error(e))
                 };
             }
         };
@@ -1228,24 +1126,22 @@
     <span class="kw">fn </span>blocking_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="kw">let </span>p = <span class="self">self</span>.root.join(path.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
-        std::fs::create_dir_all(p).map_err(parse_io_error)<span class="question-mark">?</span>;
+        std::fs::create_dir_all(p).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(RpCreateDir::default())
     }
 
-    <span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
-        <span class="kw">use </span>oio::BlockingRead;
-
+    <span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
         <span class="kw">let </span>p = <span class="self">self</span>.root.join(path.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
-        <span class="kw">let </span><span class="kw-2">mut </span>f = std::fs::OpenOptions::new()
+        <span class="kw">let </span>f = std::fs::OpenOptions::new()
             .read(<span class="bool-val">true</span>)
             .open(p)
-            .map_err(parse_io_error)<span class="question-mark">?</span>;
+            .map_err(new_std_io_error)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>total_length = <span class="kw">if </span><span class="self">self</span>.enable_path_check {
+        <span class="kw">if </span><span class="self">self</span>.enable_path_check {
             <span class="comment">// Get fs metadata of file at given path, ensuring it is not a false-positive due to slash normalization.
-            </span><span class="kw">let </span>meta = f.metadata().map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span><span class="kw">let </span>meta = f.metadata().map_err(new_std_io_error)<span class="question-mark">?</span>;
             <span class="kw">if </span>meta.is_dir() != path.ends_with(<span class="string">&#39;/&#39;</span>) {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::NotFound,
@@ -1258,39 +1154,11 @@
                     <span class="string">&quot;given path is a directory&quot;</span>,
                 ));
             }
+        }
 
-            meta.len()
-        } <span class="kw">else </span>{
-            <span class="kw">use </span>std::io::Seek;
+        <span class="kw">let </span>r = oio::StdReader::new(f);
 
-            f.seek(SeekFrom::End(<span class="number">0</span>)).map_err(parse_io_error)<span class="question-mark">?
-        </span>};
-
-        <span class="kw">let </span>br = args.range();
-        <span class="kw">let </span>(start, end) = <span class="kw">match </span>(br.offset(), br.size()) {
-            <span class="comment">// Read a specific range.
-            </span>(<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)) =&gt; (offset, min(offset + size, total_length)),
-            <span class="comment">// Read from offset.
-            </span>(<span class="prelude-val">Some</span>(offset), <span class="prelude-val">None</span>) =&gt; (offset, total_length),
-            <span class="comment">// Read the last size bytes.
-            </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; (
-                <span class="kw">if </span>total_length &gt; size {
-                    total_length - size
-                } <span class="kw">else </span>{
-                    <span class="number">0
-                </span>},
-                total_length,
-            ),
-            <span class="comment">// Read the whole file.
-            </span>(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; (<span class="number">0</span>, total_length),
-        };
-
-        <span class="kw">let </span><span class="kw-2">mut </span>r: oio::FromFileReader&lt;std::fs::File&gt; = oio::into_read_from_file(f, start, end);
-
-        <span class="comment">// Rewind to make sure we are on the correct offset.
-        </span>r.seek(SeekFrom::Start(<span class="number">0</span>))<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>((RpRead::new(end - start), r))
+        <span class="prelude-val">Ok</span>((RpRead::new(), r))
     }
 
     <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, op: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
@@ -1303,7 +1171,7 @@
             </span><span class="kw">if </span>op.append()
                 &amp;&amp; Path::new(<span class="kw-2">&amp;</span>target_path)
                     .try_exists()
-                    .map_err(parse_io_error)<span class="question-mark">?
+                    .map_err(new_std_io_error)<span class="question-mark">?
             </span>{
                 (target_path, <span class="prelude-val">None</span>)
             } <span class="kw">else </span>{
@@ -1326,7 +1194,7 @@
 
         <span class="kw">let </span>f = f
             .open(tmp_path.as_ref().unwrap_or(<span class="kw-2">&amp;</span>target_path))
-            .map_err(parse_io_error)<span class="question-mark">?</span>;
+            .map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>((RpWrite::new(), FsWriter::new(target_path, tmp_path, f)))
     }
@@ -1335,11 +1203,11 @@
         <span class="kw">let </span>from = <span class="self">self</span>.root.join(from.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
         <span class="comment">// try to get the metadata of the source file to ensure it exists
-        </span>std::fs::metadata(<span class="kw-2">&amp;</span>from).map_err(parse_io_error)<span class="question-mark">?</span>;
+        </span>std::fs::metadata(<span class="kw-2">&amp;</span>from).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>to = <span class="self">Self</span>::blocking_ensure_write_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to.trim_end_matches(<span class="string">&#39;/&#39;</span>))<span class="question-mark">?</span>;
 
-        std::fs::copy(from, to).map_err(parse_io_error)<span class="question-mark">?</span>;
+        std::fs::copy(from, to).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(RpCopy::default())
     }
@@ -1348,11 +1216,11 @@
         <span class="kw">let </span>from = <span class="self">self</span>.root.join(from.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
         <span class="comment">// try to get the metadata of the source file to ensure it exists
-        </span>std::fs::metadata(<span class="kw-2">&amp;</span>from).map_err(parse_io_error)<span class="question-mark">?</span>;
+        </span>std::fs::metadata(<span class="kw-2">&amp;</span>from).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>to = <span class="self">Self</span>::blocking_ensure_write_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to.trim_end_matches(<span class="string">&#39;/&#39;</span>))<span class="question-mark">?</span>;
 
-        std::fs::rename(from, to).map_err(parse_io_error)<span class="question-mark">?</span>;
+        std::fs::rename(from, to).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(RpRename::default())
     }
@@ -1360,7 +1228,7 @@
     <span class="kw">fn </span>blocking_stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
         <span class="kw">let </span>p = <span class="self">self</span>.root.join(path.trim_end_matches(<span class="string">&#39;/&#39;</span>));
 
-        <span class="kw">let </span>meta = std::fs::metadata(p).map_err(parse_io_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>meta = std::fs::metadata(p).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="kw">if </span><span class="self">self</span>.enable_path_check &amp;&amp; meta.is_dir() != path.ends_with(<span class="string">&#39;/&#39;</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
@@ -1381,7 +1249,7 @@
             .with_last_modified(
                 meta.modified()
                     .map(DateTime::from)
-                    .map_err(parse_io_error)<span class="question-mark">?</span>,
+                    .map_err(new_std_io_error)<span class="question-mark">?</span>,
             );
 
         <span class="prelude-val">Ok</span>(RpStat::new(m))
@@ -1395,15 +1263,15 @@
         <span class="kw">match </span>meta {
             <span class="prelude-val">Ok</span>(meta) =&gt; {
                 <span class="kw">if </span>meta.is_dir() {
-                    std::fs::remove_dir(<span class="kw-2">&amp;</span>p).map_err(parse_io_error)<span class="question-mark">?</span>;
+                    std::fs::remove_dir(<span class="kw-2">&amp;</span>p).map_err(new_std_io_error)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    std::fs::remove_file(<span class="kw-2">&amp;</span>p).map_err(parse_io_error)<span class="question-mark">?</span>;
+                    std::fs::remove_file(<span class="kw-2">&amp;</span>p).map_err(new_std_io_error)<span class="question-mark">?</span>;
                 }
 
                 <span class="prelude-val">Ok</span>(RpDelete::default())
             }
             <span class="prelude-val">Err</span>(err) <span class="kw">if </span>err.kind() == std::io::ErrorKind::NotFound =&gt; <span class="prelude-val">Ok</span>(RpDelete::default()),
-            <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(parse_io_error(err)),
+            <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(new_std_io_error(err)),
         }
     }
 
@@ -1416,7 +1284,7 @@
                 <span class="kw">return if </span>e.kind() == std::io::ErrorKind::NotFound {
                     <span class="prelude-val">Ok</span>((RpList::default(), <span class="prelude-val">None</span>))
                 } <span class="kw">else </span>{
-                    <span class="prelude-val">Err</span>(parse_io_error(e))
+                    <span class="prelude-val">Err</span>(new_std_io_error(e))
                 };
             }
         };

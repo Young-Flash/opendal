@@ -416,6 +416,33 @@
 <a href="#416" id="416">416</a>
 <a href="#417" id="417">417</a>
 <a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -456,9 +483,10 @@
 
 <span class="kw">const </span>X_MS_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-version&quot;</span>;
 <span class="kw">const </span>X_MS_WRITE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-write&quot;</span>;
-<span class="kw">const </span>X_MS_RENAME_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-rename-source&quot;</span>;
+<span class="kw">const </span>X_MS_FILE_RENAME_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-file-rename-source&quot;</span>;
 <span class="kw">const </span>X_MS_CONTENT_LENGTH: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-content-length&quot;</span>;
 <span class="kw">const </span>X_MS_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-type&quot;</span>;
+<span class="kw">const </span>X_MS_FILE_RENAME_REPLACE_IF_EXISTS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-file-rename-replace-if-exists&quot;</span>;
 
 <span class="kw">pub struct </span>AzfileCore {
     <span class="kw">pub </span>root: String,
@@ -529,7 +557,19 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
 
-        req = req.header(RANGE, range.to_header());
+        <span class="kw">if </span>!range.is_full() {
+            <span class="comment">// azfile doesn&#39;t support read with suffix range.
+            //
+            // ref: https://learn.microsoft.com/en-us/rest/api/storageservices/specifying-the-range-header-for-file-service-operations
+            </span><span class="kw">if </span>range.offset().is_none() &amp;&amp; range.size().is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                    ErrorKind::Unsupported,
+                    <span class="string">&quot;azblob doesn&#39;t support read with suffix range&quot;</span>,
+                ));
+            }
+
+            req = req.header(RANGE, range.to_header());
+        }
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = req
             .body(AsyncBody::Empty)
@@ -680,14 +720,14 @@
                 <span class="string">&quot;{}/{}/{}?restype=directory&amp;comp=rename&quot;</span>,
                 <span class="self">self</span>.endpoint,
                 <span class="self">self</span>.share_name,
-                percent_encode_path(<span class="kw-2">&amp;</span>p)
+                percent_encode_path(<span class="kw-2">&amp;</span>new_p)
             )
         } <span class="kw">else </span>{
             <span class="macro">format!</span>(
                 <span class="string">&quot;{}/{}/{}?comp=rename&quot;</span>,
                 <span class="self">self</span>.endpoint,
                 <span class="self">self</span>.share_name,
-                percent_encode_path(<span class="kw-2">&amp;</span>p)
+                percent_encode_path(<span class="kw-2">&amp;</span>new_p)
             )
         };
 
@@ -695,7 +735,21 @@
 
         req = req.header(CONTENT_LENGTH, <span class="number">0</span>);
 
-        req = req.header(X_MS_RENAME_SOURCE, percent_encode_path(<span class="kw-2">&amp;</span>new_p));
+        <span class="comment">// x-ms-file-rename-source specifies the file or directory to be renamed.
+        // the value must be a URL style path
+        // the official document does not mention the URL style path
+        // find the solution from the community FAQ and implementation of the Java-SDK
+        // ref: https://learn.microsoft.com/en-us/answers/questions/799611/azure-file-service-rest-api(rename)?page=1
+        </span><span class="kw">let </span>source_url = <span class="macro">format!</span>(
+            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="self">self</span>.endpoint,
+            <span class="self">self</span>.share_name,
+            percent_encode_path(<span class="kw-2">&amp;</span>p)
+        );
+
+        req = req.header(X_MS_FILE_RENAME_SOURCE, <span class="kw-2">&amp;</span>source_url);
+
+        req = req.header(X_MS_FILE_RENAME_REPLACE_IF_EXISTS, <span class="string">&quot;true&quot;</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = req
             .body(AsyncBody::Empty)

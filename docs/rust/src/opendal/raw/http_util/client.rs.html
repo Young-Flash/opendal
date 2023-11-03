@@ -278,7 +278,7 @@
                 //
                 // We don&#39;t set this by hand, just don&#39;t allow retry.
                 </span>err.is_redirect() ||
-                 <span class="comment">// We never use `Response::error_for_status`, just don&#39;t allow retry.
+                <span class="comment">// We never use `Response::error_for_status`, just don&#39;t allow retry.
                 //
                 // Status should be checked by our services.
                 </span>err.is_status()

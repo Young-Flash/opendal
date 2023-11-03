@@ -68,6 +68,7 @@
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
 <a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -93,7 +94,6 @@
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>futures::AsyncWrite;
 
-<span class="kw">use </span><span class="kw">super</span>::error::parse_io_error;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -112,7 +112,7 @@
     <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.f)
             .poll_write(cx, bs.chunk())
-            .map_err(parse_io_error)
+            .map_err(new_std_io_error)
     }
 
     <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
@@ -123,17 +123,19 @@
     }
 
     <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.f).poll_close(cx).map_err(parse_io_error)
+        Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.f)
+            .poll_close(cx)
+            .map_err(new_std_io_error)
     }
 }
 
 <span class="kw">impl </span>oio::BlockingWrite <span class="kw">for </span>HdfsWriter&lt;hdrs::File&gt; {
     <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="self">self</span>.f.write(bs.chunk()).map_err(parse_io_error)
+        <span class="self">self</span>.f.write(bs.chunk()).map_err(new_std_io_error)
     }
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.f.flush().map_err(parse_io_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.f.flush().map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }

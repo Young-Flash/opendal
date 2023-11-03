@@ -193,7 +193,7 @@
 <span class="kw">use </span>tokio::io::BufReader;
 <span class="kw">use </span>tokio::net::TcpStream;
 
-<span class="kw">use </span><span class="kw">super</span>::backend::parse_io_error;
+<span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub struct </span>Connection {
@@ -215,8 +215,8 @@
         writer
             .write_all(<span class="kw-2">&amp;</span>[<span class="string">b&quot;get &quot;</span>, key.as_bytes(), <span class="string">b&quot;\r\n&quot;</span>].concat())
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
-        writer.flush().<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        writer.flush().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="comment">// Read response header
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
@@ -243,7 +243,7 @@
         <span class="self">self</span>.io
             .read_exact(<span class="kw-2">&amp;mut </span>buffer)
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="comment">// Read the trailing header
         </span><span class="self">self</span>.read_line().<span class="kw">await</span><span class="question-mark">?</span>; <span class="comment">// \r\n
@@ -257,10 +257,10 @@
         <span class="self">self</span>.io
             .write_all(header.as_bytes())
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.io.write_all(val).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.io.write_all(<span class="string">b&quot;\r\n&quot;</span>).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.io.write_all(val).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.io.write_all(<span class="string">b&quot;\r\n&quot;</span>).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="comment">// Read response header
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
@@ -282,8 +282,8 @@
         <span class="self">self</span>.io
             .write_all(header.as_bytes())
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="comment">// Read response header
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
@@ -304,8 +304,8 @@
         <span class="self">self</span>.io
             .write_all(<span class="string">b&quot;version\r\n&quot;</span>)
             .<span class="kw">await
-            </span>.map_err(parse_io_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="comment">// Read response header
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
@@ -323,7 +323,7 @@
     <span class="kw">async fn </span>read_line(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt; {
         <span class="kw">let </span><span class="self">Self </span>{ io, buf } = <span class="self">self</span>;
         buf.clear();
-        io.read_until(<span class="string">b&#39;\n&#39;</span>, buf).<span class="kw">await</span>.map_err(parse_io_error)<span class="question-mark">?</span>;
+        io.read_until(<span class="string">b&#39;\n&#39;</span>, buf).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
         <span class="kw">if </span>buf.last().copied() != <span class="prelude-val">Some</span>(<span class="string">b&#39;\n&#39;</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ContentIncomplete,

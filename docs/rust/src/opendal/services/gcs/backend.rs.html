@@ -627,6 +627,8 @@
 <a href="#627" id="627">627</a>
 <a href="#628" id="628">628</a>
 <a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1018,8 +1020,10 @@
         <span class="kw">let </span>resp = <span class="self">self</span>.core.gcs_get_object(path, <span class="kw-2">&amp;</span>args).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">if </span>resp.status().is_success() {
-            <span class="kw">let </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>((RpRead::with_metadata(meta), resp.into_body()))
+            <span class="kw">let </span>size = parse_content_length(resp.headers())<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>((RpRead::new().with_size(size), resp.into_body()))
+        } <span class="kw">else if </span>resp.status() == StatusCode::RANGE_NOT_SATISFIABLE {
+            <span class="prelude-val">Ok</span>((RpRead::new(), IncomingAsyncBody::empty()))
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>)
         }

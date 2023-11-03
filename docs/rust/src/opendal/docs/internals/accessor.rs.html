@@ -389,9 +389,9 @@
 //!
 //! ```ignore
 //! pub trait Accessor {
-//!     fn create&lt;&#39;async&gt;(
+//!     fn create_dir&lt;&#39;async&gt;(
 //!         &amp;&#39;async self,
-//!     ) -&gt; Pin&lt;Box&lt;dyn core::future::Future&lt;Output = ()&gt; + Send + &#39;async&gt;&gt;
+//!     ) -&gt; Pin&lt;Box&lt;dyn core::future::Future&lt;Output = Result()&gt; + Send + &#39;async&gt;&gt;
 //!     where Self: Sync + &#39;async;
 //! }
 //! ```

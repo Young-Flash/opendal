@@ -968,44 +968,6 @@
 <a href="#968" id="968">968</a>
 <a href="#969" id="969">969</a>
 <a href="#970" id="970">970</a>
-<a href="#971" id="971">971</a>
-<a href="#972" id="972">972</a>
-<a href="#973" id="973">973</a>
-<a href="#974" id="974">974</a>
-<a href="#975" id="975">975</a>
-<a href="#976" id="976">976</a>
-<a href="#977" id="977">977</a>
-<a href="#978" id="978">978</a>
-<a href="#979" id="979">979</a>
-<a href="#980" id="980">980</a>
-<a href="#981" id="981">981</a>
-<a href="#982" id="982">982</a>
-<a href="#983" id="983">983</a>
-<a href="#984" id="984">984</a>
-<a href="#985" id="985">985</a>
-<a href="#986" id="986">986</a>
-<a href="#987" id="987">987</a>
-<a href="#988" id="988">988</a>
-<a href="#989" id="989">989</a>
-<a href="#990" id="990">990</a>
-<a href="#991" id="991">991</a>
-<a href="#992" id="992">992</a>
-<a href="#993" id="993">993</a>
-<a href="#994" id="994">994</a>
-<a href="#995" id="995">995</a>
-<a href="#996" id="996">996</a>
-<a href="#997" id="997">997</a>
-<a href="#998" id="998">998</a>
-<a href="#999" id="999">999</a>
-<a href="#1000" id="1000">1000</a>
-<a href="#1001" id="1001">1001</a>
-<a href="#1002" id="1002">1002</a>
-<a href="#1003" id="1003">1003</a>
-<a href="#1004" id="1004">1004</a>
-<a href="#1005" id="1005">1005</a>
-<a href="#1006" id="1006">1006</a>
-<a href="#1007" id="1007">1007</a>
-<a href="#1008" id="1008">1008</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1035,13 +997,13 @@
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>bytes::Bytes;
 
-<span class="kw">use </span><span class="kw">crate</span>::raw::oio::into_flat_page;
-<span class="kw">use </span><span class="kw">crate</span>::raw::oio::into_hierarchy_page;
-<span class="kw">use </span><span class="kw">crate</span>::raw::oio::ByRangeSeekableReader;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::Entry;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::FlatPager;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::HierarchyPager;
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::RangeReader;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::StreamableReader;
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::{into_flat_page, FileReader};
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::{into_hierarchy_page, LazyReader};
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -1124,10 +1086,10 @@
 </span><span class="kw">pub struct </span>CompleteLayer;
 
 <span class="kw">impl</span>&lt;A: Accessor&gt; Layer&lt;A&gt; <span class="kw">for </span>CompleteLayer {
-    <span class="kw">type </span>LayeredAccessor = CompleteReaderAccessor&lt;A&gt;;
+    <span class="kw">type </span>LayeredAccessor = CompleteAccessor&lt;A&gt;;
 
     <span class="kw">fn </span>layer(<span class="kw-2">&amp;</span><span class="self">self</span>, inner: A) -&gt; <span class="self">Self</span>::LayeredAccessor {
-        CompleteReaderAccessor {
+        CompleteAccessor {
             meta: inner.info(),
             inner: Arc::new(inner),
         }
@@ -1135,18 +1097,18 @@
 }
 
 <span class="doccomment">/// Provide complete wrapper for backend.
-</span><span class="kw">pub struct </span>CompleteReaderAccessor&lt;A: Accessor&gt; {
+</span><span class="kw">pub struct </span>CompleteAccessor&lt;A: Accessor&gt; {
     meta: AccessorInfo,
     inner: Arc&lt;A&gt;,
 }
 
-<span class="kw">impl</span>&lt;A: Accessor&gt; Debug <span class="kw">for </span>CompleteReaderAccessor&lt;A&gt; {
+<span class="kw">impl</span>&lt;A: Accessor&gt; Debug <span class="kw">for </span>CompleteAccessor&lt;A&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
         <span class="self">self</span>.inner.fmt(f)
     }
 }
 
-<span class="kw">impl</span>&lt;A: Accessor&gt; CompleteReaderAccessor&lt;A&gt; {
+<span class="kw">impl</span>&lt;A: Accessor&gt; CompleteAccessor&lt;A&gt; {
     <span class="kw">fn </span>new_unsupported_error(<span class="kw-2">&amp;</span><span class="self">self</span>, op: <span class="kw">impl </span>Into&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;) -&gt; Error {
         <span class="kw">let </span>scheme = <span class="self">self</span>.meta.scheme();
         <span class="kw">let </span>op = op.into();
@@ -1170,41 +1132,24 @@
         <span class="kw">let </span>seekable = capability.read_can_seek;
         <span class="kw">let </span>streamable = capability.read_can_next;
 
-        <span class="kw">let </span>range = args.range();
-        <span class="kw">let </span>(rp, r) = <span class="self">self</span>.inner.read(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>content_length = rp.metadata().content_length();
-
         <span class="kw">match </span>(seekable, streamable) {
-            (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; <span class="prelude-val">Ok</span>((rp, CompleteReader::AlreadyComplete(r))),
+            (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; {
+                <span class="kw">let </span>r = LazyReader::new(<span class="self">self</span>.inner.clone(), path, args);
+                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::AlreadyComplete(r)))
+            }
             (<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
-                <span class="kw">let </span>r = oio::into_streamable_read(r, <span class="number">256 </span>* <span class="number">1024</span>);
-                <span class="prelude-val">Ok</span>((rp, CompleteReader::NeedStreamable(r)))
+                <span class="kw">let </span>r = FileReader::new(<span class="self">self</span>.inner.clone(), path, args);
+
+                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedStreamable(r)))
             }
             <span class="kw">_ </span>=&gt; {
-                <span class="kw">let </span>(offset, size) = <span class="kw">match </span>(range.offset(), range.size()) {
-                    (<span class="prelude-val">Some</span>(offset), <span class="kw">_</span>) =&gt; (offset, content_length),
-                    (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; (<span class="number">0</span>, content_length),
-                    (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; {
-                        <span class="comment">// TODO: we can read content range to calculate
-                        // the total content length.
-                        </span><span class="kw">let </span>om = <span class="self">self</span>.inner.stat(path, OpStat::new()).<span class="kw">await</span><span class="question-mark">?</span>.into_metadata();
-                        <span class="kw">let </span>total_size = om.content_length();
-                        <span class="kw">let </span>(offset, size) = <span class="kw">if </span>size &gt; total_size {
-                            (<span class="number">0</span>, total_size)
-                        } <span class="kw">else </span>{
-                            (total_size - size, size)
-                        };
-
-                        (offset, size)
-                    }
-                };
-                <span class="kw">let </span>r = oio::into_seekable_read_by_range(<span class="self">self</span>.inner.clone(), path, r, offset, size);
+                <span class="kw">let </span>r = RangeReader::new(<span class="self">self</span>.inner.clone(), path, args);
 
                 <span class="kw">if </span>streamable {
-                    <span class="prelude-val">Ok</span>((rp, CompleteReader::NeedSeekable(r)))
+                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedSeekable(r)))
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>r = oio::into_streamable_read(r, <span class="number">256 </span>* <span class="number">1024</span>);
-                    <span class="prelude-val">Ok</span>((rp, CompleteReader::NeedBoth(r)))
+                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedBoth(r)))
                 }
             }
         }
@@ -1223,44 +1168,23 @@
         <span class="kw">let </span>seekable = capability.read_can_seek;
         <span class="kw">let </span>streamable = capability.read_can_next;
 
-        <span class="kw">let </span>range = args.range();
-        <span class="kw">let </span>(rp, r) = <span class="self">self</span>.inner.blocking_read(path, args)<span class="question-mark">?</span>;
-        <span class="kw">let </span>content_length = rp.metadata().content_length();
-
         <span class="kw">match </span>(seekable, streamable) {
-            (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; <span class="prelude-val">Ok</span>((rp, CompleteReader::AlreadyComplete(r))),
+            (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; {
+                <span class="kw">let </span>r = LazyReader::new(<span class="self">self</span>.inner.clone(), path, args);
+                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::AlreadyComplete(r)))
+            }
             (<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
-                <span class="kw">let </span>r = oio::into_streamable_read(r, <span class="number">256 </span>* <span class="number">1024</span>);
-                <span class="prelude-val">Ok</span>((rp, CompleteReader::NeedStreamable(r)))
+                <span class="kw">let </span>r = FileReader::new(<span class="self">self</span>.inner.clone(), path, args);
+                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedStreamable(r)))
             }
             <span class="kw">_ </span>=&gt; {
-                <span class="kw">let </span>(offset, size) = <span class="kw">match </span>(range.offset(), range.size()) {
-                    (<span class="prelude-val">Some</span>(offset), <span class="kw">_</span>) =&gt; (offset, content_length),
-                    (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; (<span class="number">0</span>, content_length),
-                    (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; {
-                        <span class="comment">// TODO: we can read content range to calculate
-                        // the total content length.
-                        </span><span class="kw">let </span>om = <span class="self">self
-                            </span>.inner
-                            .blocking_stat(path, OpStat::new())<span class="question-mark">?
-                            </span>.into_metadata();
-                        <span class="kw">let </span>total_size = om.content_length();
-                        <span class="kw">let </span>(offset, size) = <span class="kw">if </span>size &gt; total_size {
-                            (<span class="number">0</span>, total_size)
-                        } <span class="kw">else </span>{
-                            (total_size - size, size)
-                        };
-
-                        (offset, size)
-                    }
-                };
-                <span class="kw">let </span>r = oio::into_seekable_read_by_range(<span class="self">self</span>.inner.clone(), path, r, offset, size);
+                <span class="kw">let </span>r = RangeReader::new(<span class="self">self</span>.inner.clone(), path, args);
 
                 <span class="kw">if </span>streamable {
-                    <span class="prelude-val">Ok</span>((rp, CompleteReader::NeedSeekable(r)))
+                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedSeekable(r)))
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>r = oio::into_streamable_read(r, <span class="number">256 </span>* <span class="number">1024</span>);
-                    <span class="prelude-val">Ok</span>((rp, CompleteReader::NeedBoth(r)))
+                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedBoth(r)))
                 }
             }
         }
@@ -1359,7 +1283,7 @@
 }
 
 <span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>CompleteReaderAccessor&lt;A&gt; {
+</span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>CompleteAccessor&lt;A&gt; {
     <span class="kw">type </span>Inner = A;
     <span class="kw">type </span>Reader = CompleteReader&lt;A, A::Reader&gt;;
     <span class="kw">type </span>BlockingReader = CompleteReader&lt;A, A::BlockingReader&gt;;
@@ -1467,8 +1391,8 @@
 
         <span class="self">self</span>.inner.stat(path, args).<span class="kw">await</span>.map(|v| {
             v.map_metadata(|m| {
-                <span class="kw">let </span>bit = m.bit();
-                m.with_bit(bit | Metakey::Complete)
+                <span class="kw">let </span>bit = m.metakey();
+                m.with_metakey(bit | Metakey::Complete)
             })
         })
     }
@@ -1569,8 +1493,8 @@
 
         <span class="self">self</span>.inner.blocking_stat(path, args).map(|v| {
             v.map_metadata(|m| {
-                <span class="kw">let </span>bit = m.bit();
-                m.with_bit(bit | Metakey::Complete)
+                <span class="kw">let </span>bit = m.metakey();
+                m.with_metakey(bit | Metakey::Complete)
             })
         })
     }
@@ -1595,10 +1519,10 @@
 }
 
 <span class="kw">pub enum </span>CompleteReader&lt;A: Accessor, R&gt; {
-    AlreadyComplete(R),
-    NeedSeekable(ByRangeSeekableReader&lt;A, R&gt;),
-    NeedStreamable(StreamableReader&lt;R&gt;),
-    NeedBoth(StreamableReader&lt;ByRangeSeekableReader&lt;A, R&gt;&gt;),
+    AlreadyComplete(LazyReader&lt;A, R&gt;),
+    NeedSeekable(RangeReader&lt;A, R&gt;),
+    NeedStreamable(FileReader&lt;A, R&gt;),
+    NeedBoth(StreamableReader&lt;RangeReader&lt;A, R&gt;&gt;),
 }
 
 <span class="kw">impl</span>&lt;A, R&gt; oio::Read <span class="kw">for </span>CompleteReader&lt;A, R&gt;
@@ -1837,7 +1761,7 @@
         }
 
         <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
-            <span class="prelude-val">Ok</span>((RpRead::new(<span class="number">0</span>), Box::new(())))
+            <span class="prelude-val">Ok</span>((RpRead::new(), Box::new(oio::Cursor::new())))
         }
 
         <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {

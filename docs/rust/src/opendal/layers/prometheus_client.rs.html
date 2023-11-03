@@ -679,6 +679,8 @@
 <a href="#679" id="679">679</a>
 <a href="#680" id="680">680</a>
 <a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -762,13 +764,15 @@
 ///     Ok(())
 /// }
 /// ```
-</span><span class="attr">#[derive(Debug)]
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>PrometheusClientLayer {
     metrics: PrometheusClientMetrics,
 }
 
 <span class="kw">impl </span>PrometheusClientLayer {
-    <span class="doccomment">/// create PrometheusClientLayer while registering itself to this registry.
+    <span class="doccomment">/// Create PrometheusClientLayer while registering itself to this registry. Please keep in caution
+    /// that do NOT call this method multiple times with a same registry. If you want initialize multiple
+    /// [`PrometheusClientLayer`] with a single registry, you should use [`clone`] instead.
     </span><span class="kw">pub fn </span>new(registry: <span class="kw-2">&amp;mut </span>Registry) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>metrics = PrometheusClientMetrics::register(registry);
         <span class="self">Self </span>{ metrics }

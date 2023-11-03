@@ -576,6 +576,22 @@
 <a href="#576" id="576">576</a>
 <a href="#577" id="577">577</a>
 <a href="#578" id="578">578</a>
+<a href="#579" id="579">579</a>
+<a href="#580" id="580">580</a>
+<a href="#581" id="581">581</a>
+<a href="#582" id="582">582</a>
+<a href="#583" id="583">583</a>
+<a href="#584" id="584">584</a>
+<a href="#585" id="585">585</a>
+<a href="#586" id="586">586</a>
+<a href="#587" id="587">587</a>
+<a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -606,6 +622,7 @@
 <span class="kw">use </span>tokio::sync::OnceCell;
 
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
+<span class="kw">use </span><span class="kw">super</span>::error::parse_error_msg;
 <span class="kw">use </span><span class="kw">super</span>::message::BooleanResp;
 <span class="kw">use </span><span class="kw">super</span>::message::DirectoryListingWrapper;
 <span class="kw">use </span><span class="kw">super</span>::message::FileStatusType;
@@ -775,7 +792,7 @@
     <span class="doccomment">/// create object or make a directory
     ///
     /// TODO: we should split it into mkdir and create
-    </span><span class="kw">pub async fn </span>webhdfs_create_object_request(
+    </span><span class="kw">pub fn </span>webhdfs_create_object_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
         size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
@@ -1007,9 +1024,12 @@
 
     <span class="doccomment">/// Create a file or directory
     </span><span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
-        <span class="kw">let </span>req = <span class="self">self
-            </span>.webhdfs_create_object_request(path, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="kw-2">&amp;</span>OpWrite::default(), AsyncBody::Empty)
-            .<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>req = <span class="self">self</span>.webhdfs_create_object_request(
+            path,
+            <span class="prelude-val">Some</span>(<span class="number">0</span>),
+            <span class="kw-2">&amp;</span>OpWrite::default(),
+            AsyncBody::Empty,
+        )<span class="question-mark">?</span>;
 
         <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -1044,9 +1064,21 @@
         <span class="kw">let </span>resp = <span class="self">self</span>.webhdfs_read_file(path, range).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">match </span>resp.status() {
             StatusCode::OK | StatusCode::PARTIAL_CONTENT =&gt; {
-                <span class="kw">let </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((RpRead::with_metadata(meta), resp.into_body()))
+                <span class="kw">let </span>size = parse_content_length(resp.headers())<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((RpRead::new().with_size(size), resp.into_body()))
             }
+            <span class="comment">// WebHDFS will returns 403 when range is outside of the end.
+            </span>StatusCode::FORBIDDEN =&gt; {
+                <span class="kw">let </span>(parts, body) = resp.into_parts();
+                <span class="kw">let </span>bs = body.bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>s = String::from_utf8_lossy(<span class="kw-2">&amp;</span>bs);
+                <span class="kw">if </span>s.contains(<span class="string">&quot;out of the range&quot;</span>) {
+                    <span class="prelude-val">Ok</span>((RpRead::new(), IncomingAsyncBody::empty()))
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(parse_error_msg(parts, <span class="kw-2">&amp;</span>s)<span class="question-mark">?</span>)
+                }
+            }
+            StatusCode::RANGE_NOT_SATISFIABLE =&gt; <span class="prelude-val">Ok</span>((RpRead::new(), IncomingAsyncBody::empty())),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }

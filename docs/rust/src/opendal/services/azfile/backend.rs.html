@@ -440,6 +440,13 @@
 <a href="#440" id="440">440</a>
 <a href="#441" id="441">441</a>
 <a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -637,6 +644,7 @@
 
         <span class="kw">let </span>config_loader = AzureStorageConfig {
             account_name: <span class="prelude-val">Some</span>(account_name),
+            account_key: <span class="self">self</span>.account_key.clone(),
             sas_token: <span class="self">self</span>.sas_token.clone(),
             ..Default::default()
         };
@@ -731,7 +739,12 @@
                 <span class="prelude-val">Ok</span>(RpCreateDir::default())
             }
             <span class="kw">_ </span>=&gt; {
-                <span class="kw">if </span>resp
+                <span class="comment">// we cannot just check status code because 409 Conflict has two meaning:
+                // 1. If a directory by the same name is being deleted when Create Directory is called, the server returns status code 409 (Conflict)
+                // 2. If a directory or file with the same name already exists, the operation fails with status code 409 (Conflict).
+                // but we just need case 2 (already exists)
+                // ref: https://learn.microsoft.com/en-us/rest/api/storageservices/create-directory
+                </span><span class="kw">if </span>resp
                     .headers()
                     .get(<span class="string">&quot;x-ms-error-code&quot;</span>)
                     .map(|value| value.to_str().unwrap_or(<span class="string">&quot;&quot;</span>))
@@ -753,9 +766,10 @@
 
         <span class="kw">match </span>status {
             StatusCode::OK | StatusCode::PARTIAL_CONTENT =&gt; {
-                <span class="kw">let </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((RpRead::with_metadata(meta), resp.into_body()))
+                <span class="kw">let </span>size = parse_content_length(resp.headers())<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((RpRead::new().with_size(size), resp.into_body()))
             }
+            StatusCode::RANGE_NOT_SATISFIABLE =&gt; <span class="prelude-val">Ok</span>((RpRead::new(), IncomingAsyncBody::empty())),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
@@ -822,7 +836,7 @@
 
         <span class="kw">let </span>status = resp.status();
         <span class="kw">match </span>status {
-            StatusCode::ACCEPTED =&gt; {
+            StatusCode::ACCEPTED | StatusCode::NOT_FOUND =&gt; {
                 resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>(RpDelete::default())
             }

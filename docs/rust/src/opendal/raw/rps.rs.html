@@ -255,6 +255,10 @@
 <a href="#255" id="255">255</a>
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -354,33 +358,37 @@
 }
 
 <span class="doccomment">/// Reply for `read` operation.
-</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="attr">#[derive(Debug, Clone, Default)]
 </span><span class="kw">pub struct </span>RpRead {
-    meta: Metadata,
+    <span class="doccomment">/// Size is the size of the reader returned by this read operation.
+    ///
+    /// - `Some(size)` means the reader has at most size bytes.
+    /// - `None` means the reader has unknown size.
+    ///
+    /// It&#39;s ok to leave size as empty, but it&#39;s recommended to set size if possible. We will use
+    /// this size as hint to do some optimization like avoid an extra stat or read.
+    </span>size: <span class="prelude-ty">Option</span>&lt;u64&gt;,
 }
 
 <span class="kw">impl </span>RpRead {
     <span class="doccomment">/// Create a new reply for `read`.
-    </span><span class="kw">pub fn </span>new(content_length: u64) -&gt; <span class="self">Self </span>{
-        RpRead {
-            meta: Metadata::new(EntryMode::FILE).with_content_length(content_length),
-        }
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        RpRead::default()
     }
 
-    <span class="doccomment">/// Create reply read with existing metadata.
-    </span><span class="kw">pub fn </span>with_metadata(meta: Metadata) -&gt; <span class="self">Self </span>{
-        RpRead { meta }
+    <span class="doccomment">/// Got the size of the reader returned by this read operation.
+    ///
+    /// - `Some(size)` means the reader has at most size bytes.
+    /// - `None` means the reader has unknown size.
+    </span><span class="kw">pub fn </span>size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
+        <span class="self">self</span>.size
     }
 
-    <span class="doccomment">/// Get a ref of metadata.
-    </span><span class="kw">pub fn </span>metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Metadata {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.meta
-    }
-
-    <span class="doccomment">/// Consume reply to get the meta.
-    </span><span class="kw">pub fn </span>into_metadata(<span class="self">self</span>) -&gt; Metadata {
-        <span class="self">self</span>.meta
-    }
+    <span class="doccomment">/// Set the size of the reader returned by this read operation.
+    </span><span class="kw">pub fn </span>with_size(<span class="kw-2">mut </span><span class="self">self</span>, size: <span class="prelude-ty">Option</span>&lt;u64&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.size = size;
+        <span class="self">self
+    </span>}
 }
 
 <span class="doccomment">/// Reply for `batch` operation.
