@@ -39,10 +39,10 @@
                                 <a class="function" href="#Operator.layer">layer</a>
                         </li>
                         <li>
-                                <a class="function" href="#Operator.read">read</a>
+                                <a class="function" href="#Operator.open">open</a>
                         </li>
                         <li>
-                                <a class="function" href="#Operator.open_reader">open_reader</a>
+                                <a class="function" href="#Operator.read">read</a>
                         </li>
                         <li>
                                 <a class="function" href="#Operator.write">write</a>
@@ -74,23 +74,8 @@
                         <li>
                                 <a class="function" href="#Operator.capability">capability</a>
                         </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#Reader">Reader</a>
-                            <ul class="memberlist">
                         <li>
-                                <a class="function" href="#Reader.read">read</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Reader.write">write</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Reader.seek">seek</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Reader.tell">tell</a>
+                                <a class="function" href="#Operator.to_async_operator">to_async_operator</a>
                         </li>
                 </ul>
 
@@ -105,10 +90,10 @@
                                 <a class="function" href="#AsyncOperator.layer">layer</a>
                         </li>
                         <li>
-                                <a class="function" href="#AsyncOperator.read">read</a>
+                                <a class="function" href="#AsyncOperator.open">open</a>
                         </li>
                         <li>
-                                <a class="function" href="#AsyncOperator.open_reader">open_reader</a>
+                                <a class="function" href="#AsyncOperator.read">read</a>
                         </li>
                         <li>
                                 <a class="function" href="#AsyncOperator.write">write</a>
@@ -149,23 +134,50 @@
                         <li>
                                 <a class="function" href="#AsyncOperator.capability">capability</a>
                         </li>
+                        <li>
+                                <a class="function" href="#AsyncOperator.to_operator">to_operator</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
-                    <a class="class" href="#AsyncReader">AsyncReader</a>
+                    <a class="class" href="#File">File</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#AsyncReader.read">read</a>
+                                <a class="function" href="#File.read">read</a>
                         </li>
                         <li>
-                                <a class="function" href="#AsyncReader.write">write</a>
+                                <a class="function" href="#File.write">write</a>
                         </li>
                         <li>
-                                <a class="function" href="#AsyncReader.seek">seek</a>
+                                <a class="function" href="#File.seek">seek</a>
                         </li>
                         <li>
-                                <a class="function" href="#AsyncReader.tell">tell</a>
+                                <a class="function" href="#File.tell">tell</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#File.close">close</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#AsyncFile">AsyncFile</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#AsyncFile.read">read</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AsyncFile.write">write</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AsyncFile.seek">seek</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AsyncFile.tell">tell</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AsyncFile.close">close</a>
                         </li>
                 </ul>
 
@@ -195,22 +207,22 @@
                     <a class="class" href="#Metadata">Metadata</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#Metadata.content_type">content_type</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Metadata.content_length">content_length</a>
+                                <a class="variable" href="#Metadata.content_md5">content_md5</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Metadata.etag">etag</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Metadata.content_md5">content_md5</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#Metadata.mode">mode</a>
                         </li>
                         <li>
+                                <a class="variable" href="#Metadata.content_length">content_length</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Metadata.content_disposition">content_disposition</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Metadata.content_type">content_type</a>
                         </li>
                 </ul>
 
@@ -234,131 +246,125 @@
                     <a class="class" href="#Capability">Capability</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#Capability.presign_write">presign_write</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.write_with_content_type">write_with_content_type</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.read_with_override_cache_control">read_with_override_cache_control</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.rename">rename</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.create_dir">create_dir</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#Capability.write_can_append">write_can_append</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.batch_delete">batch_delete</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.copy">copy</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.list_with_delimiter_slash">list_with_delimiter_slash</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.batch_max_operations">batch_max_operations</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.write_multi_align_size">write_multi_align_size</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.stat_with_if_match">stat_with_if_match</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.batch">batch</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.presign_stat">presign_stat</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.read_with_override_content_type">read_with_override_content_type</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Capability.write_with_content_disposition">write_with_content_disposition</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Capability.write_can_empty">write_can_empty</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.list_without_delimiter">list_without_delimiter</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.read_with_override_content_disposition">read_with_override_content_disposition</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.read">read</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.list">list</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.read_with_if_none_match">read_with_if_none_match</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.write_multi_min_size">write_multi_min_size</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.stat">stat</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.stat_with_if_none_match">stat_with_if_none_match</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.write_with_cache_control">write_with_cache_control</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.write_can_multi">write_can_multi</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.write_multi_max_size">write_multi_max_size</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.write_total_max_size">write_total_max_size</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.list_with_limit">list_with_limit</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.list_with_start_after">list_with_start_after</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Capability.delete">delete</a>
+                                <a class="variable" href="#Capability.read_with_override_cache_control">read_with_override_cache_control</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Capability.read_can_next">read_can_next</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Capability.blocking">blocking</a>
+                                <a class="variable" href="#Capability.batch">batch</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Capability.presign_read">presign_read</a>
+                                <a class="variable" href="#Capability.list_without_recursive">list_without_recursive</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Capability.read_can_seek">read_can_seek</a>
+                                <a class="variable" href="#Capability.write_multi_align_size">write_multi_align_size</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Capability.read_with_range">read_with_range</a>
+                                <a class="variable" href="#Capability.read_with_override_content_disposition">read_with_override_content_disposition</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Capability.write">write</a>
+                                <a class="variable" href="#Capability.list_with_limit">list_with_limit</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write_multi_max_size">write_multi_max_size</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.stat_with_if_none_match">stat_with_if_none_match</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Capability.presign">presign</a>
                         </li>
                         <li>
+                                <a class="variable" href="#Capability.rename">rename</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Capability.read_with_if_match">read_with_if_match</a>
                         </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#Error">Error</a>
-                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Capability.read_can_seek">read_can_seek</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write_total_max_size">write_total_max_size</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.list">list</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.list_with_start_after">list_with_start_after</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.presign_read">presign_read</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.batch_max_operations">batch_max_operations</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.blocking">blocking</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.stat">stat</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.copy">copy</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.read_with_if_none_match">read_with_if_none_match</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.read">read</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write_with_content_type">write_with_content_type</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write_can_multi">write_can_multi</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write_can_empty">write_can_empty</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.list_with_recursive">list_with_recursive</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write_multi_min_size">write_multi_min_size</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.create_dir">create_dir</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.presign_stat">presign_stat</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write">write</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.write_with_cache_control">write_with_cache_control</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.read_with_override_content_type">read_with_override_content_type</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.delete">delete</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.presign_write">presign_write</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.batch_delete">batch_delete</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.stat_with_if_match">stat_with_if_match</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Capability.read_with_range">read_with_range</a>
+                        </li>
                 </ul>
 
             </li>
@@ -475,13 +481,28 @@ opendal    </h1>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">layer</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">layer</span><span class="p">:</span> <span class="s1">&#39;Layer&#39;</span></span><span class="return-annotation">):</span></span>
+        <span class="name">layer</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">layer</span><span class="p">:</span> <span class="n">opendal</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span></span><span class="return-annotation">):</span></span>
 
         
     </div>
     <a class="headerlink" href="#Operator.layer"></a>
     
             <div class="docstring"><p>Add new layers upon existing operator</p>
+</div>
+
+
+                            </div>
+                            <div id="Operator.open" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">open</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">mode</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n"><a href="#File">File</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#Operator.open"></a>
+    
+            <div class="docstring"><p>Open a file-like reader for the given path.</p>
 </div>
 
 
@@ -501,26 +522,11 @@ opendal    </h1>
 
 
                             </div>
-                            <div id="Operator.open_reader" class="classattr">
-                                <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">open_reader</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n"><a href="#Reader">Reader</a></span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#Operator.open_reader"></a>
-    
-            <div class="docstring"><p>Open a file-like reader for the given path.</p>
-</div>
-
-
-                            </div>
                             <div id="Operator.write" class="classattr">
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">write</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">buffer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_disposition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">cache_control</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
+        <span class="name">write</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">append</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">buffer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_disposition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">cache_control</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
 
         
     </div>
@@ -683,91 +689,17 @@ a trailing / in the path. Failure to do so may result in
     
 
                             </div>
-                </section>
-                <section id="Reader">
-                    <div class="attr class">
-            
-    <span class="def">class</span>
-    <span class="name">Reader</span>:
-
-        
-    </div>
-    <a class="headerlink" href="#Reader"></a>
-    
-            <div class="docstring"><p>A file-like blocking reader.
-Can be used as a context manager.</p>
-</div>
-
-
-                            <div id="Reader.read" class="classattr">
+                            <div id="Operator.to_async_operator" class="classattr">
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">memoryview</span>:</span></span>
+        <span class="name">to_async_operator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#AsyncOperator">AsyncOperator</a></span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#Reader.read"></a>
+    <a class="headerlink" href="#Operator.to_async_operator"></a>
     
-            <div class="docstring"><p>Read and return size bytes, or if size is not given, until EOF.</p>
-</div>
-
-
-                            </div>
-                            <div id="Reader.write" class="classattr">
-                                <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">write</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="n">_bs</span></span><span class="return-annotation">):</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#Reader.write"></a>
     
-            <div class="docstring"><p><code><a href="#Reader">Reader</a></code> doesn't support write.
-Raises a <code>NotImplementedError</code> if called.</p>
-</div>
-
-
-                            </div>
-                            <div id="Reader.seek" class="classattr">
-                                <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">seek</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">offset</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">whence</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#Reader.seek"></a>
-    
-            <div class="docstring"><p>Change the stream position to the given byte offset.
-offset is interpreted relative to the position indicated by <code>whence</code>.
-The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</code> are:</p>
-
-<ul>
-<li><code>SEEK_SET</code> or <code>0</code> – start of the stream (the default); offset should be zero or positive</li>
-<li><code>SEEK_CUR</code> or <code>1</code> – current stream position; offset may be negative</li>
-<li><code>SEEK_END</code> or <code>2</code> – end of the stream; offset is usually negative</li>
-</ul>
-
-<p>Return the new absolute position.</p>
-</div>
-
-
-                            </div>
-                            <div id="Reader.tell" class="classattr">
-                                <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">tell</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#Reader.tell"></a>
-    
-            <div class="docstring"><p>Return the current stream position.</p>
-</div>
-
 
                             </div>
                 </section>
@@ -803,13 +735,28 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">layer</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">layer</span><span class="p">:</span> <span class="s1">&#39;Layer&#39;</span></span><span class="return-annotation">):</span></span>
+        <span class="name">layer</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">layer</span><span class="p">:</span> <span class="n">opendal</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span></span><span class="return-annotation">):</span></span>
 
         
     </div>
     <a class="headerlink" href="#AsyncOperator.layer"></a>
     
             <div class="docstring"><p>Add new layers upon existing operator</p>
+</div>
+
+
+                            </div>
+                            <div id="AsyncOperator.open" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">open</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">mode</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n"><a href="#AsyncFile">AsyncFile</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncOperator.open"></a>
+    
+            <div class="docstring"><p>Open a file-like reader for the given path.</p>
 </div>
 
 
@@ -829,26 +776,11 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
-                            <div id="AsyncOperator.open_reader" class="classattr">
-                                <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">open_reader</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n"><a href="#AsyncReader">AsyncReader</a></span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#AsyncOperator.open_reader"></a>
-    
-            <div class="docstring"><p>Open a file-like reader for the given path.</p>
-</div>
-
-
-                            </div>
                             <div id="AsyncOperator.write" class="classattr">
                                 <div class="attr function">
             
         <span class="def">async def</span>
-        <span class="name">write</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">buffer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_disposition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">cache_control</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
+        <span class="name">write</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">append</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">buffer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">content_disposition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">cache_control</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
 
         
     </div>
@@ -1056,62 +988,74 @@ a trailing / in the path. Failure to do so may result in
     
 
                             </div>
-                </section>
-                <section id="AsyncReader">
-                    <div class="attr class">
+                            <div id="AsyncOperator.to_operator" class="classattr">
+                                <div class="attr function">
             
-    <span class="def">class</span>
-    <span class="name">AsyncReader</span>:
+        <span class="def">def</span>
+        <span class="name">to_operator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#Operator">Operator</a></span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#AsyncReader"></a>
+    <a class="headerlink" href="#AsyncOperator.to_operator"></a>
     
-            <div class="docstring"><p>A file-like async reader.
-Can be used as an async context manager.</p>
+    
+
+                            </div>
+                </section>
+                <section id="File">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">File</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#File"></a>
+    
+            <div class="docstring"><p>A file-like object.
+Can be used as a context manager.</p>
 </div>
 
 
-                            <div id="AsyncReader.read" class="classattr">
+                            <div id="File.read" class="classattr">
                                 <div class="attr function">
             
-        <span class="def">async def</span>
+        <span class="def">def</span>
         <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">memoryview</span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#AsyncReader.read"></a>
+    <a class="headerlink" href="#File.read"></a>
     
             <div class="docstring"><p>Read and return size bytes, or if size is not given, until EOF.</p>
 </div>
 
 
                             </div>
-                            <div id="AsyncReader.write" class="classattr">
+                            <div id="File.write" class="classattr">
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">write</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="n">_bs</span></span><span class="return-annotation">):</span></span>
+        <span class="name">write</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span></span><span class="return-annotation">):</span></span>
 
         
     </div>
-    <a class="headerlink" href="#AsyncReader.write"></a>
+    <a class="headerlink" href="#File.write"></a>
     
-            <div class="docstring"><p><code><a href="#AsyncReader">AsyncReader</a></code> doesn't support write.
-Raises a <code>NotImplementedError</code> if called.</p>
+            <div class="docstring"><p>Write bytes into the file.</p>
 </div>
 
 
                             </div>
-                            <div id="AsyncReader.seek" class="classattr">
+                            <div id="File.seek" class="classattr">
                                 <div class="attr function">
             
-        <span class="def">async def</span>
+        <span class="def">def</span>
         <span class="name">seek</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">offset</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">whence</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#AsyncReader.seek"></a>
+    <a class="headerlink" href="#File.seek"></a>
     
             <div class="docstring"><p>Change the stream position to the given byte offset.
 offset is interpreted relative to the position indicated by <code>whence</code>.
@@ -1128,7 +1072,106 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
-                            <div id="AsyncReader.tell" class="classattr">
+                            <div id="File.tell" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">tell</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#File.tell"></a>
+    
+            <div class="docstring"><p>Return the current stream position.</p>
+</div>
+
+
+                            </div>
+                            <div id="File.close" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">close</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#File.close"></a>
+    
+    
+
+                            </div>
+                </section>
+                <section id="AsyncFile">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">AsyncFile</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncFile"></a>
+    
+            <div class="docstring"><p>A file-like async reader.
+Can be used as an async context manager.</p>
+</div>
+
+
+                            <div id="AsyncFile.read" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">read</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">memoryview</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncFile.read"></a>
+    
+            <div class="docstring"><p>Read and return size bytes, or if size is not given, until EOF.</p>
+</div>
+
+
+                            </div>
+                            <div id="AsyncFile.write" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">write</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">bs</span><span class="p">:</span> <span class="nb">bytes</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncFile.write"></a>
+    
+            <div class="docstring"><p>Write bytes into the file.</p>
+</div>
+
+
+                            </div>
+                            <div id="AsyncFile.seek" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">seek</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">offset</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">whence</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncFile.seek"></a>
+    
+            <div class="docstring"><p>Change the stream position to the given byte offset.
+offset is interpreted relative to the position indicated by <code>whence</code>.
+The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</code> are:</p>
+
+<ul>
+<li><code>SEEK_SET</code> or <code>0</code> – start of the stream (the default); offset should be zero or positive</li>
+<li><code>SEEK_CUR</code> or <code>1</code> – current stream position; offset may be negative</li>
+<li><code>SEEK_END</code> or <code>2</code> – end of the stream; offset is usually negative</li>
+</ul>
+
+<p>Return the new absolute position.</p>
+</div>
+
+
+                            </div>
+                            <div id="AsyncFile.tell" class="classattr">
                                 <div class="attr function">
             
         <span class="def">async def</span>
@@ -1136,11 +1179,24 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
         
     </div>
-    <a class="headerlink" href="#AsyncReader.tell"></a>
+    <a class="headerlink" href="#AsyncFile.tell"></a>
     
             <div class="docstring"><p>Return the current stream position.</p>
 </div>
 
+
+                            </div>
+                            <div id="AsyncFile.close" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">async def</span>
+        <span class="name">close</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#AsyncFile.close"></a>
+    
+    
 
                             </div>
                 </section>
@@ -1225,28 +1281,15 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     
     
 
-                            <div id="Metadata.content_type" class="classattr">
+                            <div id="Metadata.content_md5" class="classattr">
                                 <div class="attr variable">
-            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
+            <span class="name">content_md5</span><span class="annotation">: Optional[str]</span>
 
         
     </div>
-    <a class="headerlink" href="#Metadata.content_type"></a>
+    <a class="headerlink" href="#Metadata.content_md5"></a>
     
-            <div class="docstring"><p>Content Type of this entry.</p>
-</div>
-
-
-                            </div>
-                            <div id="Metadata.content_length" class="classattr">
-                                <div class="attr variable">
-            <span class="name">content_length</span><span class="annotation">: int</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.content_length"></a>
-    
-            <div class="docstring"><p>Content length of this entry.</p>
+            <div class="docstring"><p>Content MD5 of this entry.</p>
 </div>
 
 
@@ -1264,19 +1307,6 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
-                            <div id="Metadata.content_md5" class="classattr">
-                                <div class="attr variable">
-            <span class="name">content_md5</span><span class="annotation">: Optional[str]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Metadata.content_md5"></a>
-    
-            <div class="docstring"><p>Content MD5 of this entry.</p>
-</div>
-
-
-                            </div>
                             <div id="Metadata.mode" class="classattr">
                                 <div class="attr variable">
             <span class="name">mode</span><span class="annotation">: <a href="#EntryMode">EntryMode</a></span>
@@ -1290,6 +1320,19 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
 
 
                             </div>
+                            <div id="Metadata.content_length" class="classattr">
+                                <div class="attr variable">
+            <span class="name">content_length</span><span class="annotation">: int</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.content_length"></a>
+    
+            <div class="docstring"><p>Content length of this entry.</p>
+</div>
+
+
+                            </div>
                             <div id="Metadata.content_disposition" class="classattr">
                                 <div class="attr variable">
             <span class="name">content_disposition</span><span class="annotation">: Optional[str]</span>
@@ -1299,6 +1342,19 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     <a class="headerlink" href="#Metadata.content_disposition"></a>
     
     
+
+                            </div>
+                            <div id="Metadata.content_type" class="classattr">
+                                <div class="attr variable">
+            <span class="name">content_type</span><span class="annotation">: Optional[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Metadata.content_type"></a>
+    
+            <div class="docstring"><p>Content Type of this entry.</p>
+</div>
+
 
                             </div>
                 </section>
@@ -1364,63 +1420,11 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     </div>
     <a class="headerlink" href="#Capability"></a>
     
-    
+            <div class="docstring"><p>Capability is used to describe what operations are supported
+by current Operator.</p>
+</div>
 
-                            <div id="Capability.presign_write" class="classattr">
-                                <div class="attr variable">
-            <span class="name">presign_write</span><span class="annotation">: bool</span>
 
-        
-    </div>
-    <a class="headerlink" href="#Capability.presign_write"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.write_with_content_type" class="classattr">
-                                <div class="attr variable">
-            <span class="name">write_with_content_type</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.write_with_content_type"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.read_with_override_cache_control" class="classattr">
-                                <div class="attr variable">
-            <span class="name">read_with_override_cache_control</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.read_with_override_cache_control"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.rename" class="classattr">
-                                <div class="attr variable">
-            <span class="name">rename</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.rename"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.create_dir" class="classattr">
-                                <div class="attr variable">
-            <span class="name">create_dir</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.create_dir"></a>
-    
-    
-
-                            </div>
                             <div id="Capability.write_can_append" class="classattr">
                                 <div class="attr variable">
             <span class="name">write_can_append</span><span class="annotation">: bool</span>
@@ -1429,106 +1433,9 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     </div>
     <a class="headerlink" href="#Capability.write_can_append"></a>
     
-    
+            <div class="docstring"><p>If operator supports write by append.</p>
+</div>
 
-                            </div>
-                            <div id="Capability.batch_delete" class="classattr">
-                                <div class="attr variable">
-            <span class="name">batch_delete</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.batch_delete"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.copy" class="classattr">
-                                <div class="attr variable">
-            <span class="name">copy</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.copy"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.list_with_delimiter_slash" class="classattr">
-                                <div class="attr variable">
-            <span class="name">list_with_delimiter_slash</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.list_with_delimiter_slash"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.batch_max_operations" class="classattr">
-                                <div class="attr variable">
-            <span class="name">batch_max_operations</span><span class="annotation">: Optional[int]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.batch_max_operations"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.write_multi_align_size" class="classattr">
-                                <div class="attr variable">
-            <span class="name">write_multi_align_size</span><span class="annotation">: Optional[int]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.write_multi_align_size"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.stat_with_if_match" class="classattr">
-                                <div class="attr variable">
-            <span class="name">stat_with_if_match</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.stat_with_if_match"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.batch" class="classattr">
-                                <div class="attr variable">
-            <span class="name">batch</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.batch"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.presign_stat" class="classattr">
-                                <div class="attr variable">
-            <span class="name">presign_stat</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.presign_stat"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.read_with_override_content_type" class="classattr">
-                                <div class="attr variable">
-            <span class="name">read_with_override_content_type</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.read_with_override_content_type"></a>
-    
-    
 
                             </div>
                             <div id="Capability.write_with_content_disposition" class="classattr">
@@ -1539,183 +1446,22 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     </div>
     <a class="headerlink" href="#Capability.write_with_content_disposition"></a>
     
-    
+            <div class="docstring"><p>If operator supports write with content disposition.</p>
+</div>
+
 
                             </div>
-                            <div id="Capability.write_can_empty" class="classattr">
+                            <div id="Capability.read_with_override_cache_control" class="classattr">
                                 <div class="attr variable">
-            <span class="name">write_can_empty</span><span class="annotation">: bool</span>
+            <span class="name">read_with_override_cache_control</span><span class="annotation">: bool</span>
 
         
     </div>
-    <a class="headerlink" href="#Capability.write_can_empty"></a>
+    <a class="headerlink" href="#Capability.read_with_override_cache_control"></a>
     
-    
+            <div class="docstring"><p>if operator supports read with override cache control.</p>
+</div>
 
-                            </div>
-                            <div id="Capability.list_without_delimiter" class="classattr">
-                                <div class="attr variable">
-            <span class="name">list_without_delimiter</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.list_without_delimiter"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.read_with_override_content_disposition" class="classattr">
-                                <div class="attr variable">
-            <span class="name">read_with_override_content_disposition</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.read_with_override_content_disposition"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.read" class="classattr">
-                                <div class="attr variable">
-            <span class="name">read</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.read"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.list" class="classattr">
-                                <div class="attr variable">
-            <span class="name">list</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.list"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.read_with_if_none_match" class="classattr">
-                                <div class="attr variable">
-            <span class="name">read_with_if_none_match</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.read_with_if_none_match"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.write_multi_min_size" class="classattr">
-                                <div class="attr variable">
-            <span class="name">write_multi_min_size</span><span class="annotation">: Optional[int]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.write_multi_min_size"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.stat" class="classattr">
-                                <div class="attr variable">
-            <span class="name">stat</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.stat"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.stat_with_if_none_match" class="classattr">
-                                <div class="attr variable">
-            <span class="name">stat_with_if_none_match</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.stat_with_if_none_match"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.write_with_cache_control" class="classattr">
-                                <div class="attr variable">
-            <span class="name">write_with_cache_control</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.write_with_cache_control"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.write_can_multi" class="classattr">
-                                <div class="attr variable">
-            <span class="name">write_can_multi</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.write_can_multi"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.write_multi_max_size" class="classattr">
-                                <div class="attr variable">
-            <span class="name">write_multi_max_size</span><span class="annotation">: Optional[int]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.write_multi_max_size"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.write_total_max_size" class="classattr">
-                                <div class="attr variable">
-            <span class="name">write_total_max_size</span><span class="annotation">: Optional[int]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.write_total_max_size"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.list_with_limit" class="classattr">
-                                <div class="attr variable">
-            <span class="name">list_with_limit</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.list_with_limit"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.list_with_start_after" class="classattr">
-                                <div class="attr variable">
-            <span class="name">list_with_start_after</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.list_with_start_after"></a>
-    
-    
-
-                            </div>
-                            <div id="Capability.delete" class="classattr">
-                                <div class="attr variable">
-            <span class="name">delete</span><span class="annotation">: bool</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Capability.delete"></a>
-    
-    
 
                             </div>
                             <div id="Capability.read_can_next" class="classattr">
@@ -1726,62 +1472,104 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     </div>
     <a class="headerlink" href="#Capability.read_can_next"></a>
     
-    
+            <div class="docstring"><p>If operator supports next on returning reader.</p>
+</div>
+
 
                             </div>
-                            <div id="Capability.blocking" class="classattr">
+                            <div id="Capability.batch" class="classattr">
                                 <div class="attr variable">
-            <span class="name">blocking</span><span class="annotation">: bool</span>
+            <span class="name">batch</span><span class="annotation">: bool</span>
 
         
     </div>
-    <a class="headerlink" href="#Capability.blocking"></a>
+    <a class="headerlink" href="#Capability.batch"></a>
     
-    
+            <div class="docstring"><p>If operator supports batch.</p>
+</div>
+
 
                             </div>
-                            <div id="Capability.presign_read" class="classattr">
+                            <div id="Capability.list_without_recursive" class="classattr">
                                 <div class="attr variable">
-            <span class="name">presign_read</span><span class="annotation">: bool</span>
+            <span class="name">list_without_recursive</span><span class="annotation">: bool</span>
 
         
     </div>
-    <a class="headerlink" href="#Capability.presign_read"></a>
+    <a class="headerlink" href="#Capability.list_without_recursive"></a>
     
-    
+            <div class="docstring"><p>If backend support list with using slash as delimiter.</p>
+</div>
+
 
                             </div>
-                            <div id="Capability.read_can_seek" class="classattr">
+                            <div id="Capability.write_multi_align_size" class="classattr">
                                 <div class="attr variable">
-            <span class="name">read_can_seek</span><span class="annotation">: bool</span>
+            <span class="name">write_multi_align_size</span><span class="annotation">: Optional[int]</span>
 
         
     </div>
-    <a class="headerlink" href="#Capability.read_can_seek"></a>
+    <a class="headerlink" href="#Capability.write_multi_align_size"></a>
     
-    
+            <div class="docstring"><p>write_multi_align_size is the align size that services required in write_multi.</p>
+
+<p>For example, Google GCS requires align size to 256KiB in write_multi.</p>
+</div>
+
 
                             </div>
-                            <div id="Capability.read_with_range" class="classattr">
+                            <div id="Capability.read_with_override_content_disposition" class="classattr">
                                 <div class="attr variable">
-            <span class="name">read_with_range</span><span class="annotation">: bool</span>
+            <span class="name">read_with_override_content_disposition</span><span class="annotation">: bool</span>
 
         
     </div>
-    <a class="headerlink" href="#Capability.read_with_range"></a>
+    <a class="headerlink" href="#Capability.read_with_override_content_disposition"></a>
     
-    
+            <div class="docstring"><p>if operator supports read with override content disposition.</p>
+</div>
+
 
                             </div>
-                            <div id="Capability.write" class="classattr">
+                            <div id="Capability.list_with_limit" class="classattr">
                                 <div class="attr variable">
-            <span class="name">write</span><span class="annotation">: bool</span>
+            <span class="name">list_with_limit</span><span class="annotation">: bool</span>
 
         
     </div>
-    <a class="headerlink" href="#Capability.write"></a>
+    <a class="headerlink" href="#Capability.list_with_limit"></a>
     
+            <div class="docstring"><p>If backend supports list with limit.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.write_multi_max_size" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write_multi_max_size</span><span class="annotation">: Optional[int]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write_multi_max_size"></a>
     
+            <div class="docstring"><p>write_multi_max_size is the max size that services support in write_multi.</p>
+
+<p>For example, AWS S3 supports 5GiB as max in write_multi.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.stat_with_if_none_match" class="classattr">
+                                <div class="attr variable">
+            <span class="name">stat_with_if_none_match</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.stat_with_if_none_match"></a>
+    
+            <div class="docstring"><p>If operator supports stat with if none match.</p>
+</div>
+
 
                             </div>
                             <div id="Capability.presign" class="classattr">
@@ -1792,7 +1580,22 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     </div>
     <a class="headerlink" href="#Capability.presign"></a>
     
+            <div class="docstring"><p>If operator supports presign.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.rename" class="classattr">
+                                <div class="attr variable">
+            <span class="name">rename</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.rename"></a>
     
+            <div class="docstring"><p>If operator supports rename.</p>
+</div>
+
 
                             </div>
                             <div id="Capability.read_with_if_match" class="classattr">
@@ -1803,38 +1606,352 @@ The default value for whence is <code>SEEK_SET</code>. Values for <code>whence</
     </div>
     <a class="headerlink" href="#Capability.read_with_if_match"></a>
     
-    
-
-                            </div>
-                </section>
-                <section id="Error">
-                    <div class="attr class">
-            
-    <span class="def">class</span>
-    <span class="name">Error</span><wbr>(<span class="base">builtins.Exception</span>):
-
-        
-    </div>
-    <a class="headerlink" href="#Error"></a>
-    
-            <div class="docstring"><p>Common base class for all non-exit exceptions.</p>
+            <div class="docstring"><p>If operator supports read with if match.</p>
 </div>
 
 
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>builtins.Exception</dt>
-                                <dd id="Error.__init__" class="function">Exception</dd>
+                            </div>
+                            <div id="Capability.read_can_seek" class="classattr">
+                                <div class="attr variable">
+            <span class="name">read_can_seek</span><span class="annotation">: bool</span>
 
-            </div>
-            <div><dt>builtins.BaseException</dt>
-                                <dd id="Error.with_traceback" class="function">with_traceback</dd>
-                <dd id="Error.add_note" class="function">add_note</dd>
-                <dd id="Error.args" class="variable">args</dd>
+        
+    </div>
+    <a class="headerlink" href="#Capability.read_can_seek"></a>
+    
+            <div class="docstring"><p>If operator supports seek on returning reader.</p>
+</div>
 
-            </div>
-                                </dl>
+
+                            </div>
+                            <div id="Capability.write_total_max_size" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write_total_max_size</span><span class="annotation">: Optional[int]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write_total_max_size"></a>
+    
+            <div class="docstring"><p>write_total_max_size is the max size that services support in write_total.</p>
+
+<p>For example, Cloudflare D1 supports 1MB as max in write_total.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.list" class="classattr">
+                                <div class="attr variable">
+            <span class="name">list</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.list"></a>
+    
+            <div class="docstring"><p>If operator supports list.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.list_with_start_after" class="classattr">
+                                <div class="attr variable">
+            <span class="name">list_with_start_after</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.list_with_start_after"></a>
+    
+            <div class="docstring"><p>If backend supports list with start after.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.presign_read" class="classattr">
+                                <div class="attr variable">
+            <span class="name">presign_read</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.presign_read"></a>
+    
+            <div class="docstring"><p>If operator supports presign read.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.batch_max_operations" class="classattr">
+                                <div class="attr variable">
+            <span class="name">batch_max_operations</span><span class="annotation">: Optional[int]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.batch_max_operations"></a>
+    
+            <div class="docstring"><p>The max operations that operator supports in batch.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.blocking" class="classattr">
+                                <div class="attr variable">
+            <span class="name">blocking</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.blocking"></a>
+    
+            <div class="docstring"><p>If operator supports blocking.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.stat" class="classattr">
+                                <div class="attr variable">
+            <span class="name">stat</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.stat"></a>
+    
+            <div class="docstring"><p>If operator supports stat.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.copy" class="classattr">
+                                <div class="attr variable">
+            <span class="name">copy</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.copy"></a>
+    
+            <div class="docstring"><p>If operator supports copy.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.read_with_if_none_match" class="classattr">
+                                <div class="attr variable">
+            <span class="name">read_with_if_none_match</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.read_with_if_none_match"></a>
+    
+            <div class="docstring"><p>If operator supports read with if none match.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.read" class="classattr">
+                                <div class="attr variable">
+            <span class="name">read</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.read"></a>
+    
+            <div class="docstring"><p>If operator supports read.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.write_with_content_type" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write_with_content_type</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write_with_content_type"></a>
+    
+            <div class="docstring"><p>If operator supports write with content type.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.write_can_multi" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write_can_multi</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write_can_multi"></a>
+    
+            <div class="docstring"><p>If operator supports write can be called in multi times.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.write_can_empty" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write_can_empty</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write_can_empty"></a>
+    
+            <div class="docstring"><p>If operator supports write with empty content.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.list_with_recursive" class="classattr">
+                                <div class="attr variable">
+            <span class="name">list_with_recursive</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.list_with_recursive"></a>
+    
+            <div class="docstring"><p>If backend supports list without delimiter.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.write_multi_min_size" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write_multi_min_size</span><span class="annotation">: Optional[int]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write_multi_min_size"></a>
+    
+            <div class="docstring"><p>write_multi_min_size is the min size that services support in write_multi.</p>
+
+<p>For example, AWS S3 requires at least 5MiB in write_multi expect the last one.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.create_dir" class="classattr">
+                                <div class="attr variable">
+            <span class="name">create_dir</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.create_dir"></a>
+    
+            <div class="docstring"><p>If operator supports create dir.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.presign_stat" class="classattr">
+                                <div class="attr variable">
+            <span class="name">presign_stat</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.presign_stat"></a>
+    
+            <div class="docstring"><p>If operator supports presign stat.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.write" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write"></a>
+    
+            <div class="docstring"><p>If operator supports write.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.write_with_cache_control" class="classattr">
+                                <div class="attr variable">
+            <span class="name">write_with_cache_control</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.write_with_cache_control"></a>
+    
+            <div class="docstring"><p>If operator supports write with cache control.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.read_with_override_content_type" class="classattr">
+                                <div class="attr variable">
+            <span class="name">read_with_override_content_type</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.read_with_override_content_type"></a>
+    
+            <div class="docstring"><p>if operator supports read with override content type.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.delete" class="classattr">
+                                <div class="attr variable">
+            <span class="name">delete</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.delete"></a>
+    
+            <div class="docstring"><p>If operator supports delete.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.presign_write" class="classattr">
+                                <div class="attr variable">
+            <span class="name">presign_write</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.presign_write"></a>
+    
+            <div class="docstring"><p>If operator supports presign write.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.batch_delete" class="classattr">
+                                <div class="attr variable">
+            <span class="name">batch_delete</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.batch_delete"></a>
+    
+            <div class="docstring"><p>If operator supports batch delete.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.stat_with_if_match" class="classattr">
+                                <div class="attr variable">
+            <span class="name">stat_with_if_match</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.stat_with_if_match"></a>
+    
+            <div class="docstring"><p>If operator supports stat with if match.</p>
+</div>
+
+
+                            </div>
+                            <div id="Capability.read_with_range" class="classattr">
+                                <div class="attr variable">
+            <span class="name">read_with_range</span><span class="annotation">: bool</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Capability.read_with_range"></a>
+    
+            <div class="docstring"><p>If operator supports read with range.</p>
+</div>
+
+
                             </div>
                 </section>
     </main>

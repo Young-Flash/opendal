@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/types/list.rs`."><title>list.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/types/list.rs`."><title>list.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -249,6 +249,69 @@
 <a href="#249" id="249">249</a>
 <a href="#250" id="250">250</a>
 <a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -266,40 +329,90 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::collections::VecDeque;
+</span><span class="kw">use </span>std::cmp;
+<span class="kw">use </span>std::collections::VecDeque;
 <span class="kw">use </span>std::pin::Pin;
 <span class="kw">use </span>std::task::ready;
 <span class="kw">use </span>std::task::Context;
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>flagset::FlagSet;
-<span class="kw">use </span>futures::future::BoxFuture;
 <span class="kw">use </span>futures::FutureExt;
 <span class="kw">use </span>futures::Stream;
+<span class="kw">use </span>tokio::task::JoinHandle;
 
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::List;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
-
-<span class="doccomment">/// Future constructed by listing.
-</span><span class="kw">type </span>ListFuture = BoxFuture&lt;<span class="lifetime">&#39;static</span>, (oio::Pager, <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;oio::Entry&gt;&gt;&gt;)&gt;;
-<span class="doccomment">/// Future constructed by stating.
-</span><span class="kw">type </span>StatFuture = BoxFuture&lt;<span class="lifetime">&#39;static</span>, (String, <span class="prelude-ty">Result</span>&lt;RpStat&gt;)&gt;;
 
 <span class="doccomment">/// Lister is designed to list entries at given path in an asynchronous
 /// manner.
 ///
-/// Users can construct Lister by [`Operator::lister`].
+/// Users can construct Lister by [`Operator::lister`] or [`Operator::lister_with`], and can use `metakey` along with list.
+/// For example, suppose you need to access `content_length`, you can bring the corresponding field in metakey when listing:
+/// `op.list_with(&quot;dir/&quot;).metakey(Metakey::ContentLength).await?;`.
 ///
-/// User can use lister as `Stream&lt;Item = Result&lt;Entry&gt;&gt;`.
+/// - Lister implements `Stream&lt;Item = Result&lt;Entry&gt;&gt;`.
+/// - Lister will return `None` if there is no more entries or error has been returned.
+///
 </span><span class="kw">pub struct </span>Lister {
     acc: FusedAccessor,
+    lister: <span class="prelude-ty">Option</span>&lt;oio::Lister&gt;,
     <span class="doccomment">/// required_metakey is the metakey required by users.
     </span>required_metakey: FlagSet&lt;Metakey&gt;,
 
-    buf: VecDeque&lt;oio::Entry&gt;,
-    pager: <span class="prelude-ty">Option</span>&lt;oio::Pager&gt;,
-    listing: <span class="prelude-ty">Option</span>&lt;ListFuture&gt;,
-    stating: <span class="prelude-ty">Option</span>&lt;StatFuture&gt;,
+    <span class="doccomment">/// tasks is used to store tasks that are run in concurrent.
+    </span>tasks: VecDeque&lt;StatTask&gt;,
+    errored: bool,
+}
+
+<span class="doccomment">/// StatTask is used to store the task that is run in concurrent.
+///
+/// # Note for clippy
+///
+/// Clippy will raise error for this enum like the following:
+///
+/// ```shell
+/// error: large size difference between variants
+///   --&gt; core/src/types/list.rs:64:1
+///    |
+/// 64 | / enum StatTask {
+/// 65 | |     /// Handle is used to store the join handle of spawned task.
+/// 66 | |     Handle(JoinHandle&lt;(String, Result&lt;RpStat&gt;)&gt;),
+///    | |     -------------------------------------------- the second-largest variant contains at least 0 bytes
+/// 67 | |     /// KnownEntry is used to store the entry that already contains the required metakey.
+/// 68 | |     KnownEntry(Option&lt;Entry&gt;),
+///    | |     ------------------------- the largest variant contains at least 264 bytes
+/// 69 | | }
+///    | |_^ the entire enum is at least 0 bytes
+///    |
+///    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#large_enum_variant
+///    = note: `-D clippy::large-enum-variant` implied by `-D warnings`
+///    = help: to override `-D warnings` add `#[allow(clippy::large_enum_variant)]`
+/// help: consider boxing the large fields to reduce the total size of the enum
+///    |
+/// 68 |     KnownEntry(Box&lt;Option&lt;Entry&gt;&gt;),
+///    |                ~~~~~~~~~~~~~~~~~~
+/// ```
+/// But this lint is wrong since it doesn&#39;t take the generic param JoinHandle into account. In fact, they have exactly
+/// the same size:
+///
+/// ```rust
+/// use std::mem::size_of;
+/// use opendal::Result;
+/// use opendal::Entry;
+///
+/// assert_eq!(264, size_of::&lt;(String, Result&lt;opendal::raw::RpStat&gt;)&gt;());
+/// assert_eq!(264, size_of::&lt;Option&lt;Entry&gt;&gt;());
+/// ```
+///
+/// So let&#39;s ignore this lint:
+</span><span class="attr">#[allow(clippy::large_enum_variant)]
+</span><span class="kw">enum </span>StatTask {
+    <span class="doccomment">/// Stating is used to store the join handle of spawned task.
+    </span>Stating(JoinHandle&lt;(String, <span class="prelude-ty">Result</span>&lt;RpStat&gt;)&gt;),
+    <span class="doccomment">/// Known is used to store the entry that already contains the required metakey.
+    </span>Known(<span class="prelude-ty">Option</span>&lt;Entry&gt;),
 }
 
 <span class="doccomment">/// # Safety
@@ -311,16 +424,17 @@
     <span class="doccomment">/// Create a new lister.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>create(acc: FusedAccessor, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>required_metakey = args.metakey();
-        <span class="kw">let </span>(<span class="kw">_</span>, pager) = acc.list(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>concurrent = cmp::max(<span class="number">1</span>, args.concurrent());
+
+        <span class="kw">let </span>(<span class="kw">_</span>, lister) = acc.list(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             acc,
+            lister: <span class="prelude-val">Some</span>(lister),
             required_metakey,
 
-            buf: VecDeque::new(),
-            pager: <span class="prelude-val">Some</span>(pager),
-            listing: <span class="prelude-val">None</span>,
-            stating: <span class="prelude-val">None</span>,
+            tasks: VecDeque::with_capacity(concurrent),
+            errored: <span class="bool-val">false</span>,
         })
     }
 }
@@ -329,60 +443,72 @@
     <span class="kw">type </span>Item = <span class="prelude-ty">Result</span>&lt;Entry&gt;;
 
     <span class="kw">fn </span>poll_next(<span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt;&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(fut) = <span class="self">self</span>.stating.as_mut() {
-            <span class="kw">let </span>(path, rp) = <span class="macro">ready!</span>(fut.poll_unpin(cx));
-
-            <span class="comment">// Make sure we will not poll this future again.
-            </span><span class="self">self</span>.stating = <span class="prelude-val">None</span>;
-            <span class="kw">let </span>metadata = rp<span class="question-mark">?</span>.into_metadata();
-
-            <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata))));
+        <span class="comment">// Returns `None` if we have errored.
+        </span><span class="kw">if </span><span class="self">self</span>.errored {
+            <span class="kw">return </span>Poll::Ready(<span class="prelude-val">None</span>);
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(oe) = <span class="self">self</span>.buf.pop_front() {
-            <span class="kw">let </span>(path, metadata) = oe.into_entry().into_parts();
-            <span class="comment">// TODO: we can optimize this by checking the provided metakey provided by services.
-            </span><span class="kw">if </span>metadata.contains_metakey(<span class="self">self</span>.required_metakey) {
-                <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata))));
-            }
-
-            <span class="kw">let </span>acc = <span class="self">self</span>.acc.clone();
-            <span class="kw">let </span>fut = <span class="kw">async move </span>{
-                <span class="kw">let </span>res = acc.stat(<span class="kw-2">&amp;</span>path, OpStat::default()).<span class="kw">await</span>;
-
-                (path, res)
-            };
-            <span class="self">self</span>.stating = <span class="prelude-val">Some</span>(Box::pin(fut));
-            <span class="kw">return </span><span class="self">self</span>.poll_next(cx);
-        }
-
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(fut) = <span class="self">self</span>.listing.as_mut() {
-            <span class="kw">let </span>(op, res) = <span class="macro">ready!</span>(fut.poll_unpin(cx));
-
-            <span class="comment">// Make sure we will not poll this future again.
-            </span><span class="self">self</span>.listing = <span class="prelude-val">None</span>;
-
-            <span class="kw">return match </span>res<span class="question-mark">? </span>{
-                <span class="prelude-val">Some</span>(oes) =&gt; {
-                    <span class="self">self</span>.pager = <span class="prelude-val">Some</span>(op);
-                    <span class="self">self</span>.buf = oes.into();
-                    <span class="self">self</span>.poll_next(cx)
-                }
-                <span class="prelude-val">None </span>=&gt; Poll::Ready(<span class="prelude-val">None</span>),
-            };
-        }
-
-        <span class="kw">match </span><span class="self">self</span>.pager.take() {
-            <span class="prelude-val">Some</span>(<span class="kw-2">mut </span>pager) =&gt; {
-                <span class="kw">let </span>fut = <span class="kw">async move </span>{
-                    <span class="kw">let </span>res = pager.next().<span class="kw">await</span>;
-
-                    (pager, res)
+        <span class="comment">// Trying to pull more tasks if there are more space.
+        </span><span class="kw">if </span><span class="self">self</span>.tasks.len() &lt; <span class="self">self</span>.tasks.capacity() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(lister) = <span class="self">self</span>.lister.as_mut() {
+                <span class="kw">match </span>lister.poll_next(cx) {
+                    Poll::Pending =&gt; {}
+                    Poll::Ready(<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(oe))) =&gt; {
+                        <span class="kw">let </span>(path, metadata) = oe.into_entry().into_parts();
+                        <span class="kw">if </span>metadata.contains_metakey(<span class="self">self</span>.required_metakey) {
+                            <span class="self">self</span>.tasks
+                                .push_back(StatTask::Known(<span class="prelude-val">Some</span>(Entry::new(path, metadata))));
+                        } <span class="kw">else </span>{
+                            <span class="kw">let </span>acc = <span class="self">self</span>.acc.clone();
+                            <span class="kw">let </span>fut = <span class="kw">async move </span>{
+                                <span class="kw">let </span>res = acc.stat(<span class="kw-2">&amp;</span>path, OpStat::default()).<span class="kw">await</span>;
+                                (path, res)
+                            };
+                            <span class="self">self</span>.tasks.push_back(StatTask::Stating(tokio::spawn(fut)));
+                        }
+                    }
+                    Poll::Ready(<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)) =&gt; {
+                        <span class="self">self</span>.lister = <span class="prelude-val">None</span>;
+                    }
+                    Poll::Ready(<span class="prelude-val">Err</span>(err)) =&gt; {
+                        <span class="self">self</span>.errored = <span class="bool-val">true</span>;
+                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err)));
+                    }
                 };
-                <span class="self">self</span>.listing = <span class="prelude-val">Some</span>(Box::pin(fut));
-                <span class="self">self</span>.poll_next(cx)
             }
-            <span class="prelude-val">None </span>=&gt; Poll::Ready(<span class="prelude-val">None</span>),
+        }
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(handle) = <span class="self">self</span>.tasks.front_mut() {
+            <span class="kw">return match </span>handle {
+                StatTask::Stating(handle) =&gt; {
+                    <span class="kw">let </span>(path, rp) = <span class="macro">ready!</span>(handle.poll_unpin(cx)).map_err(new_task_join_error)<span class="question-mark">?</span>;
+
+                    <span class="comment">// Make sure this task has been popped after it&#39;s ready.
+                    </span><span class="self">self</span>.tasks.pop_front();
+
+                    <span class="kw">match </span>rp {
+                        <span class="prelude-val">Ok</span>(rp) =&gt; {
+                            <span class="kw">let </span>metadata = rp.into_metadata();
+                            Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata))))
+                        }
+                        <span class="prelude-val">Err</span>(err) =&gt; {
+                            <span class="self">self</span>.errored = <span class="bool-val">true</span>;
+                            Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err)))
+                        }
+                    }
+                }
+                StatTask::Known(entry) =&gt; {
+                    <span class="kw">let </span>entry = entry.take().expect(<span class="string">&quot;entry must be valid&quot;</span>);
+                    <span class="self">self</span>.tasks.pop_front();
+                    Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(entry)))
+                }
+            };
+        }
+
+        <span class="kw">if </span><span class="self">self</span>.lister.is_none() {
+            Poll::Ready(<span class="prelude-val">None</span>)
+        } <span class="kw">else </span>{
+            Poll::Pending
         }
     }
 }
@@ -390,14 +516,17 @@
 <span class="doccomment">/// BlockingLister is designed to list entries at given path in a blocking
 /// manner.
 ///
-/// Users can construct Lister by `blocking_lister`.
+/// Users can construct Lister by [`BlockingOperator::lister`] or [`BlockingOperator::lister_with`].
+///
+/// - Lister implements `Iterator&lt;Item = Result&lt;Entry&gt;&gt;`.
+/// - Lister will return `None` if there is no more entries or error has been returned.
 </span><span class="kw">pub struct </span>BlockingLister {
     acc: FusedAccessor,
     <span class="doccomment">/// required_metakey is the metakey required by users.
     </span>required_metakey: FlagSet&lt;Metakey&gt;,
 
-    pager: <span class="prelude-ty">Option</span>&lt;oio::BlockingPager&gt;,
-    buf: VecDeque&lt;oio::Entry&gt;,
+    lister: oio::BlockingLister,
+    errored: bool,
 }
 
 <span class="doccomment">/// # Safety
@@ -409,14 +538,14 @@
     <span class="doccomment">/// Create a new lister.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create(acc: FusedAccessor, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>required_metakey = args.metakey();
-        <span class="kw">let </span>(<span class="kw">_</span>, pager) = acc.blocking_list(path, args)<span class="question-mark">?</span>;
+        <span class="kw">let </span>(<span class="kw">_</span>, lister) = acc.blocking_list(path, args)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             acc,
             required_metakey,
 
-            buf: VecDeque::new(),
-            pager: <span class="prelude-val">Some</span>(pager),
+            lister,
+            errored: <span class="bool-val">false</span>,
         })
     }
 }
@@ -426,38 +555,33 @@
     <span class="kw">type </span>Item = <span class="prelude-ty">Result</span>&lt;Entry&gt;;
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(oe) = <span class="self">self</span>.buf.pop_front() {
-            <span class="kw">let </span>(path, metadata) = oe.into_entry().into_parts();
-            <span class="comment">// TODO: we can optimize this by checking the provided metakey provided by services.
-            </span><span class="kw">if </span>metadata.contains_metakey(<span class="self">self</span>.required_metakey) {
-                <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata)));
-            }
+        <span class="comment">// Returns `None` if we have errored.
+        </span><span class="kw">if </span><span class="self">self</span>.errored {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
+        }
 
-            <span class="kw">let </span>metadata = <span class="kw">match </span><span class="self">self</span>.acc.blocking_stat(<span class="kw-2">&amp;</span>path, OpStat::default()) {
-                <span class="prelude-val">Ok</span>(rp) =&gt; rp.into_metadata(),
-                <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err)),
-            };
+        <span class="kw">let </span>entry = <span class="kw">match </span><span class="self">self</span>.lister.next() {
+            <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(entry)) =&gt; entry,
+            <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
+            <span class="prelude-val">Err</span>(err) =&gt; {
+                <span class="self">self</span>.errored = <span class="bool-val">true</span>;
+                <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err));
+            }
+        };
+
+        <span class="kw">let </span>(path, metadata) = entry.into_entry().into_parts();
+        <span class="kw">if </span>metadata.contains_metakey(<span class="self">self</span>.required_metakey) {
             <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata)));
         }
 
-        <span class="kw">let </span>pager = <span class="kw">match </span><span class="self">self</span>.pager.as_mut() {
-            <span class="prelude-val">Some</span>(pager) =&gt; pager,
-            <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
-        };
-
-        <span class="self">self</span>.buf = <span class="kw">match </span>pager.next() {
-            <span class="comment">// Ideally, the convert from `Vec` to `VecDeque` will not do reallocation.
-            //
-            // However, this could be changed as described in [impl&lt;T, A&gt; From&lt;Vec&lt;T, A&gt;&gt; for VecDeque&lt;T, A&gt;](https://doc.rust-lang.org/std/collections/struct.VecDeque.html#impl-From%3CVec%3CT%2C%20A%3E%3E-for-VecDeque%3CT%2C%20A%3E)
-            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(entries)) =&gt; entries.into(),
-            <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; {
-                <span class="self">self</span>.pager = <span class="prelude-val">None</span>;
-                <span class="kw">return </span><span class="prelude-val">None</span>;
+        <span class="kw">let </span>metadata = <span class="kw">match </span><span class="self">self</span>.acc.blocking_stat(<span class="kw-2">&amp;</span>path, OpStat::default()) {
+            <span class="prelude-val">Ok</span>(rp) =&gt; rp.into_metadata(),
+            <span class="prelude-val">Err</span>(err) =&gt; {
+                <span class="self">self</span>.errored = <span class="bool-val">true</span>;
+                <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err));
             }
-            <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err)),
         };
-
-        <span class="self">self</span>.next()
+        <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry::new(path, metadata)))
     }
 }
 
@@ -474,6 +598,8 @@
     /// Invalid lister should not panic nor endless loop.
     </span><span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_invalid_lister() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let _ </span>= tracing_subscriber::fmt().try_init();
+
         <span class="kw">let </span><span class="kw-2">mut </span>builder = Azblob::default();
 
         builder

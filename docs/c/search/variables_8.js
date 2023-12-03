@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['reader_128',['reader',['../structopendal__result__operator__reader.html#a9ed8dec94126ab5b74dc63a87ca5839d',1,'opendal_result_operator_reader']]]
+  ['presign_206',['presign',['../structopendal__capability.html#a911b77c96405fad2f0caf9bb090ca33e',1,'opendal_capability']]],
+  ['presign_5fread_207',['presign_read',['../structopendal__capability.html#a86cb7c49fb41e2662e8f14c74aa60ac9',1,'opendal_capability']]],
+  ['presign_5fstat_208',['presign_stat',['../structopendal__capability.html#a760bd594d038f919b65a50db22259ba2',1,'opendal_capability']]],
+  ['presign_5fwrite_209',['presign_write',['../structopendal__capability.html#af5f42471b12692f9f0510c5e500e41fa',1,'opendal_capability']]],
+  ['ptr_210',['ptr',['../structopendal__operator.html#a81ea292736bd2733dd8e2b0d149305fe',1,'opendal_operator']]]
 ];

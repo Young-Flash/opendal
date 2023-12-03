@@ -100,7 +100,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">BlockingLister is designed to list entries at given path in a blocking manner.  <a href="structopendal__lister.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__metadata.html">opendal_metadata</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Carries all metadata associated with a path.  <a href="structopendal__metadata.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Carries all metadata associated with a <b>path</b>.  <a href="structopendal__metadata.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__operator.html">opendal_operator</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces provided by OpenDAL.  <a href="structopendal__operator.html#details">More...</a><br /></td></tr>
@@ -129,6 +129,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__list.html">opendal_result_list</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The result type returned by <a class="el" href="opendal_8h.html#af8f2888ef406d9fc81af0015a904af9c" title="Blockingly list the objects in path.">opendal_operator_list()</a>.  <a href="structopendal__result__list.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__operator__info.html">opendal_operator_info</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metadata for <b>operator</b>, users can use this metadata to get information of operator.  <a href="structopendal__operator__info.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__capability.html">opendal_capability</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Capability is used to describe what operations are supported by current Operator.  <a href="structopendal__capability.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopendal__result__reader__read.html">opendal_result_reader_read</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The is the result type returned by <a class="el" href="opendal_8h.html#a1a2ea5159526b724de9724dd905d2d3e" title="Read data from the reader.">opendal_reader_read()</a>. The result type contains a size field, which is the size of the data read, which is zero on error. The error field is the error code and error message.  <a href="structopendal__result__reader__read.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,6 +150,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a8c11fb124aac4911b663122dbfa7d1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65b0d0252adaf76f9ce2004299344de8"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="opendal_8h.html#a65b0d0252adaf76f9ce2004299344de8">Entry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a65b0d0252adaf76f9ce2004299344de8">Entry</a></td></tr>
 <tr class="separator:a65b0d0252adaf76f9ce2004299344de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a049ac2a69fc02e3ace6afbb18db397ca"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="opendal_8h.html#a049ac2a69fc02e3ace6afbb18db397ca">OperatorInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a049ac2a69fc02e3ace6afbb18db397ca">OperatorInfo</a></td></tr>
+<tr class="separator:a049ac2a69fc02e3ace6afbb18db397ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4117acdec0983ce12962491960847381"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structopendal__bytes.html">opendal_bytes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a4117acdec0983ce12962491960847381">opendal_bytes</a></td></tr>
 <tr class="memdesc:a4117acdec0983ce12962491960847381"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structopendal__bytes.html" title="opendal_bytes carries raw-bytes with its length">opendal_bytes</a> carries raw-bytes with its length  <a href="opendal_8h.html#a4117acdec0983ce12962491960847381">More...</a><br /></td></tr>
 <tr class="separator:a4117acdec0983ce12962491960847381"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,7 +168,7 @@ Typedefs</h2></td></tr>
 <tr class="memdesc:a581e3ab221c9b3ed82e0a2eb0ba37f68"><td class="mdescLeft">&#160;</td><td class="mdescRight">BlockingLister is designed to list entries at given path in a blocking manner.  <a href="opendal_8h.html#a581e3ab221c9b3ed82e0a2eb0ba37f68">More...</a><br /></td></tr>
 <tr class="separator:a581e3ab221c9b3ed82e0a2eb0ba37f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0acf7956915881ccd1f0874f309c682"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structopendal__metadata.html">opendal_metadata</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#af0acf7956915881ccd1f0874f309c682">opendal_metadata</a></td></tr>
-<tr class="memdesc:af0acf7956915881ccd1f0874f309c682"><td class="mdescLeft">&#160;</td><td class="mdescRight">Carries all metadata associated with a path.  <a href="opendal_8h.html#af0acf7956915881ccd1f0874f309c682">More...</a><br /></td></tr>
+<tr class="memdesc:af0acf7956915881ccd1f0874f309c682"><td class="mdescLeft">&#160;</td><td class="mdescRight">Carries all metadata associated with a <b>path</b>.  <a href="opendal_8h.html#af0acf7956915881ccd1f0874f309c682">More...</a><br /></td></tr>
 <tr class="separator:af0acf7956915881ccd1f0874f309c682"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07642e228c04606083f49cbe02a626ca"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structopendal__operator.html">opendal_operator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a07642e228c04606083f49cbe02a626ca">opendal_operator</a></td></tr>
 <tr class="memdesc:a07642e228c04606083f49cbe02a626ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces provided by OpenDAL.  <a href="opendal_8h.html#a07642e228c04606083f49cbe02a626ca">More...</a><br /></td></tr>
@@ -189,6 +197,12 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a606c20c489cac143082dc3870102f43a"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structopendal__result__list.html">opendal_result_list</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a606c20c489cac143082dc3870102f43a">opendal_result_list</a></td></tr>
 <tr class="memdesc:a606c20c489cac143082dc3870102f43a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The result type returned by <a class="el" href="opendal_8h.html#af8f2888ef406d9fc81af0015a904af9c" title="Blockingly list the objects in path.">opendal_operator_list()</a>.  <a href="opendal_8h.html#a606c20c489cac143082dc3870102f43a">More...</a><br /></td></tr>
 <tr class="separator:a606c20c489cac143082dc3870102f43a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd7fdc73c230284dd37ce9d1f54ea915"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#abd7fdc73c230284dd37ce9d1f54ea915">opendal_operator_info</a></td></tr>
+<tr class="memdesc:abd7fdc73c230284dd37ce9d1f54ea915"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metadata for <b>operator</b>, users can use this metadata to get information of operator.  <a href="opendal_8h.html#abd7fdc73c230284dd37ce9d1f54ea915">More...</a><br /></td></tr>
+<tr class="separator:abd7fdc73c230284dd37ce9d1f54ea915"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab011e9fbcb61c8d3bf66d6c5d89227e3"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structopendal__capability.html">opendal_capability</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#ab011e9fbcb61c8d3bf66d6c5d89227e3">opendal_capability</a></td></tr>
+<tr class="memdesc:ab011e9fbcb61c8d3bf66d6c5d89227e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Capability is used to describe what operations are supported by current Operator.  <a href="opendal_8h.html#ab011e9fbcb61c8d3bf66d6c5d89227e3">More...</a><br /></td></tr>
+<tr class="separator:ab011e9fbcb61c8d3bf66d6c5d89227e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fc707d831b5e91edd1a34c0f08805ff"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structopendal__result__reader__read.html">opendal_result_reader_read</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a1fc707d831b5e91edd1a34c0f08805ff">opendal_result_reader_read</a></td></tr>
 <tr class="memdesc:a1fc707d831b5e91edd1a34c0f08805ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">The is the result type returned by <a class="el" href="opendal_8h.html#a1a2ea5159526b724de9724dd905d2d3e" title="Read data from the reader.">opendal_reader_read()</a>. The result type contains a size field, which is the size of the data read, which is zero on error. The error field is the error code and error message.  <a href="opendal_8h.html#a1fc707d831b5e91edd1a34c0f08805ff">More...</a><br /></td></tr>
 <tr class="separator:a1fc707d831b5e91edd1a34c0f08805ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -236,6 +250,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ac8cb949fb37f83dfcbe78976eaa29409"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#ac8cb949fb37f83dfcbe78976eaa29409">opendal_metadata_is_dir</a> (const struct <a class="el" href="structopendal__metadata.html">opendal_metadata</a> *self)</td></tr>
 <tr class="memdesc:ac8cb949fb37f83dfcbe78976eaa29409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return whether the path represents a directory.  <a href="opendal_8h.html#ac8cb949fb37f83dfcbe78976eaa29409">More...</a><br /></td></tr>
 <tr class="separator:ac8cb949fb37f83dfcbe78976eaa29409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af92bde18613cbbae4fe045f9c723022c"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#af92bde18613cbbae4fe045f9c723022c">opendal_metadata_last_modified_ms</a> (const struct <a class="el" href="structopendal__metadata.html">opendal_metadata</a> *self)</td></tr>
+<tr class="memdesc:af92bde18613cbbae4fe045f9c723022c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last_modified of the metadata, in milliseconds.  <a href="opendal_8h.html#af92bde18613cbbae4fe045f9c723022c">More...</a><br /></td></tr>
+<tr class="separator:af92bde18613cbbae4fe045f9c723022c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04d551eea4b6248d96c9ce9278d27855"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a04d551eea4b6248d96c9ce9278d27855">opendal_operator_free</a> (const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *op)</td></tr>
 <tr class="memdesc:a04d551eea4b6248d96c9ce9278d27855"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the heap-allocated operator pointed by <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a>.  <a href="opendal_8h.html#a04d551eea4b6248d96c9ce9278d27855">More...</a><br /></td></tr>
 <tr class="separator:a04d551eea4b6248d96c9ce9278d27855"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -263,6 +280,36 @@ Functions</h2></td></tr>
 <tr class="memitem:af8f2888ef406d9fc81af0015a904af9c"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__result__list.html">opendal_result_list</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#af8f2888ef406d9fc81af0015a904af9c">opendal_operator_list</a> (const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *op, const char *path)</td></tr>
 <tr class="memdesc:af8f2888ef406d9fc81af0015a904af9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blockingly list the objects in <code>path</code>.  <a href="opendal_8h.html#af8f2888ef406d9fc81af0015a904af9c">More...</a><br /></td></tr>
 <tr class="separator:af8f2888ef406d9fc81af0015a904af9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa13f840e6fd4fa75d0cd0482db7e4b26"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__error.html">opendal_error</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#aa13f840e6fd4fa75d0cd0482db7e4b26">opendal_operator_create_dir</a> (const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *op, const char *path)</td></tr>
+<tr class="memdesc:aa13f840e6fd4fa75d0cd0482db7e4b26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blockingly create the directory in <code>path</code>.  <a href="opendal_8h.html#aa13f840e6fd4fa75d0cd0482db7e4b26">More...</a><br /></td></tr>
+<tr class="separator:aa13f840e6fd4fa75d0cd0482db7e4b26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf513847d08141631c9c57aa59150014"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__error.html">opendal_error</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#acf513847d08141631c9c57aa59150014">opendal_operator_rename</a> (const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *op, const char *src, const char *dest)</td></tr>
+<tr class="memdesc:acf513847d08141631c9c57aa59150014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blockingly rename the object in <code>path</code>.  <a href="opendal_8h.html#acf513847d08141631c9c57aa59150014">More...</a><br /></td></tr>
+<tr class="separator:acf513847d08141631c9c57aa59150014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d9b1d855b30fa8bd56d1399293b85da"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__error.html">opendal_error</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a5d9b1d855b30fa8bd56d1399293b85da">opendal_operator_copy</a> (const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *op, const char *src, const char *dest)</td></tr>
+<tr class="memdesc:a5d9b1d855b30fa8bd56d1399293b85da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blockingly copy the object in <code>path</code>.  <a href="opendal_8h.html#a5d9b1d855b30fa8bd56d1399293b85da">More...</a><br /></td></tr>
+<tr class="separator:a5d9b1d855b30fa8bd56d1399293b85da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a902aa057da25635085584f78e1152045"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a902aa057da25635085584f78e1152045">opendal_operator_info_new</a> (const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *op)</td></tr>
+<tr class="memdesc:a902aa057da25635085584f78e1152045"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get information of underlying accessor.  <a href="opendal_8h.html#a902aa057da25635085584f78e1152045">More...</a><br /></td></tr>
+<tr class="separator:a902aa057da25635085584f78e1152045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b9c51df68246236ceefb051bb10c20d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a4b9c51df68246236ceefb051bb10c20d">opendal_operator_info_free</a> (struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *ptr)</td></tr>
+<tr class="memdesc:a4b9c51df68246236ceefb051bb10c20d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the heap-allocated <a class="el" href="structopendal__operator__info.html" title="Metadata for operator, users can use this metadata to get information of operator.">opendal_operator_info</a>.  <a href="opendal_8h.html#a4b9c51df68246236ceefb051bb10c20d">More...</a><br /></td></tr>
+<tr class="separator:a4b9c51df68246236ceefb051bb10c20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b3ee8d084fac74ad0cea4be61c7be48"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a2b3ee8d084fac74ad0cea4be61c7be48">opendal_operator_info_get_scheme</a> (const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *self)</td></tr>
+<tr class="memdesc:a2b3ee8d084fac74ad0cea4be61c7be48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the nul-terminated operator's scheme, i.e. service.  <a href="opendal_8h.html#a2b3ee8d084fac74ad0cea4be61c7be48">More...</a><br /></td></tr>
+<tr class="separator:a2b3ee8d084fac74ad0cea4be61c7be48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae50fdd0d0eb2cfff176f53132c4552e"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#aae50fdd0d0eb2cfff176f53132c4552e">opendal_operator_info_get_root</a> (const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *self)</td></tr>
+<tr class="memdesc:aae50fdd0d0eb2cfff176f53132c4552e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the nul-terminated operator's working root path.  <a href="opendal_8h.html#aae50fdd0d0eb2cfff176f53132c4552e">More...</a><br /></td></tr>
+<tr class="separator:aae50fdd0d0eb2cfff176f53132c4552e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e71eedec5353536ca9796b6d60d2d4c"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a9e71eedec5353536ca9796b6d60d2d4c">opendal_operator_info_get_name</a> (const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *self)</td></tr>
+<tr class="memdesc:a9e71eedec5353536ca9796b6d60d2d4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the nul-terminated operator backend's name, could be empty if underlying backend has no namespace concept.  <a href="opendal_8h.html#a9e71eedec5353536ca9796b6d60d2d4c">More...</a><br /></td></tr>
+<tr class="separator:a9e71eedec5353536ca9796b6d60d2d4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa200d3f976b909210bd69038d39fb391"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__capability.html">opendal_capability</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#aa200d3f976b909210bd69038d39fb391">opendal_operator_info_get_full_capability</a> (const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *self)</td></tr>
+<tr class="memdesc:aa200d3f976b909210bd69038d39fb391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the operator's full capability.  <a href="opendal_8h.html#aa200d3f976b909210bd69038d39fb391">More...</a><br /></td></tr>
+<tr class="separator:aa200d3f976b909210bd69038d39fb391"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ab1789c3d4f6538b29063a94df26b56"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structopendal__capability.html">opendal_capability</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#a8ab1789c3d4f6538b29063a94df26b56">opendal_operator_info_get_native_capability</a> (const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *self)</td></tr>
+<tr class="memdesc:a8ab1789c3d4f6538b29063a94df26b56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the operator's native capability.  <a href="opendal_8h.html#a8ab1789c3d4f6538b29063a94df26b56">More...</a><br /></td></tr>
+<tr class="separator:a8ab1789c3d4f6538b29063a94df26b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adba027eb1460c828ff32e87f0ceb338a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="opendal_8h.html#adba027eb1460c828ff32e87f0ceb338a">opendal_bytes_free</a> (struct <a class="el" href="structopendal__bytes.html">opendal_bytes</a> *bs)</td></tr>
 <tr class="memdesc:adba027eb1460c828ff32e87f0ceb338a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the heap memory used by the <a class="el" href="structopendal__bytes.html" title="opendal_bytes carries raw-bytes with its length">opendal_bytes</a>.  <a href="opendal_8h.html#adba027eb1460c828ff32e87f0ceb338a">More...</a><br /></td></tr>
 <tr class="separator:adba027eb1460c828ff32e87f0ceb338a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -304,7 +351,11 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>BlockingLister is designed to list entries at given path in a blocking manner.</p>
-<p>Users can construct Lister by <code>blocking_lister</code>. </p>
+<p>Users can construct Lister by [<code>BlockingOperator::lister</code>] or [<code>BlockingOperator::lister_with</code>].</p>
+<ul>
+<li>Lister implements <code>Iterator&lt;Item = Result&lt;Entry&gt;&gt;</code>.</li>
+<li>Lister will return <code>None</code> if there is no more entries or error has been returned. </li>
+</ul>
 
 </div>
 </div>
@@ -385,6 +436,22 @@ Notes</h1>
 <p><a class="el" href="structopendal__bytes.html" title="opendal_bytes carries raw-bytes with its length">opendal_bytes</a> carries raw-bytes with its length </p>
 <p>The <a class="el" href="structopendal__bytes.html" title="opendal_bytes carries raw-bytes with its length">opendal_bytes</a> type is a C-compatible substitute for Vec type in Rust, it has to be manually freed. You have to call <a class="el" href="opendal_8h.html#adba027eb1460c828ff32e87f0ceb338a" title="Frees the heap memory used by the opendal_bytes.">opendal_bytes_free()</a> to free the heap memory to avoid memory leak.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="opendal_8h.html#adba027eb1460c828ff32e87f0ceb338a" title="Frees the heap memory used by the opendal_bytes.">opendal_bytes_free</a> </dd></dl>
+
+</div>
+</div>
+<a id="ab011e9fbcb61c8d3bf66d6c5d89227e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab011e9fbcb61c8d3bf66d6c5d89227e3">&#9670;&nbsp;</a></span>opendal_capability</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structopendal__capability.html">opendal_capability</a> <a class="el" href="structopendal__capability.html">opendal_capability</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Capability is used to describe what operations are supported by current Operator. </p>
 
 </div>
 </div>
@@ -480,7 +547,7 @@ opendal_list_entry_name() </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Carries all metadata associated with a path. </p>
+<p>Carries all metadata associated with a <b>path</b>. </p>
 <p>The metadata of the "thing" under a path. Please <b>only</b> use the <a class="el" href="structopendal__metadata.html" title="Carries all metadata associated with a path.">opendal_metadata</a> with our provided API, e.g. <a class="el" href="opendal_8h.html#ac8e9a9da0f04cb80848e7e42c3b90235" title="Return the content_length of the metadata.">opendal_metadata_content_length()</a>.</p>
 <dl class="section note"><dt>Note</dt><dd>The metadata is also heap-allocated, please call <a class="el" href="opendal_8h.html#a8ff66345b1c45c66920ef0ddfef739c5" title="Free the heap-allocated metadata used by opendal_metadata.">opendal_metadata_free()</a> on this to free the heap memory.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="opendal_8h.html#a8ff66345b1c45c66920ef0ddfef739c5" title="Free the heap-allocated metadata used by opendal_metadata.">opendal_metadata_free</a> </dd></dl>
@@ -505,6 +572,22 @@ opendal_list_entry_name() </dd></dl>
 <a class="el" href="opendal_8h.html#a04d551eea4b6248d96c9ce9278d27855" title="Free the heap-allocated operator pointed by opendal_operator.">opendal_operator_free</a> This function frees the heap memory of the operator</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> actually owns a pointer to a opendal::BlockingOperator, which is inside the Rust core code.</dd></dl>
 <dl class="section remark"><dt>Remarks</dt><dd>You may use the field <code>ptr</code> to check whether this is a NULL operator. </dd></dl>
+
+</div>
+</div>
+<a id="abd7fdc73c230284dd37ce9d1f54ea915"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd7fdc73c230284dd37ce9d1f54ea915">&#9670;&nbsp;</a></span>opendal_operator_info</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Metadata for <b>operator</b>, users can use this metadata to get information of operator. </p>
 
 </div>
 </div>
@@ -686,6 +769,21 @@ opendal_list_entry_name() </dd></dl>
 
 <p>The result type returned by <a class="el" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582" title="Stat the path, return its metadata.">opendal_operator_stat()</a>. </p>
 <p>The result type for <a class="el" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582" title="Stat the path, return its metadata.">opendal_operator_stat()</a>, the field <code>meta</code> contains the metadata of the path, the field <code>error</code> represents whether the stat operation is successful. If successful, the <code>error</code> field is null. </p>
+
+</div>
+</div>
+<a id="a049ac2a69fc02e3ace6afbb18db397ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a049ac2a69fc02e3ace6afbb18db397ca">&#9670;&nbsp;</a></span>OperatorInfo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="opendal_8h.html#a049ac2a69fc02e3ace6afbb18db397ca">OperatorInfo</a> <a class="el" href="opendal_8h.html#a049ac2a69fc02e3ace6afbb18db397ca">OperatorInfo</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Metadata for operator, users can use this metadata to get information of operator. </p>
 
 </div>
 </div>
@@ -896,17 +994,17 @@ opendal_list_entry_name() </dd></dl>
 <h1><a class="anchor" id="autotoc_md5"></a>
 Example</h1>
 <div class="fragment"><div class="line"><span class="comment">// ... previously you wrote &quot;Hello, World!&quot; to path &quot;/testpath&quot;</span></div>
-<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(ptr, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
 <div class="line">assert(s.<a class="code" href="structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9">error</a> == NULL);</div>
 <div class="line"> </div>
 <div class="line"><a class="code" href="structopendal__metadata.html">opendal_metadata</a> *meta = s.<a class="code" href="structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425">meta</a>;</div>
 <div class="line">assert(<a class="code" href="opendal_8h.html#ac8e9a9da0f04cb80848e7e42c3b90235">opendal_metadata_content_length</a>(meta) == 13);</div>
 <div class="ttc" id="aopendal_8h_html_a8d6a3d830761b215c3d03960b6153582"><div class="ttname"><a href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a></div><div class="ttdeci">struct opendal_result_stat opendal_operator_stat(const struct opendal_operator *op, const char *path)</div><div class="ttdoc">Stat the path, return its metadata.</div></div>
 <div class="ttc" id="aopendal_8h_html_ac8e9a9da0f04cb80848e7e42c3b90235"><div class="ttname"><a href="opendal_8h.html#ac8e9a9da0f04cb80848e7e42c3b90235">opendal_metadata_content_length</a></div><div class="ttdeci">uint64_t opendal_metadata_content_length(const struct opendal_metadata *self)</div><div class="ttdoc">Return the content_length of the metadata.</div></div>
-<div class="ttc" id="astructopendal__metadata_html"><div class="ttname"><a href="structopendal__metadata.html">opendal_metadata</a></div><div class="ttdoc">Carries all metadata associated with a path.</div><div class="ttdef"><b>Definition:</b> opendal.h:308</div></div>
-<div class="ttc" id="astructopendal__result__stat_html"><div class="ttname"><a href="structopendal__result__stat.html">opendal_result_stat</a></div><div class="ttdoc">The result type returned by opendal_operator_stat().</div><div class="ttdef"><b>Definition:</b> opendal.h:452</div></div>
-<div class="ttc" id="astructopendal__result__stat_html_a1d4d484d7bf50bc8e5d65dea5f6f2425"><div class="ttname"><a href="structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425">opendal_result_stat::meta</a></div><div class="ttdeci">struct opendal_metadata * meta</div><div class="ttdef"><b>Definition:</b> opendal.h:456</div></div>
-<div class="ttc" id="astructopendal__result__stat_html_a657eee3bfdf805036f169d94ee70dce9"><div class="ttname"><a href="structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9">opendal_result_stat::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:460</div></div>
+<div class="ttc" id="astructopendal__metadata_html"><div class="ttname"><a href="structopendal__metadata.html">opendal_metadata</a></div><div class="ttdoc">Carries all metadata associated with a path.</div><div class="ttdef"><b>Definition:</b> opendal.h:316</div></div>
+<div class="ttc" id="astructopendal__result__stat_html"><div class="ttname"><a href="structopendal__result__stat.html">opendal_result_stat</a></div><div class="ttdoc">The result type returned by opendal_operator_stat().</div><div class="ttdef"><b>Definition:</b> opendal.h:460</div></div>
+<div class="ttc" id="astructopendal__result__stat_html_a1d4d484d7bf50bc8e5d65dea5f6f2425"><div class="ttname"><a href="structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425">opendal_result_stat::meta</a></div><div class="ttdeci">struct opendal_metadata * meta</div><div class="ttdef"><b>Definition:</b> opendal.h:464</div></div>
+<div class="ttc" id="astructopendal__result__stat_html_a657eee3bfdf805036f169d94ee70dce9"><div class="ttname"><a href="structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9">opendal_result_stat::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:468</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -950,7 +1048,7 @@ Example</h1>
 <h1><a class="anchor" id="autotoc_md7"></a>
 Example</h1>
 <div class="fragment"><div class="line"><span class="comment">// ... previously you wrote &quot;Hello, World!&quot; to path &quot;/testpath&quot;</span></div>
-<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(ptr, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
 <div class="line">assert(s.<a class="code" href="structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9">error</a> == NULL);</div>
 <div class="line"> </div>
 <div class="line"><a class="code" href="structopendal__metadata.html">opendal_metadata</a> *meta = s.<a class="code" href="structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425">meta</a>;</div>
@@ -982,13 +1080,184 @@ Example</h1>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Example</h1>
 <div class="fragment"><div class="line"><span class="comment">// ... previously you wrote &quot;Hello, World!&quot; to path &quot;/testpath&quot;</span></div>
-<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(ptr, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
 <div class="line">assert(s.<a class="code" href="structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9">error</a> == NULL);</div>
 <div class="line"> </div>
 <div class="line"><a class="code" href="structopendal__metadata.html">opendal_metadata</a> *meta = s.<a class="code" href="structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425">meta</a>;</div>
 <div class="line">assert(<a class="code" href="opendal_8h.html#a8900dddbbce980c3323cedd4f30c33ad">opendal_metadata_is_file</a>(meta));</div>
 <div class="ttc" id="aopendal_8h_html_a8900dddbbce980c3323cedd4f30c33ad"><div class="ttname"><a href="opendal_8h.html#a8900dddbbce980c3323cedd4f30c33ad">opendal_metadata_is_file</a></div><div class="ttdeci">bool opendal_metadata_is_file(const struct opendal_metadata *self)</div><div class="ttdoc">Return whether the path represents a file.</div></div>
 </div><!-- fragment --> 
+</div>
+</div>
+<a id="af92bde18613cbbae4fe045f9c723022c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af92bde18613cbbae4fe045f9c723022c">&#9670;&nbsp;</a></span>opendal_metadata_last_modified_ms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int64_t opendal_metadata_last_modified_ms </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__metadata.html">opendal_metadata</a> *&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the last_modified of the metadata, in milliseconds. </p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Example</h1>
+<div class="fragment"><div class="line"><span class="comment">// ... previously you wrote &quot;Hello, World!&quot; to path &quot;/testpath&quot;</span></div>
+<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
+<div class="line">assert(s.<a class="code" href="structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9">error</a> == NULL);</div>
+<div class="line"> </div>
+<div class="line"><a class="code" href="structopendal__metadata.html">opendal_metadata</a> *meta = s.<a class="code" href="structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425">meta</a>;</div>
+<div class="line">assert(<a class="code" href="opendal_8h.html#af92bde18613cbbae4fe045f9c723022c">opendal_metadata_last_modified_ms</a>(meta) != -1);</div>
+<div class="ttc" id="aopendal_8h_html_af92bde18613cbbae4fe045f9c723022c"><div class="ttname"><a href="opendal_8h.html#af92bde18613cbbae4fe045f9c723022c">opendal_metadata_last_modified_ms</a></div><div class="ttdeci">int64_t opendal_metadata_last_modified_ms(const struct opendal_metadata *self)</div><div class="ttdoc">Return the last_modified of the metadata, in milliseconds.</div></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a5d9b1d855b30fa8bd56d1399293b85da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d9b1d855b30fa8bd56d1399293b85da">&#9670;&nbsp;</a></span>opendal_operator_copy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structopendal__error.html">opendal_error</a>* opendal_operator_copy </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *&#160;</td>
+          <td class="paramname"><em>op</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Blockingly copy the object in <code>path</code>. </p>
+<p>Copy the object in <code>src</code> to <code>dest</code> blockingly by <code>op</code>. Error is NULL if successful, otherwise it contains the error code and error message.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">src</td><td>The designated source path you want to copy </td></tr>
+    <tr><td class="paramname">dest</td><td>The designated destination path you want to copy </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> </dd>
+<dd>
+<a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NULL if succeeds, otherwise it contains the error code and error message.</dd></dl>
+<h1><a class="anchor" id="autotoc_md39"></a>
+Example</h1>
+<p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">//...prepare your opendal_operator, named op for example</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// prepare your data</span></div>
+<div class="line"><span class="keywordtype">char</span>* data = <span class="stringliteral">&quot;Hello, World!&quot;</span>;</div>
+<div class="line"><a class="code" href="structopendal__bytes.html">opendal_bytes</a> bytes = <a class="code" href="structopendal__bytes.html">opendal_bytes</a> { .<a class="code" href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">data</a> = (uint8_t*)data, .len = 13 };</div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>, bytes);</div>
+<div class="line"> </div>
+<div class="line">assert(error == NULL);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// now you can renmae!</span></div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#a5d9b1d855b30fa8bd56d1399293b85da">opendal_operator_copy</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>, <span class="stringliteral">&quot;/testpath2&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Assert that this succeeds</span></div>
+<div class="line">assert(error == NULL);</div>
+<div class="ttc" id="aopendal_8h_html_a5d9b1d855b30fa8bd56d1399293b85da"><div class="ttname"><a href="opendal_8h.html#a5d9b1d855b30fa8bd56d1399293b85da">opendal_operator_copy</a></div><div class="ttdeci">struct opendal_error * opendal_operator_copy(const struct opendal_operator *op, const char *src, const char *dest)</div><div class="ttdoc">Blockingly copy the object in path.</div></div>
+<div class="ttc" id="aopendal_8h_html_af8b6596a53263101e93b4d73e9eb928c"><div class="ttname"><a href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a></div><div class="ttdeci">struct opendal_error * opendal_operator_write(const struct opendal_operator *op, const char *path, struct opendal_bytes bytes)</div><div class="ttdoc">Blockingly write raw bytes to path.</div></div>
+<div class="ttc" id="astructopendal__bytes_html"><div class="ttname"><a href="structopendal__bytes.html">opendal_bytes</a></div><div class="ttdoc">opendal_bytes carries raw-bytes with its length</div><div class="ttdef"><b>Definition:</b> opendal.h:227</div></div>
+<div class="ttc" id="astructopendal__bytes_html_af7a7f99a262f8a3912f4d1cddb798c86"><div class="ttname"><a href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">opendal_bytes::data</a></div><div class="ttdeci">const uint8_t * data</div><div class="ttdef"><b>Definition:</b> opendal.h:231</div></div>
+<div class="ttc" id="astructopendal__error_html"><div class="ttname"><a href="structopendal__error.html">opendal_error</a></div><div class="ttdoc">The opendal error type for C binding, containing an error code and corresponding error message.</div><div class="ttdef"><b>Definition:</b> opendal.h:257</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md40"></a>
+Safety</h1>
+<p>It is <b>safe</b> under the cases below</p><ul>
+<li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md41"></a>
+Panic</h1>
+<ul>
+<li>If the <code>src</code> or <code>dest</code> points to NULL, this function panics, i.e. exits with information </li>
+</ul>
+
+</div>
+</div>
+<a id="aa13f840e6fd4fa75d0cd0482db7e4b26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa13f840e6fd4fa75d0cd0482db7e4b26">&#9670;&nbsp;</a></span>opendal_operator_create_dir()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structopendal__error.html">opendal_error</a>* opendal_operator_create_dir </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *&#160;</td>
+          <td class="paramname"><em>op</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Blockingly create the directory in <code>path</code>. </p>
+<p>Create the directory in <code>path</code> blockingly by <code>op_ptr</code>. Error is NULL if successful, otherwise it contains the error code and error message.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">path</td><td>The designated directory you want to create </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> </dd>
+<dd>
+<a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NULL if succeeds, otherwise it contains the error code and error message.</dd></dl>
+<h1><a class="anchor" id="autotoc_md33"></a>
+Example</h1>
+<p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">//...prepare your opendal_operator, named op for example</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// create your directory</span></div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#aa13f840e6fd4fa75d0cd0482db7e4b26">opendal_operator_create_dir</a>(op, <span class="stringliteral">&quot;/testdir/&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Assert that this succeeds</span></div>
+<div class="line">assert(error == NULL);</div>
+<div class="ttc" id="aopendal_8h_html_aa13f840e6fd4fa75d0cd0482db7e4b26"><div class="ttname"><a href="opendal_8h.html#aa13f840e6fd4fa75d0cd0482db7e4b26">opendal_operator_create_dir</a></div><div class="ttdeci">struct opendal_error * opendal_operator_create_dir(const struct opendal_operator *op, const char *path)</div><div class="ttdoc">Blockingly create the directory in path.</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md34"></a>
+Safety</h1>
+<p>It is <b>safe</b> under the cases below</p><ul>
+<li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md35"></a>
+Panic</h1>
+<ul>
+<li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>
+</ul>
+
 </div>
 </div>
 <a id="ad21a0a160ee32cfa90e2e0ca1e1da0dc"></a>
@@ -1021,7 +1290,7 @@ Example</h1>
 <p>Delete the object in <code>path</code> blockingly by <code>op_ptr</code>. Error is NULL if successful, otherwise it contains the error code and error message.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
     <tr><td class="paramname">path</td><td>The designated path you want to delete </td></tr>
   </table>
   </dd>
@@ -1030,33 +1299,29 @@ Example</h1>
 <dd>
 <a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>NULL if succeeds, otherwise it contains the error code and error message.</dd></dl>
-<h1><a class="anchor" id="autotoc_md20"></a>
+<h1><a class="anchor" id="autotoc_md21"></a>
 Example</h1>
-<p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">//...prepare your opendal_operator, named ptr for example</span></div>
+<p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">//...prepare your opendal_operator, named op for example</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// prepare your data</span></div>
 <div class="line"><span class="keywordtype">char</span>* data = <span class="stringliteral">&quot;Hello, World!&quot;</span>;</div>
 <div class="line"><a class="code" href="structopendal__bytes.html">opendal_bytes</a> bytes = <a class="code" href="structopendal__bytes.html">opendal_bytes</a> { .<a class="code" href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">data</a> = (uint8_t*)data, .len = 13 };</div>
-<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a>(ptr, <span class="stringliteral">&quot;/testpath&quot;</span>, bytes);</div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>, bytes);</div>
 <div class="line"> </div>
 <div class="line">assert(error == NULL);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// now you can delete!</span></div>
-<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#ad21a0a160ee32cfa90e2e0ca1e1da0dc">opendal_operator_delete</a>(ptr, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#ad21a0a160ee32cfa90e2e0ca1e1da0dc">opendal_operator_delete</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Assert that this succeeds</span></div>
 <div class="line">assert(error == NULL);</div>
 <div class="ttc" id="aopendal_8h_html_ad21a0a160ee32cfa90e2e0ca1e1da0dc"><div class="ttname"><a href="opendal_8h.html#ad21a0a160ee32cfa90e2e0ca1e1da0dc">opendal_operator_delete</a></div><div class="ttdeci">struct opendal_error * opendal_operator_delete(const struct opendal_operator *op, const char *path)</div><div class="ttdoc">Blockingly delete the object in path.</div></div>
-<div class="ttc" id="aopendal_8h_html_af8b6596a53263101e93b4d73e9eb928c"><div class="ttname"><a href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a></div><div class="ttdeci">struct opendal_error * opendal_operator_write(const struct opendal_operator *op, const char *path, struct opendal_bytes bytes)</div><div class="ttdoc">Blockingly write raw bytes to path.</div></div>
-<div class="ttc" id="astructopendal__bytes_html"><div class="ttname"><a href="structopendal__bytes.html">opendal_bytes</a></div><div class="ttdoc">opendal_bytes carries raw-bytes with its length</div><div class="ttdef"><b>Definition:</b> opendal.h:219</div></div>
-<div class="ttc" id="astructopendal__bytes_html_af7a7f99a262f8a3912f4d1cddb798c86"><div class="ttname"><a href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">opendal_bytes::data</a></div><div class="ttdeci">const uint8_t * data</div><div class="ttdef"><b>Definition:</b> opendal.h:223</div></div>
-<div class="ttc" id="astructopendal__error_html"><div class="ttname"><a href="structopendal__error.html">opendal_error</a></div><div class="ttdoc">The opendal error type for C binding, containing an error code and corresponding error message.</div><div class="ttdef"><b>Definition:</b> opendal.h:249</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md21"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md22"></a>
 Safety</h1>
 <p>It is <b>safe</b> under the cases below</p><ul>
 <li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md22"></a>
+<h1><a class="anchor" id="autotoc_md23"></a>
 Panic</h1>
 <ul>
 <li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>
@@ -1082,16 +1347,173 @@ Panic</h1>
 
 <p>Free the heap-allocated operator pointed by <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a>. </p>
 <p>Please only use this for a pointer pointing at a valid <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a>. Calling this function on NULL does nothing, but calling this function on pointers of other type will lead to segfault.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Example</h1>
-<div class="fragment"><div class="line"><a class="code" href="structopendal__operator.html">opendal_operator</a> *ptr = <a class="code" href="opendal_8h.html#a3b32f655689a122d2b6feff169fac442">opendal_operator_new</a>(<span class="stringliteral">&quot;fs&quot;</span>, NULL);</div>
-<div class="line"><span class="comment">// ... use this ptr, maybe some reads and writes</span></div>
+<div class="fragment"><div class="line"><a class="code" href="structopendal__operator.html">opendal_operator</a> *op = <a class="code" href="opendal_8h.html#a3b32f655689a122d2b6feff169fac442">opendal_operator_new</a>(<span class="stringliteral">&quot;fs&quot;</span>, NULL);</div>
+<div class="line"><span class="comment">// ... use this op, maybe some reads and writes</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// free this operator</span></div>
-<div class="line"><a class="code" href="opendal_8h.html#a04d551eea4b6248d96c9ce9278d27855">opendal_operator_free</a>(ptr);</div>
+<div class="line"><a class="code" href="opendal_8h.html#a04d551eea4b6248d96c9ce9278d27855">opendal_operator_free</a>(op);</div>
 <div class="ttc" id="aopendal_8h_html_a04d551eea4b6248d96c9ce9278d27855"><div class="ttname"><a href="opendal_8h.html#a04d551eea4b6248d96c9ce9278d27855">opendal_operator_free</a></div><div class="ttdeci">void opendal_operator_free(const struct opendal_operator *op)</div><div class="ttdoc">Free the heap-allocated operator pointed by opendal_operator.</div></div>
 <div class="ttc" id="aopendal_8h_html_a3b32f655689a122d2b6feff169fac442"><div class="ttname"><a href="opendal_8h.html#a3b32f655689a122d2b6feff169fac442">opendal_operator_new</a></div><div class="ttdeci">struct opendal_result_operator_new opendal_operator_new(const char *scheme, const struct opendal_operator_options *options)</div><div class="ttdoc">Construct an operator based on scheme and options</div></div>
-<div class="ttc" id="astructopendal__operator_html"><div class="ttname"><a href="structopendal__operator.html">opendal_operator</a></div><div class="ttdoc">Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...</div><div class="ttdef"><b>Definition:</b> opendal.h:329</div></div>
+<div class="ttc" id="astructopendal__operator_html"><div class="ttname"><a href="structopendal__operator.html">opendal_operator</a></div><div class="ttdoc">Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...</div><div class="ttdef"><b>Definition:</b> opendal.h:337</div></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a4b9c51df68246236ceefb051bb10c20d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b9c51df68246236ceefb051bb10c20d">&#9670;&nbsp;</a></span>opendal_operator_info_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void opendal_operator_info_free </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *&#160;</td>
+          <td class="paramname"><em>ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Free the heap-allocated <a class="el" href="structopendal__operator__info.html" title="Metadata for operator, users can use this metadata to get information of operator.">opendal_operator_info</a>. </p>
+
+</div>
+</div>
+<a id="aa200d3f976b909210bd69038d39fb391"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa200d3f976b909210bd69038d39fb391">&#9670;&nbsp;</a></span>opendal_operator_info_get_full_capability()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structopendal__capability.html">opendal_capability</a> opendal_operator_info_get_full_capability </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the operator's full capability. </p>
+
+</div>
+</div>
+<a id="a9e71eedec5353536ca9796b6d60d2d4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e71eedec5353536ca9796b6d60d2d4c">&#9670;&nbsp;</a></span>opendal_operator_info_get_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* opendal_operator_info_get_name </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the nul-terminated operator backend's name, could be empty if underlying backend has no namespace concept. </p>
+<dl class="section note"><dt>Note</dt><dd>: The string is on heap, remember to free it </dd></dl>
+
+</div>
+</div>
+<a id="a8ab1789c3d4f6538b29063a94df26b56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ab1789c3d4f6538b29063a94df26b56">&#9670;&nbsp;</a></span>opendal_operator_info_get_native_capability()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structopendal__capability.html">opendal_capability</a> opendal_operator_info_get_native_capability </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the operator's native capability. </p>
+
+</div>
+</div>
+<a id="aae50fdd0d0eb2cfff176f53132c4552e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae50fdd0d0eb2cfff176f53132c4552e">&#9670;&nbsp;</a></span>opendal_operator_info_get_root()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* opendal_operator_info_get_root </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the nul-terminated operator's working root path. </p>
+<dl class="section note"><dt>Note</dt><dd>: The string is on heap, remember to free it </dd></dl>
+
+</div>
+</div>
+<a id="a2b3ee8d084fac74ad0cea4be61c7be48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b3ee8d084fac74ad0cea4be61c7be48">&#9670;&nbsp;</a></span>opendal_operator_info_get_scheme()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* opendal_operator_info_get_scheme </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a> *&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the nul-terminated operator's scheme, i.e. service. </p>
+<dl class="section note"><dt>Note</dt><dd>: The string is on heap, remember to free it </dd></dl>
+
+</div>
+</div>
+<a id="a902aa057da25635085584f78e1152045"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a902aa057da25635085584f78e1152045">&#9670;&nbsp;</a></span>opendal_operator_info_new()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structopendal__operator__info.html">opendal_operator_info</a>* opendal_operator_info_new </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *&#160;</td>
+          <td class="paramname"><em>op</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get information of underlying accessor. </p>
+<h1><a class="anchor" id="autotoc_md42"></a>
+Example</h1>
+<div class="fragment"><div class="line"><span class="keywordtype">char</span> *scheme;</div>
+<div class="line"><a class="code" href="structopendal__operator__info.html">opendal_operator_info</a> *info = <a class="code" href="opendal_8h.html#a902aa057da25635085584f78e1152045">opendal_operator_info_new</a>(op);</div>
+<div class="line"> </div>
+<div class="line">scheme = <a class="code" href="opendal_8h.html#a2b3ee8d084fac74ad0cea4be61c7be48">opendal_operator_info_get_scheme</a>(info);</div>
+<div class="line">assert(!strcmp(scheme, <span class="stringliteral">&quot;memory&quot;</span>));</div>
+<div class="line"> </div>
+<div class="line">free(scheme);</div>
+<div class="line"><a class="code" href="opendal_8h.html#a4b9c51df68246236ceefb051bb10c20d">opendal_operator_info_free</a>(info);</div>
+<div class="ttc" id="aopendal_8h_html_a2b3ee8d084fac74ad0cea4be61c7be48"><div class="ttname"><a href="opendal_8h.html#a2b3ee8d084fac74ad0cea4be61c7be48">opendal_operator_info_get_scheme</a></div><div class="ttdeci">char * opendal_operator_info_get_scheme(const struct opendal_operator_info *self)</div><div class="ttdoc">Return the nul-terminated operator's scheme, i.e. service.</div></div>
+<div class="ttc" id="aopendal_8h_html_a4b9c51df68246236ceefb051bb10c20d"><div class="ttname"><a href="opendal_8h.html#a4b9c51df68246236ceefb051bb10c20d">opendal_operator_info_free</a></div><div class="ttdeci">void opendal_operator_info_free(struct opendal_operator_info *ptr)</div><div class="ttdoc">Free the heap-allocated opendal_operator_info.</div></div>
+<div class="ttc" id="aopendal_8h_html_a902aa057da25635085584f78e1152045"><div class="ttname"><a href="opendal_8h.html#a902aa057da25635085584f78e1152045">opendal_operator_info_new</a></div><div class="ttdeci">struct opendal_operator_info * opendal_operator_info_new(const struct opendal_operator *op)</div><div class="ttdoc">Get information of underlying accessor.</div></div>
+<div class="ttc" id="astructopendal__operator__info_html"><div class="ttname"><a href="structopendal__operator__info.html">opendal_operator_info</a></div><div class="ttdoc">Metadata for operator, users can use this metadata to get information of operator.</div><div class="ttdef"><b>Definition:</b> opendal.h:493</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -1125,7 +1547,7 @@ Example</h1>
 <p>If the operation succeeds, no matter the path exists or not, the error should be a nullptr. Otherwise, the field <code>is_exist</code> is filled with false, and the error is set</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
     <tr><td class="paramname">path</td><td>The path you want to check existence </td></tr>
   </table>
   </dd>
@@ -1136,27 +1558,27 @@ Example</h1>
 <dd>
 <a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns <a class="el" href="structopendal__result__is__exist.html" title="The result type returned by opendal_operator_is_exist().">opendal_result_is_exist</a>, the <code>is_exist</code> field contains whether the path exists. However, it the operation fails, the <code>is_exist</code> will contains false and the error will be set.</dd></dl>
-<h1><a class="anchor" id="autotoc_md23"></a>
+<h1><a class="anchor" id="autotoc_md24"></a>
 Example</h1>
 <div class="fragment"><div class="line"><span class="comment">// .. you previously wrote some data to path &quot;/mytest/obj&quot;</span></div>
-<div class="line"><a class="code" href="structopendal__result__is__exist.html">opendal_result_is_exist</a> e = <a class="code" href="opendal_8h.html#acc6c32aa41963ac67e612dc47f7edb46">opendal_operator_is_exist</a>(ptr, <span class="stringliteral">&quot;/mytest/obj&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__result__is__exist.html">opendal_result_is_exist</a> e = <a class="code" href="opendal_8h.html#acc6c32aa41963ac67e612dc47f7edb46">opendal_operator_is_exist</a>(op, <span class="stringliteral">&quot;/mytest/obj&quot;</span>);</div>
 <div class="line">assert(e.<a class="code" href="structopendal__result__is__exist.html#a6dc61502ab68ba25bcd56b09a215de6c">error</a> == NULL);</div>
 <div class="line">assert(e.<a class="code" href="structopendal__result__is__exist.html#abe145d68333ea78b438ef92a12d9d295">is_exist</a>);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// but you previously did **not** write any data to path &quot;/yourtest/obj&quot;</span></div>
-<div class="line"><a class="code" href="structopendal__result__is__exist.html">opendal_result_is_exist</a> e = <a class="code" href="opendal_8h.html#acc6c32aa41963ac67e612dc47f7edb46">opendal_operator_is_exist</a>(ptr, <span class="stringliteral">&quot;/yourtest/obj&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__result__is__exist.html">opendal_result_is_exist</a> e = <a class="code" href="opendal_8h.html#acc6c32aa41963ac67e612dc47f7edb46">opendal_operator_is_exist</a>(op, <span class="stringliteral">&quot;/yourtest/obj&quot;</span>);</div>
 <div class="line">assert(e.<a class="code" href="structopendal__result__is__exist.html#a6dc61502ab68ba25bcd56b09a215de6c">error</a> == NULL);</div>
 <div class="line">assert(!e.<a class="code" href="structopendal__result__is__exist.html#abe145d68333ea78b438ef92a12d9d295">is_exist</a>);</div>
 <div class="ttc" id="aopendal_8h_html_acc6c32aa41963ac67e612dc47f7edb46"><div class="ttname"><a href="opendal_8h.html#acc6c32aa41963ac67e612dc47f7edb46">opendal_operator_is_exist</a></div><div class="ttdeci">struct opendal_result_is_exist opendal_operator_is_exist(const struct opendal_operator *op, const char *path)</div><div class="ttdoc">Check whether the path exists.</div></div>
-<div class="ttc" id="astructopendal__result__is__exist_html"><div class="ttname"><a href="structopendal__result__is__exist.html">opendal_result_is_exist</a></div><div class="ttdoc">The result type returned by opendal_operator_is_exist().</div><div class="ttdef"><b>Definition:</b> opendal.h:434</div></div>
-<div class="ttc" id="astructopendal__result__is__exist_html_a6dc61502ab68ba25bcd56b09a215de6c"><div class="ttname"><a href="structopendal__result__is__exist.html#a6dc61502ab68ba25bcd56b09a215de6c">opendal_result_is_exist::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:442</div></div>
-<div class="ttc" id="astructopendal__result__is__exist_html_abe145d68333ea78b438ef92a12d9d295"><div class="ttname"><a href="structopendal__result__is__exist.html#abe145d68333ea78b438ef92a12d9d295">opendal_result_is_exist::is_exist</a></div><div class="ttdeci">bool is_exist</div><div class="ttdef"><b>Definition:</b> opendal.h:438</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md24"></a>
+<div class="ttc" id="astructopendal__result__is__exist_html"><div class="ttname"><a href="structopendal__result__is__exist.html">opendal_result_is_exist</a></div><div class="ttdoc">The result type returned by opendal_operator_is_exist().</div><div class="ttdef"><b>Definition:</b> opendal.h:442</div></div>
+<div class="ttc" id="astructopendal__result__is__exist_html_a6dc61502ab68ba25bcd56b09a215de6c"><div class="ttname"><a href="structopendal__result__is__exist.html#a6dc61502ab68ba25bcd56b09a215de6c">opendal_result_is_exist::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:450</div></div>
+<div class="ttc" id="astructopendal__result__is__exist_html_abe145d68333ea78b438ef92a12d9d295"><div class="ttname"><a href="structopendal__result__is__exist.html#abe145d68333ea78b438ef92a12d9d295">opendal_result_is_exist::is_exist</a></div><div class="ttdeci">bool is_exist</div><div class="ttdef"><b>Definition:</b> opendal.h:446</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md25"></a>
 Safety</h1>
 <p>It is <b>safe</b> under the cases below</p><ul>
 <li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md25"></a>
+<h1><a class="anchor" id="autotoc_md26"></a>
 Panic</h1>
 <ul>
 <li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>
@@ -1194,18 +1616,18 @@ Panic</h1>
 <p>List the object in <code>path</code> blockingly by <code>op_ptr</code>, return a result with a <a class="el" href="structopendal__lister.html" title="BlockingLister is designed to list entries at given path in a blocking manner.">opendal_lister</a>. Users should call <a class="el" href="opendal_8h.html#a8429a4433316d9bf70cfffbbcb844a3d" title="Return the next object to be listed.">opendal_lister_next()</a> on the lister.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
-    <tr><td class="paramname">path</td><td>The designated path you want to delete </td></tr>
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">path</td><td>The designated path you want to list </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structopendal__lister.html" title="BlockingLister is designed to list entries at given path in a blocking manner.">opendal_lister</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns <a class="el" href="structopendal__result__list.html" title="The result type returned by opendal_operator_list().">opendal_result_list</a>, containing a lister and an <a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a>. If the operation succeeds, the <code>lister</code> field would holds a valid lister and the <code>error</code> field should hold nullptr. Otherwise the <code>lister</code><code>will contain a NULL pointer, i.e. invalid, and the</code>error` will be set correspondingly.</dd></dl>
-<h1><a class="anchor" id="autotoc_md29"></a>
+<h1><a class="anchor" id="autotoc_md30"></a>
 Example</h1>
 <p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">// You have written some data into some files path &quot;root/dir1&quot;</span></div>
-<div class="line"><span class="comment">// Your opendal_operator was called ptr</span></div>
-<div class="line"><a class="code" href="structopendal__result__list.html">opendal_result_list</a> l = <a class="code" href="opendal_8h.html#af8f2888ef406d9fc81af0015a904af9c">opendal_operator_list</a>(ptr, <span class="stringliteral">&quot;root/dir1&quot;</span>);</div>
+<div class="line"><span class="comment">// Your opendal_operator was called op</span></div>
+<div class="line"><a class="code" href="structopendal__result__list.html">opendal_result_list</a> l = <a class="code" href="opendal_8h.html#af8f2888ef406d9fc81af0015a904af9c">opendal_operator_list</a>(op, <span class="stringliteral">&quot;root/dir1&quot;</span>);</div>
 <div class="line">assert(l.<a class="code" href="structopendal__result__list.html#a874bfb5c9d016445698fb59d65b76ed2">error</a> == ERROR);</div>
 <div class="line"> </div>
 <div class="line"><a class="code" href="structopendal__lister.html">opendal_lister</a> *lister = l.<a class="code" href="structopendal__result__list.html#a54b9b09c29f8d867da187c32e362398a">lister</a>;</div>
@@ -1225,16 +1647,16 @@ Example</h1>
 <div class="ttc" id="aopendal_8h_html_a8429a4433316d9bf70cfffbbcb844a3d"><div class="ttname"><a href="opendal_8h.html#a8429a4433316d9bf70cfffbbcb844a3d">opendal_lister_next</a></div><div class="ttdeci">struct opendal_result_lister_next opendal_lister_next(const struct opendal_lister *self)</div><div class="ttdoc">Return the next object to be listed.</div></div>
 <div class="ttc" id="aopendal_8h_html_aee248f8b3afbb982fd0ad0baaa1159e3"><div class="ttname"><a href="opendal_8h.html#aee248f8b3afbb982fd0ad0baaa1159e3">opendal_lister_free</a></div><div class="ttdeci">void opendal_lister_free(const struct opendal_lister *p)</div><div class="ttdoc">Free the heap-allocated metadata used by opendal_lister.</div></div>
 <div class="ttc" id="aopendal_8h_html_af8f2888ef406d9fc81af0015a904af9c"><div class="ttname"><a href="opendal_8h.html#af8f2888ef406d9fc81af0015a904af9c">opendal_operator_list</a></div><div class="ttdeci">struct opendal_result_list opendal_operator_list(const struct opendal_operator *op, const char *path)</div><div class="ttdoc">Blockingly list the objects in path.</div></div>
-<div class="ttc" id="astructopendal__lister_html"><div class="ttname"><a href="structopendal__lister.html">opendal_lister</a></div><div class="ttdoc">BlockingLister is designed to list entries at given path in a blocking manner.</div><div class="ttdef"><b>Definition:</b> opendal.h:293</div></div>
-<div class="ttc" id="astructopendal__result__list_html"><div class="ttname"><a href="structopendal__result__list.html">opendal_result_list</a></div><div class="ttdoc">The result type returned by opendal_operator_list().</div><div class="ttdef"><b>Definition:</b> opendal.h:470</div></div>
-<div class="ttc" id="astructopendal__result__list_html_a54b9b09c29f8d867da187c32e362398a"><div class="ttname"><a href="structopendal__result__list.html#a54b9b09c29f8d867da187c32e362398a">opendal_result_list::lister</a></div><div class="ttdeci">struct opendal_lister * lister</div><div class="ttdef"><b>Definition:</b> opendal.h:474</div></div>
-<div class="ttc" id="astructopendal__result__list_html_a874bfb5c9d016445698fb59d65b76ed2"><div class="ttname"><a href="structopendal__result__list.html#a874bfb5c9d016445698fb59d65b76ed2">opendal_result_list::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:478</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md30"></a>
+<div class="ttc" id="astructopendal__lister_html"><div class="ttname"><a href="structopendal__lister.html">opendal_lister</a></div><div class="ttdoc">BlockingLister is designed to list entries at given path in a blocking manner.</div><div class="ttdef"><b>Definition:</b> opendal.h:301</div></div>
+<div class="ttc" id="astructopendal__result__list_html"><div class="ttname"><a href="structopendal__result__list.html">opendal_result_list</a></div><div class="ttdoc">The result type returned by opendal_operator_list().</div><div class="ttdef"><b>Definition:</b> opendal.h:478</div></div>
+<div class="ttc" id="astructopendal__result__list_html_a54b9b09c29f8d867da187c32e362398a"><div class="ttname"><a href="structopendal__result__list.html#a54b9b09c29f8d867da187c32e362398a">opendal_result_list::lister</a></div><div class="ttdeci">struct opendal_lister * lister</div><div class="ttdef"><b>Definition:</b> opendal.h:482</div></div>
+<div class="ttc" id="astructopendal__result__list_html_a874bfb5c9d016445698fb59d65b76ed2"><div class="ttname"><a href="structopendal__result__list.html#a874bfb5c9d016445698fb59d65b76ed2">opendal_result_list::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:486</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md31"></a>
 Safety</h1>
 <p>It is <b>safe</b> under the cases below</p><ul>
 <li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md31"></a>
+<h1><a class="anchor" id="autotoc_md32"></a>
 Panic</h1>
 <ul>
 <li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>
@@ -1279,7 +1701,7 @@ Panic</h1>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structopendal__operator__options.html" title="The configuration for the initialization of opendal_operator.">opendal_operator_options</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A valid <a class="el" href="structopendal__result__operator__new.html" title="The result type returned by opendal_operator_new() operation.">opendal_result_operator_new</a> setup with the <code>scheme</code> and <code>options</code> is the construction succeeds. On success the operator field is a valid pointer to a newly allocated <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a>, and the error field is NULL. Otherwise, the operator field is a NULL pointer and the error field.</dd></dl>
-<h1><a class="anchor" id="autotoc_md9"></a>
+<h1><a class="anchor" id="autotoc_md10"></a>
 Example</h1>
 <p>Following is an example. </p><div class="fragment"><div class="line"><span class="comment">// Allocate a new options</span></div>
 <div class="line"><a class="code" href="structopendal__operator__options.html">opendal_operator_options</a> *options = <a class="code" href="opendal_8h.html#a67b1457f2b1258551552dc383840f288">opendal_operator_options_new</a>();</div>
@@ -1297,10 +1719,10 @@ Example</h1>
 <div class="ttc" id="aopendal_8h_html_a1d65b173b087b2abca126de2e951b412"><div class="ttname"><a href="opendal_8h.html#a1d65b173b087b2abca126de2e951b412">opendal_operator_options_free</a></div><div class="ttdeci">void opendal_operator_options_free(const struct opendal_operator_options *options)</div><div class="ttdoc">Free the allocated memory used by [opendal_operator_options].</div></div>
 <div class="ttc" id="aopendal_8h_html_a67b1457f2b1258551552dc383840f288"><div class="ttname"><a href="opendal_8h.html#a67b1457f2b1258551552dc383840f288">opendal_operator_options_new</a></div><div class="ttdeci">struct opendal_operator_options * opendal_operator_options_new(void)</div><div class="ttdoc">Construct a heap-allocated opendal_operator_options.</div></div>
 <div class="ttc" id="aopendal_8h_html_af408af922875eb26c25cef4ddfdede02"><div class="ttname"><a href="opendal_8h.html#af408af922875eb26c25cef4ddfdede02">opendal_operator_options_set</a></div><div class="ttdeci">void opendal_operator_options_set(struct opendal_operator_options *self, const char *key, const char *value)</div><div class="ttdoc">Set a Key-Value pair inside opendal_operator_options.</div></div>
-<div class="ttc" id="astructopendal__operator__options_html"><div class="ttname"><a href="structopendal__operator__options.html">opendal_operator_options</a></div><div class="ttdoc">The configuration for the initialization of opendal_operator.</div><div class="ttdef"><b>Definition:</b> opendal.h:370</div></div>
-<div class="ttc" id="astructopendal__result__operator__new_html"><div class="ttname"><a href="structopendal__result__operator__new.html">opendal_result_operator_new</a></div><div class="ttdoc">The result type returned by opendal_operator_new() operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:349</div></div>
-<div class="ttc" id="astructopendal__result__operator__new_html_a4e358aad13b4c71dc7a9a812191371c6"><div class="ttname"><a href="structopendal__result__operator__new.html#a4e358aad13b4c71dc7a9a812191371c6">opendal_result_operator_new::op</a></div><div class="ttdeci">struct opendal_operator * op</div><div class="ttdef"><b>Definition:</b> opendal.h:353</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md10"></a>
+<div class="ttc" id="astructopendal__operator__options_html"><div class="ttname"><a href="structopendal__operator__options.html">opendal_operator_options</a></div><div class="ttdoc">The configuration for the initialization of opendal_operator.</div><div class="ttdef"><b>Definition:</b> opendal.h:378</div></div>
+<div class="ttc" id="astructopendal__result__operator__new_html"><div class="ttname"><a href="structopendal__result__operator__new.html">opendal_result_operator_new</a></div><div class="ttdoc">The result type returned by opendal_operator_new() operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:357</div></div>
+<div class="ttc" id="astructopendal__result__operator__new_html_a4e358aad13b4c71dc7a9a812191371c6"><div class="ttname"><a href="structopendal__result__operator__new.html#a4e358aad13b4c71dc7a9a812191371c6">opendal_result_operator_new::op</a></div><div class="ttdeci">struct opendal_operator * op</div><div class="ttdef"><b>Definition:</b> opendal.h:361</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md11"></a>
 Safety</h1>
 <p>The only unsafe case is passing a invalid c string pointer to the <code>scheme</code> argument. </p>
 
@@ -1381,10 +1803,10 @@ Safety</h1>
 </div><div class="memdoc">
 
 <p>Set a Key-Value pair inside <a class="el" href="structopendal__operator__options.html" title="The configuration for the initialization of opendal_operator.">opendal_operator_options</a>. </p>
-<h1><a class="anchor" id="autotoc_md32"></a>
+<h1><a class="anchor" id="autotoc_md43"></a>
 Safety</h1>
 <p>This function is unsafe because it dereferences and casts the raw pointers Make sure the pointer of <code>key</code> and <code>value</code> point to a valid string.</p>
-<h1><a class="anchor" id="autotoc_md33"></a>
+<h1><a class="anchor" id="autotoc_md44"></a>
 Example</h1>
 <div class="fragment"><div class="line"><a class="code" href="structopendal__operator__options.html">opendal_operator_options</a> *options = <a class="code" href="opendal_8h.html#a67b1457f2b1258551552dc383840f288">opendal_operator_options_new</a>();</div>
 <div class="line"><a class="code" href="opendal_8h.html#af408af922875eb26c25cef4ddfdede02">opendal_operator_options_set</a>(options, <span class="stringliteral">&quot;root&quot;</span>, <span class="stringliteral">&quot;/myroot&quot;</span>);</div>
@@ -1425,7 +1847,7 @@ Example</h1>
 <p>Read the data out from <code>path</code> blockingly by operator.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
     <tr><td class="paramname">path</td><td>The path you want to read the data out </td></tr>
   </table>
   </dd>
@@ -1437,26 +1859,26 @@ Example</h1>
 <a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns <a class="el" href="structopendal__result__read.html" title="The result type returned by opendal&#39;s read operation.">opendal_result_read</a>, the <code>data</code> field is a pointer to a newly allocated <a class="el" href="structopendal__bytes.html" title="opendal_bytes carries raw-bytes with its length">opendal_bytes</a>, the <code>error</code> field contains the error. If the <code>error</code> is not NULL, then the operation failed and the <code>data</code> field is a nullptr.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>If the read operation succeeds, the returned <a class="el" href="structopendal__bytes.html" title="opendal_bytes carries raw-bytes with its length">opendal_bytes</a> is newly allocated on heap. After your usage of that, please call <a class="el" href="opendal_8h.html#adba027eb1460c828ff32e87f0ceb338a" title="Frees the heap memory used by the opendal_bytes.">opendal_bytes_free()</a> to free the space.</dd></dl>
-<h1><a class="anchor" id="autotoc_md14"></a>
+<h1><a class="anchor" id="autotoc_md15"></a>
 Example</h1>
 <p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">// ... you have write &quot;Hello, World!&quot; to path &quot;/testpath&quot;</span></div>
 <div class="line"> </div>
-<div class="line"><a class="code" href="structopendal__result__read.html">opendal_result_read</a> r = <a class="code" href="opendal_8h.html#ab1419180b377316e27416b742bcc059f">opendal_operator_read</a>(ptr, <span class="stringliteral">&quot;testpath&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__result__read.html">opendal_result_read</a> r = <a class="code" href="opendal_8h.html#ab1419180b377316e27416b742bcc059f">opendal_operator_read</a>(op, <span class="stringliteral">&quot;testpath&quot;</span>);</div>
 <div class="line">assert(r.<a class="code" href="structopendal__result__read.html#a6cd0e4e83ed4509856de0d1e6b83e2f2">error</a> == NULL);</div>
 <div class="line"> </div>
 <div class="line"><a class="code" href="structopendal__bytes.html">opendal_bytes</a> *bytes = r.<a class="code" href="structopendal__result__read.html#ad8ca467bcbe6d1768e15fcf64fe78e9f">data</a>;</div>
 <div class="line">assert(bytes-&gt;<a class="code" href="structopendal__bytes.html#a16abed2ad211c076650d1ea81772b851">len</a> == 13);</div>
 <div class="ttc" id="aopendal_8h_html_ab1419180b377316e27416b742bcc059f"><div class="ttname"><a href="opendal_8h.html#ab1419180b377316e27416b742bcc059f">opendal_operator_read</a></div><div class="ttdeci">struct opendal_result_read opendal_operator_read(const struct opendal_operator *op, const char *path)</div><div class="ttdoc">Blockingly read the data from path.</div></div>
-<div class="ttc" id="astructopendal__bytes_html_a16abed2ad211c076650d1ea81772b851"><div class="ttname"><a href="structopendal__bytes.html#a16abed2ad211c076650d1ea81772b851">opendal_bytes::len</a></div><div class="ttdeci">uintptr_t len</div><div class="ttdef"><b>Definition:</b> opendal.h:227</div></div>
-<div class="ttc" id="astructopendal__result__read_html"><div class="ttname"><a href="structopendal__result__read.html">opendal_result_read</a></div><div class="ttdoc">The result type returned by opendal's read operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:386</div></div>
-<div class="ttc" id="astructopendal__result__read_html_a6cd0e4e83ed4509856de0d1e6b83e2f2"><div class="ttname"><a href="structopendal__result__read.html#a6cd0e4e83ed4509856de0d1e6b83e2f2">opendal_result_read::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:394</div></div>
-<div class="ttc" id="astructopendal__result__read_html_ad8ca467bcbe6d1768e15fcf64fe78e9f"><div class="ttname"><a href="structopendal__result__read.html#ad8ca467bcbe6d1768e15fcf64fe78e9f">opendal_result_read::data</a></div><div class="ttdeci">struct opendal_bytes * data</div><div class="ttdef"><b>Definition:</b> opendal.h:390</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md15"></a>
+<div class="ttc" id="astructopendal__bytes_html_a16abed2ad211c076650d1ea81772b851"><div class="ttname"><a href="structopendal__bytes.html#a16abed2ad211c076650d1ea81772b851">opendal_bytes::len</a></div><div class="ttdeci">uintptr_t len</div><div class="ttdef"><b>Definition:</b> opendal.h:235</div></div>
+<div class="ttc" id="astructopendal__result__read_html"><div class="ttname"><a href="structopendal__result__read.html">opendal_result_read</a></div><div class="ttdoc">The result type returned by opendal's read operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:394</div></div>
+<div class="ttc" id="astructopendal__result__read_html_a6cd0e4e83ed4509856de0d1e6b83e2f2"><div class="ttname"><a href="structopendal__result__read.html#a6cd0e4e83ed4509856de0d1e6b83e2f2">opendal_result_read::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:402</div></div>
+<div class="ttc" id="astructopendal__result__read_html_ad8ca467bcbe6d1768e15fcf64fe78e9f"><div class="ttname"><a href="structopendal__result__read.html#ad8ca467bcbe6d1768e15fcf64fe78e9f">opendal_result_read::data</a></div><div class="ttdeci">struct opendal_bytes * data</div><div class="ttdef"><b>Definition:</b> opendal.h:398</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md16"></a>
 Safety</h1>
 <p>It is <b>safe</b> under the cases below</p><ul>
 <li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md16"></a>
+<h1><a class="anchor" id="autotoc_md17"></a>
 Panic</h1>
 <ul>
 <li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>
@@ -1494,10 +1916,8 @@ Panic</h1>
 <p>Read the data out from <code>path</code> blockingly by operator, returns an <a class="el" href="structopendal__result__read.html" title="The result type returned by opendal&#39;s read operation.">opendal_result_read</a> with error code.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
     <tr><td class="paramname">path</td><td>The path you want to read the data out </td></tr>
-    <tr><td class="paramname">buffer</td><td>The buffer you want to read the data into </td></tr>
-    <tr><td class="paramname">buffer_len</td><td>The length of the buffer </td></tr>
   </table>
   </dd>
 </dl>
@@ -1508,7 +1928,7 @@ Panic</h1>
 <a class="el" href="opendal_8h.html#a6715be152766e5b8f840ce10cf9442c2" title="The error code for all opendal APIs in C binding.">opendal_code</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns opendal_code</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>If the read operation succeeds, the returned <a class="el" href="structopendal__bytes.html" title="opendal_bytes carries raw-bytes with its length">opendal_bytes</a> is newly allocated on heap. After your usage of that, please call <a class="el" href="opendal_8h.html#adba027eb1460c828ff32e87f0ceb338a" title="Frees the heap memory used by the opendal_bytes.">opendal_bytes_free()</a> to free the space.</dd></dl>
-<h1><a class="anchor" id="autotoc_md17"></a>
+<h1><a class="anchor" id="autotoc_md18"></a>
 Example</h1>
 <p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">// ... you have created an operator named op</span></div>
 <div class="line"> </div>
@@ -1517,19 +1937,95 @@ Example</h1>
 <div class="line"><span class="comment">// The reader is in result.reader</span></div>
 <div class="line"><a class="code" href="structopendal__reader.html">opendal_reader</a> *reader = result.<a class="code" href="structopendal__result__operator__reader.html#a9ed8dec94126ab5b74dc63a87ca5839d">reader</a>;</div>
 <div class="ttc" id="aopendal_8h_html_aca8d6d56223c55277146afe9ca226944"><div class="ttname"><a href="opendal_8h.html#aca8d6d56223c55277146afe9ca226944">opendal_operator_reader</a></div><div class="ttdeci">struct opendal_result_operator_reader opendal_operator_reader(const struct opendal_operator *op, const char *path)</div><div class="ttdoc">Blockingly read the data from path.</div></div>
-<div class="ttc" id="astructopendal__reader_html"><div class="ttname"><a href="structopendal__reader.html">opendal_reader</a></div><div class="ttdoc">The result type returned by opendal's reader operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:403</div></div>
-<div class="ttc" id="astructopendal__result__operator__reader_html"><div class="ttname"><a href="structopendal__result__operator__reader.html">opendal_result_operator_reader</a></div><div class="ttdoc">The result type returned by opendal_operator_reader(). The result type for opendal_operator_reader(),...</div><div class="ttdef"><b>Definition:</b> opendal.h:413</div></div>
-<div class="ttc" id="astructopendal__result__operator__reader_html_a9bd6c401ef87b4b6456423fa11079b91"><div class="ttname"><a href="structopendal__result__operator__reader.html#a9bd6c401ef87b4b6456423fa11079b91">opendal_result_operator_reader::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:421</div></div>
-<div class="ttc" id="astructopendal__result__operator__reader_html_a9ed8dec94126ab5b74dc63a87ca5839d"><div class="ttname"><a href="structopendal__result__operator__reader.html#a9ed8dec94126ab5b74dc63a87ca5839d">opendal_result_operator_reader::reader</a></div><div class="ttdeci">struct opendal_reader * reader</div><div class="ttdef"><b>Definition:</b> opendal.h:417</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md18"></a>
+<div class="ttc" id="astructopendal__reader_html"><div class="ttname"><a href="structopendal__reader.html">opendal_reader</a></div><div class="ttdoc">The result type returned by opendal's reader operation.</div><div class="ttdef"><b>Definition:</b> opendal.h:411</div></div>
+<div class="ttc" id="astructopendal__result__operator__reader_html"><div class="ttname"><a href="structopendal__result__operator__reader.html">opendal_result_operator_reader</a></div><div class="ttdoc">The result type returned by opendal_operator_reader(). The result type for opendal_operator_reader(),...</div><div class="ttdef"><b>Definition:</b> opendal.h:421</div></div>
+<div class="ttc" id="astructopendal__result__operator__reader_html_a9bd6c401ef87b4b6456423fa11079b91"><div class="ttname"><a href="structopendal__result__operator__reader.html#a9bd6c401ef87b4b6456423fa11079b91">opendal_result_operator_reader::error</a></div><div class="ttdeci">struct opendal_error * error</div><div class="ttdef"><b>Definition:</b> opendal.h:429</div></div>
+<div class="ttc" id="astructopendal__result__operator__reader_html_a9ed8dec94126ab5b74dc63a87ca5839d"><div class="ttname"><a href="structopendal__result__operator__reader.html#a9ed8dec94126ab5b74dc63a87ca5839d">opendal_result_operator_reader::reader</a></div><div class="ttdeci">struct opendal_reader * reader</div><div class="ttdef"><b>Definition:</b> opendal.h:425</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md19"></a>
 Safety</h1>
 <p>It is <b>safe</b> under the cases below</p><ul>
 <li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md19"></a>
+<h1><a class="anchor" id="autotoc_md20"></a>
 Panic</h1>
 <ul>
 <li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>
+</ul>
+
+</div>
+</div>
+<a id="acf513847d08141631c9c57aa59150014"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf513847d08141631c9c57aa59150014">&#9670;&nbsp;</a></span>opendal_operator_rename()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structopendal__error.html">opendal_error</a>* opendal_operator_rename </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structopendal__operator.html">opendal_operator</a> *&#160;</td>
+          <td class="paramname"><em>op</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Blockingly rename the object in <code>path</code>. </p>
+<p>Rename the object in <code>src</code> to <code>dest</code> blockingly by <code>op</code>. Error is NULL if successful, otherwise it contains the error code and error message.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">src</td><td>The designated source path you want to rename </td></tr>
+    <tr><td class="paramname">dest</td><td>The designated destination path you want to rename </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> </dd>
+<dd>
+<a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NULL if succeeds, otherwise it contains the error code and error message.</dd></dl>
+<h1><a class="anchor" id="autotoc_md36"></a>
+Example</h1>
+<p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">//...prepare your opendal_operator, named op for example</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// prepare your data</span></div>
+<div class="line"><span class="keywordtype">char</span>* data = <span class="stringliteral">&quot;Hello, World!&quot;</span>;</div>
+<div class="line"><a class="code" href="structopendal__bytes.html">opendal_bytes</a> bytes = <a class="code" href="structopendal__bytes.html">opendal_bytes</a> { .<a class="code" href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">data</a> = (uint8_t*)data, .len = 13 };</div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>, bytes);</div>
+<div class="line"> </div>
+<div class="line">assert(error == NULL);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// now you can renmae!</span></div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *error = <a class="code" href="opendal_8h.html#acf513847d08141631c9c57aa59150014">opendal_operator_rename</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>, <span class="stringliteral">&quot;/testpath2&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Assert that this succeeds</span></div>
+<div class="line">assert(error == NULL);</div>
+<div class="ttc" id="aopendal_8h_html_acf513847d08141631c9c57aa59150014"><div class="ttname"><a href="opendal_8h.html#acf513847d08141631c9c57aa59150014">opendal_operator_rename</a></div><div class="ttdeci">struct opendal_error * opendal_operator_rename(const struct opendal_operator *op, const char *src, const char *dest)</div><div class="ttdoc">Blockingly rename the object in path.</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md37"></a>
+Safety</h1>
+<p>It is <b>safe</b> under the cases below</p><ul>
+<li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md38"></a>
+Panic</h1>
+<ul>
+<li>If the <code>src</code> or <code>dest</code> points to NULL, this function panics, i.e. exits with information </li>
 </ul>
 
 </div>
@@ -1564,7 +2060,7 @@ Panic</h1>
 <p>Error is NULL if successful, otherwise it contains the error code and error message.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
     <tr><td class="paramname">path</td><td>The path you want to stat </td></tr>
   </table>
   </dd>
@@ -1575,22 +2071,22 @@ Panic</h1>
 <dd>
 <a class="el" href="structopendal__metadata.html" title="Carries all metadata associated with a path.">opendal_metadata</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns <a class="el" href="structopendal__result__stat.html" title="The result type returned by opendal_operator_stat().">opendal_result_stat</a>, containing a metadata and an <a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a>. If the operation succeeds, the <code>meta</code> field would holds a valid metadata and the <code>error</code> field should hold nullptr. Otherwise the metadata will contain a NULL pointer, i.e. invalid, and the <code>error</code> will be set correspondingly.</dd></dl>
-<h1><a class="anchor" id="autotoc_md26"></a>
+<h1><a class="anchor" id="autotoc_md27"></a>
 Example</h1>
 <div class="fragment"><div class="line"><span class="comment">// ... previously you wrote &quot;Hello, World!&quot; to path &quot;/testpath&quot;</span></div>
-<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(ptr, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
+<div class="line"><a class="code" href="structopendal__result__stat.html">opendal_result_stat</a> s = <a class="code" href="opendal_8h.html#a8d6a3d830761b215c3d03960b6153582">opendal_operator_stat</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>);</div>
 <div class="line">assert(s.<a class="code" href="structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9">error</a> == NULL);</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">const</span> <a class="code" href="structopendal__metadata.html">opendal_metadata</a> *meta = s.<a class="code" href="structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425">meta</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// ... you could now use your metadata, notice that please only access metadata</span></div>
 <div class="line"><span class="comment">// using the APIs provided by OpenDAL</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md27"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md28"></a>
 Safety</h1>
 <p>It is <b>safe</b> under the cases below</p><ul>
 <li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md28"></a>
+<h1><a class="anchor" id="autotoc_md29"></a>
 Panic</h1>
 <ul>
 <li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>
@@ -1635,7 +2131,7 @@ Panic</h1>
 <dl class="section note"><dt>Note</dt><dd>It is important to notice that the <code>bytes</code> that is passes in will be consumed by this function. Therefore, you should not use the <code>bytes</code> after this function returns.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
+    <tr><td class="paramname">op</td><td>The <a class="el" href="structopendal__operator.html" title="Used to access almost all OpenDAL APIs. It represents a operator that provides the unified interfaces...">opendal_operator</a> created previously </td></tr>
     <tr><td class="paramname">path</td><td>The designated path you want to write your bytes in </td></tr>
     <tr><td class="paramname">bytes</td><td>The opendal_byte typed bytes to be written </td></tr>
   </table>
@@ -1647,26 +2143,26 @@ Panic</h1>
 <dd>
 <a class="el" href="structopendal__error.html" title="The opendal error type for C binding, containing an error code and corresponding error message.">opendal_error</a> </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>NULL if succeeds, otherwise it contains the error code and error message.</dd></dl>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md12"></a>
 Example</h1>
-<p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">//...prepare your opendal_operator, named ptr for example</span></div>
+<p>Following is an example </p><div class="fragment"><div class="line"><span class="comment">//...prepare your opendal_operator, named op for example</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// prepare your data</span></div>
 <div class="line"><span class="keywordtype">char</span>* data = <span class="stringliteral">&quot;Hello, World!&quot;</span>;</div>
 <div class="line"><a class="code" href="structopendal__bytes.html">opendal_bytes</a> bytes = <a class="code" href="structopendal__bytes.html">opendal_bytes</a> { .<a class="code" href="structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86">data</a> = (uint8_t*)data, .len = 13 };</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// now you can write!</span></div>
-<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *err = <a class="code" href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a>(ptr, <span class="stringliteral">&quot;/testpath&quot;</span>, bytes);</div>
+<div class="line"><a class="code" href="structopendal__error.html">opendal_error</a> *err = <a class="code" href="opendal_8h.html#af8b6596a53263101e93b4d73e9eb928c">opendal_operator_write</a>(op, <span class="stringliteral">&quot;/testpath&quot;</span>, bytes);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Assert that this succeeds</span></div>
 <div class="line">assert(err == NULL);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md12"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md13"></a>
 Safety</h1>
 <p>It is <b>safe</b> under the cases below</p><ul>
 <li>The memory pointed to by <code>path</code> must contain a valid nul terminator at the end of the string.</li>
 <li>The <code>bytes</code> provided has valid byte in the <code>data</code> field and the <code>len</code> field is set correctly.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Panic</h1>
 <ul>
 <li>If the <code>path</code> points to NULL, this function panics, i.e. exits with information </li>

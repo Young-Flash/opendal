@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/azblob/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/azblob/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -922,6 +922,11 @@
 <a href="#922" id="922">922</a>
 <a href="#923" id="923">923</a>
 <a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -953,16 +958,16 @@
 <span class="kw">use </span>reqsign::AzureStorageConfig;
 <span class="kw">use </span>reqsign::AzureStorageLoader;
 <span class="kw">use </span>reqsign::AzureStorageSigner;
+<span class="kw">use </span>serde::Deserialize;
 <span class="kw">use </span>sha2::Digest;
 <span class="kw">use </span>sha2::Sha256;
 
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
-<span class="kw">use </span><span class="kw">super</span>::pager::AzblobPager;
+<span class="kw">use </span><span class="kw">super</span>::lister::AzblobLister;
 <span class="kw">use </span><span class="kw">super</span>::writer::AzblobWriter;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::services::azblob::core::AzblobCore;
 <span class="kw">use </span><span class="kw">crate</span>::services::azblob::writer::AzblobWriters;
-<span class="kw">use </span><span class="kw">crate</span>::types::Metadata;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Known endpoint suffix Azure Storage Blob services resource URI syntax.
@@ -977,25 +982,49 @@
 
 <span class="kw">const </span>AZBLOB_BATCH_LIMIT: usize = <span class="number">256</span>;
 <span class="doccomment">/// Azure Storage Blob services support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
-#[derive(Default, Clone)]
-</span><span class="kw">pub struct </span>AzblobBuilder {
-    root: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    container: String,
-    endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    account_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    account_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    encryption_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    encryption_key_sha256: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    encryption_algorithm: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    sas_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
-    batch_max_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+</span><span class="attr">#[derive(Default, Deserialize, Clone)]
+</span><span class="kw">pub struct </span>AzblobConfig {
+    <span class="doccomment">/// The root of Azblob service backend.
+    ///
+    /// All operations will happen under this root.
+    </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The container name of Azblob service backend.
+    </span><span class="kw">pub </span>container: String,
+
+    <span class="doccomment">/// The endpoint of Azblob service backend.
+    ///
+    /// Endpoint must be full uri, e.g.
+    ///
+    /// - Azblob: `https://accountname.blob.core.windows.net`
+    /// - Azurite: `http://127.0.0.1:10000/devstoreaccount1`
+    </span><span class="kw">pub </span>endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The account name of Azblob service backend.
+    </span><span class="kw">pub </span>account_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The account key of Azblob service backend.
+    </span><span class="kw">pub </span>account_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The encryption key of Azblob service backend.
+    </span><span class="kw">pub </span>encryption_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The encryption key sha256 of Azblob service backend.
+    </span><span class="kw">pub </span>encryption_key_sha256: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The encryption algorithm of Azblob service backend.
+    </span><span class="kw">pub </span>encryption_algorithm: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The sas token of Azblob service backend.
+    </span><span class="kw">pub </span>sas_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// The maximum batch operations of Azblob service backend.
+    </span><span class="kw">pub </span>batch_max_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
-<span class="kw">impl </span>Debug <span class="kw">for </span>AzblobBuilder {
+<span class="kw">impl </span>Debug <span class="kw">for </span>AzblobConfig {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;AzblobConfig&quot;</span>);
 
         ds.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
         ds.field(<span class="string">&quot;container&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.container);
@@ -1015,13 +1044,30 @@
     }
 }
 
+<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+#[derive(Default, Clone)]
+</span><span class="kw">pub struct </span>AzblobBuilder {
+    config: AzblobConfig,
+    http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>AzblobBuilder {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
+
+        ds.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+
+        ds.finish()
+    }
+}
+
 <span class="kw">impl </span>AzblobBuilder {
     <span class="doccomment">/// Set root of this backend.
     ///
     /// All operations will happen under this root.
     </span><span class="kw">pub fn </span>root(<span class="kw-2">&amp;mut </span><span class="self">self</span>, root: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!root.is_empty() {
-            <span class="self">self</span>.root = <span class="prelude-val">Some</span>(root.to_string())
+            <span class="self">self</span>.config.root = <span class="prelude-val">Some</span>(root.to_string())
         }
 
         <span class="self">self
@@ -1029,12 +1075,12 @@
 
     <span class="doccomment">/// Set container name of this backend.
     </span><span class="kw">pub fn </span>container(<span class="kw-2">&amp;mut </span><span class="self">self</span>, container: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.container = container.to_string();
+        <span class="self">self</span>.config.container = container.to_string();
 
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Set endpoint of this backend.
+    <span class="doccomment">/// Set endpoint of this backend
     ///
     /// Endpoint must be full uri, e.g.
     ///
@@ -1043,7 +1089,7 @@
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoint.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string());
+            </span><span class="self">self</span>.config.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string());
         }
 
         <span class="self">self
@@ -1055,7 +1101,7 @@
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>account_name(<span class="kw-2">&amp;mut </span><span class="self">self</span>, account_name: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!account_name.is_empty() {
-            <span class="self">self</span>.account_name = <span class="prelude-val">Some</span>(account_name.to_string());
+            <span class="self">self</span>.config.account_name = <span class="prelude-val">Some</span>(account_name.to_string());
         }
 
         <span class="self">self
@@ -1067,7 +1113,7 @@
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>account_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, account_key: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!account_key.is_empty() {
-            <span class="self">self</span>.account_key = <span class="prelude-val">Some</span>(account_key.to_string());
+            <span class="self">self</span>.config.account_key = <span class="prelude-val">Some</span>(account_key.to_string());
         }
 
         <span class="self">self
@@ -1087,7 +1133,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>encryption_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.encryption_key = <span class="prelude-val">Some</span>(v.to_string());
+            <span class="self">self</span>.config.encryption_key = <span class="prelude-val">Some</span>(v.to_string());
         }
 
         <span class="self">self
@@ -1107,7 +1153,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>encryption_key_sha256(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.encryption_key_sha256 = <span class="prelude-val">Some</span>(v.to_string());
+            <span class="self">self</span>.config.encryption_key_sha256 = <span class="prelude-val">Some</span>(v.to_string());
         }
 
         <span class="self">self
@@ -1127,7 +1173,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>encryption_algorithm(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.encryption_algorithm = <span class="prelude-val">Some</span>(v.to_string());
+            <span class="self">self</span>.config.encryption_algorithm = <span class="prelude-val">Some</span>(v.to_string());
         }
 
         <span class="self">self
@@ -1148,9 +1194,10 @@
     /// for more info.
     </span><span class="kw">pub fn </span>server_side_encryption_with_customer_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="comment">// Only AES256 is supported for now
-        </span><span class="self">self</span>.encryption_algorithm = <span class="prelude-val">Some</span>(<span class="string">&quot;AES256&quot;</span>.to_string());
-        <span class="self">self</span>.encryption_key = <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(key));
-        <span class="self">self</span>.encryption_key_sha256 = <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(Sha256::digest(key).as_slice()));
+        </span><span class="self">self</span>.config.encryption_algorithm = <span class="prelude-val">Some</span>(<span class="string">&quot;AES256&quot;</span>.to_string());
+        <span class="self">self</span>.config.encryption_key = <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(key));
+        <span class="self">self</span>.config.encryption_key_sha256 =
+            <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(Sha256::digest(key).as_slice()));
         <span class="self">self
     </span>}
 
@@ -1163,7 +1210,7 @@
     /// for more info.
     </span><span class="kw">pub fn </span>sas_token(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sas_token: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!sas_token.is_empty() {
-            <span class="self">self</span>.sas_token = <span class="prelude-val">Some</span>(sas_token.to_string());
+            <span class="self">self</span>.config.sas_token = <span class="prelude-val">Some</span>(sas_token.to_string());
         }
 
         <span class="self">self
@@ -1182,7 +1229,7 @@
 
     <span class="doccomment">/// Set maximum batch operations of this backend.
     </span><span class="kw">pub fn </span>batch_max_operations(<span class="kw-2">&amp;mut </span><span class="self">self</span>, batch_max_operations: usize) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.batch_max_operations = <span class="prelude-val">Some</span>(batch_max_operations);
+        <span class="self">self</span>.config.batch_max_operations = <span class="prelude-val">Some</span>(batch_max_operations);
 
         <span class="self">self
     </span>}
@@ -1255,6 +1302,7 @@
         } <span class="kw">else if let </span><span class="prelude-val">Some</span>(v) = conn_map.get(<span class="string">&quot;EndpointSuffix&quot;</span>) {
             <span class="kw">let </span>protocol = conn_map.get(<span class="string">&quot;DefaultEndpointsProtocol&quot;</span>).unwrap_or(<span class="kw-2">&amp;</span><span class="string">&quot;https&quot;</span>);
             <span class="kw">let </span>account_name = builder
+                .config
                 .account_name
                 .as_ref()
                 .ok_or_else(|| {
@@ -1277,41 +1325,31 @@
     <span class="kw">type </span>Accessor = AzblobBackend;
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>builder = AzblobBuilder::default();
+        <span class="kw">let </span>config = AzblobConfig::deserialize(ConfigDeserializer::new(map))
+            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;container&quot;</span>).map(|v| builder.container(v));
-        map.get(<span class="string">&quot;endpoint&quot;</span>).map(|v| builder.endpoint(v));
-        map.get(<span class="string">&quot;account_name&quot;</span>).map(|v| builder.account_name(v));
-        map.get(<span class="string">&quot;account_key&quot;</span>).map(|v| builder.account_key(v));
-        map.get(<span class="string">&quot;encryption_key&quot;</span>).map(|v| builder.encryption_key(v));
-        map.get(<span class="string">&quot;encryption_key_sha256&quot;</span>)
-            .map(|v| builder.encryption_key_sha256(v));
-        map.get(<span class="string">&quot;encryption_algorithm&quot;</span>)
-            .map(|v| builder.encryption_algorithm(v));
-        map.get(<span class="string">&quot;sas_token&quot;</span>).map(|v| builder.sas_token(v));
-        map.get(<span class="string">&quot;batch_max_operations&quot;</span>)
-            .map(|v| builder.batch_max_operations(v.parse::&lt;usize&gt;().unwrap()));
-
-        builder
+        AzblobBuilder {
+            config,
+            http_client: <span class="prelude-val">None</span>,
+        }
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
         <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
-        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.take().unwrap_or_default());
+        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
         <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
 
         <span class="comment">// Handle endpoint, region and container name.
-        </span><span class="kw">let </span>container = <span class="kw">match </span><span class="self">self</span>.container.is_empty() {
-            <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.container),
+        </span><span class="kw">let </span>container = <span class="kw">match </span><span class="self">self</span>.config.container.is_empty() {
+            <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.config.container),
             <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;container is empty&quot;</span>)
                 .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
                 .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Azblob)),
         }<span class="question-mark">?</span>;
         <span class="macro">debug!</span>(<span class="string">&quot;backend use container {}&quot;</span>, <span class="kw-2">&amp;</span>container);
 
-        <span class="kw">let </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.endpoint {
+        <span class="kw">let </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.endpoint {
             <span class="prelude-val">Some</span>(endpoint) =&gt; <span class="prelude-val">Ok</span>(endpoint.clone()),
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint is empty&quot;</span>)
                 .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
@@ -1330,30 +1368,31 @@
 
         <span class="kw">let </span>config_loader = AzureStorageConfig {
             account_name: <span class="self">self
-                </span>.account_name
+                </span>.config
+                .account_name
                 .clone()
                 .or_else(|| infer_storage_name_from_endpoint(endpoint.as_str())),
-            account_key: <span class="self">self</span>.account_key.clone(),
-            sas_token: <span class="self">self</span>.sas_token.clone(),
+            account_key: <span class="self">self</span>.config.account_key.clone(),
+            sas_token: <span class="self">self</span>.config.sas_token.clone(),
             ..Default::default()
         };
 
         <span class="kw">let </span>encryption_key =
-            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.encryption_key {
+            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.encryption_key {
                 <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
                     err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_key&quot;</span>)
                 })<span class="question-mark">?</span>),
             };
 
-        <span class="kw">let </span>encryption_key_sha256 = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.encryption_key_sha256 {
+        <span class="kw">let </span>encryption_key_sha256 = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.encryption_key_sha256 {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
                 err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_key_sha256&quot;</span>)
             })<span class="question-mark">?</span>),
         };
 
-        <span class="kw">let </span>encryption_algorithm = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.encryption_algorithm {
+        <span class="kw">let </span>encryption_algorithm = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.encryption_algorithm {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; {
                 <span class="kw">if </span>v == <span class="string">&quot;AES256&quot; </span>{
@@ -1373,7 +1412,10 @@
 
         <span class="kw">let </span>signer = AzureStorageSigner::new();
 
-        <span class="kw">let </span>batch_max_operations = <span class="self">self</span>.batch_max_operations.unwrap_or(AZBLOB_BATCH_LIMIT);
+        <span class="kw">let </span>batch_max_operations = <span class="self">self
+            </span>.config
+            .batch_max_operations
+            .unwrap_or(AZBLOB_BATCH_LIMIT);
 
         <span class="macro">debug!</span>(<span class="string">&quot;backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
         <span class="prelude-val">Ok</span>(AzblobBackend {
@@ -1383,14 +1425,14 @@
                 encryption_key,
                 encryption_key_sha256,
                 encryption_algorithm,
-                container: <span class="self">self</span>.container.clone(),
+                container: <span class="self">self</span>.config.container.clone(),
 
                 client,
                 loader: cred_loader,
                 signer,
                 batch_max_operations,
             }),
-            has_sas_token: <span class="self">self</span>.sas_token.is_some(),
+            has_sas_token: <span class="self">self</span>.config.sas_token.is_some(),
         })
     }
 }
@@ -1432,8 +1474,8 @@
     <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = AzblobWriters;
     <span class="kw">type </span>BlockingWriter = ();
-    <span class="kw">type </span>Pager = AzblobPager;
-    <span class="kw">type </span>BlockingPager = ();
+    <span class="kw">type </span>Lister = oio::PageLister&lt;AzblobLister&gt;;
+    <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
         <span class="kw">let </span><span class="kw-2">mut </span>am = AccessorInfo::default();
@@ -1459,12 +1501,11 @@
                 write_with_content_type: <span class="bool-val">true</span>,
 
                 delete: <span class="bool-val">true</span>,
-                create_dir: <span class="bool-val">true</span>,
                 copy: <span class="bool-val">true</span>,
 
                 list: <span class="bool-val">true</span>,
-                list_with_delimiter_slash: <span class="bool-val">true</span>,
-                list_without_delimiter: <span class="bool-val">true</span>,
+                list_without_recursive: <span class="bool-val">true</span>,
+                list_with_recursive: <span class="bool-val">true</span>,
 
                 presign: <span class="self">self</span>.has_sas_token,
                 presign_stat: <span class="self">self</span>.has_sas_token,
@@ -1479,29 +1520,6 @@
             });
 
         am
-    }
-
-    <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.azblob_put_blob_request(
-            path,
-            <span class="prelude-val">Some</span>(<span class="number">0</span>),
-            <span class="kw-2">&amp;</span>OpWrite::default(),
-            AsyncBody::Empty,
-        )<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::CREATED | StatusCode::OK =&gt; {
-                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(RpCreateDir::default())
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -1545,20 +1563,12 @@
     }
 
     <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="comment">// Stat root always returns a DIR.
-        </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
-        }
-
         <span class="kw">let </span>resp = <span class="self">self</span>.core.azblob_get_blob_properties(path, <span class="kw-2">&amp;</span>args).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>status = resp.status();
 
         <span class="kw">match </span>status {
             StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
-            StatusCode::NOT_FOUND <span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) =&gt; {
-                <span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)))
-            }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
@@ -1574,15 +1584,15 @@
         }
     }
 
-    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
-        <span class="kw">let </span>op = AzblobPager::new(
+    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
+        <span class="kw">let </span>l = AzblobLister::new(
             <span class="self">self</span>.core.clone(),
             path.to_string(),
-            args.delimiter().to_string(),
+            args.recursive(),
             args.limit(),
         );
 
-        <span class="prelude-val">Ok</span>((RpList::default(), op))
+        <span class="prelude-val">Ok</span>((RpList::default(), oio::PageLister::new(l)))
     }
 
     <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
@@ -1717,7 +1727,7 @@
         <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">&quot;container&quot;</span>.to_string());
 
         <span class="macro">assert_eq!</span>(
-            azblob_builder.account_key.unwrap(),
+            azblob_builder.config.account_key.unwrap(),
             <span class="string">&quot;account-key&quot;</span>.to_string()
         );
     }
@@ -1738,7 +1748,7 @@
 
         <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">&quot;container&quot;</span>.to_string());
 
-        <span class="macro">assert_eq!</span>(azblob_builder.account_key, <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(azblob_builder.config.account_key, <span class="prelude-val">None</span>);
     }
 
     <span class="attr">#[test]
@@ -1761,11 +1771,11 @@
         <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">&quot;container&quot;</span>.to_string());
 
         <span class="macro">assert_eq!</span>(
-            azblob_builder.account_key.unwrap(),
+            azblob_builder.config.account_key.unwrap(),
             <span class="string">&quot;account-key&quot;</span>.to_string()
         );
 
-        <span class="macro">assert_eq!</span>(azblob_builder.sas_token.unwrap(), <span class="string">&quot;sas&quot;</span>.to_string());
+        <span class="macro">assert_eq!</span>(azblob_builder.config.sas_token.unwrap(), <span class="string">&quot;sas&quot;</span>.to_string());
     }
 
     <span class="attr">#[test]
@@ -1782,11 +1792,11 @@ TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;
         .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
 
         <span class="macro">assert_eq!</span>(
-            builder.endpoint.unwrap(),
+            builder.config.endpoint.unwrap(),
             <span class="string">&quot;http://127.0.0.1:10000/devstoreaccount1&quot;
         </span>);
-        <span class="macro">assert_eq!</span>(builder.account_name.unwrap(), <span class="string">&quot;devstoreaccount1&quot;</span>);
-        <span class="macro">assert_eq!</span>(builder.account_key.unwrap(), <span class="string">&quot;Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==&quot;</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_name.unwrap(), <span class="string">&quot;devstoreaccount1&quot;</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_key.unwrap(), <span class="string">&quot;Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==&quot;</span>);
 
         <span class="kw">let </span>builder = AzblobBuilder::from_connection_string(
             <span class="string">r#&quot;
@@ -1799,11 +1809,11 @@ EndpointSuffix=core.chinacloudapi.cn;
         .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
 
         <span class="macro">assert_eq!</span>(
-            builder.endpoint.unwrap(),
+            builder.config.endpoint.unwrap(),
             <span class="string">&quot;https://storagesample.blob.core.chinacloudapi.cn&quot;
         </span>);
-        <span class="macro">assert_eq!</span>(builder.account_name.unwrap(), <span class="string">&quot;storagesample&quot;</span>);
-        <span class="macro">assert_eq!</span>(builder.account_key.unwrap(), <span class="string">&quot;account-key&quot;</span>)
+        <span class="macro">assert_eq!</span>(builder.config.account_name.unwrap(), <span class="string">&quot;storagesample&quot;</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_key.unwrap(), <span class="string">&quot;account-key&quot;</span>)
     }
 
     <span class="attr">#[test]
@@ -1820,12 +1830,12 @@ SharedAccessSignature=sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se
         .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
 
         <span class="macro">assert_eq!</span>(
-            builder.endpoint.unwrap(),
+            builder.config.endpoint.unwrap(),
             <span class="string">&quot;http://127.0.0.1:10000/devstoreaccount1&quot;
         </span>);
-        <span class="macro">assert_eq!</span>(builder.sas_token.unwrap(), <span class="string">&quot;sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D&quot;</span>);
-        <span class="macro">assert_eq!</span>(builder.account_name, <span class="prelude-val">None</span>);
-        <span class="macro">assert_eq!</span>(builder.account_key, <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(builder.config.sas_token.unwrap(), <span class="string">&quot;sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D&quot;</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_name, <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_key, <span class="prelude-val">None</span>);
     }
 
     <span class="attr">#[test]
@@ -1841,9 +1851,9 @@ SharedAccessSignature=sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se
         .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
 
         <span class="comment">// SAS should be preferred over shared key
-        </span><span class="macro">assert_eq!</span>(builder.sas_token.unwrap(), <span class="string">&quot;sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D&quot;</span>);
-        <span class="macro">assert_eq!</span>(builder.account_name, <span class="prelude-val">None</span>);
-        <span class="macro">assert_eq!</span>(builder.account_key, <span class="prelude-val">None</span>);
+        </span><span class="macro">assert_eq!</span>(builder.config.sas_token.unwrap(), <span class="string">&quot;sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D&quot;</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_name, <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_key, <span class="prelude-val">None</span>);
     }
 }
 </code></pre></div></section></main></body></html>

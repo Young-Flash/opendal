@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['entry_118',['entry',['../structopendal__result__lister__next.html#a24546e0cde0fa8ca5c5da488769d79ea',1,'opendal_result_lister_next']]],
-  ['error_119',['error',['../structopendal__result__lister__next.html#ac92e3fafbc77789c19a6ec03e8e53a10',1,'opendal_result_lister_next::error()'],['../structopendal__result__operator__new.html#a5ee50d6c74038806e57d12d1880ac520',1,'opendal_result_operator_new::error()'],['../structopendal__result__read.html#a6cd0e4e83ed4509856de0d1e6b83e2f2',1,'opendal_result_read::error()'],['../structopendal__result__operator__reader.html#a9bd6c401ef87b4b6456423fa11079b91',1,'opendal_result_operator_reader::error()'],['../structopendal__result__is__exist.html#a6dc61502ab68ba25bcd56b09a215de6c',1,'opendal_result_is_exist::error()'],['../structopendal__result__stat.html#a657eee3bfdf805036f169d94ee70dce9',1,'opendal_result_stat::error()'],['../structopendal__result__list.html#a874bfb5c9d016445698fb59d65b76ed2',1,'opendal_result_list::error()'],['../structopendal__result__reader__read.html#a1279e7b3cb6beaf63da0f6ee9370ba36',1,'opendal_result_reader_read::error()']]]
+  ['data_190',['data',['../structopendal__bytes.html#af7a7f99a262f8a3912f4d1cddb798c86',1,'opendal_bytes::data()'],['../structopendal__result__read.html#ad8ca467bcbe6d1768e15fcf64fe78e9f',1,'opendal_result_read::data()']]],
+  ['delete_5f_191',['delete_',['../structopendal__capability.html#a4814e900e75b642b2eeb1fa5803f01e5',1,'opendal_capability']]]
 ];

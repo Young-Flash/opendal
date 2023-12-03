@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['op_126',['op',['../structopendal__result__operator__new.html#a4e358aad13b4c71dc7a9a812191371c6',1,'opendal_result_operator_new']]]
+  ['message_203',['message',['../structopendal__error.html#a64095efcf3588a1871b14eab3041d0d4',1,'opendal_error']]],
+  ['meta_204',['meta',['../structopendal__result__stat.html#a1d4d484d7bf50bc8e5d65dea5f6f2425',1,'opendal_result_stat']]]
 ];

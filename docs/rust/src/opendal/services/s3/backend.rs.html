@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/s3/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/s3/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1236,6 +1236,65 @@
 <a href="#1236" id="1236">1236</a>
 <a href="#1237" id="1237">1237</a>
 <a href="#1238" id="1238">1238</a>
+<a href="#1239" id="1239">1239</a>
+<a href="#1240" id="1240">1240</a>
+<a href="#1241" id="1241">1241</a>
+<a href="#1242" id="1242">1242</a>
+<a href="#1243" id="1243">1243</a>
+<a href="#1244" id="1244">1244</a>
+<a href="#1245" id="1245">1245</a>
+<a href="#1246" id="1246">1246</a>
+<a href="#1247" id="1247">1247</a>
+<a href="#1248" id="1248">1248</a>
+<a href="#1249" id="1249">1249</a>
+<a href="#1250" id="1250">1250</a>
+<a href="#1251" id="1251">1251</a>
+<a href="#1252" id="1252">1252</a>
+<a href="#1253" id="1253">1253</a>
+<a href="#1254" id="1254">1254</a>
+<a href="#1255" id="1255">1255</a>
+<a href="#1256" id="1256">1256</a>
+<a href="#1257" id="1257">1257</a>
+<a href="#1258" id="1258">1258</a>
+<a href="#1259" id="1259">1259</a>
+<a href="#1260" id="1260">1260</a>
+<a href="#1261" id="1261">1261</a>
+<a href="#1262" id="1262">1262</a>
+<a href="#1263" id="1263">1263</a>
+<a href="#1264" id="1264">1264</a>
+<a href="#1265" id="1265">1265</a>
+<a href="#1266" id="1266">1266</a>
+<a href="#1267" id="1267">1267</a>
+<a href="#1268" id="1268">1268</a>
+<a href="#1269" id="1269">1269</a>
+<a href="#1270" id="1270">1270</a>
+<a href="#1271" id="1271">1271</a>
+<a href="#1272" id="1272">1272</a>
+<a href="#1273" id="1273">1273</a>
+<a href="#1274" id="1274">1274</a>
+<a href="#1275" id="1275">1275</a>
+<a href="#1276" id="1276">1276</a>
+<a href="#1277" id="1277">1277</a>
+<a href="#1278" id="1278">1278</a>
+<a href="#1279" id="1279">1279</a>
+<a href="#1280" id="1280">1280</a>
+<a href="#1281" id="1281">1281</a>
+<a href="#1282" id="1282">1282</a>
+<a href="#1283" id="1283">1283</a>
+<a href="#1284" id="1284">1284</a>
+<a href="#1285" id="1285">1285</a>
+<a href="#1286" id="1286">1286</a>
+<a href="#1287" id="1287">1287</a>
+<a href="#1288" id="1288">1288</a>
+<a href="#1289" id="1289">1289</a>
+<a href="#1290" id="1290">1290</a>
+<a href="#1291" id="1291">1291</a>
+<a href="#1292" id="1292">1292</a>
+<a href="#1293" id="1293">1293</a>
+<a href="#1294" id="1294">1294</a>
+<a href="#1295" id="1295">1295</a>
+<a href="#1296" id="1296">1296</a>
+<a href="#1297" id="1297">1297</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1274,11 +1333,12 @@
 <span class="kw">use </span>reqsign::AwsCredentialLoad;
 <span class="kw">use </span>reqsign::AwsDefaultLoader;
 <span class="kw">use </span>reqsign::AwsV4Signer;
+<span class="kw">use </span>serde::Deserialize;
 
 <span class="kw">use </span><span class="kw">super</span>::core::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_s3_error_code;
-<span class="kw">use </span><span class="kw">super</span>::pager::S3Pager;
+<span class="kw">use </span><span class="kw">super</span>::lister::S3Lister;
 <span class="kw">use </span><span class="kw">super</span>::writer::S3Writer;
 <span class="kw">use </span><span class="kw">super</span>::writer::S3Writers;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
@@ -1297,45 +1357,147 @@
 
 <span class="kw">const </span>DEFAULT_BATCH_MAX_OPERATIONS: usize = <span class="number">1000</span>;
 
-<span class="doccomment">/// Aws S3 and compatible services (including minio, digitalocean space, Tencent Cloud Object Storage(COS) and so on) support.
-/// For more information about s3-compatible services, refer to [Compatible Services](#compatible-services).
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
-#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;compatible_services.md&quot;</span>)]
-#[derive(Default)]
-</span><span class="kw">pub struct </span>S3Builder {
-    root: <span class="prelude-ty">Option</span>&lt;String&gt;,
+<span class="doccomment">/// Config for Aws S3 and compatible services (including minio, digitalocean space, Tencent Cloud Object Storage(COS) and so on) support.
+</span><span class="attr">#[derive(Default, Deserialize)]
+#[serde(default)]
+#[non_exhaustive]
+</span><span class="kw">pub struct </span>S3Config {
+    <span class="doccomment">/// root of this backend.
+    ///
+    /// All operations will happen under this root.
+    ///
+    /// default to `/` if not set.
+    </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// bucket name of this backend.
+    ///
+    /// required.
+    </span><span class="kw">pub </span>bucket: String,
+    <span class="doccomment">/// endpoint of this backend.
+    ///
+    /// Endpoint must be full uri, e.g.
+    ///
+    /// - AWS S3: `https://s3.amazonaws.com` or `https://s3.{region}.amazonaws.com`
+    /// - Cloudflare R2: `https://&lt;ACCOUNT_ID&gt;.r2.cloudflarestorage.com`
+    /// - Aliyun OSS: `https://{region}.aliyuncs.com`
+    /// - Tencent COS: `https://cos.{region}.myqcloud.com`
+    /// - Minio: `http://127.0.0.1:9000`
+    ///
+    /// If user inputs endpoint without scheme like &quot;s3.amazonaws.com&quot;, we
+    /// will prepend &quot;https://&quot; before it.
+    ///
+    /// default to `https://s3.amazonaws.com` if not set.
+    </span><span class="kw">pub </span>endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// Region represent the signing region of this endpoint. This is required
+    /// if you are using the default AWS S3 endpoint.
+    ///
+    /// If using a custom endpoint,
+    /// - If region is set, we will take user&#39;s input first.
+    /// - If not, we will try to load it from environment.
+    </span><span class="kw">pub </span>region: <span class="prelude-ty">Option</span>&lt;String&gt;,
 
-    bucket: String,
-    endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    region: <span class="prelude-ty">Option</span>&lt;String&gt;,
-
-    <span class="comment">// Credentials related values.
-    </span>access_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    secret_access_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    security_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    role_arn: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    external_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    disable_config_load: bool,
-    disable_ec2_metadata: bool,
-    allow_anonymous: bool,
-    customed_credential_load: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>AwsCredentialLoad&gt;&gt;,
-
-    <span class="comment">// S3 feature
-    </span>server_side_encryption: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    server_side_encryption_aws_kms_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    server_side_encryption_customer_algorithm: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    server_side_encryption_customer_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    server_side_encryption_customer_key_md5: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    default_storage_class: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    enable_virtual_host_style: bool,
-    batch_max_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-
-    http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
+    <span class="doccomment">/// access_key_id of this backend.
+    ///
+    /// - If access_key_id is set, we will take user&#39;s input first.
+    /// - If not, we will try to load it from environment.
+    </span><span class="kw">pub </span>access_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// secret_access_key of this backend.
+    ///
+    /// - If secret_access_key is set, we will take user&#39;s input first.
+    /// - If not, we will try to load it from environment.
+    </span><span class="kw">pub </span>secret_access_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// security_token (aka, session token) of this backend.
+    ///
+    /// This token will expire after sometime, it&#39;s recommended to set security_token
+    /// by hand.
+    </span><span class="kw">pub </span>security_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// role_arn for this backend.
+    ///
+    /// If `role_arn` is set, we will use already known config as source
+    /// credential to assume role with `role_arn`.
+    </span><span class="kw">pub </span>role_arn: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// external_id for this backend.
+    </span><span class="kw">pub </span>external_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// Disable config load so that opendal will not load config from
+    /// environment.
+    ///
+    /// For examples:
+    ///
+    /// - envs like `AWS_ACCESS_KEY_ID`
+    /// - files like `~/.aws/config`
+    </span><span class="kw">pub </span>disable_config_load: bool,
+    <span class="doccomment">/// Disable load credential from ec2 metadata.
+    ///
+    /// This option is used to disable the default behavior of opendal
+    /// to load credential from ec2 metadata, a.k.a, IMDSv2
+    </span><span class="kw">pub </span>disable_ec2_metadata: bool,
+    <span class="doccomment">/// Allow anonymous will allow opendal to send request without signing
+    /// when credential is not loaded.
+    </span><span class="kw">pub </span>allow_anonymous: bool,
+    <span class="doccomment">/// server_side_encryption for this backend.
+    ///
+    /// Available values: `AES256`, `aws:kms`.
+    </span><span class="kw">pub </span>server_side_encryption: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// server_side_encryption_aws_kms_key_id for this backend
+    ///
+    /// - If `server_side_encryption` set to `aws:kms`, and `server_side_encryption_aws_kms_key_id`
+    /// is not set, S3 will use aws managed kms key to encrypt data.
+    /// - If `server_side_encryption` set to `aws:kms`, and `server_side_encryption_aws_kms_key_id`
+    /// is a valid kms key id, S3 will use the provided kms key to encrypt data.
+    /// - If the `server_side_encryption_aws_kms_key_id` is invalid or not found, an error will be
+    /// returned.
+    /// - If `server_side_encryption` is not `aws:kms`, setting `server_side_encryption_aws_kms_key_id`
+    /// is a noop.
+    </span><span class="kw">pub </span>server_side_encryption_aws_kms_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// server_side_encryption_customer_algorithm for this backend.
+    ///
+    /// Available values: `AES256`.
+    </span><span class="kw">pub </span>server_side_encryption_customer_algorithm: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// server_side_encryption_customer_key for this backend.
+    ///
+    /// # Value
+    ///
+    /// base64 encoded key that matches algorithm specified in
+    /// `server_side_encryption_customer_algorithm`.
+    </span><span class="kw">pub </span>server_side_encryption_customer_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// Set server_side_encryption_customer_key_md5 for this backend.
+    ///
+    /// # Value
+    ///
+    /// MD5 digest of key specified in `server_side_encryption_customer_key`.
+    </span><span class="kw">pub </span>server_side_encryption_customer_key_md5: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// default storage_class for this backend.
+    ///
+    /// Available values:
+    /// - `DEEP_ARCHIVE`
+    /// - `GLACIER`
+    /// - `GLACIER_IR`
+    /// - `INTELLIGENT_TIERING`
+    /// - `ONEZONE_IA`
+    /// - `OUTPOSTS`
+    /// - `REDUCED_REDUNDANCY`
+    /// - `STANDARD`
+    /// - `STANDARD_IA`
+    ///
+    /// S3 compatible services don&#39;t support all of them
+    </span><span class="kw">pub </span>default_storage_class: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// Enable virtual host style so that opendal will send API requests
+    /// in virtual host style instead of path style.
+    ///
+    /// - By default, opendal will send API to `https://s3.us-east-1.amazonaws.com/bucket_name`
+    /// - Enabled, opendal will send API to `https://bucket_name.s3.us-east-1.amazonaws.com`
+    </span><span class="kw">pub </span>enable_virtual_host_style: bool,
+    <span class="doccomment">/// Set maximum batch operations of this backend.
+    ///
+    /// Some compatible services have a limit on the number of operations in a batch request.
+    /// For example, R2 could return `Internal Error` while batch delete 1000 files.
+    ///
+    /// Please tune this value based on services&#39; document.
+    </span><span class="kw">pub </span>batch_max_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
-<span class="kw">impl </span>Debug <span class="kw">for </span>S3Builder {
+<span class="kw">impl </span>Debug <span class="kw">for </span>S3Config {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;S3Config&quot;</span>);
 
         d.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
@@ -1346,12 +1508,33 @@
     }
 }
 
+<span class="doccomment">/// Aws S3 and compatible services (including minio, digitalocean space, Tencent Cloud Object Storage(COS) and so on) support.
+/// For more information about s3-compatible services, refer to [Compatible Services](#compatible-services).
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;compatible_services.md&quot;</span>)]
+#[derive(Default)]
+</span><span class="kw">pub struct </span>S3Builder {
+    config: S3Config,
+
+    customed_credential_load: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>AwsCredentialLoad&gt;&gt;,
+    http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>S3Builder {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;S3Builder&quot;</span>);
+
+        d.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+        d.finish_non_exhaustive()
+    }
+}
+
 <span class="kw">impl </span>S3Builder {
     <span class="doccomment">/// Set root of this backend.
     ///
     /// All operations will happen under this root.
     </span><span class="kw">pub fn </span>root(<span class="kw-2">&amp;mut </span><span class="self">self</span>, root: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.root = <span class="kw">if </span>root.is_empty() {
+        <span class="self">self</span>.config.root = <span class="kw">if </span>root.is_empty() {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{
             <span class="prelude-val">Some</span>(root.to_string())
@@ -1362,7 +1545,7 @@
 
     <span class="doccomment">/// Set bucket name of this backend.
     </span><span class="kw">pub fn </span>bucket(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bucket: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.bucket = bucket.to_string();
+        <span class="self">self</span>.config.bucket = bucket.to_string();
 
         <span class="self">self
     </span>}
@@ -1382,7 +1565,7 @@
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoint.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string())
+            </span><span class="self">self</span>.config.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string())
         }
 
         <span class="self">self
@@ -1396,7 +1579,7 @@
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>region(<span class="kw-2">&amp;mut </span><span class="self">self</span>, region: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!region.is_empty() {
-            <span class="self">self</span>.region = <span class="prelude-val">Some</span>(region.to_string())
+            <span class="self">self</span>.config.region = <span class="prelude-val">Some</span>(region.to_string())
         }
 
         <span class="self">self
@@ -1408,7 +1591,7 @@
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>access_key_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.access_key_id = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.access_key_id = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1420,7 +1603,7 @@
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>secret_access_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.secret_access_key = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.secret_access_key = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1432,7 +1615,7 @@
     /// credential to assume role with `role_arn`.
     </span><span class="kw">pub fn </span>role_arn(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.role_arn = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.role_arn = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1441,7 +1624,7 @@
     <span class="doccomment">/// Set external_id for this backend.
     </span><span class="kw">pub fn </span>external_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.external_id = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.external_id = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1461,7 +1644,7 @@
     /// - `STANDARD_IA`
     </span><span class="kw">pub fn </span>default_storage_class(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.default_storage_class = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.default_storage_class = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1479,7 +1662,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>server_side_encryption(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.server_side_encryption = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.server_side_encryption = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1504,7 +1687,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>server_side_encryption_aws_kms_key_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.server_side_encryption_aws_kms_key_id = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.server_side_encryption_aws_kms_key_id = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1522,7 +1705,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>server_side_encryption_customer_algorithm(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.server_side_encryption_customer_algorithm = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.server_side_encryption_customer_algorithm = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1543,7 +1726,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>server_side_encryption_customer_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.server_side_encryption_customer_key = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.server_side_encryption_customer_key = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1563,7 +1746,7 @@
     /// Please use `server_side_encryption_with_*` helpers if even possible.
     </span><span class="kw">pub fn </span>server_side_encryption_customer_key_md5(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
-            <span class="self">self</span>.server_side_encryption_customer_key_md5 = <span class="prelude-val">Some</span>(v.to_string())
+            <span class="self">self</span>.config.server_side_encryption_customer_key_md5 = <span class="prelude-val">Some</span>(v.to_string())
         }
 
         <span class="self">self
@@ -1575,7 +1758,7 @@
     ///
     /// NOTE: This function should not be used along with other `server_side_encryption_with_` functions.
     </span><span class="kw">pub fn </span>server_side_encryption_with_aws_managed_kms_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.server_side_encryption = <span class="prelude-val">Some</span>(<span class="string">&quot;aws:kms&quot;</span>.to_string());
+        <span class="self">self</span>.config.server_side_encryption = <span class="prelude-val">Some</span>(<span class="string">&quot;aws:kms&quot;</span>.to_string());
         <span class="self">self
     </span>}
 
@@ -1588,8 +1771,8 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         aws_kms_key_id: <span class="kw-2">&amp;</span>str,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.server_side_encryption = <span class="prelude-val">Some</span>(<span class="string">&quot;aws:kms&quot;</span>.to_string());
-        <span class="self">self</span>.server_side_encryption_aws_kms_key_id = <span class="prelude-val">Some</span>(aws_kms_key_id.to_string());
+        <span class="self">self</span>.config.server_side_encryption = <span class="prelude-val">Some</span>(<span class="string">&quot;aws:kms&quot;</span>.to_string());
+        <span class="self">self</span>.config.server_side_encryption_aws_kms_key_id = <span class="prelude-val">Some</span>(aws_kms_key_id.to_string());
         <span class="self">self
     </span>}
 
@@ -1599,7 +1782,7 @@
     ///
     /// NOTE: This function should not be used along with other `server_side_encryption_with_` functions.
     </span><span class="kw">pub fn </span>server_side_encryption_with_s3_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.server_side_encryption = <span class="prelude-val">Some</span>(<span class="string">&quot;AES256&quot;</span>.to_string());
+        <span class="self">self</span>.config.server_side_encryption = <span class="prelude-val">Some</span>(<span class="string">&quot;AES256&quot;</span>.to_string());
         <span class="self">self
     </span>}
 
@@ -1613,9 +1796,9 @@
         algorithm: <span class="kw-2">&amp;</span>str,
         key: <span class="kw-2">&amp;</span>[u8],
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.server_side_encryption_customer_algorithm = <span class="prelude-val">Some</span>(algorithm.to_string());
-        <span class="self">self</span>.server_side_encryption_customer_key = <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(key));
-        <span class="self">self</span>.server_side_encryption_customer_key_md5 =
+        <span class="self">self</span>.config.server_side_encryption_customer_algorithm = <span class="prelude-val">Some</span>(algorithm.to_string());
+        <span class="self">self</span>.config.server_side_encryption_customer_key = <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(key));
+        <span class="self">self</span>.config.server_side_encryption_customer_key_md5 =
             <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(Md5::digest(key).as_slice()));
         <span class="self">self
     </span>}
@@ -1627,7 +1810,7 @@
     /// security token&#39;s lifetime is short and requires users to refresh in time.
     </span><span class="kw">pub fn </span>security_token(<span class="kw-2">&amp;mut </span><span class="self">self</span>, token: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!token.is_empty() {
-            <span class="self">self</span>.security_token = <span class="prelude-val">Some</span>(token.to_string());
+            <span class="self">self</span>.config.security_token = <span class="prelude-val">Some</span>(token.to_string());
         }
         <span class="self">self
     </span>}
@@ -1640,7 +1823,7 @@
     /// - envs like `AWS_ACCESS_KEY_ID`
     /// - files like `~/.aws/config`
     </span><span class="kw">pub fn </span>disable_config_load(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.disable_config_load = <span class="bool-val">true</span>;
+        <span class="self">self</span>.config.disable_config_load = <span class="bool-val">true</span>;
         <span class="self">self
     </span>}
 
@@ -1649,14 +1832,14 @@
     /// This option is used to disable the default behavior of opendal
     /// to load credential from ec2 metadata, a.k.a, IMDSv2
     </span><span class="kw">pub fn </span>disable_ec2_metadata(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.disable_ec2_metadata = <span class="bool-val">true</span>;
+        <span class="self">self</span>.config.disable_ec2_metadata = <span class="bool-val">true</span>;
         <span class="self">self
     </span>}
 
     <span class="doccomment">/// Allow anonymous will allow opendal to send request without signing
     /// when credential is not loaded.
     </span><span class="kw">pub fn </span>allow_anonymous(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.allow_anonymous = <span class="bool-val">true</span>;
+        <span class="self">self</span>.config.allow_anonymous = <span class="bool-val">true</span>;
         <span class="self">self
     </span>}
 
@@ -1666,7 +1849,7 @@
     /// - By default, opendal will send API to `https://s3.us-east-1.amazonaws.com/bucket_name`
     /// - Enabled, opendal will send API to `https://bucket_name.s3.us-east-1.amazonaws.com`
     </span><span class="kw">pub fn </span>enable_virtual_host_style(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.enable_virtual_host_style = <span class="bool-val">true</span>;
+        <span class="self">self</span>.config.enable_virtual_host_style = <span class="bool-val">true</span>;
         <span class="self">self
     </span>}
 
@@ -1694,13 +1877,13 @@
     /// `bucket` must be not empty and if `enable_virtual_host_style` is true
     /// it couldn&#39;t contain dot(.) character
     </span><span class="kw">fn </span>is_bucket_valid(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">if </span><span class="self">self</span>.bucket.is_empty() {
+        <span class="kw">if </span><span class="self">self</span>.config.bucket.is_empty() {
             <span class="kw">return </span><span class="bool-val">false</span>;
         }
         <span class="comment">// If enable virtual host style, `bucket` will reside in domain part,
         // for example `https://bucket_name.s3.us-east-1.amazonaws.com`,
         // so `bucket` with dot can&#39;t be recognized correctly for this format.
-        </span><span class="kw">if </span><span class="self">self</span>.enable_virtual_host_style &amp;&amp; <span class="self">self</span>.bucket.contains(<span class="string">&#39;.&#39;</span>) {
+        </span><span class="kw">if </span><span class="self">self</span>.config.enable_virtual_host_style &amp;&amp; <span class="self">self</span>.config.bucket.contains(<span class="string">&#39;.&#39;</span>) {
             <span class="kw">return </span><span class="bool-val">false</span>;
         }
         <span class="bool-val">true
@@ -1711,10 +1894,10 @@
         <span class="kw">let </span>bucket = {
             <span class="macro">debug_assert!</span>(<span class="self">self</span>.is_bucket_valid(), <span class="string">&quot;bucket must be valid&quot;</span>);
 
-            <span class="self">self</span>.bucket.as_str()
+            <span class="self">self</span>.config.bucket.as_str()
         };
 
-        <span class="kw">let </span><span class="kw-2">mut </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.endpoint {
+        <span class="kw">let </span><span class="kw-2">mut </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.endpoint {
             <span class="prelude-val">Some</span>(endpoint) =&gt; {
                 <span class="kw">if </span>endpoint.starts_with(<span class="string">&quot;http&quot;</span>) {
                     endpoint.to_string()
@@ -1739,7 +1922,7 @@
         };
 
         <span class="comment">// Apply virtual host style.
-        </span><span class="kw">if </span><span class="self">self</span>.enable_virtual_host_style {
+        </span><span class="kw">if </span><span class="self">self</span>.config.enable_virtual_host_style {
             endpoint = endpoint.replace(<span class="string">&quot;//&quot;</span>, <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;//{bucket}.&quot;</span>))
         } <span class="kw">else </span>{
             <span class="macro">write!</span>(endpoint, <span class="string">&quot;/{bucket}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
@@ -1750,7 +1933,7 @@
 
     <span class="doccomment">/// Set maximum batch operations of this backend.
     </span><span class="kw">pub fn </span>batch_max_operations(<span class="kw-2">&amp;mut </span><span class="self">self</span>, batch_max_operations: usize) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.batch_max_operations = <span class="prelude-val">Some</span>(batch_max_operations);
+        <span class="self">self</span>.config.batch_max_operations = <span class="prelude-val">Some</span>(batch_max_operations);
 
         <span class="self">self
     </span>}
@@ -1876,57 +2059,25 @@
     <span class="kw">type </span>Accessor = S3Backend;
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>builder = S3Builder::default();
+        <span class="kw">let </span>config = S3Config::deserialize(ConfigDeserializer::new(map))
+            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;bucket&quot;</span>).map(|v| builder.bucket(v));
-        map.get(<span class="string">&quot;endpoint&quot;</span>).map(|v| builder.endpoint(v));
-        map.get(<span class="string">&quot;region&quot;</span>).map(|v| builder.region(v));
-        map.get(<span class="string">&quot;access_key_id&quot;</span>).map(|v| builder.access_key_id(v));
-        map.get(<span class="string">&quot;secret_access_key&quot;</span>)
-            .map(|v| builder.secret_access_key(v));
-        map.get(<span class="string">&quot;security_token&quot;</span>).map(|v| builder.security_token(v));
-        map.get(<span class="string">&quot;role_arn&quot;</span>).map(|v| builder.role_arn(v));
-        map.get(<span class="string">&quot;external_id&quot;</span>).map(|v| builder.external_id(v));
-        map.get(<span class="string">&quot;server_side_encryption&quot;</span>)
-            .map(|v| builder.server_side_encryption(v));
-        map.get(<span class="string">&quot;server_side_encryption_aws_kms_key_id&quot;</span>)
-            .map(|v| builder.server_side_encryption_aws_kms_key_id(v));
-        map.get(<span class="string">&quot;server_side_encryption_customer_algorithm&quot;</span>)
-            .map(|v| builder.server_side_encryption_customer_algorithm(v));
-        map.get(<span class="string">&quot;server_side_encryption_customer_key&quot;</span>)
-            .map(|v| builder.server_side_encryption_customer_key(v));
-        map.get(<span class="string">&quot;server_side_encryption_customer_key_md5&quot;</span>)
-            .map(|v| builder.server_side_encryption_customer_key_md5(v));
-        map.get(<span class="string">&quot;disable_config_load&quot;</span>)
-            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
-            .map(|<span class="kw">_</span>| builder.disable_config_load());
-        map.get(<span class="string">&quot;disable_ec2_metadata&quot;</span>)
-            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
-            .map(|<span class="kw">_</span>| builder.disable_ec2_metadata());
-        map.get(<span class="string">&quot;enable_virtual_host_style&quot;</span>)
-            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
-            .map(|<span class="kw">_</span>| builder.enable_virtual_host_style());
-        map.get(<span class="string">&quot;allow_anonymous&quot;</span>)
-            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
-            .map(|<span class="kw">_</span>| builder.allow_anonymous());
-        map.get(<span class="string">&quot;default_storage_class&quot;</span>)
-            .map(|v: <span class="kw-2">&amp;</span>String| builder.default_storage_class(v));
-        map.get(<span class="string">&quot;batch_max_operations&quot;</span>)
-            .map(|v| builder.batch_max_operations(v.parse().expect(<span class="string">&quot;input must be a number&quot;</span>)));
-
-        builder
+        S3Builder {
+            config,
+            customed_credential_load: <span class="prelude-val">None</span>,
+            http_client: <span class="prelude-val">None</span>,
+        }
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
         <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
-        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.take().unwrap_or_default());
+        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.clone().unwrap_or_default());
         <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, <span class="kw-2">&amp;</span>root);
 
         <span class="comment">// Handle bucket name.
         </span><span class="kw">let </span>bucket = <span class="kw">if </span><span class="self">self</span>.is_bucket_valid() {
-            <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
+            <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.config.bucket)
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(
                 Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;The bucket is misconfigured&quot;</span>)
@@ -1935,14 +2086,14 @@
         }<span class="question-mark">?</span>;
         <span class="macro">debug!</span>(<span class="string">&quot;backend use bucket {}&quot;</span>, <span class="kw-2">&amp;</span>bucket);
 
-        <span class="kw">let </span>default_storage_class = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.default_storage_class {
+        <span class="kw">let </span>default_storage_class = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.default_storage_class {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(
                 build_header_value(v).map_err(|err| err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;storage_class&quot;</span>))<span class="question-mark">?</span>,
             ),
         };
 
-        <span class="kw">let </span>server_side_encryption = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption {
+        <span class="kw">let </span>server_side_encryption = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.server_side_encryption {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(
                 build_header_value(v)
@@ -1951,7 +2102,7 @@
         };
 
         <span class="kw">let </span>server_side_encryption_aws_kms_key_id =
-            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption_aws_kms_key_id {
+            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.server_side_encryption_aws_kms_key_id {
                 <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
                     err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_aws_kms_key_id&quot;</span>)
@@ -1959,7 +2110,7 @@
             };
 
         <span class="kw">let </span>server_side_encryption_customer_algorithm =
-            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption_customer_algorithm {
+            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.server_side_encryption_customer_algorithm {
                 <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
                     err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_algorithm&quot;</span>)
@@ -1967,7 +2118,7 @@
             };
 
         <span class="kw">let </span>server_side_encryption_customer_key =
-            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption_customer_key {
+            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.server_side_encryption_customer_key {
                 <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
                     err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_key&quot;</span>)
@@ -1975,7 +2126,7 @@
             };
 
         <span class="kw">let </span>server_side_encryption_customer_key_md5 =
-            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption_customer_key_md5 {
+            <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.server_side_encryption_customer_key_md5 {
                 <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
                     err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_key_md5&quot;</span>)
@@ -1993,12 +2144,12 @@
 
         <span class="comment">// This is our current config.
         </span><span class="kw">let </span><span class="kw-2">mut </span>cfg = AwsConfig::default();
-        <span class="kw">if </span>!<span class="self">self</span>.disable_config_load {
+        <span class="kw">if </span>!<span class="self">self</span>.config.disable_config_load {
             cfg = cfg.from_profile();
             cfg = cfg.from_env();
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.region.take() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.config.region.take() {
             cfg.region = <span class="prelude-val">Some</span>(v);
         }
         <span class="kw">if </span>cfg.region.is_none() {
@@ -2018,13 +2169,13 @@
         <span class="macro">debug!</span>(<span class="string">&quot;backend use endpoint: {endpoint}&quot;</span>);
 
         <span class="comment">// Setting all value from user input if available.
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.access_key_id.take() {
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.config.access_key_id.take() {
             cfg.access_key_id = <span class="prelude-val">Some</span>(v)
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.secret_access_key.take() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.config.secret_access_key.take() {
             cfg.secret_access_key = <span class="prelude-val">Some</span>(v)
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.security_token.take() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.config.security_token.take() {
             cfg.session_token = <span class="prelude-val">Some</span>(v)
         }
 
@@ -2035,7 +2186,7 @@
         }
 
         <span class="comment">// If role_arn is set, we must use AssumeRoleLoad.
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(role_arn) = <span class="self">self</span>.role_arn.take() {
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(role_arn) = <span class="self">self</span>.config.role_arn.take() {
             <span class="comment">// use current env as source credential loader.
             </span><span class="kw">let </span>default_loader = AwsDefaultLoader::new(client.client(), cfg.clone());
 
@@ -2043,7 +2194,7 @@
             </span><span class="kw">let </span>assume_role_cfg = AwsConfig {
                 region: <span class="prelude-val">Some</span>(region.clone()),
                 role_arn: <span class="prelude-val">Some</span>(role_arn),
-                external_id: <span class="self">self</span>.external_id.clone(),
+                external_id: <span class="self">self</span>.config.external_id.clone(),
                 sts_regional_endpoints: <span class="string">&quot;regional&quot;</span>.to_string(),
                 ..Default::default()
             };
@@ -2067,7 +2218,7 @@
             <span class="prelude-val">Some</span>(v) =&gt; v,
             <span class="prelude-val">None </span>=&gt; {
                 <span class="kw">let </span><span class="kw-2">mut </span>default_loader = AwsDefaultLoader::new(client.client(), cfg);
-                <span class="kw">if </span><span class="self">self</span>.disable_ec2_metadata {
+                <span class="kw">if </span><span class="self">self</span>.config.disable_ec2_metadata {
                     default_loader = default_loader.with_disable_ec2_metadata();
                 }
 
@@ -2078,7 +2229,8 @@
         <span class="kw">let </span>signer = AwsV4Signer::new(<span class="string">&quot;s3&quot;</span>, <span class="kw-2">&amp;</span>region);
 
         <span class="kw">let </span>batch_max_operations = <span class="self">self
-            </span>.batch_max_operations
+            </span>.config
+            .batch_max_operations
             .unwrap_or(DEFAULT_BATCH_MAX_OPERATIONS);
         <span class="macro">debug!</span>(<span class="string">&quot;backend build finished&quot;</span>);
         <span class="prelude-val">Ok</span>(S3Backend {
@@ -2092,7 +2244,7 @@
                 server_side_encryption_customer_key,
                 server_side_encryption_customer_key_md5,
                 default_storage_class,
-                allow_anonymous: <span class="self">self</span>.allow_anonymous,
+                allow_anonymous: <span class="self">self</span>.config.allow_anonymous,
                 signer,
                 loader,
                 client,
@@ -2114,8 +2266,8 @@
     <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = S3Writers;
     <span class="kw">type </span>BlockingWriter = ();
-    <span class="kw">type </span>Pager = S3Pager;
-    <span class="kw">type </span>BlockingPager = ();
+    <span class="kw">type </span>Lister = oio::PageLister&lt;S3Lister&gt;;
+    <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
         <span class="kw">let </span><span class="kw-2">mut </span>am = AccessorInfo::default();
@@ -2154,15 +2306,14 @@
                     <span class="prelude-val">Some</span>(usize::MAX)
                 },
 
-                create_dir: <span class="bool-val">true</span>,
                 delete: <span class="bool-val">true</span>,
                 copy: <span class="bool-val">true</span>,
 
                 list: <span class="bool-val">true</span>,
                 list_with_limit: <span class="bool-val">true</span>,
                 list_with_start_after: <span class="bool-val">true</span>,
-                list_without_delimiter: <span class="bool-val">true</span>,
-                list_with_delimiter_slash: <span class="bool-val">true</span>,
+                list_with_recursive: <span class="bool-val">true</span>,
+                list_without_recursive: <span class="bool-val">true</span>,
 
                 presign: <span class="bool-val">true</span>,
                 presign_stat: <span class="bool-val">true</span>,
@@ -2176,29 +2327,6 @@
             });
 
         am
-    }
-
-    <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.s3_put_object_request(
-            path,
-            <span class="prelude-val">Some</span>(<span class="number">0</span>),
-            <span class="kw-2">&amp;</span>OpWrite::default(),
-            AsyncBody::Empty,
-        )<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.core.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::CREATED | StatusCode::OK =&gt; {
-                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(RpCreateDir::default())
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -2242,11 +2370,6 @@
     }
 
     <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="comment">// Stat root always returns a DIR.
-        </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
-        }
-
         <span class="kw">let </span>resp = <span class="self">self
             </span>.core
             .s3_head_object(path, args.if_none_match(), args.if_match())
@@ -2256,9 +2379,6 @@
 
         <span class="kw">match </span>status {
             StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
-            StatusCode::NOT_FOUND <span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) =&gt; {
-                <span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)))
-            }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
@@ -2278,17 +2398,15 @@
         }
     }
 
-    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
-        <span class="prelude-val">Ok</span>((
-            RpList::default(),
-            S3Pager::new(
-                <span class="self">self</span>.core.clone(),
-                path,
-                args.delimiter(),
-                args.limit(),
-                args.start_after(),
-            ),
-        ))
+    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
+        <span class="kw">let </span>l = S3Lister::new(
+            <span class="self">self</span>.core.clone(),
+            path,
+            args.recursive(),
+            args.limit(),
+            args.start_after(),
+        );
+        <span class="prelude-val">Ok</span>((RpList::default(), oio::PageLister::new(l)))
     }
 
     <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
