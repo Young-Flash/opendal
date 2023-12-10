@@ -5,6 +5,5 @@ var searchData=
   ['list_5fwith_5flimit_18',['list_with_limit',['../structopendal__capability.html#afa301fcf85901fb6905305d91411aafb',1,'opendal_capability']]],
   ['list_5fwith_5frecursive_19',['list_with_recursive',['../structopendal__capability.html#aeaa15613dad6228904b8b8150cd28a6e',1,'opendal_capability']]],
   ['list_5fwith_5fstart_5fafter_20',['list_with_start_after',['../structopendal__capability.html#a42b57246b65b63b2595816253ffb60ff',1,'opendal_capability']]],
-  ['list_5fwithout_5frecursive_21',['list_without_recursive',['../structopendal__capability.html#a0d4697dea4d1c19a5d4d92ad6eb5b7aa',1,'opendal_capability']]],
-  ['lister_22',['lister',['../structopendal__result__list.html#a54b9b09c29f8d867da187c32e362398a',1,'opendal_result_list']]]
+  ['lister_21',['lister',['../structopendal__result__list.html#a54b9b09c29f8d867da187c32e362398a',1,'opendal_result_list']]]
 ];
