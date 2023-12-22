@@ -292,6 +292,9 @@
 <a href="#292" id="292">292</a>
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -313,14 +316,13 @@
 <span class="kw">use </span>std::task::Context;
 <span class="kw">use </span>std::task::Poll;
 
-<span class="kw">use </span>futures::future::BoxFuture;
 <span class="kw">use </span>futures::FutureExt;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// ListFuture is the future returned while calling async list.
-</span><span class="kw">type </span>ListFuture&lt;A, L&gt; = BoxFuture&lt;<span class="lifetime">&#39;static</span>, (A, oio::Entry, <span class="prelude-ty">Result</span>&lt;(RpList, L)&gt;)&gt;;
+</span><span class="kw">type </span>ListFuture&lt;A, L&gt; = BoxedFuture&lt;(A, oio::Entry, <span class="prelude-ty">Result</span>&lt;(RpList, L)&gt;)&gt;;
 
 <span class="doccomment">/// FlatLister will walk dir in bottom up way:
 ///
@@ -367,6 +369,10 @@
     list_future: <span class="prelude-ty">Option</span>&lt;ListFuture&lt;A, L&gt;&gt;,
 }
 
+<span class="doccomment">/// # Safety
+///
+/// wasm32 is a special target that we only have one event-loop for this FlatLister.
+</span><span class="kw">unsafe impl</span>&lt;A: Accessor, L&gt; Send <span class="kw">for </span>FlatLister&lt;A, L&gt; {}
 <span class="doccomment">/// # Safety
 ///
 /// We will only take `&amp;mut Self` reference for FsLister.

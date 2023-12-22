@@ -1562,6 +1562,7 @@
 <a href="#1562" id="1562">1562</a>
 <a href="#1563" id="1563">1563</a>
 <a href="#1564" id="1564">1564</a>
+<a href="#1565" id="1565">1565</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1775,7 +1776,8 @@
 
 <span class="kw">static </span>LOGGING_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">&quot;opendal::services&quot;</span>;
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>LoggingAccessor&lt;A&gt; {
     <span class="kw">type </span>Inner = A;
     <span class="kw">type </span>Reader = LoggingReader&lt;A::Reader&gt;;
@@ -2829,8 +2831,7 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>LoggingWriter&lt;W&gt; {
+<span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>LoggingWriter&lt;W&gt; {
     <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">match </span><span class="macro">ready!</span>(<span class="self">self</span>.inner.poll_write(cx, bs)) {
             <span class="prelude-val">Ok</span>(n) =&gt; {
@@ -3038,7 +3039,8 @@
     }
 }
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;P: oio::List&gt; oio::List <span class="kw">for </span>LoggingLister&lt;P&gt; {
     <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
         <span class="kw">let </span>res = <span class="macro">ready!</span>(<span class="self">self</span>.inner.poll_next(cx));

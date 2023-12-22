@@ -362,6 +362,10 @@
 <a href="#362" id="362">362</a>
 <a href="#363" id="363">363</a>
 <a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -418,7 +422,8 @@
 ///     inner: A,
 /// }
 ///
-/// #[async_trait]
+/// #[cfg_attr(not(target_arch = &quot;wasm32&quot;), async_trait)]
+/// #[cfg_attr(target_arch = &quot;wasm32&quot;, async_trait(?Send))]
 /// impl&lt;A: Accessor&gt; LayeredAccessor for TraceAccessor&lt;A&gt; {
 ///     type Inner = A;
 ///     type Reader = A::Reader;
@@ -493,7 +498,8 @@
 <span class="doccomment">/// LayeredAccessor is layered accessor that forward all not implemented
 /// method to inner.
 </span><span class="attr">#[allow(missing_docs)]
-#[async_trait]
+#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">pub trait </span>LayeredAccessor: Send + Sync + Debug + Unpin + <span class="lifetime">&#39;static </span>{
     <span class="kw">type </span>Inner: Accessor;
     <span class="kw">type </span>Reader: oio::Read;
@@ -570,7 +576,8 @@
     <span class="kw">fn </span>blocking_list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::BlockingLister)&gt;;
 }
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;L: LayeredAccessor&gt; Accessor <span class="kw">for </span>L {
     <span class="kw">type </span>Reader = L::Reader;
     <span class="kw">type </span>BlockingReader = L::BlockingReader;
@@ -683,7 +690,8 @@
         }
     }
 
-    <span class="attr">#[async_trait::async_trait]
+    <span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+    #[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
     </span><span class="kw">impl</span>&lt;A: Accessor&gt; Accessor <span class="kw">for </span>Test&lt;A&gt; {
         <span class="kw">type </span>Reader = ();
         <span class="kw">type </span>BlockingReader = ();

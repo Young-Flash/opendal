@@ -67,8 +67,6 @@
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -92,7 +90,6 @@
 <span class="kw">use </span>std::task::Poll;
 <span class="kw">use </span>std::vec::IntoIter;
 
-<span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>suppaftp::list::File;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
@@ -112,8 +109,7 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::List <span class="kw">for </span>FtpLister {
+<span class="kw">impl </span>oio::List <span class="kw">for </span>FtpLister {
     <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
         <span class="kw">let </span>de = <span class="kw">match </span><span class="self">self</span>.file_iter.next() {
             <span class="prelude-val">Some</span>(file_str) =&gt; File::from_str(file_str.as_str()).map_err(|e| {

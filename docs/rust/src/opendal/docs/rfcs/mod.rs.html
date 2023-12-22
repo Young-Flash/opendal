@@ -178,6 +178,47 @@
 <a href="#178" id="178">178</a>
 <a href="#179" id="179">179</a>
 <a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -195,167 +236,208 @@
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="doccomment">//! RFCs power OpenDAL&#39;s development.
-//!
-//! To add new features and big refactors:
-//!
-//! - Start a new RFCs with the template [`rfc_0000_example`].
-//! - Submit PR and assign the RFC number with the PR number.
-//! - Request reviews from OpenDAL maintainers.
-//! - Create a tracking issue and update links in RFC after approval.
-//!
-//! Some useful tips:
-//!
-//! - Start a pre-propose in [discussion](https://github.com/apache/incubator-opendal/discussions/categories/ideas) to communicate quickly.
-//! - The proposer of RFC may not be the same person as the implementor. Try to include enough information in RFC itself.
+</span><span class="attr">#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;README.md&quot;</span>)]
 
+</span><span class="doccomment">/// RFC example
 </span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0000_example.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0000_example {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0041_object_native_api.md&quot;</span>)]
+<span class="doccomment">/// Object native API
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0041_object_native_api.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0041_object_native_api {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0044_error_handle.md&quot;</span>)]
+<span class="doccomment">/// Error handle
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0044_error_handle.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0044_error_handle {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0057_auto_region.md&quot;</span>)]
+<span class="doccomment">/// Auto region
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0057_auto_region.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0057_auto_region {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0069_object_stream.md&quot;</span>)]
+<span class="doccomment">/// Object stream
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0069_object_stream.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0069_object_stream {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0090_limited_reader.md&quot;</span>)]
+<span class="doccomment">/// Limited reader
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0090_limited_reader.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0090_limited_reader {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0112_path_normalization.md&quot;</span>)]
+<span class="doccomment">/// Path normalization
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0112_path_normalization.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0112_path_normalization {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0191_async_streaming_io.md&quot;</span>)]
+<span class="doccomment">/// Async streaming IO
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0191_async_streaming_io.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0191_async_streaming_io {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0203_remove_credential.md&quot;</span>)]
+<span class="doccomment">/// Remove credential
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0203_remove_credential.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0203_remove_credential {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0221_create_dir.md&quot;</span>)]
+<span class="doccomment">/// Create dir
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0221_create_dir.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0221_create_dir {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0247_retryable_error.md&quot;</span>)]
+<span class="doccomment">/// Retryable error
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0247_retryable_error.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0247_retryable_error {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0293_object_id.md&quot;</span>)]
+<span class="doccomment">/// Object ID
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0293_object_id.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0293_object_id {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0337_dir_entry.md&quot;</span>)]
+<span class="doccomment">/// Dir entry
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0337_dir_entry.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0337_dir_entry {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0409_accessor_capabilities.md&quot;</span>)]
+<span class="doccomment">/// Accessor capabilities
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0409_accessor_capabilities.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0409_accessor_capabilities {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0413_presign.md&quot;</span>)]
+<span class="doccomment">/// Presign
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0413_presign.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0413_presign {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0423_command_line_interface.md&quot;</span>)]
+<span class="doccomment">/// Command line interface
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0423_command_line_interface.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0423_command_line_interface {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0429_init_from_iter.md&quot;</span>)]
+<span class="doccomment">/// Init from iter
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0429_init_from_iter.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0429_init_from_iter {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0438_multipart.md&quot;</span>)]
+<span class="doccomment">/// Multipart
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0438_multipart.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0438_multipart {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0443_gateway.md&quot;</span>)]
+<span class="doccomment">/// Gateway
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0443_gateway.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0443_gateway {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0501_new_builder.md&quot;</span>)]
+<span class="doccomment">/// New builder
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0501_new_builder.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0501_new_builder {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0554_write_refactor.md&quot;</span>)]
+<span class="doccomment">/// Write refactor
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0554_write_refactor.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0554_write_refactor {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0561_list_metadata_reuse.md&quot;</span>)]
+<span class="doccomment">/// List metadata reuse
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0561_list_metadata_reuse.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0561_list_metadata_reuse {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0599_blocking_api.md&quot;</span>)]
+<span class="doccomment">/// Blocking API
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0599_blocking_api.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0599_blocking_api {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0623_redis_service.md&quot;</span>)]
+<span class="doccomment">/// Redis service
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0623_redis_service.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0623_redis_service {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0627_split_capabilities.md&quot;</span>)]
+<span class="doccomment">/// Split capabilities
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0627_split_capabilities.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0627_split_capabilities {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0661_path_in_accessor.md&quot;</span>)]
+<span class="doccomment">/// Path in accessor
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0661_path_in_accessor.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0661_path_in_accessor {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0793_generic_kv_services.md&quot;</span>)]
+<span class="doccomment">/// Generic KV services
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0793_generic_kv_services.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0793_generic_kv_services {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0926_object_reader.md&quot;</span>)]
+<span class="doccomment">/// Object reader
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0926_object_reader.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0926_object_reader {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0977_refactor_error.md&quot;</span>)]
+<span class="doccomment">/// Refactor error
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;0977_refactor_error.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_0977_refactor_error {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1085_object_handler.md&quot;</span>)]
+<span class="doccomment">/// Object handler
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1085_object_handler.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_1085_object_handler {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1391_object_metadataer.md&quot;</span>)]
+<span class="doccomment">/// Object metadataer
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1391_object_metadataer.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_1391_object_metadataer {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1398_query_based_metadata.md&quot;</span>)]
+<span class="doccomment">/// Query based metadata
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1398_query_based_metadata.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_1398_query_based_metadata {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1420_object_writer.md&quot;</span>)]
+<span class="doccomment">/// Object writer
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1420_object_writer.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_1420_object_writer {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1477_remove_object_concept.md&quot;</span>)]
+<span class="doccomment">/// Remove object concept
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1477_remove_object_concept.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_1477_remove_object_concept {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1735_operation_extension.md&quot;</span>)]
+<span class="doccomment">/// Operation extension
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;1735_operation_extension.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_1735_operation_extension {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2083_writer_sink_api.md&quot;</span>)]
+<span class="doccomment">/// Writer sink API
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2083_writer_sink_api.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2083_writer_sink_api {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2133_append_api.md&quot;</span>)]
+<span class="doccomment">/// Append API
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2133_append_api.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2133_append_api {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2299_chain_based_operator_api.md&quot;</span>)]
+<span class="doccomment">/// Chain based operator API
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2299_chain_based_operator_api.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2299_chain_based_operator_api {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2602_object_versioning.md&quot;</span>)]
+<span class="doccomment">/// Object versioning
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2602_object_versioning.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2602_object_versioning {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2758_merge_append_into_write.md&quot;</span>)]
+<span class="doccomment">/// Merge append into write
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2758_merge_append_into_write.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2758_merge_append_into_write {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2774_lister_api.md&quot;</span>)]
+<span class="doccomment">/// Lister API
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2774_lister_api.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2774_lister_api {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2779_list_with_metakey.md&quot;</span>)]
+<span class="doccomment">/// List with metakey
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2779_list_with_metakey.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2779_list_with_metakey {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2852_native_capability.md&quot;</span>)]
+<span class="doccomment">/// Native capability
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;2852_native_capability.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_2852_native_capability {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3017_remove_write_copy_from.md&quot;</span>)]
+<span class="doccomment">/// Remove write copy from
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3017_remove_write_copy_from.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_3017_remove_write_copy_from {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3197_config.md&quot;</span>)]
+<span class="doccomment">/// Config
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3197_config.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_3197_config {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3232_align_list_api.md&quot;</span>)]
+<span class="doccomment">/// Align list API
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3232_align_list_api.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_3232_align_list_api {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3243_list_prefix.md&quot;</span>)]
+<span class="doccomment">/// List prefix
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3243_list_prefix.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_3243_list_prefix {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3356_lazy_reader.md&quot;</span>)]
+<span class="doccomment">/// Lazy reader
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3356_lazy_reader.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_3356_lazy_reader {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3526_list_recursive.md&quot;</span>)]
+<span class="doccomment">/// List recursive
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3526_list_recursive.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_3526_list_recursive {}
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3574_concurrent_stat_in_list.md&quot;</span>)]
+<span class="doccomment">/// Concurrent stat in list
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3574_concurrent_stat_in_list.md&quot;</span>)]
 </span><span class="kw">pub mod </span>rfc_3574_concurrent_stat_in_list {}
+
+<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;3734_buffered_reader.md&quot;</span>)]
+</span><span class="kw">pub mod </span>rfc_3734_buffered_reader {}
 </code></pre></div></section></main></body></html>

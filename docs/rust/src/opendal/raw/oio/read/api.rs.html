@@ -462,23 +462,6 @@
 <a href="#462" id="462">462</a>
 <a href="#463" id="463">463</a>
 <a href="#464" id="464">464</a>
-<a href="#465" id="465">465</a>
-<a href="#466" id="466">466</a>
-<a href="#467" id="467">467</a>
-<a href="#468" id="468">468</a>
-<a href="#469" id="469">469</a>
-<a href="#470" id="470">470</a>
-<a href="#471" id="471">471</a>
-<a href="#472" id="472">472</a>
-<a href="#473" id="473">473</a>
-<a href="#474" id="474">474</a>
-<a href="#475" id="475">475</a>
-<a href="#476" id="476">476</a>
-<a href="#477" id="477">477</a>
-<a href="#478" id="478">478</a>
-<a href="#479" id="479">479</a>
-<a href="#480" id="480">480</a>
-<a href="#481" id="481">481</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -760,7 +743,6 @@
     <span class="kw">fn </span>poll(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">let </span>this = <span class="self">self</span>.project();
         <span class="kw">let </span>start_len = this.buf.len();
-        <span class="kw">let </span>start_cap = this.buf.capacity();
 
         <span class="kw">loop </span>{
             <span class="kw">if </span>this.buf.len() == this.buf.capacity() {
@@ -786,22 +768,6 @@
                     }
                 }
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(e)),
-            }
-
-            <span class="comment">// The buffer might be an exact fit. Let&#39;s read into a probe buffer
-            // and see if it returns `Ok(0)`. If so, we&#39;ve avoided an
-            // unnecessary doubling of the capacity. But if not, append the
-            // probe buffer to the primary buffer and let its capacity grow.
-            </span><span class="kw">if </span>this.buf.len() == this.buf.capacity() &amp;&amp; this.buf.capacity() == start_cap {
-                <span class="kw">let </span><span class="kw-2">mut </span>probe = [<span class="number">0u8</span>; <span class="number">32</span>];
-
-                <span class="kw">match </span><span class="macro">ready!</span>(this.reader.poll_read(cx, <span class="kw-2">&amp;mut </span>probe)) {
-                    <span class="prelude-val">Ok</span>(<span class="number">0</span>) =&gt; <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(this.buf.len() - start_len)),
-                    <span class="prelude-val">Ok</span>(n) =&gt; {
-                        this.buf.extend_from_slice(<span class="kw-2">&amp;</span>probe[..n]);
-                    }
-                    <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(e)),
-                }
             }
         }
     }

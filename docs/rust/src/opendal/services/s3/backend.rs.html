@@ -1294,6 +1294,29 @@
 <a href="#1294" id="1294">1294</a>
 <a href="#1295" id="1295">1295</a>
 <a href="#1296" id="1296">1296</a>
+<a href="#1297" id="1297">1297</a>
+<a href="#1298" id="1298">1298</a>
+<a href="#1299" id="1299">1299</a>
+<a href="#1300" id="1300">1300</a>
+<a href="#1301" id="1301">1301</a>
+<a href="#1302" id="1302">1302</a>
+<a href="#1303" id="1303">1303</a>
+<a href="#1304" id="1304">1304</a>
+<a href="#1305" id="1305">1305</a>
+<a href="#1306" id="1306">1306</a>
+<a href="#1307" id="1307">1307</a>
+<a href="#1308" id="1308">1308</a>
+<a href="#1309" id="1309">1309</a>
+<a href="#1310" id="1310">1310</a>
+<a href="#1311" id="1311">1311</a>
+<a href="#1312" id="1312">1312</a>
+<a href="#1313" id="1313">1313</a>
+<a href="#1314" id="1314">1314</a>
+<a href="#1315" id="1315">1315</a>
+<a href="#1316" id="1316">1316</a>
+<a href="#1317" id="1317">1317</a>
+<a href="#1318" id="1318">1318</a>
+<a href="#1319" id="1319">1319</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1492,6 +1515,10 @@
     ///
     /// Please tune this value based on services&#39; document.
     </span><span class="kw">pub </span>batch_max_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    <span class="doccomment">/// Disable stat with override so that opendal will not send stat request with override queries.
+    ///
+    /// For example, R2 doesn&#39;t support stat with `response_content_type` query.
+    </span><span class="kw">pub </span>disable_stat_with_override: bool,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>S3Config {
@@ -1852,6 +1879,14 @@
         <span class="self">self
     </span>}
 
+    <span class="doccomment">/// Disable stat with override so that opendal will not send stat request with override queries.
+    ///
+    /// For example, R2 doesn&#39;t support stat with `response_content_type` query.
+    </span><span class="kw">pub fn </span>disable_stat_with_override(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.config.disable_stat_with_override = <span class="bool-val">true</span>;
+        <span class="self">self
+    </span>}
+
     <span class="doccomment">/// Adding a customed credential load for service.
     ///
     /// If customed_credential_load has been set, we will ignore all other
@@ -2144,7 +2179,10 @@
         <span class="comment">// This is our current config.
         </span><span class="kw">let </span><span class="kw-2">mut </span>cfg = AwsConfig::default();
         <span class="kw">if </span>!<span class="self">self</span>.config.disable_config_load {
-            cfg = cfg.from_profile();
+            <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+            </span>{
+                cfg = cfg.from_profile();
+            }
             cfg = cfg.from_env();
         }
 
@@ -2244,6 +2282,7 @@
                 server_side_encryption_customer_key_md5,
                 default_storage_class,
                 allow_anonymous: <span class="self">self</span>.config.allow_anonymous,
+                disable_stat_with_override: <span class="self">self</span>.config.disable_stat_with_override,
                 signer,
                 loader,
                 client,
@@ -2259,7 +2298,8 @@
     core: Arc&lt;S3Core&gt;,
 }
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>S3Backend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
     <span class="kw">type </span>BlockingReader = ();
@@ -2277,6 +2317,9 @@
                 stat: <span class="bool-val">true</span>,
                 stat_with_if_match: <span class="bool-val">true</span>,
                 stat_with_if_none_match: <span class="bool-val">true</span>,
+                stat_with_override_cache_control: !<span class="self">self</span>.core.disable_stat_with_override,
+                stat_with_override_content_disposition: !<span class="self">self</span>.core.disable_stat_with_override,
+                stat_with_override_content_type: !<span class="self">self</span>.core.disable_stat_with_override,
 
                 read: <span class="bool-val">true</span>,
                 read_can_next: <span class="bool-val">true</span>,
@@ -2335,9 +2378,16 @@
         <span class="kw">match </span>status {
             StatusCode::OK | StatusCode::PARTIAL_CONTENT =&gt; {
                 <span class="kw">let </span>size = parse_content_length(resp.headers())<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((RpRead::new().with_size(size), resp.into_body()))
+                <span class="kw">let </span>range = parse_content_range(resp.headers())<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((
+                    RpRead::new().with_size(size).with_range(range),
+                    resp.into_body(),
+                ))
             }
-            StatusCode::RANGE_NOT_SATISFIABLE =&gt; <span class="prelude-val">Ok</span>((RpRead::new(), IncomingAsyncBody::empty())),
+            StatusCode::RANGE_NOT_SATISFIABLE =&gt; {
+                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((RpRead::new().with_size(<span class="prelude-val">Some</span>(<span class="number">0</span>)), IncomingAsyncBody::empty()))
+            }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
@@ -2368,10 +2418,7 @@
     }
 
     <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="kw">let </span>resp = <span class="self">self
-            </span>.core
-            .s3_head_object(path, args.if_none_match(), args.if_match())
-            .<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.s3_head_object(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>status = resp.status();
 
@@ -2408,13 +2455,12 @@
     }
 
     <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
+        <span class="kw">let </span>(expire, op) = args.into_parts();
+
         <span class="comment">// We will not send this request out, just for signing.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>req = <span class="kw">match </span>args.operation() {
-            PresignOperation::Stat(v) =&gt; {
-                <span class="self">self</span>.core
-                    .s3_head_object_request(path, v.if_none_match(), v.if_match())<span class="question-mark">?
-            </span>}
-            PresignOperation::Read(v) =&gt; <span class="self">self</span>.core.s3_get_object_request(path, v.clone())<span class="question-mark">?</span>,
+        </span><span class="kw">let </span><span class="kw-2">mut </span>req = <span class="kw">match </span>op {
+            PresignOperation::Stat(v) =&gt; <span class="self">self</span>.core.s3_head_object_request(path, v)<span class="question-mark">?</span>,
+            PresignOperation::Read(v) =&gt; <span class="self">self</span>.core.s3_get_object_request(path, v)<span class="question-mark">?</span>,
             PresignOperation::Write(<span class="kw">_</span>) =&gt; <span class="self">self</span>.core.s3_put_object_request(
                 path,
                 <span class="prelude-val">None</span>,
@@ -2423,7 +2469,7 @@
             )<span class="question-mark">?</span>,
         };
 
-        <span class="self">self</span>.core.sign_query(<span class="kw-2">&amp;mut </span>req, args.expire()).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="self">self</span>.core.sign_query(<span class="kw-2">&amp;mut </span>req, expire).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="comment">// We don&#39;t need this request anymore, consume it directly.
         </span><span class="kw">let </span>(parts, <span class="kw">_</span>) = req.into_parts();

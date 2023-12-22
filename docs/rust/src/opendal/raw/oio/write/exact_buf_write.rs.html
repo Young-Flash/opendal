@@ -188,9 +188,6 @@
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -211,8 +208,6 @@
 </span><span class="kw">use </span>std::task::ready;
 <span class="kw">use </span>std::task::Context;
 <span class="kw">use </span>std::task::Poll;
-
-<span class="kw">use </span>async_trait::async_trait;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::WriteBuf;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
@@ -248,8 +243,7 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>ExactBufWriter&lt;W&gt; {
+<span class="kw">impl</span>&lt;W: oio::Write&gt; oio::Write <span class="kw">for </span>ExactBufWriter&lt;W&gt; {
     <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">if </span><span class="self">self</span>.buffer.len() &gt;= <span class="self">self</span>.buffer_size {
             <span class="kw">let </span>written = <span class="macro">ready!</span>(<span class="self">self</span>.inner.poll_write(cx, <span class="kw-2">&amp;</span><span class="self">self</span>.buffer)<span class="question-mark">?</span>);

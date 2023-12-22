@@ -406,6 +406,12 @@
 <a href="#406" id="406">406</a>
 <a href="#407" id="407">407</a>
 <a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -448,6 +454,8 @@
     </span>Azdls,
     <span class="doccomment">/// [B2][crate::services::B2]: Backblaze B2 Services.
     </span>B2,
+    <span class="doccomment">/// [Seafile][crate::services::Seafile]: Seafile Services.
+    </span>Seafile,
     <span class="doccomment">/// [cacache][crate::services::Cacache]: cacache backend support.
     </span>Cacache,
     <span class="doccomment">/// [cloudflare-kv][crate::services::CloudflareKv]: Cloudflare KV services.
@@ -647,6 +655,8 @@
             </span>Scheme::Rocksdb,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-s3&quot;</span>)]
             </span>Scheme::S3,
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-seafile&quot;</span>)]
+            </span>Scheme::Seafile,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-sftp&quot;</span>)]
             </span>Scheme::Sftp,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-sled&quot;</span>)]
@@ -734,6 +744,7 @@
             <span class="string">&quot;redis&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Redis),
             <span class="string">&quot;rocksdb&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Rocksdb),
             <span class="string">&quot;s3&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::S3),
+            <span class="string">&quot;seafile&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Seafile),
             <span class="string">&quot;sftp&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sftp),
             <span class="string">&quot;sled&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sled),
             <span class="string">&quot;supabase&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Supabase),
@@ -790,6 +801,7 @@
             Scheme::Redis =&gt; <span class="string">&quot;redis&quot;</span>,
             Scheme::Rocksdb =&gt; <span class="string">&quot;rocksdb&quot;</span>,
             Scheme::S3 =&gt; <span class="string">&quot;s3&quot;</span>,
+            Scheme::Seafile =&gt; <span class="string">&quot;seafile&quot;</span>,
             Scheme::Sftp =&gt; <span class="string">&quot;sftp&quot;</span>,
             Scheme::Sled =&gt; <span class="string">&quot;sled&quot;</span>,
             Scheme::Supabase =&gt; <span class="string">&quot;supabase&quot;</span>,

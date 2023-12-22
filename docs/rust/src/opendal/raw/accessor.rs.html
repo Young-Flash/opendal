@@ -556,6 +556,9 @@
 <a href="#556" id="556">556</a>
 <a href="#557" id="557">557</a>
 <a href="#558" id="558">558</a>
+<a href="#559" id="559">559</a>
+<a href="#560" id="560">560</a>
+<a href="#561" id="561">561</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -611,7 +614,8 @@
 /// - Operations with capability requirement like `presign` are optional operations.
 ///   - Services can implement them based on services capabilities.
 ///   - The default implementation should return [`ErrorKind::Unsupported`].
-</span><span class="attr">#[async_trait]
+</span><span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">pub trait </span>Accessor: Send + Sync + Debug + Unpin + <span class="lifetime">&#39;static </span>{
     <span class="doccomment">/// Reader is the associated reader the could return in `read` operation.
     </span><span class="kw">type </span>Reader: oio::Read;
@@ -922,7 +926,8 @@
 }
 
 <span class="doccomment">/// Dummy implementation of accessor.
-</span><span class="attr">#[async_trait]
+</span><span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>() {
     <span class="kw">type </span>Reader = ();
     <span class="kw">type </span>BlockingReader = ();
@@ -944,7 +949,8 @@
 
 <span class="doccomment">/// All functions in `Accessor` only requires `&amp;self`, so it&#39;s safe to implement
 /// `Accessor` for `Arc&lt;dyn Accessor&gt;`.
-</span><span class="attr">#[async_trait]
+</span><span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;T: Accessor + <span class="question-mark">?</span>Sized&gt; Accessor <span class="kw">for </span>Arc&lt;T&gt; {
     <span class="kw">type </span>Reader = T::Reader;
     <span class="kw">type </span>BlockingReader = T::BlockingReader;

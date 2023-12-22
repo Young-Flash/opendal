@@ -133,6 +133,10 @@
 <a href="#133" id="133">133</a>
 <a href="#134" id="134">134</a>
 <a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -156,7 +160,6 @@
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>futures::future::BoxFuture;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -171,7 +174,8 @@
 /// - Services impl `PageList`
 /// - `PageLister` impl `List`
 /// - Expose `PageLister` as `Accessor::Lister`
-</span><span class="attr">#[async_trait]
+</span><span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">pub trait </span>PageList: Send + Sync + Unpin + <span class="lifetime">&#39;static </span>{
     <span class="doccomment">/// next_page is used to fetch next page of entries from underlying storage.
     </span><span class="kw">async fn </span>next_page(<span class="kw-2">&amp;</span><span class="self">self</span>, ctx: <span class="kw-2">&amp;mut </span>PageContext) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
@@ -207,9 +211,13 @@
 
 <span class="kw">enum </span>State&lt;L&gt; {
     Idle(<span class="prelude-ty">Option</span>&lt;(L, PageContext)&gt;),
-    Fetch(BoxFuture&lt;<span class="lifetime">&#39;static</span>, ((L, PageContext), <span class="prelude-ty">Result</span>&lt;()&gt;)&gt;),
+    Fetch(BoxedFuture&lt;((L, PageContext), <span class="prelude-ty">Result</span>&lt;()&gt;)&gt;),
 }
 
+<span class="doccomment">/// # Safety
+///
+/// wasm32 is a special target that we only have one event-loop for this state.
+</span><span class="kw">unsafe impl</span>&lt;L: PageList&gt; Send <span class="kw">for </span>State&lt;L&gt; {}
 <span class="doccomment">/// # Safety
 ///
 /// We will only take `&amp;mut Self` reference for State.

@@ -456,7 +456,6 @@
 <a href="#456" id="456">456</a>
 <a href="#457" id="457">457</a>
 <a href="#458" id="458">458</a>
-<a href="#459" id="459">459</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -599,7 +598,8 @@
     </span>addr: SocketAddr,
 }
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl </span>LayeredAccessor <span class="kw">for </span>MadsimAccessor {
     <span class="kw">type </span>Inner = ();
     <span class="kw">type </span>Reader = MadsimReader;
@@ -754,8 +754,7 @@
     </span>addr: SocketAddr,
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::Write <span class="kw">for </span>MadsimWriter {
+<span class="kw">impl </span>oio::Write <span class="kw">for </span>MadsimWriter {
     <span class="kw">fn </span>poll_write(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;,
@@ -790,8 +789,7 @@
 
 <span class="kw">pub struct </span>MadsimLister {}
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::List <span class="kw">for </span>MadsimLister {
+<span class="kw">impl </span>oio::List <span class="kw">for </span>MadsimLister {
     <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
         Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,

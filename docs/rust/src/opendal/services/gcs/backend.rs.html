@@ -592,6 +592,13 @@
 <a href="#592" id="592">592</a>
 <a href="#593" id="593">593</a>
 <a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -636,9 +643,10 @@
 <span class="kw">const </span>DEFAULT_GCS_SCOPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;https://www.googleapis.com/auth/devstorage.read_write&quot;</span>;
 
 <span class="doccomment">/// [Google Cloud Storage](https://cloud.google.com/storage) services support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
-#[derive(Default)]
-</span><span class="kw">pub struct </span>GcsBuilder {
+</span><span class="attr">#[derive(Default, Deserialize)]
+#[serde(default)]
+#[non_exhaustive]
+</span><span class="kw">pub struct </span>GcsConfig {
     <span class="doccomment">/// root URI, all operations happens under `root`
     </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// bucket name
@@ -650,23 +658,51 @@
     </span>scope: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Service Account for gcs.
     </span>service_account: <span class="prelude-ty">Option</span>&lt;String&gt;,
-
     <span class="doccomment">/// credential string for GCS service
     </span>credential: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// credential path for GCS service.
     </span>credential_path: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// The predefined acl for GCS.
+    </span>predefined_acl: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// The default storage class used by gcs.
+    </span>default_storage_class: <span class="prelude-ty">Option</span>&lt;String&gt;,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>GcsConfig {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">&quot;GcsConfig&quot;</span>)
+            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
+            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">&quot;scope&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.scope)
+            .finish_non_exhaustive()
+    }
+}
+
+<span class="doccomment">/// [Google Cloud Storage](https://cloud.google.com/storage) services support.
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+#[derive(Default)]
+</span><span class="kw">pub struct </span>GcsBuilder {
+    config: GcsConfig,
 
     http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
     customed_token_loader: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>GoogleTokenLoad&gt;&gt;,
-    predefined_acl: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    default_storage_class: <span class="prelude-ty">Option</span>&lt;String&gt;,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>GcsBuilder {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;GcsBuilder&quot;</span>);
+
+        ds.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+        ds.finish_non_exhaustive()
+    }
 }
 
 <span class="kw">impl </span>GcsBuilder {
     <span class="doccomment">/// set the working directory root of backend
     </span><span class="kw">pub fn </span>root(<span class="kw-2">&amp;mut </span><span class="self">self</span>, root: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!root.is_empty() {
-            <span class="self">self</span>.root = <span class="prelude-val">Some</span>(root.to_string())
+            <span class="self">self</span>.config.root = <span class="prelude-val">Some</span>(root.to_string())
         }
 
         <span class="self">self
@@ -674,7 +710,7 @@
 
     <span class="doccomment">/// set the container&#39;s name
     </span><span class="kw">pub fn </span>bucket(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bucket: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.bucket = bucket.to_string();
+        <span class="self">self</span>.config.bucket = bucket.to_string();
         <span class="self">self
     </span>}
 
@@ -691,7 +727,7 @@
     /// Reference: [Cloud Storage authentication](https://cloud.google.com/storage/docs/authentication)
     </span><span class="kw">pub fn </span>scope(<span class="kw-2">&amp;mut </span><span class="self">self</span>, scope: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!scope.is_empty() {
-            <span class="self">self</span>.scope = <span class="prelude-val">Some</span>(scope.to_string())
+            <span class="self">self</span>.config.scope = <span class="prelude-val">Some</span>(scope.to_string())
         };
         <span class="self">self
     </span>}
@@ -702,7 +738,7 @@
     /// If not set, we will try to fetch with `default` service account.
     </span><span class="kw">pub fn </span>service_account(<span class="kw-2">&amp;mut </span><span class="self">self</span>, service_account: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!service_account.is_empty() {
-            <span class="self">self</span>.service_account = <span class="prelude-val">Some</span>(service_account.to_string())
+            <span class="self">self</span>.config.service_account = <span class="prelude-val">Some</span>(service_account.to_string())
         };
         <span class="self">self
     </span>}
@@ -710,7 +746,7 @@
     <span class="doccomment">/// set the endpoint GCS service uses
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoint.is_empty() {
-            <span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.to_string())
+            <span class="self">self</span>.config.endpoint = <span class="prelude-val">Some</span>(endpoint.to_string())
         };
         <span class="self">self
     </span>}
@@ -718,7 +754,7 @@
     <span class="doccomment">/// set the base64 hashed credentials string used for OAuth2
     </span><span class="kw">pub fn </span>credential(<span class="kw-2">&amp;mut </span><span class="self">self</span>, credential: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!credential.is_empty() {
-            <span class="self">self</span>.credential = <span class="prelude-val">Some</span>(credential.to_string())
+            <span class="self">self</span>.config.credential = <span class="prelude-val">Some</span>(credential.to_string())
         };
         <span class="self">self
     </span>}
@@ -726,7 +762,7 @@
     <span class="doccomment">/// set the credentials path of GCS.
     </span><span class="kw">pub fn </span>credential_path(<span class="kw-2">&amp;mut </span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!path.is_empty() {
-            <span class="self">self</span>.credential_path = <span class="prelude-val">Some</span>(path.to_string())
+            <span class="self">self</span>.config.credential_path = <span class="prelude-val">Some</span>(path.to_string())
         };
         <span class="self">self
     </span>}
@@ -759,7 +795,7 @@
     /// - `publicRead`
     </span><span class="kw">pub fn </span>predefined_acl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, acl: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!acl.is_empty() {
-            <span class="self">self</span>.predefined_acl = <span class="prelude-val">Some</span>(acl.to_string())
+            <span class="self">self</span>.config.predefined_acl = <span class="prelude-val">Some</span>(acl.to_string())
         };
         <span class="self">self
     </span>}
@@ -773,28 +809,10 @@
     /// - `ARCHIVE`
     </span><span class="kw">pub fn </span>default_storage_class(<span class="kw-2">&amp;mut </span><span class="self">self</span>, class: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!class.is_empty() {
-            <span class="self">self</span>.default_storage_class = <span class="prelude-val">Some</span>(class.to_string())
+            <span class="self">self</span>.config.default_storage_class = <span class="prelude-val">Some</span>(class.to_string())
         };
         <span class="self">self
     </span>}
-}
-
-<span class="kw">impl </span>Debug <span class="kw">for </span>GcsBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
-
-        ds.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
-        <span class="kw">if </span><span class="self">self</span>.credential.is_some() {
-            ds.field(<span class="string">&quot;credentials&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
-        }
-        <span class="kw">if </span><span class="self">self</span>.predefined_acl.is_some() {
-            ds.field(<span class="string">&quot;predefined_acl&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.predefined_acl);
-        }
-        ds.field(<span class="string">&quot;default_storage_class&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.default_storage_class);
-        ds.finish()
-    }
 }
 
 <span class="kw">impl </span>Builder <span class="kw">for </span>GcsBuilder {
@@ -802,29 +820,24 @@
     <span class="kw">type </span>Accessor = GcsBackend;
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>builder = GcsBuilder::default();
+        <span class="kw">let </span>config = GcsConfig::deserialize(ConfigDeserializer::new(map))
+            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;bucket&quot;</span>).map(|v| builder.bucket(v));
-        map.get(<span class="string">&quot;endpoint&quot;</span>).map(|v| builder.endpoint(v));
-        map.get(<span class="string">&quot;credential&quot;</span>).map(|v| builder.credential(v));
-        map.get(<span class="string">&quot;scope&quot;</span>).map(|v| builder.scope(v));
-        map.get(<span class="string">&quot;predefined_acl&quot;</span>).map(|v| builder.predefined_acl(v));
-        map.get(<span class="string">&quot;default_storage_class&quot;</span>)
-            .map(|v| builder.default_storage_class(v));
-
-        builder
+        GcsBuilder {
+            config,
+            ..GcsBuilder::default()
+        }
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
         <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="self">self</span>);
 
-        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.take().unwrap_or_default());
+        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
         <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
 
         <span class="comment">// Handle endpoint and bucket name
-        </span><span class="kw">let </span>bucket = <span class="kw">match </span><span class="self">self</span>.bucket.is_empty() {
-            <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.bucket),
+        </span><span class="kw">let </span>bucket = <span class="kw">match </span><span class="self">self</span>.config.bucket.is_empty() {
+            <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.config.bucket),
             <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(
                 Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;The bucket is misconfigured&quot;</span>)
                     .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
@@ -844,27 +857,28 @@
         </span>};
 
         <span class="kw">let </span>endpoint = <span class="self">self
-            </span>.endpoint
+            </span>.config
+            .endpoint
             .clone()
             .unwrap_or_else(|| DEFAULT_GCS_ENDPOINT.to_string());
         <span class="macro">debug!</span>(<span class="string">&quot;backend use endpoint: {endpoint}&quot;</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>cred_loader = GoogleCredentialLoader::default();
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(cred) = <span class="kw-2">&amp;</span><span class="self">self</span>.credential {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cred) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.credential {
             cred_loader = cred_loader.with_content(cred);
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(cred) = <span class="kw-2">&amp;</span><span class="self">self</span>.credential_path {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cred) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.credential_path {
             cred_loader = cred_loader.with_path(cred);
         }
 
-        <span class="kw">let </span>scope = <span class="kw">if let </span><span class="prelude-val">Some</span>(scope) = <span class="kw-2">&amp;</span><span class="self">self</span>.scope {
+        <span class="kw">let </span>scope = <span class="kw">if let </span><span class="prelude-val">Some</span>(scope) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.scope {
             scope
         } <span class="kw">else </span>{
             DEFAULT_GCS_SCOPE
         };
 
         <span class="kw">let </span><span class="kw-2">mut </span>token_loader = GoogleTokenLoader::new(scope, client.client());
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(account) = <span class="kw-2">&amp;</span><span class="self">self</span>.service_account {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(account) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.service_account {
             token_loader = token_loader.with_service_account(account);
         }
         <span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(cred)) = cred_loader.load() {
@@ -885,8 +899,8 @@
                 signer,
                 token_loader,
                 credential_loader: cred_loader,
-                predefined_acl: <span class="self">self</span>.predefined_acl.clone(),
-                default_storage_class: <span class="self">self</span>.default_storage_class.clone(),
+                predefined_acl: <span class="self">self</span>.config.predefined_acl.clone(),
+                default_storage_class: <span class="self">self</span>.config.default_storage_class.clone(),
             }),
         };
 

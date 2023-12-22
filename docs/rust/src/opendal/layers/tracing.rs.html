@@ -376,7 +376,6 @@
 <a href="#376" id="376">376</a>
 <a href="#377" id="377">377</a>
 <a href="#378" id="378">378</a>
-<a href="#379" id="379">379</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -509,7 +508,8 @@
     inner: A,
 }
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>TracingAccessor&lt;A&gt; {
     <span class="kw">type </span>Inner = A;
     <span class="kw">type </span>Reader = TracingWrapper&lt;A::Reader&gt;;
@@ -697,8 +697,7 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>TracingWrapper&lt;R&gt; {
+<span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>TracingWrapper&lt;R&gt; {
     <span class="attr">#[tracing::instrument(
         parent = <span class="kw-2">&amp;</span><span class="self">self</span>.span,
         level = <span class="string">&quot;trace&quot;</span>,
@@ -742,8 +741,7 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;R: oio::List&gt; oio::List <span class="kw">for </span>TracingWrapper&lt;R&gt; {
+<span class="kw">impl</span>&lt;R: oio::List&gt; oio::List <span class="kw">for </span>TracingWrapper&lt;R&gt; {
     <span class="attr">#[tracing::instrument(parent = <span class="kw-2">&amp;</span><span class="self">self</span>.span, level = <span class="string">&quot;debug&quot;</span>, skip_all)]
     </span><span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
         <span class="self">self</span>.inner.poll_next(cx)

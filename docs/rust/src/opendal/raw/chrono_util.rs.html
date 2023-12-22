@@ -53,6 +53,15 @@
 <a href="#53" id="53">53</a>
 <a href="#54" id="54">54</a>
 <a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -104,6 +113,15 @@
 </span><span class="kw">pub fn </span>parse_datetime_from_from_timestamp_millis(s: i64) -&gt; <span class="prelude-ty">Result</span>&lt;DateTime&lt;Utc&gt;&gt; {
     <span class="kw">let </span>st = UNIX_EPOCH
         .checked_add(Duration::from_millis(s <span class="kw">as </span>u64))
+        .ok_or_else(|| Error::new(ErrorKind::Unexpected, <span class="string">&quot;input timestamp overflow&quot;</span>))<span class="question-mark">?</span>;
+
+    <span class="prelude-val">Ok</span>(st.into())
+}
+
+<span class="doccomment">/// parse datetime from given timestamp
+</span><span class="kw">pub fn </span>parse_datetime_from_from_timestamp(s: i64) -&gt; <span class="prelude-ty">Result</span>&lt;DateTime&lt;Utc&gt;&gt; {
+    <span class="kw">let </span>st = UNIX_EPOCH
+        .checked_add(Duration::from_secs(s <span class="kw">as </span>u64))
         .ok_or_else(|| Error::new(ErrorKind::Unexpected, <span class="string">&quot;input timestamp overflow&quot;</span>))<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(st.into())

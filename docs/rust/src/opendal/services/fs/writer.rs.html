@@ -136,8 +136,6 @@
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
 <a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -162,7 +160,6 @@
 <span class="kw">use </span>std::task::Context;
 <span class="kw">use </span>std::task::Poll;
 
-<span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>futures::future::BoxFuture;
 <span class="kw">use </span>futures::FutureExt;
 <span class="kw">use </span>tokio::io::AsyncWrite;
@@ -196,8 +193,7 @@
 /// We will only take `&amp;mut Self` reference for FsWriter.
 </span><span class="kw">unsafe impl</span>&lt;F&gt; Sync <span class="kw">for </span>FsWriter&lt;F&gt; {}
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::Write <span class="kw">for </span>FsWriter&lt;tokio::fs::File&gt; {
+<span class="kw">impl </span>oio::Write <span class="kw">for </span>FsWriter&lt;tokio::fs::File&gt; {
     <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">let </span>f = <span class="self">self</span>.f.as_mut().expect(<span class="string">&quot;FsWriter must be initialized&quot;</span>);
 

@@ -143,8 +143,6 @@
 <a href="#143" id="143">143</a>
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -169,7 +167,6 @@
 <span class="kw">use </span>std::task::Context;
 <span class="kw">use </span>std::task::Poll;
 
-<span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>futures::future::BoxFuture;
 <span class="kw">use </span>futures::FutureExt;
 
@@ -202,8 +199,7 @@
 /// We will only take `&amp;mut Self` reference for FsLister.
 </span><span class="kw">unsafe impl</span>&lt;P&gt; Sync <span class="kw">for </span>FsLister&lt;P&gt; {}
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>oio::List <span class="kw">for </span>FsLister&lt;tokio::fs::ReadDir&gt; {
+<span class="kw">impl </span>oio::List <span class="kw">for </span>FsLister&lt;tokio::fs::ReadDir&gt; {
     <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(fut) = <span class="self">self</span>.fut.as_mut() {
             <span class="kw">let </span>(de, ft) = <span class="macro">futures::ready!</span>(fut.poll_unpin(cx));

@@ -1210,20 +1210,6 @@
 <a href="#1210" id="1210">1210</a>
 <a href="#1211" id="1211">1211</a>
 <a href="#1212" id="1212">1212</a>
-<a href="#1213" id="1213">1213</a>
-<a href="#1214" id="1214">1214</a>
-<a href="#1215" id="1215">1215</a>
-<a href="#1216" id="1216">1216</a>
-<a href="#1217" id="1217">1217</a>
-<a href="#1218" id="1218">1218</a>
-<a href="#1219" id="1219">1219</a>
-<a href="#1220" id="1220">1220</a>
-<a href="#1221" id="1221">1221</a>
-<a href="#1222" id="1222">1222</a>
-<a href="#1223" id="1223">1223</a>
-<a href="#1224" id="1224">1224</a>
-<a href="#1225" id="1225">1225</a>
-<a href="#1226" id="1226">1226</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -1248,7 +1234,6 @@
 <span class="kw">use </span>std::task::Context;
 <span class="kw">use </span>std::task::Poll;
 
-<span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>bytes::BytesMut;
 <span class="kw">use </span>futures::stream;
@@ -1430,14 +1415,6 @@
 
         Poll::Ready(<span class="prelude-val">None</span>)
     }
-
-    <span class="doccomment">/// It&#39;s possible to implement reset by calling stream&#39;s `poll_reset`.
-    </span><span class="kw">fn </span>poll_reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;MultipartStream doesn&#39;t support reset yet&quot;</span>,
-        )))
-    }
 }
 
 <span class="doccomment">/// Part is a trait for multipart part.
@@ -1517,7 +1494,19 @@
 
         <span class="comment">// Building pre-content.
         </span><span class="kw">for </span>(k, v) <span class="kw">in </span><span class="self">self</span>.headers.iter() {
-            bs.extend_from_slice(k.as_str().as_bytes());
+            <span class="comment">// Trick!
+            //
+            // Seafile could not recognize header names like `content-disposition`
+            // and requires to use `Content-Disposition`. So we hardcode the part
+            // headers name here.
+            </span><span class="kw">match </span>k.as_str() {
+                <span class="string">&quot;content-disposition&quot; </span>=&gt; {
+                    bs.extend_from_slice(<span class="string">&quot;Content-Disposition&quot;</span>.as_bytes());
+                }
+                <span class="kw">_ </span>=&gt; {
+                    bs.extend_from_slice(k.as_str().as_bytes());
+                }
+            }
             bs.extend_from_slice(<span class="string">b&quot;: &quot;</span>);
             bs.extend_from_slice(v.as_bytes());
             bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
@@ -1551,8 +1540,7 @@
     content: <span class="prelude-ty">Option</span>&lt;Streamer&gt;,
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl </span>Stream <span class="kw">for </span>FormDataPartStream {
+<span class="kw">impl </span>Stream <span class="kw">for </span>FormDataPartStream {
     <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(pre_content) = <span class="self">self</span>.pre_content.take() {
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(pre_content)));
@@ -1569,14 +1557,6 @@
         }
 
         Poll::Ready(<span class="prelude-val">None</span>)
-    }
-
-    <span class="doccomment">/// It&#39;s possible to implement reset by calling stream&#39;s `poll_reset`.
-    </span><span class="kw">fn </span>poll_reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;FormDataPartStream doesn&#39;t support reset yet&quot;</span>,
-        )))
     }
 }
 
@@ -1924,14 +1904,6 @@
 
         Poll::Ready(<span class="prelude-val">None</span>)
     }
-
-    <span class="doccomment">/// It&#39;s possible to implement reset by calling stream&#39;s `poll_reset`.
-    </span><span class="kw">fn </span>poll_reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;MixedPartStream doesn&#39;t support reset yet&quot;</span>,
-        )))
-    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -1954,11 +1926,11 @@
         <span class="macro">assert_eq!</span>(size, bs.len() <span class="kw">as </span>u64);
 
         <span class="kw">let </span>expected = <span class="string">&quot;--lalala\r\n\
-             content-disposition: form-data; name=\&quot;foo\&quot;\r\n\
+             Content-Disposition: form-data; name=\&quot;foo\&quot;\r\n\
              \r\n\
              bar\r\n\
              --lalala\r\n\
-             content-disposition: form-data; name=\&quot;hello\&quot;\r\n\
+             Content-Disposition: form-data; name=\&quot;hello\&quot;\r\n\
              \r\n\
              world\r\n\
              --lalala--\r\n&quot;</span>;
@@ -1990,48 +1962,48 @@
         <span class="macro">assert_eq!</span>(size, bs.len() <span class="kw">as </span>u64);
 
         <span class="kw">let </span>expected = <span class="string">r#&quot;--9431149156168
-content-disposition: form-data; name=&quot;key&quot;
+Content-Disposition: form-data; name=&quot;key&quot;
 
 user/eric/MyPicture.jpg
 --9431149156168
-content-disposition: form-data; name=&quot;acl&quot;
+Content-Disposition: form-data; name=&quot;acl&quot;
 
 public-read
 --9431149156168
-content-disposition: form-data; name=&quot;success_action_redirect&quot;
+Content-Disposition: form-data; name=&quot;success_action_redirect&quot;
 
 https://awsexamplebucket1.s3.us-west-1.amazonaws.com/successful_upload.html
 --9431149156168
-content-disposition: form-data; name=&quot;content-type&quot;
+Content-Disposition: form-data; name=&quot;content-type&quot;
 
 image/jpeg
 --9431149156168
-content-disposition: form-data; name=&quot;x-amz-meta-uuid&quot;
+Content-Disposition: form-data; name=&quot;x-amz-meta-uuid&quot;
 
 14365123651274
 --9431149156168
-content-disposition: form-data; name=&quot;x-amz-meta-tag&quot;
+Content-Disposition: form-data; name=&quot;x-amz-meta-tag&quot;
 
 Some,Tag,For,Picture
 --9431149156168
-content-disposition: form-data; name=&quot;AWSAccessKeyId&quot;
+Content-Disposition: form-data; name=&quot;AWSAccessKeyId&quot;
 
 AKIAIOSFODNN7EXAMPLE
 --9431149156168
-content-disposition: form-data; name=&quot;Policy&quot;
+Content-Disposition: form-data; name=&quot;Policy&quot;
 
 eyAiZXhwaXJhdGlvbiI6ICIyMDA3LTEyLTAxVDEyOjAwOjAwLjAwMFoiLAogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiam9obnNtaXRoIn0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiRrZXkiLCAidXNlci9lcmljLyJdLAogICAgeyJhY2wiOiAicHVibGljLXJlYWQifSwKICAgIHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiAiaHR0cDovL2pvaG5zbWl0aC5zMy5hbWF6b25hd3MuY29tL3N1Y2Nlc3NmdWxfdXBsb2FkLmh0bWwifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJENvbnRlbnQtVHlwZSIsICJpbWFnZS8iXSwKICAgIHsieC1hbXotbWV0YS11dWlkIjogIjE0MzY1MTIzNjUxMjc0In0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiR4LWFtei1tZXRhLXRhZyIsICIiXQogIF0KfQo=
 --9431149156168
-content-disposition: form-data; name=&quot;Signature&quot;
+Content-Disposition: form-data; name=&quot;Signature&quot;
 
 0RavWzkygo6QX9caELEqKi9kDbU=
 --9431149156168
-content-disposition: form-data; name=&quot;file&quot;
+Content-Disposition: form-data; name=&quot;file&quot;
 content-type: image/jpeg
 
 ...file content...
 --9431149156168
-content-disposition: form-data; name=&quot;submit&quot;
+Content-Disposition: form-data; name=&quot;submit&quot;
 
 Upload to Amazon S3
 --9431149156168--

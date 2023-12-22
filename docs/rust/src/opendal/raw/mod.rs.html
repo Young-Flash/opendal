@@ -67,6 +67,10 @@
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -130,6 +134,10 @@
 
 <span class="kw">mod </span>std_io_util;
 <span class="kw">pub use </span>std_io_util::<span class="kw-2">*</span>;
+
+<span class="kw">mod </span>futures_util;
+<span class="kw">pub use </span>futures_util::BoxedFuture;
+<span class="kw">pub use </span>futures_util::ConcurrentFutures;
 
 <span class="comment">// Expose as a pub mod to avoid confusing.
 </span><span class="kw">pub mod </span>adapters;

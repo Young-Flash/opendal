@@ -1500,7 +1500,8 @@
     }
 }
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>CompleteAccessor&lt;A&gt; {
     <span class="kw">type </span>Inner = A;
     <span class="kw">type </span>Reader = CompleteReader&lt;A, A::Reader&gt;;
@@ -1801,8 +1802,7 @@
     NeedPrefix(PrefixLister&lt;P&gt;),
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;A, P&gt; oio::List <span class="kw">for </span>CompleteLister&lt;A, P&gt;
+<span class="kw">impl</span>&lt;A, P&gt; oio::List <span class="kw">for </span>CompleteLister&lt;A, P&gt;
 <span class="kw">where
     </span>A: Accessor&lt;Lister = P&gt;,
     P: oio::List,
@@ -1856,8 +1856,7 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;W&gt; oio::Write <span class="kw">for </span>CompleteWriter&lt;W&gt;
+<span class="kw">impl</span>&lt;W&gt; oio::Write <span class="kw">for </span>CompleteWriter&lt;W&gt;
 <span class="kw">where
     </span>W: oio::Write,
 {
@@ -1932,7 +1931,8 @@
         capability: Capability,
     }
 
-    <span class="attr">#[async_trait]
+    <span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+    #[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
     </span><span class="kw">impl </span>Accessor <span class="kw">for </span>MockService {
         <span class="kw">type </span>Reader = oio::Reader;
         <span class="kw">type </span>BlockingReader = oio::BlockingReader;
