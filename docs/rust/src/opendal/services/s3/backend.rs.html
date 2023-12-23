@@ -2182,8 +2182,8 @@
             <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
             </span>{
                 cfg = cfg.from_profile();
+                cfg = cfg.from_env();
             }
-            cfg = cfg.from_env();
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.config.region.take() {

@@ -551,6 +551,38 @@
 <a href="#551" id="551">551</a>
 <a href="#552" id="552">552</a>
 <a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
+<a href="#558" id="558">558</a>
+<a href="#559" id="559">559</a>
+<a href="#560" id="560">560</a>
+<a href="#561" id="561">561</a>
+<a href="#562" id="562">562</a>
+<a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+<a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
+<a href="#571" id="571">571</a>
+<a href="#572" id="572">572</a>
+<a href="#573" id="573">573</a>
+<a href="#574" id="574">574</a>
+<a href="#575" id="575">575</a>
+<a href="#576" id="576">576</a>
+<a href="#577" id="577">577</a>
+<a href="#578" id="578">578</a>
+<a href="#579" id="579">579</a>
+<a href="#580" id="580">580</a>
+<a href="#581" id="581">581</a>
+<a href="#582" id="582">582</a>
+<a href="#583" id="583">583</a>
+<a href="#584" id="584">584</a>
+<a href="#585" id="585">585</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -569,7 +601,7 @@
 // under the License.
 
 </span><span class="kw">use </span>std::collections::HashMap;
-<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::fmt::{Debug, Formatter};
 <span class="kw">use </span>std::io;
 <span class="kw">use </span>std::path::PathBuf;
 <span class="kw">use </span>std::sync::Arc;
@@ -577,6 +609,7 @@
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>futures::AsyncWriteExt;
 <span class="kw">use </span>log::debug;
+<span class="kw">use </span>serde::Deserialize;
 
 <span class="kw">use </span><span class="kw">super</span>::lister::HdfsLister;
 <span class="kw">use </span><span class="kw">super</span>::writer::HdfsWriter;
@@ -584,14 +617,51 @@
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// [Hadoop Distributed File System (HDFS™)](https://hadoop.apache.org/) support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
-#[derive(Default, Debug)]
+
+/// Config for Hdfs services support.
+</span><span class="attr">#[derive(Default, Deserialize, Clone)]
+#[serde(default)]
+#[non_exhaustive]
+</span><span class="kw">pub struct </span>HdfsConfig {
+    <span class="doccomment">/// work dir of this backend
+    </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// name node of this backend
+    </span><span class="kw">pub </span>name_node: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// kerberos_ticket_cache_path of this backend
+    </span><span class="kw">pub </span>kerberos_ticket_cache_path: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// user of this backend
+    </span><span class="kw">pub </span>user: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// enable the append capacity
+    </span><span class="kw">pub </span>enable_append: bool,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>HdfsConfig {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">&quot;HdfsConfig&quot;</span>)
+            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">&quot;name_node&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.name_node)
+            .field(
+                <span class="string">&quot;kerberos_ticket_cache_path&quot;</span>,
+                <span class="kw-2">&amp;</span><span class="self">self</span>.kerberos_ticket_cache_path,
+            )
+            .field(<span class="string">&quot;user&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.user)
+            .field(<span class="string">&quot;enable_append&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.enable_append)
+            .finish_non_exhaustive()
+    }
+}
+
+<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+#[derive(Default)]
 </span><span class="kw">pub struct </span>HdfsBuilder {
-    root: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    name_node: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    kerberos_ticket_cache_path: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    user: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    enable_append: bool,
+    config: HdfsConfig,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>HdfsBuilder {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">&quot;HdfsBuilder&quot;</span>)
+            .field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config)
+            .finish()
+    }
 }
 
 <span class="kw">impl </span>HdfsBuilder {
@@ -599,7 +669,7 @@
     ///
     /// All operations will happen under this root.
     </span><span class="kw">pub fn </span>root(<span class="kw-2">&amp;mut </span><span class="self">self</span>, root: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.root = <span class="kw">if </span>root.is_empty() {
+        <span class="self">self</span>.config.root = <span class="kw">if </span>root.is_empty() {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{
             <span class="prelude-val">Some</span>(root.to_string())
@@ -617,7 +687,7 @@
     </span><span class="kw">pub fn </span>name_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name_node: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!name_node.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.name_node = <span class="prelude-val">Some</span>(name_node.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string())
+            </span><span class="self">self</span>.config.name_node = <span class="prelude-val">Some</span>(name_node.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string())
         }
 
         <span class="self">self
@@ -628,7 +698,7 @@
     /// This should be configured when kerberos is enabled.
     </span><span class="kw">pub fn </span>kerberos_ticket_cache_path(<span class="kw-2">&amp;mut </span><span class="self">self</span>, kerberos_ticket_cache_path: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!kerberos_ticket_cache_path.is_empty() {
-            <span class="self">self</span>.kerberos_ticket_cache_path = <span class="prelude-val">Some</span>(kerberos_ticket_cache_path.to_string())
+            <span class="self">self</span>.config.kerberos_ticket_cache_path = <span class="prelude-val">Some</span>(kerberos_ticket_cache_path.to_string())
         }
         <span class="self">self
     </span>}
@@ -636,7 +706,7 @@
     <span class="doccomment">/// Set user of this backend
     </span><span class="kw">pub fn </span>user(<span class="kw-2">&amp;mut </span><span class="self">self</span>, user: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!user.is_empty() {
-            <span class="self">self</span>.user = <span class="prelude-val">Some</span>(user.to_string())
+            <span class="self">self</span>.config.user = <span class="prelude-val">Some</span>(user.to_string())
         }
         <span class="self">self
     </span>}
@@ -645,7 +715,7 @@
     ///
     /// This should be disabled when HDFS runs in non-distributed mode.
     </span><span class="kw">pub fn </span>enable_append(<span class="kw-2">&amp;mut </span><span class="self">self</span>, enable_append: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.enable_append = enable_append;
+        <span class="self">self</span>.config.enable_append = enable_append;
         <span class="self">self
     </span>}
 }
@@ -655,24 +725,18 @@
     <span class="kw">type </span>Accessor = HdfsBackend;
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>builder = HdfsBuilder::default();
+        <span class="comment">// Deserialize the configuration from the HashMap.
+        </span><span class="kw">let </span>config = HdfsConfig::deserialize(ConfigDeserializer::new(map))
+            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;name_node&quot;</span>).map(|v| builder.name_node(v));
-        map.get(<span class="string">&quot;kerberos_ticket_cache_path&quot;</span>)
-            .map(|v| builder.kerberos_ticket_cache_path(v));
-        map.get(<span class="string">&quot;user&quot;</span>).map(|v| builder.user(v));
-        map.get(<span class="string">&quot;enable_append&quot;</span>).map(|v| {
-            builder.enable_append(v.parse().expect(<span class="string">&quot;enable_append should be true or false&quot;</span>))
-        });
-
-        builder
+        <span class="comment">// Create an HdfsBuilder instance with the deserialized config.
+        </span>HdfsBuilder { config }
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
         <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
-        <span class="kw">let </span>name_node = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.name_node {
+        <span class="kw">let </span>name_node = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.name_node {
             <span class="prelude-val">Some</span>(v) =&gt; v,
             <span class="prelude-val">None </span>=&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;name node is empty&quot;</span>)
@@ -680,14 +744,14 @@
             }
         };
 
-        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.take().unwrap_or_default());
+        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
         <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = hdrs::ClientBuilder::new(name_node);
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(ticket_cache_path) = <span class="kw-2">&amp;</span><span class="self">self</span>.kerberos_ticket_cache_path {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(ticket_cache_path) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.kerberos_ticket_cache_path {
             builder = builder.with_kerberos_ticket_cache_path(ticket_cache_path.as_str());
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(user) = <span class="kw-2">&amp;</span><span class="self">self</span>.user {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(user) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.user {
             builder = builder.with_user(user.as_str());
         }
 
@@ -706,7 +770,7 @@
         <span class="prelude-val">Ok</span>(HdfsBackend {
             root,
             client: Arc::new(client),
-            enable_append: <span class="self">self</span>.enable_append,
+            enable_append: <span class="self">self</span>.config.enable_append,
         })
     }
 }

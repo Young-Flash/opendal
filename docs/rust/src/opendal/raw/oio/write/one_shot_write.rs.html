@@ -125,6 +125,11 @@
 <a href="#125" id="125">125</a>
 <a href="#126" id="126">126</a>
 <a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -147,7 +152,6 @@
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>futures::future::BoxFuture;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -158,7 +162,8 @@
 /// For example, S3 `PUT Object` and fs `write_all`.
 ///
 /// The layout after adopting [`OneShotWrite`]:
-</span><span class="attr">#[async_trait]
+</span><span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">pub trait </span>OneShotWrite: Send + Sync + Unpin + <span class="lifetime">&#39;static </span>{
     <span class="doccomment">/// write_once write all data at once.
     ///
@@ -174,8 +179,13 @@
 
 <span class="kw">enum </span>State&lt;W&gt; {
     Idle(<span class="prelude-ty">Option</span>&lt;W&gt;),
-    Write(BoxFuture&lt;<span class="lifetime">&#39;static</span>, (W, <span class="prelude-ty">Result</span>&lt;()&gt;)&gt;),
+    Write(BoxedFuture&lt;(W, <span class="prelude-ty">Result</span>&lt;()&gt;)&gt;),
 }
+
+<span class="doccomment">/// # Safety
+///
+/// wasm32 is a special target that we only have one event-loop for this state.
+</span><span class="kw">unsafe impl</span>&lt;S: OneShotWrite&gt; Send <span class="kw">for </span>State&lt;S&gt; {}
 
 <span class="doccomment">/// # Safety
 ///

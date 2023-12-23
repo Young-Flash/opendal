@@ -132,6 +132,11 @@
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
 <a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -154,7 +159,6 @@
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>futures::future::BoxFuture;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -168,7 +172,8 @@
 /// - Services impl `AppendObjectWrite`
 /// - `AppendObjectWriter` impl `Write`
 /// - Expose `AppendObjectWriter` as `Accessor::Writer`
-</span><span class="attr">#[async_trait]
+</span><span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">pub trait </span>AppendObjectWrite: Send + Sync + Unpin + <span class="lifetime">&#39;static </span>{
     <span class="doccomment">/// Get the current offset of the append object.
     ///
@@ -192,9 +197,14 @@
 
 <span class="kw">enum </span>State&lt;W&gt; {
     Idle(<span class="prelude-ty">Option</span>&lt;W&gt;),
-    Offset(BoxFuture&lt;<span class="lifetime">&#39;static</span>, (W, <span class="prelude-ty">Result</span>&lt;u64&gt;)&gt;),
-    Append(BoxFuture&lt;<span class="lifetime">&#39;static</span>, (W, <span class="prelude-ty">Result</span>&lt;usize&gt;)&gt;),
+    Offset(BoxedFuture&lt;(W, <span class="prelude-ty">Result</span>&lt;u64&gt;)&gt;),
+    Append(BoxedFuture&lt;(W, <span class="prelude-ty">Result</span>&lt;usize&gt;)&gt;),
 }
+
+<span class="doccomment">/// # Safety
+///
+/// wasm32 is a special target that we only have one event-loop for this state.
+</span><span class="kw">unsafe impl</span>&lt;S: AppendObjectWrite&gt; Send <span class="kw">for </span>State&lt;S&gt; {}
 
 <span class="doccomment">/// # Safety
 ///

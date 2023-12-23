@@ -412,6 +412,12 @@
 <a href="#412" id="412">412</a>
 <a href="#413" id="413">413</a>
 <a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -456,6 +462,8 @@
     </span>B2,
     <span class="doccomment">/// [Seafile][crate::services::Seafile]: Seafile Services.
     </span>Seafile,
+    <span class="doccomment">/// [Upyun][crate::services::Upyun]: Upyun Services.
+    </span>Upyun,
     <span class="doccomment">/// [cacache][crate::services::Cacache]: cacache backend support.
     </span>Cacache,
     <span class="doccomment">/// [cloudflare-kv][crate::services::CloudflareKv]: Cloudflare KV services.
@@ -657,6 +665,8 @@
             </span>Scheme::S3,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-seafile&quot;</span>)]
             </span>Scheme::Seafile,
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-upyun&quot;</span>)]
+            </span>Scheme::Upyun,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-sftp&quot;</span>)]
             </span>Scheme::Sftp,
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-sled&quot;</span>)]
@@ -745,6 +755,7 @@
             <span class="string">&quot;rocksdb&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Rocksdb),
             <span class="string">&quot;s3&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::S3),
             <span class="string">&quot;seafile&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Seafile),
+            <span class="string">&quot;upyun&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Upyun),
             <span class="string">&quot;sftp&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sftp),
             <span class="string">&quot;sled&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sled),
             <span class="string">&quot;supabase&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Supabase),
@@ -816,6 +827,7 @@
             Scheme::Sqlite =&gt; <span class="string">&quot;sqlite&quot;</span>,
             Scheme::Mongodb =&gt; <span class="string">&quot;mongodb&quot;</span>,
             Scheme::Alluxio =&gt; <span class="string">&quot;alluxio&quot;</span>,
+            Scheme::Upyun =&gt; <span class="string">&quot;upyun&quot;</span>,
             Scheme::Custom(v) =&gt; v,
         }
     }

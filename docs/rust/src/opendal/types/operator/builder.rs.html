@@ -403,6 +403,8 @@
 <a href="#403" id="403">403</a>
 <a href="#404" id="404">404</a>
 <a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -562,6 +564,8 @@
             </span>Scheme::Atomicserver =&gt; <span class="self">Self</span>::from_map::&lt;services::Atomicserver&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-alluxio&quot;</span>)]
             </span>Scheme::Alluxio =&gt; <span class="self">Self</span>::from_map::&lt;services::Alluxio&gt;(map)<span class="question-mark">?</span>.finish(),
+            <span class="attr">#[cfg(feature = <span class="string">&quot;services-upyun&quot;</span>)]
+            </span>Scheme::Upyun =&gt; <span class="self">Self</span>::from_map::&lt;services::Upyun&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-azblob&quot;</span>)]
             </span>Scheme::Azblob =&gt; <span class="self">Self</span>::from_map::&lt;services::Azblob&gt;(map)<span class="question-mark">?</span>.finish(),
             <span class="attr">#[cfg(feature = <span class="string">&quot;services-azdls&quot;</span>)]
