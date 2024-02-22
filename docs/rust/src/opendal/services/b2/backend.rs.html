@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/b2/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/b2/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -544,14 +546,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -591,12 +593,12 @@
     </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// keyID of this backend.
     ///
-    /// - If application_key_id is set, we will take user&#39;s input first.
+    /// - If application_key_id is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub </span>application_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// applicationKey of this backend.
     ///
-    /// - If application_key is set, we will take user&#39;s input first.
+    /// - If application_key is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub </span>application_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// bucket of this backend.
@@ -610,20 +612,20 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>B2Config {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;B2Config&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">"B2Config"</span>);
 
-        d.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;application_key_id&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.application_key_id)
-            .field(<span class="string">&quot;bucket_id&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket_id)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket);
+        d.field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"application_key_id"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.application_key_id)
+            .field(<span class="string">"bucket_id"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket_id)
+            .field(<span class="string">"bucket"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket);
 
         d.finish_non_exhaustive()
     }
 }
 
 <span class="doccomment">/// [b2](https://www.backblaze.com/cloud-storage) services support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default)]
 </span><span class="kw">pub struct </span>B2Builder {
     config: B2Config,
@@ -632,10 +634,10 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>B2Builder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;B2Builder&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">"B2Builder"</span>);
 
-        d.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+        d.field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
         d.finish_non_exhaustive()
     }
 }
@@ -677,7 +679,7 @@
     </span>}
 
     <span class="doccomment">/// Set bucket name of this backend.
-    /// You can find it in https://secure.backblaze.com/b2_buckets.html
+    /// You can find it in &lt;https://secure.backblaze.com/b2_buckets.html&gt;
     </span><span class="kw">pub fn </span>bucket(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bucket: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.config.bucket = bucket.to_string();
 
@@ -685,7 +687,7 @@
     </span>}
 
     <span class="doccomment">/// Set bucket id of this backend.
-    /// You can find it in https://secure.backblaze.com/b2_buckets.html
+    /// You can find it in &lt;https://secure.backblaze.com/b2_buckets.html&gt;
     </span><span class="kw">pub fn </span>bucket_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bucket_id: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.config.bucket_id = bucket_id.to_string();
 
@@ -696,7 +698,7 @@
     ///
     /// # Notes
     ///
-    /// This API is part of OpenDAL&#39;s Raw API. `HttpClient` could be changed
+    /// This API is part of OpenDAL's Raw API. `HttpClient` could be changed
     /// during minor updates.
     </span><span class="kw">pub fn </span>http_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>, client: HttpClient) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.http_client = <span class="prelude-val">Some</span>(client);
@@ -720,7 +722,7 @@
     </span><span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="comment">// Deserialize the configuration from the HashMap.
         </span><span class="kw">let </span>config = B2Config::deserialize(ConfigDeserializer::new(map))
-            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
+            .expect(<span class="string">"config deserialize must succeed"</span>);
 
         <span class="comment">// Create an B2Builder instance with the deserialized config.
         </span>B2Builder {
@@ -731,44 +733,44 @@
 
     <span class="doccomment">/// Builds the backend and returns the result of B2Backend.
     </span><span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.clone().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, <span class="kw-2">&amp;</span>root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, <span class="kw-2">&amp;</span>root);
 
         <span class="comment">// Handle bucket.
         </span><span class="kw">if </span><span class="self">self</span>.config.bucket.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;bucket is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::B2));
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"bucket is empty"</span>)
+                .with_operation(<span class="string">"Builder::build"</span>)
+                .with_context(<span class="string">"service"</span>, Scheme::B2));
         }
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use bucket {}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config.bucket);
+        <span class="macro">debug!</span>(<span class="string">"backend use bucket {}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config.bucket);
 
         <span class="comment">// Handle bucket_id.
         </span><span class="kw">if </span><span class="self">self</span>.config.bucket_id.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;bucket_id is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::B2));
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"bucket_id is empty"</span>)
+                .with_operation(<span class="string">"Builder::build"</span>)
+                .with_context(<span class="string">"service"</span>, Scheme::B2));
         }
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend bucket_id {}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config.bucket_id);
+        <span class="macro">debug!</span>(<span class="string">"backend bucket_id {}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config.bucket_id);
 
         <span class="kw">let </span>application_key_id = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.application_key_id {
             <span class="prelude-val">Some</span>(application_key_id) =&gt; <span class="prelude-val">Ok</span>(application_key_id.clone()),
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;application_key_id is empty&quot;</span>)
-                    .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::B2),
+                Error::new(ErrorKind::ConfigInvalid, <span class="string">"application_key_id is empty"</span>)
+                    .with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::B2),
             ),
         }<span class="question-mark">?</span>;
 
         <span class="kw">let </span>application_key = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.application_key {
             <span class="prelude-val">Some</span>(key_id) =&gt; <span class="prelude-val">Ok</span>(key_id.clone()),
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;application_key is empty&quot;</span>)
-                    .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::B2),
+                Error::new(ErrorKind::ConfigInvalid, <span class="string">"application_key is empty"</span>)
+                    .with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::B2),
             ),
         }<span class="question-mark">?</span>;
 
@@ -776,8 +778,8 @@
             client
         } <span class="kw">else </span>{
             HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::B2)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::B2)
             })<span class="question-mark">?
         </span>};
 
@@ -809,15 +811,10 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>B2Backend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
-
-    <span class="kw">type </span>BlockingReader = ();
-
     <span class="kw">type </span>Writer = B2Writers;
-
-    <span class="kw">type </span>BlockingWriter = ();
-
     <span class="kw">type </span>Lister = oio::PageLister&lt;B2Lister&gt;;
-
+    <span class="kw">type </span>BlockingReader = ();
+    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -842,7 +839,11 @@
                 <span class="comment">// The max multipart size of b2 is 5 Gb.
                 //
                 // ref: &lt;https://www.backblaze.com/docs/cloud-storage-large-files&gt;
-                </span>write_multi_max_size: <span class="prelude-val">Some</span>(<span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024</span>),
+                </span>write_multi_max_size: <span class="kw">if </span><span class="macro">cfg!</span>(target_pointer_width = <span class="string">"64"</span>) {
+                    <span class="prelude-val">Some</span>(<span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024</span>)
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Some</span>(usize::MAX)
+                },
 
                 delete: <span class="bool-val">true</span>,
                 copy: <span class="bool-val">true</span>,
@@ -861,6 +862,38 @@
             });
 
         am
+    }
+
+    <span class="doccomment">/// B2 have a get_file_info api required a file_id field, but field_id need call list api, list api also return file info
+    /// So we call list api to get file info
+    </span><span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, _args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="comment">// Stat root always returns a DIR.
+        </span><span class="kw">if </span>path == <span class="string">"/" </span>{
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
+        }
+
+        <span class="kw">let </span>delimiter = <span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) { <span class="prelude-val">Some</span>(<span class="string">"/"</span>) } <span class="kw">else </span>{ <span class="prelude-val">None </span>};
+        <span class="kw">let </span>resp = <span class="self">self
+            </span>.core
+            .list_file_names(<span class="prelude-val">Some</span>(path), delimiter, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
+            .<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; {
+                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+
+                <span class="kw">let </span>resp: ListFileNamesResponse =
+                    serde_json::from_slice(<span class="kw-2">&amp;</span>bs).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
+                <span class="kw">if </span>resp.files.is_empty() {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::NotFound, <span class="string">"no such file or directory"</span>));
+                }
+                <span class="kw">let </span>meta = parse_file_info(<span class="kw-2">&amp;</span>resp.files[<span class="number">0</span>]);
+                <span class="prelude-val">Ok</span>(RpStat::new(meta))
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -886,81 +919,12 @@
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
+        <span class="kw">let </span>concurrent = args.concurrent();
         <span class="kw">let </span>writer = B2Writer::new(<span class="self">self</span>.core.clone(), path, args);
 
-        <span class="kw">let </span>w = oio::MultipartUploadWriter::new(writer);
+        <span class="kw">let </span>w = oio::MultipartWriter::new(writer, concurrent);
 
         <span class="prelude-val">Ok</span>((RpWrite::default(), w))
-    }
-
-    <span class="doccomment">/// B2 have a get_file_info api required a file_id field, but field_id need call list api, list api also return file info
-    /// So we call list api to get file info
-    </span><span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, _args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="comment">// Stat root always returns a DIR.
-        </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
-        }
-
-        <span class="kw">let </span>delimiter = <span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) { <span class="prelude-val">Some</span>(<span class="string">&quot;/&quot;</span>) } <span class="kw">else </span>{ <span class="prelude-val">None </span>};
-        <span class="kw">let </span>resp = <span class="self">self
-            </span>.core
-            .list_file_names(<span class="prelude-val">Some</span>(path), delimiter, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
-            .<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; {
-                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-
-                <span class="kw">let </span>resp: ListFileNamesResponse =
-                    serde_json::from_slice(<span class="kw-2">&amp;</span>bs).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
-                <span class="kw">if </span>resp.files.is_empty() {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::NotFound, <span class="string">&quot;no such file or directory&quot;</span>));
-                }
-                <span class="kw">let </span>meta = parse_file_info(<span class="kw-2">&amp;</span>resp.files[<span class="number">0</span>]);
-                <span class="prelude-val">Ok</span>(RpStat::new(meta))
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
-
-    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
-        <span class="kw">let </span>resp = <span class="self">self
-            </span>.core
-            .list_file_names(<span class="prelude-val">Some</span>(from), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
-            .<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">let </span>source_file_id = <span class="kw">match </span>status {
-            StatusCode::OK =&gt; {
-                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-
-                <span class="kw">let </span>resp: ListFileNamesResponse =
-                    serde_json::from_slice(<span class="kw-2">&amp;</span>bs).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
-                <span class="kw">if </span>resp.files.is_empty() {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::NotFound, <span class="string">&quot;no such file or directory&quot;</span>));
-                }
-
-                <span class="kw">let </span>file_id = resp.files[<span class="number">0</span>].clone().file_id;
-                <span class="prelude-val">Ok</span>(file_id)
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }<span class="question-mark">?</span>;
-
-        <span class="kw">let </span><span class="prelude-val">Some</span>(source_file_id) = source_file_id <span class="kw">else </span>{
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::IsADirectory, <span class="string">&quot;is a directory&quot;</span>));
-        };
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.copy_file(source_file_id, to).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; <span class="prelude-val">Ok</span>(RpCopy::default()),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
     }
 
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
@@ -995,6 +959,44 @@
         ))
     }
 
+    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>resp = <span class="self">self
+            </span>.core
+            .list_file_names(<span class="prelude-val">Some</span>(from), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
+            .<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">let </span>source_file_id = <span class="kw">match </span>status {
+            StatusCode::OK =&gt; {
+                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+
+                <span class="kw">let </span>resp: ListFileNamesResponse =
+                    serde_json::from_slice(<span class="kw-2">&amp;</span>bs).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
+                <span class="kw">if </span>resp.files.is_empty() {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::NotFound, <span class="string">"no such file or directory"</span>));
+                }
+
+                <span class="kw">let </span>file_id = resp.files[<span class="number">0</span>].clone().file_id;
+                <span class="prelude-val">Ok</span>(file_id)
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }<span class="question-mark">?</span>;
+
+        <span class="kw">let </span><span class="prelude-val">Some</span>(source_file_id) = source_file_id <span class="kw">else </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::IsADirectory, <span class="string">"is a directory"</span>));
+        };
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.copy_file(source_file_id, to).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; <span class="prelude-val">Ok</span>(RpCopy::default()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
     <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
         <span class="kw">match </span>args.operation() {
             PresignOperation::Stat(<span class="kw">_</span>) =&gt; {
@@ -1007,7 +1009,7 @@
                 <span class="kw">let </span>auth_info = <span class="self">self</span>.core.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let </span>url = <span class="macro">format!</span>(
-                    <span class="string">&quot;{}/file/{}/{}?Authorization={}&quot;</span>,
+                    <span class="string">"{}/file/{}/{}?Authorization={}"</span>,
                     auth_info.download_url, <span class="self">self</span>.core.bucket, path, resp.authorization_token
                 );
 
@@ -1017,7 +1019,7 @@
                     .body(AsyncBody::Empty)
                     .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-                <span class="comment">// We don&#39;t need this request anymore, consume
+                <span class="comment">// We don't need this request anymore, consume
                 </span><span class="kw">let </span>(parts, <span class="kw">_</span>) = req.into_parts();
 
                 <span class="prelude-val">Ok</span>(RpPresign::new(PresignedRequest::new(
@@ -1036,7 +1038,7 @@
                 <span class="kw">let </span>auth_info = <span class="self">self</span>.core.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let </span>url = <span class="macro">format!</span>(
-                    <span class="string">&quot;{}/file/{}/{}?Authorization={}&quot;</span>,
+                    <span class="string">"{}/file/{}/{}?Authorization={}"</span>,
                     auth_info.download_url, <span class="self">self</span>.core.bucket, path, resp.authorization_token
                 );
 
@@ -1046,7 +1048,7 @@
                     .body(AsyncBody::Empty)
                     .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-                <span class="comment">// We don&#39;t need this request anymore, consume
+                <span class="comment">// We don't need this request anymore, consume
                 </span><span class="kw">let </span>(parts, <span class="kw">_</span>) = req.into_parts();
 
                 <span class="prelude-val">Ok</span>(RpPresign::new(PresignedRequest::new(
@@ -1061,14 +1063,14 @@
                 <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>resp.upload_url);
 
                 req = req.header(http::header::AUTHORIZATION, resp.authorization_token);
-                req = req.header(<span class="string">&quot;X-Bz-File-Name&quot;</span>, build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.core.root, path));
-                req = req.header(http::header::CONTENT_TYPE, <span class="string">&quot;b2/x-auto&quot;</span>);
-                req = req.header(constants::X_BZ_CONTENT_SHA1, <span class="string">&quot;do_not_verify&quot;</span>);
+                req = req.header(<span class="string">"X-Bz-File-Name"</span>, build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.core.root, path));
+                req = req.header(http::header::CONTENT_TYPE, <span class="string">"b2/x-auto"</span>);
+                req = req.header(constants::X_BZ_CONTENT_SHA1, <span class="string">"do_not_verify"</span>);
 
                 <span class="kw">let </span>req = req
                     .body(AsyncBody::Empty)
                     .map_err(new_request_build_error)<span class="question-mark">?</span>;
-                <span class="comment">// We don&#39;t need this request anymore, consume it directly.
+                <span class="comment">// We don't need this request anymore, consume it directly.
                 </span><span class="kw">let </span>(parts, <span class="kw">_</span>) = req.into_parts();
 
                 <span class="prelude-val">Ok</span>(RpPresign::new(PresignedRequest::new(

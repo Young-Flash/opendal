@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/raw/path.rs`."><title>path.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/raw/path.rs`."><title>path.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -383,19 +385,19 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::EntryMode;
+</span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// build_abs_path will build an absolute path with root.
 ///
@@ -404,15 +406,15 @@
 /// - Input root MUST be the format like `/abc/def/`
 /// - Output will be the format like `path/to/root/path`.
 </span><span class="kw">pub fn </span>build_abs_path(root: <span class="kw-2">&amp;</span>str, path: <span class="kw-2">&amp;</span>str) -&gt; String {
-    <span class="macro">debug_assert!</span>(root.starts_with(<span class="string">&#39;/&#39;</span>), <span class="string">&quot;root must start with /&quot;</span>);
-    <span class="macro">debug_assert!</span>(root.ends_with(<span class="string">&#39;/&#39;</span>), <span class="string">&quot;root must end with /&quot;</span>);
+    <span class="macro">debug_assert!</span>(root.starts_with(<span class="string">'/'</span>), <span class="string">"root must start with /"</span>);
+    <span class="macro">debug_assert!</span>(root.ends_with(<span class="string">'/'</span>), <span class="string">"root must end with /"</span>);
 
     <span class="kw">let </span>p = root[<span class="number">1</span>..].to_string();
 
-    <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
+    <span class="kw">if </span>path == <span class="string">"/" </span>{
         p
     } <span class="kw">else </span>{
-        <span class="macro">debug_assert!</span>(!path.starts_with(<span class="string">&#39;/&#39;</span>), <span class="string">&quot;path must not start with /&quot;</span>);
+        <span class="macro">debug_assert!</span>(!path.starts_with(<span class="string">'/'</span>), <span class="string">"path must not start with /"</span>);
         p + path
     }
 }
@@ -424,15 +426,15 @@
 /// - Input root MUST be the format like `/abc/def/`
 /// - Output will be the format like `/path/to/root/path`.
 </span><span class="kw">pub fn </span>build_rooted_abs_path(root: <span class="kw-2">&amp;</span>str, path: <span class="kw-2">&amp;</span>str) -&gt; String {
-    <span class="macro">debug_assert!</span>(root.starts_with(<span class="string">&#39;/&#39;</span>), <span class="string">&quot;root must start with /&quot;</span>);
-    <span class="macro">debug_assert!</span>(root.ends_with(<span class="string">&#39;/&#39;</span>), <span class="string">&quot;root must end with /&quot;</span>);
+    <span class="macro">debug_assert!</span>(root.starts_with(<span class="string">'/'</span>), <span class="string">"root must start with /"</span>);
+    <span class="macro">debug_assert!</span>(root.ends_with(<span class="string">'/'</span>), <span class="string">"root must end with /"</span>);
 
     <span class="kw">let </span>p = root.to_string();
 
-    <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
+    <span class="kw">if </span>path == <span class="string">"/" </span>{
         p
     } <span class="kw">else </span>{
-        <span class="macro">debug_assert!</span>(!path.starts_with(<span class="string">&#39;/&#39;</span>), <span class="string">&quot;path must not start with /&quot;</span>);
+        <span class="macro">debug_assert!</span>(!path.starts_with(<span class="string">'/'</span>), <span class="string">"path must not start with /"</span>);
         p + path
     }
 }
@@ -445,18 +447,18 @@
 /// - Input path MUST start with root like `/abc/def/path/to/file`
 /// - Output will be the format like `path/to/file`.
 </span><span class="kw">pub fn </span>build_rel_path(root: <span class="kw-2">&amp;</span>str, path: <span class="kw-2">&amp;</span>str) -&gt; String {
-    <span class="macro">debug_assert!</span>(root != path, <span class="string">&quot;get rel path with root is invalid&quot;</span>);
+    <span class="macro">debug_assert!</span>(root != path, <span class="string">"get rel path with root is invalid"</span>);
 
-    <span class="kw">if </span>path.starts_with(<span class="string">&#39;/&#39;</span>) {
+    <span class="kw">if </span>path.starts_with(<span class="string">'/'</span>) {
         <span class="macro">debug_assert!</span>(
             path.starts_with(root),
-            <span class="string">&quot;path {path} doesn&#39;t start with root {root}&quot;
+            <span class="string">"path {path} doesn't start with root {root}"
         </span>);
         path[root.len()..].to_string()
     } <span class="kw">else </span>{
         <span class="macro">debug_assert!</span>(
             path.starts_with(<span class="kw-2">&amp;</span>root[<span class="number">1</span>..]),
-            <span class="string">&quot;path {path} doesn&#39;t start with root {root}&quot;
+            <span class="string">"path {path} doesn't start with root {root}"
         </span>);
         path[root.len() - <span class="number">1</span>..].to_string()
     }
@@ -464,8 +466,8 @@
 
 <span class="doccomment">/// Make sure all operation are constructed by normalized path:
 ///
-/// - Path endswith `/` means it&#39;s a dir path.
-/// - Otherwise, it&#39;s a file path.
+/// - Path endswith `/` means it's a dir path.
+/// - Otherwise, it's a file path.
 ///
 /// # Normalize Rules
 ///
@@ -476,24 +478,24 @@
 </span><span class="kw">pub fn </span>normalize_path(path: <span class="kw-2">&amp;</span>str) -&gt; String {
     <span class="comment">// - all whitespace has been trimmed.
     // - all leading `/` has been trimmed.
-    </span><span class="kw">let </span>path = path.trim().trim_start_matches(<span class="string">&#39;/&#39;</span>);
+    </span><span class="kw">let </span>path = path.trim().trim_start_matches(<span class="string">'/'</span>);
 
     <span class="comment">// Fast line for empty path.
     </span><span class="kw">if </span>path.is_empty() {
-        <span class="kw">return </span><span class="string">&quot;/&quot;</span>.to_string();
+        <span class="kw">return </span><span class="string">"/"</span>.to_string();
     }
 
-    <span class="kw">let </span>has_trailing = path.ends_with(<span class="string">&#39;/&#39;</span>);
+    <span class="kw">let </span>has_trailing = path.ends_with(<span class="string">'/'</span>);
 
     <span class="kw">let </span><span class="kw-2">mut </span>p = path
-        .split(<span class="string">&#39;/&#39;</span>)
+        .split(<span class="string">'/'</span>)
         .filter(|v| !v.is_empty())
         .collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;()
-        .join(<span class="string">&quot;/&quot;</span>);
+        .join(<span class="string">"/"</span>);
 
     <span class="comment">// Append trailing back if input path is endswith `/`.
     </span><span class="kw">if </span>has_trailing {
-        p.push(<span class="string">&#39;/&#39;</span>);
+        p.push(<span class="string">'/'</span>);
     }
 
     p
@@ -513,15 +515,15 @@
 /// Finally, we will got path like `/path/to/root/`.
 </span><span class="kw">pub fn </span>normalize_root(v: <span class="kw-2">&amp;</span>str) -&gt; String {
     <span class="kw">let </span><span class="kw-2">mut </span>v = v
-        .split(<span class="string">&#39;/&#39;</span>)
+        .split(<span class="string">'/'</span>)
         .filter(|v| !v.is_empty())
         .collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;()
-        .join(<span class="string">&quot;/&quot;</span>);
-    <span class="kw">if </span>!v.starts_with(<span class="string">&#39;/&#39;</span>) {
-        v.insert(<span class="number">0</span>, <span class="string">&#39;/&#39;</span>);
+        .join(<span class="string">"/"</span>);
+    <span class="kw">if </span>!v.starts_with(<span class="string">'/'</span>) {
+        v.insert(<span class="number">0</span>, <span class="string">'/'</span>);
     }
-    <span class="kw">if </span>!v.ends_with(<span class="string">&#39;/&#39;</span>) {
-        v.push(<span class="string">&#39;/&#39;</span>)
+    <span class="kw">if </span>!v.ends_with(<span class="string">'/'</span>) {
+        v.push(<span class="string">'/'</span>)
     }
     v
 }
@@ -529,22 +531,22 @@
 <span class="doccomment">/// Get basename from path.
 </span><span class="kw">pub fn </span>get_basename(path: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;</span>str {
     <span class="comment">// Handle root case
-    </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-        <span class="kw">return </span><span class="string">&quot;/&quot;</span>;
+    </span><span class="kw">if </span>path == <span class="string">"/" </span>{
+        <span class="kw">return </span><span class="string">"/"</span>;
     }
 
     <span class="comment">// Handle file case
-    </span><span class="kw">if </span>!path.ends_with(<span class="string">&#39;/&#39;</span>) {
+    </span><span class="kw">if </span>!path.ends_with(<span class="string">'/'</span>) {
         <span class="kw">return </span>path
-            .split(<span class="string">&#39;/&#39;</span>)
+            .split(<span class="string">'/'</span>)
             .last()
-            .expect(<span class="string">&quot;file path without name is invalid&quot;</span>);
+            .expect(<span class="string">"file path without name is invalid"</span>);
     }
 
     <span class="comment">// The idx of second `/` if path in reserve order.
     // - `abc/` =&gt; `None`
     // - `abc/def/` =&gt; `Some(3)`
-    </span><span class="kw">let </span>idx = path[..path.len() - <span class="number">1</span>].rfind(<span class="string">&#39;/&#39;</span>).map(|v| v + <span class="number">1</span>);
+    </span><span class="kw">let </span>idx = path[..path.len() - <span class="number">1</span>].rfind(<span class="string">'/'</span>).map(|v| v + <span class="number">1</span>);
 
     <span class="kw">match </span>idx {
         <span class="prelude-val">Some</span>(v) =&gt; {
@@ -557,46 +559,46 @@
 
 <span class="doccomment">/// Get parent from path.
 </span><span class="kw">pub fn </span>get_parent(path: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;</span>str {
-    <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-        <span class="kw">return </span><span class="string">&quot;/&quot;</span>;
+    <span class="kw">if </span>path == <span class="string">"/" </span>{
+        <span class="kw">return </span><span class="string">"/"</span>;
     }
 
-    <span class="kw">if </span>!path.ends_with(<span class="string">&#39;/&#39;</span>) {
+    <span class="kw">if </span>!path.ends_with(<span class="string">'/'</span>) {
         <span class="comment">// The idx of first `/` if path in reserve order.
         // - `abc` =&gt; `None`
         // - `abc/def` =&gt; `Some(3)`
-        </span><span class="kw">let </span>idx = path.rfind(<span class="string">&#39;/&#39;</span>);
+        </span><span class="kw">let </span>idx = path.rfind(<span class="string">'/'</span>);
 
         <span class="kw">return match </span>idx {
             <span class="prelude-val">Some</span>(v) =&gt; {
                 <span class="kw">let </span>(parent, <span class="kw">_</span>) = path.split_at(v + <span class="number">1</span>);
                 parent
             }
-            <span class="prelude-val">None </span>=&gt; <span class="string">&quot;/&quot;</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="string">"/"</span>,
         };
     }
 
     <span class="comment">// The idx of second `/` if path in reserve order.
     // - `abc/` =&gt; `None`
     // - `abc/def/` =&gt; `Some(3)`
-    </span><span class="kw">let </span>idx = path[..path.len() - <span class="number">1</span>].rfind(<span class="string">&#39;/&#39;</span>).map(|v| v + <span class="number">1</span>);
+    </span><span class="kw">let </span>idx = path[..path.len() - <span class="number">1</span>].rfind(<span class="string">'/'</span>).map(|v| v + <span class="number">1</span>);
 
     <span class="kw">match </span>idx {
         <span class="prelude-val">Some</span>(v) =&gt; {
             <span class="kw">let </span>(parent, <span class="kw">_</span>) = path.split_at(v);
             parent
         }
-        <span class="prelude-val">None </span>=&gt; <span class="string">&quot;/&quot;</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="string">"/"</span>,
     }
 }
 
 <span class="doccomment">/// Validate given path is match with given EntryMode.
 </span><span class="kw">pub fn </span>validate_path(path: <span class="kw-2">&amp;</span>str, mode: EntryMode) -&gt; bool {
-    <span class="macro">debug_assert!</span>(!path.is_empty(), <span class="string">&quot;input path should not be empty&quot;</span>);
+    <span class="macro">debug_assert!</span>(!path.is_empty(), <span class="string">"input path should not be empty"</span>);
 
     <span class="kw">match </span>mode {
-        EntryMode::FILE =&gt; !path.ends_with(<span class="string">&#39;/&#39;</span>),
-        EntryMode::DIR =&gt; path.ends_with(<span class="string">&#39;/&#39;</span>),
+        EntryMode::FILE =&gt; !path.ends_with(<span class="string">'/'</span>),
+        EntryMode::DIR =&gt; path.ends_with(<span class="string">'/'</span>),
         EntryMode::Unknown =&gt; <span class="bool-val">false</span>,
     }
 }
@@ -608,145 +610,145 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_normalize_path() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;file path&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abc&quot;</span>),
-            (<span class="string">&quot;dir path&quot;</span>, <span class="string">&quot;abc/&quot;</span>, <span class="string">&quot;abc/&quot;</span>),
-            (<span class="string">&quot;empty path&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;root path&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;root path with extra /&quot;</span>, <span class="string">&quot;///&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;abs file path&quot;</span>, <span class="string">&quot;/abc/def&quot;</span>, <span class="string">&quot;abc/def&quot;</span>),
-            (<span class="string">&quot;abs dir path&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>, <span class="string">&quot;abc/def/&quot;</span>),
-            (<span class="string">&quot;abs file path with extra /&quot;</span>, <span class="string">&quot;///abc/def&quot;</span>, <span class="string">&quot;abc/def&quot;</span>),
-            (<span class="string">&quot;abs dir path with extra /&quot;</span>, <span class="string">&quot;///abc/def/&quot;</span>, <span class="string">&quot;abc/def/&quot;</span>),
-            (<span class="string">&quot;file path contains ///&quot;</span>, <span class="string">&quot;abc///def&quot;</span>, <span class="string">&quot;abc/def&quot;</span>),
-            (<span class="string">&quot;dir path contains ///&quot;</span>, <span class="string">&quot;abc///def///&quot;</span>, <span class="string">&quot;abc/def/&quot;</span>),
-            (<span class="string">&quot;file with whitespace&quot;</span>, <span class="string">&quot;abc/def   &quot;</span>, <span class="string">&quot;abc/def&quot;</span>),
+            (<span class="string">"file path"</span>, <span class="string">"abc"</span>, <span class="string">"abc"</span>),
+            (<span class="string">"dir path"</span>, <span class="string">"abc/"</span>, <span class="string">"abc/"</span>),
+            (<span class="string">"empty path"</span>, <span class="string">""</span>, <span class="string">"/"</span>),
+            (<span class="string">"root path"</span>, <span class="string">"/"</span>, <span class="string">"/"</span>),
+            (<span class="string">"root path with extra /"</span>, <span class="string">"///"</span>, <span class="string">"/"</span>),
+            (<span class="string">"abs file path"</span>, <span class="string">"/abc/def"</span>, <span class="string">"abc/def"</span>),
+            (<span class="string">"abs dir path"</span>, <span class="string">"/abc/def/"</span>, <span class="string">"abc/def/"</span>),
+            (<span class="string">"abs file path with extra /"</span>, <span class="string">"///abc/def"</span>, <span class="string">"abc/def"</span>),
+            (<span class="string">"abs dir path with extra /"</span>, <span class="string">"///abc/def/"</span>, <span class="string">"abc/def/"</span>),
+            (<span class="string">"file path contains ///"</span>, <span class="string">"abc///def"</span>, <span class="string">"abc/def"</span>),
+            (<span class="string">"dir path contains ///"</span>, <span class="string">"abc///def///"</span>, <span class="string">"abc/def/"</span>),
+            (<span class="string">"file with whitespace"</span>, <span class="string">"abc/def   "</span>, <span class="string">"abc/def"</span>),
         ];
 
         <span class="kw">for </span>(name, input, expect) <span class="kw">in </span>cases {
-            <span class="macro">assert_eq!</span>(normalize_path(input), expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(normalize_path(input), expect, <span class="string">"{name}"</span>)
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_normalize_root() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;dir path&quot;</span>, <span class="string">&quot;abc/&quot;</span>, <span class="string">&quot;/abc/&quot;</span>),
-            (<span class="string">&quot;empty path&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;root path&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;root path with extra /&quot;</span>, <span class="string">&quot;///&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;abs dir path&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>),
-            (<span class="string">&quot;abs file path with extra /&quot;</span>, <span class="string">&quot;///abc/def&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>),
-            (<span class="string">&quot;abs dir path with extra /&quot;</span>, <span class="string">&quot;///abc/def/&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>),
-            (<span class="string">&quot;dir path contains ///&quot;</span>, <span class="string">&quot;abc///def///&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>),
+            (<span class="string">"dir path"</span>, <span class="string">"abc/"</span>, <span class="string">"/abc/"</span>),
+            (<span class="string">"empty path"</span>, <span class="string">""</span>, <span class="string">"/"</span>),
+            (<span class="string">"root path"</span>, <span class="string">"/"</span>, <span class="string">"/"</span>),
+            (<span class="string">"root path with extra /"</span>, <span class="string">"///"</span>, <span class="string">"/"</span>),
+            (<span class="string">"abs dir path"</span>, <span class="string">"/abc/def/"</span>, <span class="string">"/abc/def/"</span>),
+            (<span class="string">"abs file path with extra /"</span>, <span class="string">"///abc/def"</span>, <span class="string">"/abc/def/"</span>),
+            (<span class="string">"abs dir path with extra /"</span>, <span class="string">"///abc/def/"</span>, <span class="string">"/abc/def/"</span>),
+            (<span class="string">"dir path contains ///"</span>, <span class="string">"abc///def///"</span>, <span class="string">"/abc/def/"</span>),
         ];
 
         <span class="kw">for </span>(name, input, expect) <span class="kw">in </span>cases {
-            <span class="macro">assert_eq!</span>(normalize_root(input), expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(normalize_root(input), expect, <span class="string">"{name}"</span>)
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_get_basename() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;file abs path&quot;</span>, <span class="string">&quot;foo/bar/baz.txt&quot;</span>, <span class="string">&quot;baz.txt&quot;</span>),
-            (<span class="string">&quot;file rel path&quot;</span>, <span class="string">&quot;bar/baz.txt&quot;</span>, <span class="string">&quot;baz.txt&quot;</span>),
-            (<span class="string">&quot;file walk&quot;</span>, <span class="string">&quot;foo/bar/baz&quot;</span>, <span class="string">&quot;baz&quot;</span>),
-            (<span class="string">&quot;dir rel path&quot;</span>, <span class="string">&quot;bar/baz/&quot;</span>, <span class="string">&quot;baz/&quot;</span>),
-            (<span class="string">&quot;dir root&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;dir walk&quot;</span>, <span class="string">&quot;foo/bar/baz/&quot;</span>, <span class="string">&quot;baz/&quot;</span>),
+            (<span class="string">"file abs path"</span>, <span class="string">"foo/bar/baz.txt"</span>, <span class="string">"baz.txt"</span>),
+            (<span class="string">"file rel path"</span>, <span class="string">"bar/baz.txt"</span>, <span class="string">"baz.txt"</span>),
+            (<span class="string">"file walk"</span>, <span class="string">"foo/bar/baz"</span>, <span class="string">"baz"</span>),
+            (<span class="string">"dir rel path"</span>, <span class="string">"bar/baz/"</span>, <span class="string">"baz/"</span>),
+            (<span class="string">"dir root"</span>, <span class="string">"/"</span>, <span class="string">"/"</span>),
+            (<span class="string">"dir walk"</span>, <span class="string">"foo/bar/baz/"</span>, <span class="string">"baz/"</span>),
         ];
 
         <span class="kw">for </span>(name, input, expect) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = get_basename(input);
-            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">"{name}"</span>)
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_get_parent() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;file abs path&quot;</span>, <span class="string">&quot;foo/bar/baz.txt&quot;</span>, <span class="string">&quot;foo/bar/&quot;</span>),
-            (<span class="string">&quot;file rel path&quot;</span>, <span class="string">&quot;bar/baz.txt&quot;</span>, <span class="string">&quot;bar/&quot;</span>),
-            (<span class="string">&quot;file walk&quot;</span>, <span class="string">&quot;foo/bar/baz&quot;</span>, <span class="string">&quot;foo/bar/&quot;</span>),
-            (<span class="string">&quot;dir rel path&quot;</span>, <span class="string">&quot;bar/baz/&quot;</span>, <span class="string">&quot;bar/&quot;</span>),
-            (<span class="string">&quot;dir root&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;dir walk&quot;</span>, <span class="string">&quot;foo/bar/baz/&quot;</span>, <span class="string">&quot;foo/bar/&quot;</span>),
+            (<span class="string">"file abs path"</span>, <span class="string">"foo/bar/baz.txt"</span>, <span class="string">"foo/bar/"</span>),
+            (<span class="string">"file rel path"</span>, <span class="string">"bar/baz.txt"</span>, <span class="string">"bar/"</span>),
+            (<span class="string">"file walk"</span>, <span class="string">"foo/bar/baz"</span>, <span class="string">"foo/bar/"</span>),
+            (<span class="string">"dir rel path"</span>, <span class="string">"bar/baz/"</span>, <span class="string">"bar/"</span>),
+            (<span class="string">"dir root"</span>, <span class="string">"/"</span>, <span class="string">"/"</span>),
+            (<span class="string">"dir walk"</span>, <span class="string">"foo/bar/baz/"</span>, <span class="string">"foo/bar/"</span>),
         ];
 
         <span class="kw">for </span>(name, input, expect) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = get_parent(input);
-            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">"{name}"</span>)
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_build_abs_path() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;input abs file&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;abc/&quot;</span>),
-            (<span class="string">&quot;input dir&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;def/&quot;</span>, <span class="string">&quot;abc/def/&quot;</span>),
-            (<span class="string">&quot;input file&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;def&quot;</span>, <span class="string">&quot;abc/def&quot;</span>),
-            (<span class="string">&quot;input abs file with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;&quot;</span>),
-            (<span class="string">&quot;input empty with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>),
-            (<span class="string">&quot;input dir with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;def/&quot;</span>, <span class="string">&quot;def/&quot;</span>),
-            (<span class="string">&quot;input file with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;def&quot;</span>, <span class="string">&quot;def&quot;</span>),
+            (<span class="string">"input abs file"</span>, <span class="string">"/abc/"</span>, <span class="string">"/"</span>, <span class="string">"abc/"</span>),
+            (<span class="string">"input dir"</span>, <span class="string">"/abc/"</span>, <span class="string">"def/"</span>, <span class="string">"abc/def/"</span>),
+            (<span class="string">"input file"</span>, <span class="string">"/abc/"</span>, <span class="string">"def"</span>, <span class="string">"abc/def"</span>),
+            (<span class="string">"input abs file with root /"</span>, <span class="string">"/"</span>, <span class="string">"/"</span>, <span class="string">""</span>),
+            (<span class="string">"input empty with root /"</span>, <span class="string">"/"</span>, <span class="string">""</span>, <span class="string">""</span>),
+            (<span class="string">"input dir with root /"</span>, <span class="string">"/"</span>, <span class="string">"def/"</span>, <span class="string">"def/"</span>),
+            (<span class="string">"input file with root /"</span>, <span class="string">"/"</span>, <span class="string">"def"</span>, <span class="string">"def"</span>),
         ];
 
         <span class="kw">for </span>(name, root, input, expect) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = build_abs_path(root, input);
-            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">"{name}"</span>)
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_build_rooted_abs_path() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;input abs file&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/abc/&quot;</span>),
-            (<span class="string">&quot;input dir&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;def/&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>),
-            (<span class="string">&quot;input file&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;def&quot;</span>, <span class="string">&quot;/abc/def&quot;</span>),
-            (<span class="string">&quot;input abs file with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;/&quot;</span>),
-            (<span class="string">&quot;input dir with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;def/&quot;</span>, <span class="string">&quot;/def/&quot;</span>),
-            (<span class="string">&quot;input file with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;def&quot;</span>, <span class="string">&quot;/def&quot;</span>),
+            (<span class="string">"input abs file"</span>, <span class="string">"/abc/"</span>, <span class="string">"/"</span>, <span class="string">"/abc/"</span>),
+            (<span class="string">"input dir"</span>, <span class="string">"/abc/"</span>, <span class="string">"def/"</span>, <span class="string">"/abc/def/"</span>),
+            (<span class="string">"input file"</span>, <span class="string">"/abc/"</span>, <span class="string">"def"</span>, <span class="string">"/abc/def"</span>),
+            (<span class="string">"input abs file with root /"</span>, <span class="string">"/"</span>, <span class="string">"/"</span>, <span class="string">"/"</span>),
+            (<span class="string">"input dir with root /"</span>, <span class="string">"/"</span>, <span class="string">"def/"</span>, <span class="string">"/def/"</span>),
+            (<span class="string">"input file with root /"</span>, <span class="string">"/"</span>, <span class="string">"def"</span>, <span class="string">"/def"</span>),
         ];
 
         <span class="kw">for </span>(name, root, input, expect) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = build_rooted_abs_path(root, input);
-            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">"{name}"</span>)
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_build_rel_path() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;input abs file&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;/abc/def&quot;</span>, <span class="string">&quot;def&quot;</span>),
-            (<span class="string">&quot;input dir&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;/abc/def/&quot;</span>, <span class="string">&quot;def/&quot;</span>),
-            (<span class="string">&quot;input file&quot;</span>, <span class="string">&quot;/abc/&quot;</span>, <span class="string">&quot;abc/def&quot;</span>, <span class="string">&quot;def&quot;</span>),
-            (<span class="string">&quot;input dir with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;def/&quot;</span>, <span class="string">&quot;def/&quot;</span>),
-            (<span class="string">&quot;input file with root /&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="string">&quot;def&quot;</span>, <span class="string">&quot;def&quot;</span>),
+            (<span class="string">"input abs file"</span>, <span class="string">"/abc/"</span>, <span class="string">"/abc/def"</span>, <span class="string">"def"</span>),
+            (<span class="string">"input dir"</span>, <span class="string">"/abc/"</span>, <span class="string">"/abc/def/"</span>, <span class="string">"def/"</span>),
+            (<span class="string">"input file"</span>, <span class="string">"/abc/"</span>, <span class="string">"abc/def"</span>, <span class="string">"def"</span>),
+            (<span class="string">"input dir with root /"</span>, <span class="string">"/"</span>, <span class="string">"def/"</span>, <span class="string">"def/"</span>),
+            (<span class="string">"input file with root /"</span>, <span class="string">"/"</span>, <span class="string">"def"</span>, <span class="string">"def"</span>),
         ];
 
         <span class="kw">for </span>(name, root, input, expect) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = build_rel_path(root, input);
-            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">"{name}"</span>)
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_validate_path() {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;input file with mode file&quot;</span>, <span class="string">&quot;abc&quot;</span>, EntryMode::FILE, <span class="bool-val">true</span>),
-            (<span class="string">&quot;input file with mode dir&quot;</span>, <span class="string">&quot;abc&quot;</span>, EntryMode::DIR, <span class="bool-val">false</span>),
-            (<span class="string">&quot;input dir with mode file&quot;</span>, <span class="string">&quot;abc/&quot;</span>, EntryMode::FILE, <span class="bool-val">false</span>),
-            (<span class="string">&quot;input dir with mode dir&quot;</span>, <span class="string">&quot;abc/&quot;</span>, EntryMode::DIR, <span class="bool-val">true</span>),
-            (<span class="string">&quot;root with mode dir&quot;</span>, <span class="string">&quot;/&quot;</span>, EntryMode::DIR, <span class="bool-val">true</span>),
+            (<span class="string">"input file with mode file"</span>, <span class="string">"abc"</span>, EntryMode::FILE, <span class="bool-val">true</span>),
+            (<span class="string">"input file with mode dir"</span>, <span class="string">"abc"</span>, EntryMode::DIR, <span class="bool-val">false</span>),
+            (<span class="string">"input dir with mode file"</span>, <span class="string">"abc/"</span>, EntryMode::FILE, <span class="bool-val">false</span>),
+            (<span class="string">"input dir with mode dir"</span>, <span class="string">"abc/"</span>, EntryMode::DIR, <span class="bool-val">true</span>),
+            (<span class="string">"root with mode dir"</span>, <span class="string">"/"</span>, EntryMode::DIR, <span class="bool-val">true</span>),
             (
-                <span class="string">&quot;input file with mode unknown&quot;</span>,
-                <span class="string">&quot;abc&quot;</span>,
+                <span class="string">"input file with mode unknown"</span>,
+                <span class="string">"abc"</span>,
                 EntryMode::Unknown,
                 <span class="bool-val">false</span>,
             ),
             (
-                <span class="string">&quot;input dir with mode unknown&quot;</span>,
-                <span class="string">&quot;abc/&quot;</span>,
+                <span class="string">"input dir with mode unknown"</span>,
+                <span class="string">"abc/"</span>,
                 EntryMode::Unknown,
                 <span class="bool-val">false</span>,
             ),
@@ -754,7 +756,7 @@
 
         <span class="kw">for </span>(name, path, mode, expect) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = validate_path(path, mode);
-            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(actual, expect, <span class="string">"{name}"</span>)
         }
     }
 }

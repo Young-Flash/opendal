@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/layers/immutable_index.rs`."><title>immutable_index.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/layers/immutable_index.rs`."><title>immutable_index.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -444,14 +446,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -482,7 +484,7 @@
 ///
 /// let mut iil = ImmutableIndexLayer::default();
 ///
-/// for i in [&quot;file&quot;, &quot;dir/&quot;, &quot;dir/file&quot;, &quot;dir_without_prefix/file&quot;] {
+/// for i in ["file", "dir/", "dir/file", "dir_without_prefix/file"] {
 ///     iil.insert(i.to_string())
 /// }
 ///
@@ -551,7 +553,7 @@
                 <span class="kw">continue</span>;
             }
 
-            <span class="kw">match </span>i[path.len()..].find(<span class="string">&#39;/&#39;</span>) {
+            <span class="kw">match </span>i[path.len()..].find(<span class="string">'/'</span>) {
                 <span class="comment">// File `/abc/def.csv` must belong to `/abc`
                 </span><span class="prelude-val">None </span>=&gt; {
                     res.insert(i.to_string());
@@ -564,7 +566,7 @@
                         <span class="comment">// Dir `/abc/def/` belongs to `/abc/`
                         </span>res.insert(i.to_string());
                     } <span class="kw">else </span>{
-                        <span class="comment">// File/Dir `/abc/def/xyz` doesn&#39;t belong to `/abc`.
+                        <span class="comment">// File/Dir `/abc/def/xyz` doesn't belong to `/abc`.
                         // But we need to list `/abc/def` out so that we can walk down.
                         </span>res.insert(i[..dir_idx].to_string());
                     }
@@ -576,8 +578,8 @@
     }
 }
 
-<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
-#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">"wasm32"</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">"wasm32"</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>ImmutableIndexAccessor&lt;A&gt; {
     <span class="kw">type </span>Inner = A;
     <span class="kw">type </span>Reader = A::Reader;
@@ -608,8 +610,8 @@
 
     <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>path = path;
-        <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            path = <span class="string">&quot;&quot;
+        <span class="kw">if </span>path == <span class="string">"/" </span>{
+            path = <span class="string">""
         </span>}
 
         <span class="kw">let </span>idx = <span class="kw">if </span>args.recursive() {
@@ -635,8 +637,8 @@
 
     <span class="kw">fn </span>blocking_list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::BlockingLister)&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>path = path;
-        <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            path = <span class="string">&quot;&quot;
+        <span class="kw">if </span>path == <span class="string">"/" </span>{
+            path = <span class="string">""
         </span>}
 
         <span class="kw">let </span>idx = <span class="kw">if </span>args.recursive() {
@@ -662,7 +664,7 @@
 
     <span class="kw">fn </span>inner_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;oio::Entry&gt; {
         <span class="self">self</span>.idx.next().map(|v| {
-            <span class="kw">let </span>mode = <span class="kw">if </span>v.ends_with(<span class="string">&#39;/&#39;</span>) {
+            <span class="kw">let </span>mode = <span class="kw">if </span>v.ends_with(<span class="string">'/'</span>) {
                 EntryMode::DIR
             } <span class="kw">else </span>{
                 EntryMode::FILE
@@ -674,7 +676,7 @@
 }
 
 <span class="kw">impl </span>oio::List <span class="kw">for </span>ImmutableDir {
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
         Poll::Ready(<span class="prelude-val">Ok</span>(<span class="self">self</span>.inner_next()))
     }
 }
@@ -705,13 +707,13 @@
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
         <span class="kw">let </span><span class="kw-2">mut </span>iil = ImmutableIndexLayer::default();
-        <span class="kw">for </span>i <span class="kw">in </span>[<span class="string">&quot;file&quot;</span>, <span class="string">&quot;dir/&quot;</span>, <span class="string">&quot;dir/file&quot;</span>, <span class="string">&quot;dir_without_prefix/file&quot;</span>] {
+        <span class="kw">for </span>i <span class="kw">in </span>[<span class="string">"file"</span>, <span class="string">"dir/"</span>, <span class="string">"dir/file"</span>, <span class="string">"dir_without_prefix/file"</span>] {
             iil.insert(i.to_string())
         }
 
         <span class="kw">let </span>op = Operator::new(Http::from_map({
             <span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
-            map.insert(<span class="string">&quot;endpoint&quot;</span>.to_string(), <span class="string">&quot;https://xuanwo.io&quot;</span>.to_string());
+            map.insert(<span class="string">"endpoint"</span>.to_string(), <span class="string">"https://xuanwo.io"</span>.to_string());
 
             map
         }))<span class="question-mark">?
@@ -721,20 +723,20 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
         <span class="kw">let </span><span class="kw-2">mut </span>set = HashSet::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister(<span class="string">&quot;&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister(<span class="string">""</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">while let </span><span class="prelude-val">Some</span>(entry) = ds.try_next().<span class="kw">await</span><span class="question-mark">? </span>{
-            <span class="macro">debug!</span>(<span class="string">&quot;got entry: {}&quot;</span>, entry.path());
+            <span class="macro">debug!</span>(<span class="string">"got entry: {}"</span>, entry.path());
             <span class="macro">assert!</span>(
                 set.insert(entry.path().to_string()),
-                <span class="string">&quot;duplicated value: {}&quot;</span>,
+                <span class="string">"duplicated value: {}"</span>,
                 entry.path()
             );
             map.insert(entry.path().to_string(), entry.metadata().mode());
         }
 
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;file&quot;</span>], EntryMode::FILE);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dir/&quot;</span>], EntryMode::DIR);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dir_without_prefix/&quot;</span>], EntryMode::DIR);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"file"</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dir/"</span>], EntryMode::DIR);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dir_without_prefix/"</span>], EntryMode::DIR);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -743,13 +745,13 @@
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
         <span class="kw">let </span><span class="kw-2">mut </span>iil = ImmutableIndexLayer::default();
-        <span class="kw">for </span>i <span class="kw">in </span>[<span class="string">&quot;file&quot;</span>, <span class="string">&quot;dir/&quot;</span>, <span class="string">&quot;dir/file&quot;</span>, <span class="string">&quot;dir_without_prefix/file&quot;</span>] {
+        <span class="kw">for </span>i <span class="kw">in </span>[<span class="string">"file"</span>, <span class="string">"dir/"</span>, <span class="string">"dir/file"</span>, <span class="string">"dir_without_prefix/file"</span>] {
             iil.insert(i.to_string())
         }
 
         <span class="kw">let </span>op = Operator::new(Http::from_map({
             <span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
-            map.insert(<span class="string">&quot;endpoint&quot;</span>.to_string(), <span class="string">&quot;https://xuanwo.io&quot;</span>.to_string());
+            map.insert(<span class="string">"endpoint"</span>.to_string(), <span class="string">"https://xuanwo.io"</span>.to_string());
 
             map
         }))<span class="question-mark">?
@@ -757,24 +759,24 @@
         .layer(iil)
         .finish();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister_with(<span class="string">&quot;/&quot;</span>).recursive(<span class="bool-val">true</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister_with(<span class="string">"/"</span>).recursive(<span class="bool-val">true</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>set = HashSet::new();
         <span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
         <span class="kw">while let </span><span class="prelude-val">Some</span>(entry) = ds.try_next().<span class="kw">await</span><span class="question-mark">? </span>{
-            <span class="macro">debug!</span>(<span class="string">&quot;got entry: {}&quot;</span>, entry.path());
+            <span class="macro">debug!</span>(<span class="string">"got entry: {}"</span>, entry.path());
             <span class="macro">assert!</span>(
                 set.insert(entry.path().to_string()),
-                <span class="string">&quot;duplicated value: {}&quot;</span>,
+                <span class="string">"duplicated value: {}"</span>,
                 entry.path()
             );
             map.insert(entry.path().to_string(), entry.metadata().mode());
         }
 
-        <span class="macro">debug!</span>(<span class="string">&quot;current files: {:?}&quot;</span>, map);
+        <span class="macro">debug!</span>(<span class="string">"current files: {:?}"</span>, map);
 
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;file&quot;</span>], EntryMode::FILE);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dir/&quot;</span>], EntryMode::DIR);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dir_without_prefix/file&quot;</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"file"</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dir/"</span>], EntryMode::DIR);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dir_without_prefix/file"</span>], EntryMode::FILE);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -784,16 +786,16 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>iil = ImmutableIndexLayer::default();
         <span class="kw">for </span>i <span class="kw">in </span>[
-            <span class="string">&quot;dataset/stateful/ontime_2007_200.csv&quot;</span>,
-            <span class="string">&quot;dataset/stateful/ontime_2008_200.csv&quot;</span>,
-            <span class="string">&quot;dataset/stateful/ontime_2009_200.csv&quot;</span>,
+            <span class="string">"dataset/stateful/ontime_2007_200.csv"</span>,
+            <span class="string">"dataset/stateful/ontime_2008_200.csv"</span>,
+            <span class="string">"dataset/stateful/ontime_2009_200.csv"</span>,
         ] {
             iil.insert(i.to_string())
         }
 
         <span class="kw">let </span>op = Operator::new(Http::from_map({
             <span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
-            map.insert(<span class="string">&quot;endpoint&quot;</span>.to_string(), <span class="string">&quot;https://xuanwo.io&quot;</span>.to_string());
+            map.insert(<span class="string">"endpoint"</span>.to_string(), <span class="string">"https://xuanwo.io"</span>.to_string());
 
             map
         }))<span class="question-mark">?
@@ -804,35 +806,35 @@
         <span class="comment">//  List /
         </span><span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
         <span class="kw">let </span><span class="kw-2">mut </span>set = HashSet::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister(<span class="string">&quot;/&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister(<span class="string">"/"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">while let </span><span class="prelude-val">Some</span>(entry) = ds.try_next().<span class="kw">await</span><span class="question-mark">? </span>{
             <span class="macro">assert!</span>(
                 set.insert(entry.path().to_string()),
-                <span class="string">&quot;duplicated value: {}&quot;</span>,
+                <span class="string">"duplicated value: {}"</span>,
                 entry.path()
             );
             map.insert(entry.path().to_string(), entry.metadata().mode());
         }
 
         <span class="macro">assert_eq!</span>(map.len(), <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dataset/&quot;</span>], EntryMode::DIR);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dataset/"</span>], EntryMode::DIR);
 
         <span class="comment">//  List dataset/stateful/
         </span><span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
         <span class="kw">let </span><span class="kw-2">mut </span>set = HashSet::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister(<span class="string">&quot;dataset/stateful/&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister(<span class="string">"dataset/stateful/"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">while let </span><span class="prelude-val">Some</span>(entry) = ds.try_next().<span class="kw">await</span><span class="question-mark">? </span>{
             <span class="macro">assert!</span>(
                 set.insert(entry.path().to_string()),
-                <span class="string">&quot;duplicated value: {}&quot;</span>,
+                <span class="string">"duplicated value: {}"</span>,
                 entry.path()
             );
             map.insert(entry.path().to_string(), entry.metadata().mode());
         }
 
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dataset/stateful/ontime_2007_200.csv&quot;</span>], EntryMode::FILE);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dataset/stateful/ontime_2008_200.csv&quot;</span>], EntryMode::FILE);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dataset/stateful/ontime_2009_200.csv&quot;</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dataset/stateful/ontime_2007_200.csv"</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dataset/stateful/ontime_2008_200.csv"</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dataset/stateful/ontime_2009_200.csv"</span>], EntryMode::FILE);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -842,16 +844,16 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>iil = ImmutableIndexLayer::default();
         <span class="kw">for </span>i <span class="kw">in </span>[
-            <span class="string">&quot;dataset/stateful/ontime_2007_200.csv&quot;</span>,
-            <span class="string">&quot;dataset/stateful/ontime_2008_200.csv&quot;</span>,
-            <span class="string">&quot;dataset/stateful/ontime_2009_200.csv&quot;</span>,
+            <span class="string">"dataset/stateful/ontime_2007_200.csv"</span>,
+            <span class="string">"dataset/stateful/ontime_2008_200.csv"</span>,
+            <span class="string">"dataset/stateful/ontime_2009_200.csv"</span>,
         ] {
             iil.insert(i.to_string())
         }
 
         <span class="kw">let </span>op = Operator::new(Http::from_map({
             <span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
-            map.insert(<span class="string">&quot;endpoint&quot;</span>.to_string(), <span class="string">&quot;https://xuanwo.io&quot;</span>.to_string());
+            map.insert(<span class="string">"endpoint"</span>.to_string(), <span class="string">"https://xuanwo.io"</span>.to_string());
 
             map
         }))<span class="question-mark">?
@@ -859,24 +861,24 @@
         .layer(iil)
         .finish();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister_with(<span class="string">&quot;/&quot;</span>).recursive(<span class="bool-val">true</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = op.lister_with(<span class="string">"/"</span>).recursive(<span class="bool-val">true</span>).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
         <span class="kw">let </span><span class="kw-2">mut </span>set = HashSet::new();
         <span class="kw">while let </span><span class="prelude-val">Some</span>(entry) = ds.try_next().<span class="kw">await</span><span class="question-mark">? </span>{
             <span class="macro">assert!</span>(
                 set.insert(entry.path().to_string()),
-                <span class="string">&quot;duplicated value: {}&quot;</span>,
+                <span class="string">"duplicated value: {}"</span>,
                 entry.path()
             );
             map.insert(entry.path().to_string(), entry.metadata().mode());
         }
 
-        <span class="macro">debug!</span>(<span class="string">&quot;current files: {:?}&quot;</span>, map);
+        <span class="macro">debug!</span>(<span class="string">"current files: {:?}"</span>, map);
 
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dataset/stateful/ontime_2007_200.csv&quot;</span>], EntryMode::FILE);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dataset/stateful/ontime_2008_200.csv&quot;</span>], EntryMode::FILE);
-        <span class="macro">assert_eq!</span>(map[<span class="string">&quot;dataset/stateful/ontime_2009_200.csv&quot;</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dataset/stateful/ontime_2007_200.csv"</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dataset/stateful/ontime_2008_200.csv"</span>], EntryMode::FILE);
+        <span class="macro">assert_eq!</span>(map[<span class="string">"dataset/stateful/ontime_2009_200.csv"</span>], EntryMode::FILE);
         <span class="prelude-val">Ok</span>(())
     }
 }

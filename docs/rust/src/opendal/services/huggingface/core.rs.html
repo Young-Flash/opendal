@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/huggingface/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/huggingface/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -411,14 +413,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -446,12 +448,12 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HuggingfaceCore {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;HuggingfaceCore&quot;</span>)
-            .field(<span class="string">&quot;repo_type&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.repo_type)
-            .field(<span class="string">&quot;repo_id&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id)
-            .field(<span class="string">&quot;revision&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.revision)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"HuggingfaceCore"</span>)
+            .field(<span class="string">"repo_type"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.repo_type)
+            .field(<span class="string">"repo_id"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id)
+            .field(<span class="string">"revision"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.revision)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .finish_non_exhaustive()
     }
 }
@@ -459,16 +461,16 @@
 <span class="kw">impl </span>HuggingfaceCore {
     <span class="kw">pub async fn </span>hf_path_info(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_end_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_end_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span>url = <span class="kw">match </span><span class="self">self</span>.repo_type {
             RepoType::Model =&gt; <span class="macro">format!</span>(
-                <span class="string">&quot;https://huggingface.co/api/models/{}/paths-info/{}&quot;</span>,
+                <span class="string">"https://huggingface.co/api/models/{}/paths-info/{}"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id, <span class="kw-2">&amp;</span><span class="self">self</span>.revision
             ),
             RepoType::Dataset =&gt; <span class="macro">format!</span>(
-                <span class="string">&quot;https://huggingface.co/api/datasets/{}/paths-info/{}&quot;</span>,
+                <span class="string">"https://huggingface.co/api/datasets/{}/paths-info/{}"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id, <span class="kw-2">&amp;</span><span class="self">self</span>.revision
             ),
         };
@@ -480,9 +482,9 @@
             req = req.header(header::AUTHORIZATION, auth_header_content);
         }
 
-        req = req.header(header::CONTENT_TYPE, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);
+        req = req.header(header::CONTENT_TYPE, <span class="string">"application/x-www-form-urlencoded"</span>);
 
-        <span class="kw">let </span>req_body = <span class="macro">format!</span>(<span class="string">&quot;paths={}&amp;expand=True&quot;</span>, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>req_body = <span class="macro">format!</span>(<span class="string">"paths={}&amp;expand=True"</span>, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span>req = req
             .body(AsyncBody::Bytes(Bytes::from(req_body)))
@@ -497,18 +499,18 @@
         recursive: bool,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_end_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_end_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="kw">match </span><span class="self">self</span>.repo_type {
             RepoType::Model =&gt; <span class="macro">format!</span>(
-                <span class="string">&quot;https://huggingface.co/api/models/{}/tree/{}/{}?expand=True&quot;</span>,
+                <span class="string">"https://huggingface.co/api/models/{}/tree/{}/{}?expand=True"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.revision,
                 percent_encode_path(<span class="kw-2">&amp;</span>p)
             ),
             RepoType::Dataset =&gt; <span class="macro">format!</span>(
-                <span class="string">&quot;https://huggingface.co/api/datasets/{}/tree/{}/{}?expand=True&quot;</span>,
+                <span class="string">"https://huggingface.co/api/datasets/{}/tree/{}/{}?expand=True"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.revision,
                 percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -516,7 +518,7 @@
         };
 
         <span class="kw">if </span>recursive {
-            url.push_str(<span class="string">&quot;&amp;recursive=True&quot;</span>);
+            url.push_str(<span class="string">"&amp;recursive=True"</span>);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
@@ -535,18 +537,18 @@
 
     <span class="kw">pub async fn </span>hf_resolve(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, arg: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_end_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_end_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span>url = <span class="kw">match </span><span class="self">self</span>.repo_type {
             RepoType::Model =&gt; <span class="macro">format!</span>(
-                <span class="string">&quot;https://huggingface.co/{}/resolve/{}/{}&quot;</span>,
+                <span class="string">"https://huggingface.co/{}/resolve/{}/{}"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.revision,
                 percent_encode_path(<span class="kw-2">&amp;</span>p)
             ),
             RepoType::Dataset =&gt; <span class="macro">format!</span>(
-                <span class="string">&quot;https://huggingface.co/datasets/{}/resolve/{}/{}&quot;</span>,
+                <span class="string">"https://huggingface.co/datasets/{}/resolve/{}/{}"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.revision,
                 percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -574,10 +576,10 @@
 }
 
 <span class="attr">#[derive(Deserialize, Eq, PartialEq, Debug)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 #[allow(dead_code)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>HuggingfaceStatus {
-    <span class="attr">#[serde(rename = <span class="string">&quot;type&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"type"</span>)]
     </span><span class="kw">pub </span>type_: String,
     <span class="kw">pub </span>oid: String,
     <span class="kw">pub </span>size: u64,
@@ -588,7 +590,7 @@
 }
 
 <span class="attr">#[derive(Deserialize, Eq, PartialEq, Debug)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 #[allow(dead_code)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>HuggingfaceLfs {
     <span class="kw">pub </span>oid: String,
@@ -597,7 +599,7 @@
 }
 
 <span class="attr">#[derive(Deserialize, Eq, PartialEq, Debug)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 #[allow(dead_code)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>HuggingfaceLastCommit {
     <span class="kw">pub </span>id: String,
@@ -606,7 +608,7 @@
 }
 
 <span class="attr">#[derive(Deserialize, Eq, PartialEq, Debug)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 #[allow(dead_code)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>HuggingfaceSecurity {
     <span class="kw">pub </span>blob_id: String,
@@ -618,14 +620,14 @@
 
 <span class="attr">#[derive(Deserialize, Eq, PartialEq, Debug)]
 #[allow(dead_code)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>HuggingfaceAvScan {
     <span class="kw">pub </span>virus_found: bool,
     <span class="kw">pub </span>virus_names: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
 }
 
 <span class="attr">#[derive(Deserialize, Eq, PartialEq, Debug)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 #[allow(dead_code)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>HuggingfacePickleImportScan {
     <span class="kw">pub </span>highest_safety_level: String,
@@ -651,27 +653,27 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>parse_list_response_test() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>resp = Bytes::from(
-            <span class="string">r#&quot;
+            <span class="string">r#"
             [
                 {
-                    &quot;type&quot;: &quot;file&quot;,
-                    &quot;oid&quot;: &quot;45fa7c3d85ee7dd4139adbc056da25ae136a65f2&quot;,
-                    &quot;size&quot;: 69512435,
-                    &quot;lfs&quot;: {
-                        &quot;oid&quot;: &quot;b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c&quot;,
-                        &quot;size&quot;: 69512435,
-                        &quot;pointerSize&quot;: 133
+                    "type": "file",
+                    "oid": "45fa7c3d85ee7dd4139adbc056da25ae136a65f2",
+                    "size": 69512435,
+                    "lfs": {
+                        "oid": "b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c",
+                        "size": 69512435,
+                        "pointerSize": 133
                     },
-                    &quot;path&quot;: &quot;maelstrom/lib/maelstrom.jar&quot;
+                    "path": "maelstrom/lib/maelstrom.jar"
                 },
                 {
-                    &quot;type&quot;: &quot;directory&quot;,
-                    &quot;oid&quot;: &quot;b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c&quot;,
-                    &quot;size&quot;: 69512435,
-                    &quot;path&quot;: &quot;maelstrom/lib/plugins&quot;
+                    "type": "directory",
+                    "oid": "b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c",
+                    "size": 69512435,
+                    "path": "maelstrom/lib/plugins"
                 }
             ]
-            &quot;#</span>,
+            "#</span>,
         );
 
         <span class="kw">let </span>decoded_response = serde_json::from_slice::&lt;Vec&lt;HuggingfaceStatus&gt;&gt;(<span class="kw-2">&amp;</span>resp)
@@ -680,15 +682,15 @@
         <span class="macro">assert_eq!</span>(decoded_response.len(), <span class="number">2</span>);
 
         <span class="kw">let </span>file_entry = HuggingfaceStatus {
-            type_: <span class="string">&quot;file&quot;</span>.to_string(),
-            oid: <span class="string">&quot;45fa7c3d85ee7dd4139adbc056da25ae136a65f2&quot;</span>.to_string(),
+            type_: <span class="string">"file"</span>.to_string(),
+            oid: <span class="string">"45fa7c3d85ee7dd4139adbc056da25ae136a65f2"</span>.to_string(),
             size: <span class="number">69512435</span>,
             lfs: <span class="prelude-val">Some</span>(HuggingfaceLfs {
-                oid: <span class="string">&quot;b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c&quot;</span>.to_string(),
+                oid: <span class="string">"b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c"</span>.to_string(),
                 size: <span class="number">69512435</span>,
                 pointer_size: <span class="number">133</span>,
             }),
-            path: <span class="string">&quot;maelstrom/lib/maelstrom.jar&quot;</span>.to_string(),
+            path: <span class="string">"maelstrom/lib/maelstrom.jar"</span>.to_string(),
             last_commit: <span class="prelude-val">None</span>,
             security: <span class="prelude-val">None</span>,
         };
@@ -696,11 +698,11 @@
         <span class="macro">assert_eq!</span>(decoded_response[<span class="number">0</span>], file_entry);
 
         <span class="kw">let </span>dir_entry = HuggingfaceStatus {
-            type_: <span class="string">&quot;directory&quot;</span>.to_string(),
-            oid: <span class="string">&quot;b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c&quot;</span>.to_string(),
+            type_: <span class="string">"directory"</span>.to_string(),
+            oid: <span class="string">"b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c"</span>.to_string(),
             size: <span class="number">69512435</span>,
             lfs: <span class="prelude-val">None</span>,
-            path: <span class="string">&quot;maelstrom/lib/plugins&quot;</span>.to_string(),
+            path: <span class="string">"maelstrom/lib/plugins"</span>.to_string(),
             last_commit: <span class="prelude-val">None</span>,
             security: <span class="prelude-val">None</span>,
         };
@@ -713,44 +715,44 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>parse_files_info_test() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>resp = Bytes::from(
-            <span class="string">r#&quot;
+            <span class="string">r#"
             [
                 {
-                    &quot;type&quot;: &quot;file&quot;,
-                    &quot;oid&quot;: &quot;45fa7c3d85ee7dd4139adbc056da25ae136a65f2&quot;,
-                    &quot;size&quot;: 69512435,
-                    &quot;lfs&quot;: {
-                        &quot;oid&quot;: &quot;b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c&quot;,
-                        &quot;size&quot;: 69512435,
-                        &quot;pointerSize&quot;: 133
+                    "type": "file",
+                    "oid": "45fa7c3d85ee7dd4139adbc056da25ae136a65f2",
+                    "size": 69512435,
+                    "lfs": {
+                        "oid": "b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c",
+                        "size": 69512435,
+                        "pointerSize": 133
                     },
-                    &quot;path&quot;: &quot;maelstrom/lib/maelstrom.jar&quot;,
-                    &quot;lastCommit&quot;: {
-                        &quot;id&quot;: &quot;bc1ef030bf3743290d5e190695ab94582e51ae2f&quot;,
-                        &quot;title&quot;: &quot;Upload 141 files&quot;,
-                        &quot;date&quot;: &quot;2023-11-17T23:50:28.000Z&quot;
+                    "path": "maelstrom/lib/maelstrom.jar",
+                    "lastCommit": {
+                        "id": "bc1ef030bf3743290d5e190695ab94582e51ae2f",
+                        "title": "Upload 141 files",
+                        "date": "2023-11-17T23:50:28.000Z"
                     },
-                    &quot;security&quot;: {
-                        &quot;blobId&quot;: &quot;45fa7c3d85ee7dd4139adbc056da25ae136a65f2&quot;,
-                        &quot;name&quot;: &quot;maelstrom/lib/maelstrom.jar&quot;,
-                        &quot;safe&quot;: true,
-                        &quot;avScan&quot;: {
-                            &quot;virusFound&quot;: false,
-                            &quot;virusNames&quot;: null
+                    "security": {
+                        "blobId": "45fa7c3d85ee7dd4139adbc056da25ae136a65f2",
+                        "name": "maelstrom/lib/maelstrom.jar",
+                        "safe": true,
+                        "avScan": {
+                            "virusFound": false,
+                            "virusNames": null
                         },
-                        &quot;pickleImportScan&quot;: {
-                            &quot;highestSafetyLevel&quot;: &quot;innocuous&quot;,
-                            &quot;imports&quot;: [
-                                {&quot;module&quot;: &quot;torch&quot;, &quot;name&quot;: &quot;FloatStorage&quot;, &quot;safety&quot;: &quot;innocuous&quot;},
-                                {&quot;module&quot;: &quot;collections&quot;, &quot;name&quot;: &quot;OrderedDict&quot;, &quot;safety&quot;: &quot;innocuous&quot;},
-                                {&quot;module&quot;: &quot;torch&quot;, &quot;name&quot;: &quot;LongStorage&quot;, &quot;safety&quot;: &quot;innocuous&quot;},
-                                {&quot;module&quot;: &quot;torch._utils&quot;, &quot;name&quot;: &quot;_rebuild_tensor_v2&quot;, &quot;safety&quot;: &quot;innocuous&quot;}
+                        "pickleImportScan": {
+                            "highestSafetyLevel": "innocuous",
+                            "imports": [
+                                {"module": "torch", "name": "FloatStorage", "safety": "innocuous"},
+                                {"module": "collections", "name": "OrderedDict", "safety": "innocuous"},
+                                {"module": "torch", "name": "LongStorage", "safety": "innocuous"},
+                                {"module": "torch._utils", "name": "_rebuild_tensor_v2", "safety": "innocuous"}
                             ]
                         }
                     }
                 }
             ]
-            &quot;#</span>,
+            "#</span>,
         );
 
         <span class="kw">let </span>decoded_response = serde_json::from_slice::&lt;Vec&lt;HuggingfaceStatus&gt;&gt;(<span class="kw-2">&amp;</span>resp)
@@ -759,50 +761,50 @@
         <span class="macro">assert_eq!</span>(decoded_response.len(), <span class="number">1</span>);
 
         <span class="kw">let </span>file_info = HuggingfaceStatus {
-            type_: <span class="string">&quot;file&quot;</span>.to_string(),
-            oid: <span class="string">&quot;45fa7c3d85ee7dd4139adbc056da25ae136a65f2&quot;</span>.to_string(),
+            type_: <span class="string">"file"</span>.to_string(),
+            oid: <span class="string">"45fa7c3d85ee7dd4139adbc056da25ae136a65f2"</span>.to_string(),
             size: <span class="number">69512435</span>,
             lfs: <span class="prelude-val">Some</span>(HuggingfaceLfs {
-                oid: <span class="string">&quot;b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c&quot;</span>.to_string(),
+                oid: <span class="string">"b43f4c2ea569da1d66ca74e26ca8ea4430dfc29195e97144b2d0b4f3f6cafa1c"</span>.to_string(),
                 size: <span class="number">69512435</span>,
                 pointer_size: <span class="number">133</span>,
             }),
-            path: <span class="string">&quot;maelstrom/lib/maelstrom.jar&quot;</span>.to_string(),
+            path: <span class="string">"maelstrom/lib/maelstrom.jar"</span>.to_string(),
             last_commit: <span class="prelude-val">Some</span>(HuggingfaceLastCommit {
-                id: <span class="string">&quot;bc1ef030bf3743290d5e190695ab94582e51ae2f&quot;</span>.to_string(),
-                title: <span class="string">&quot;Upload 141 files&quot;</span>.to_string(),
-                date: <span class="string">&quot;2023-11-17T23:50:28.000Z&quot;</span>.to_string(),
+                id: <span class="string">"bc1ef030bf3743290d5e190695ab94582e51ae2f"</span>.to_string(),
+                title: <span class="string">"Upload 141 files"</span>.to_string(),
+                date: <span class="string">"2023-11-17T23:50:28.000Z"</span>.to_string(),
             }),
             security: <span class="prelude-val">Some</span>(HuggingfaceSecurity {
-                blob_id: <span class="string">&quot;45fa7c3d85ee7dd4139adbc056da25ae136a65f2&quot;</span>.to_string(),
-                name: <span class="string">&quot;maelstrom/lib/maelstrom.jar&quot;</span>.to_string(),
+                blob_id: <span class="string">"45fa7c3d85ee7dd4139adbc056da25ae136a65f2"</span>.to_string(),
+                name: <span class="string">"maelstrom/lib/maelstrom.jar"</span>.to_string(),
                 safe: <span class="bool-val">true</span>,
                 av_scan: <span class="prelude-val">Some</span>(HuggingfaceAvScan {
                     virus_found: <span class="bool-val">false</span>,
                     virus_names: <span class="prelude-val">None</span>,
                 }),
                 pickle_import_scan: <span class="prelude-val">Some</span>(HuggingfacePickleImportScan {
-                    highest_safety_level: <span class="string">&quot;innocuous&quot;</span>.to_string(),
+                    highest_safety_level: <span class="string">"innocuous"</span>.to_string(),
                     imports: <span class="macro">vec!</span>[
                         HuggingfaceImport {
-                            module: <span class="string">&quot;torch&quot;</span>.to_string(),
-                            name: <span class="string">&quot;FloatStorage&quot;</span>.to_string(),
-                            safety: <span class="string">&quot;innocuous&quot;</span>.to_string(),
+                            module: <span class="string">"torch"</span>.to_string(),
+                            name: <span class="string">"FloatStorage"</span>.to_string(),
+                            safety: <span class="string">"innocuous"</span>.to_string(),
                         },
                         HuggingfaceImport {
-                            module: <span class="string">&quot;collections&quot;</span>.to_string(),
-                            name: <span class="string">&quot;OrderedDict&quot;</span>.to_string(),
-                            safety: <span class="string">&quot;innocuous&quot;</span>.to_string(),
+                            module: <span class="string">"collections"</span>.to_string(),
+                            name: <span class="string">"OrderedDict"</span>.to_string(),
+                            safety: <span class="string">"innocuous"</span>.to_string(),
                         },
                         HuggingfaceImport {
-                            module: <span class="string">&quot;torch&quot;</span>.to_string(),
-                            name: <span class="string">&quot;LongStorage&quot;</span>.to_string(),
-                            safety: <span class="string">&quot;innocuous&quot;</span>.to_string(),
+                            module: <span class="string">"torch"</span>.to_string(),
+                            name: <span class="string">"LongStorage"</span>.to_string(),
+                            safety: <span class="string">"innocuous"</span>.to_string(),
                         },
                         HuggingfaceImport {
-                            module: <span class="string">&quot;torch._utils&quot;</span>.to_string(),
-                            name: <span class="string">&quot;_rebuild_tensor_v2&quot;</span>.to_string(),
-                            safety: <span class="string">&quot;innocuous&quot;</span>.to_string(),
+                            module: <span class="string">"torch._utils"</span>.to_string(),
+                            name: <span class="string">"_rebuild_tensor_v2"</span>.to_string(),
+                            safety: <span class="string">"innocuous"</span>.to_string(),
                         },
                     ],
                 }),

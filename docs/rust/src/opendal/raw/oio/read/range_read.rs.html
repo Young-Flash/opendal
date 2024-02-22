@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/raw/oio/read/range_read.rs`."><title>range_read.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../../opendal/index.html"><img class="rust-logo" src="../../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/raw/oio/read/range_read.rs`."><title>range_read.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -833,14 +835,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -861,7 +863,7 @@
 <span class="doccomment">/// RangeReader that can do seek on non-seekable reader.
 ///
 /// `oio::Reader` requires the underlying reader to be seekable, but some services like s3, gcs
-/// doesn&#39;t support seek natively. RangeReader implement seek by read_with_range. We will start
+/// doesn't support seek natively. RangeReader implement seek by read_with_range. We will start
 /// a new read request with the correct range when seek is called.
 ///
 /// The `seek` operation on `RangeReader` is zero cost and purely in-memory. But calling `seek`
@@ -909,7 +911,7 @@
     /// # Notes
     ///
     /// This operation is not zero cost. If the accessor already returns a
-    /// seekable reader, please don&#39;t use this.
+    /// seekable reader, please don't use this.
     </span><span class="kw">pub fn </span>new(acc: Arc&lt;A&gt;, path: <span class="kw-2">&amp;</span>str, op: OpRead) -&gt; RangeReader&lt;A, R&gt; {
         <span class="comment">// Normalize range like `..` into `0..` to make sure offset is valid.
         </span><span class="kw">let </span>(offset, size) = <span class="kw">match </span>(op.range().offset(), op.range().size()) {
@@ -929,7 +931,7 @@
         }
     }
 
-    <span class="doccomment">/// Ensure current reader&#39;s offset is valid via total_size.
+    <span class="doccomment">/// Ensure current reader's offset is valid via total_size.
     </span><span class="kw">fn </span>ensure_offset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, total_size: u64) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         (<span class="self">self</span>.offset, <span class="self">self</span>.size) = <span class="kw">match </span>(<span class="self">self</span>.offset, <span class="self">self</span>.size) {
             (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; {
@@ -939,14 +941,14 @@
                     </span><span class="self">self</span>.state = State::Idle;
                     <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                         ErrorKind::InvalidInput,
-                        <span class="string">&quot;read to a negative or overflowing position is invalid&quot;</span>,
+                        <span class="string">"read to a negative or overflowing position is invalid"</span>,
                     ));
                 }
 
                 (<span class="prelude-val">Some</span>(total_size - size), <span class="prelude-val">Some</span>(size))
             }
             (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">None</span>) =&gt; {
-                <span class="comment">// It&#39;s valid for reader to seek to a position that out of the content length.
+                <span class="comment">// It's valid for reader to seek to a position that out of the content length.
                 // We should return `Ok(0)` instead of an error at this case to align fs behavior.
                 </span><span class="kw">let </span>size = total_size.checked_sub(offset).unwrap_or_default();
 
@@ -954,7 +956,7 @@
             }
             (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)) =&gt; (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)),
             (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;fill_range should not reach this case after normalization&quot;</span>)
+                <span class="macro">unreachable!</span>(<span class="string">"fill_range should not reach this case after normalization"</span>)
             }
         };
 
@@ -964,19 +966,19 @@
     <span class="doccomment">/// Ensure size will use the information returned by RpRead to calculate the correct size for reader.
     ///
     /// - If `RpRead` returns `range`, we can calculate the correct size by `range.size()`.
-    /// - If `RpRead` returns `size`, we can use it&#39;s as the returning body&#39;s size.
+    /// - If `RpRead` returns `size`, we can use it's as the returning body's size.
     </span><span class="kw">fn </span>ensure_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, total_size: <span class="prelude-ty">Option</span>&lt;u64&gt;, content_size: <span class="prelude-ty">Option</span>&lt;u64&gt;) {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(total_size) = total_size {
-            <span class="comment">// It&#39;s valid for reader to seek to a position that out of the content length.
+            <span class="comment">// It's valid for reader to seek to a position that out of the content length.
             // We should return `Ok(0)` instead of an error at this case to align fs behavior.
             </span><span class="kw">let </span>size = total_size
-                .checked_sub(<span class="self">self</span>.offset.expect(<span class="string">&quot;reader offset must be valid&quot;</span>))
+                .checked_sub(<span class="self">self</span>.offset.expect(<span class="string">"reader offset must be valid"</span>))
                 .unwrap_or_default();
 
             <span class="comment">// Ensure size when:
             //
-            // - reader&#39;s size is unknown.
-            // - reader&#39;s size is larger than file&#39;s size.
+            // - reader's size is unknown.
+            // - reader's size is larger than file's size.
             </span><span class="kw">if </span><span class="self">self</span>.size.is_none() || <span class="prelude-val">Some</span>(size) &lt; <span class="self">self</span>.size {
                 <span class="self">self</span>.size = <span class="prelude-val">Some</span>(size);
                 <span class="kw">return</span>;
@@ -995,8 +997,8 @@
 
             <span class="comment">// Ensure size when:
             //
-            // - reader&#39;s size is unknown.
-            // - reader&#39;s size is larger than file&#39;s size.
+            // - reader's size is unknown.
+            // - reader's size is larger than file's size.
             </span><span class="kw">if </span><span class="self">self</span>.size.is_none() || <span class="prelude-val">Some</span>(calculated_size) &lt; <span class="self">self</span>.size {
                 <span class="self">self</span>.size = <span class="prelude-val">Some</span>(calculated_size);
             }
@@ -1014,7 +1016,7 @@
     </span><span class="kw">fn </span>calculate_range(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; BytesRange {
         <span class="kw">let </span>offset = <span class="self">self
             </span>.offset
-            .expect(<span class="string">&quot;offset must be set before calculating range&quot;</span>);
+            .expect(<span class="string">"offset must be set before calculating range"</span>);
 
         BytesRange::new(<span class="prelude-val">Some</span>(offset + <span class="self">self</span>.cur), <span class="self">self</span>.size.map(|v| v - <span class="self">self</span>.cur))
     }
@@ -1107,7 +1109,7 @@
     </span>A: Accessor&lt;Reader = R&gt;,
     R: oio::Read,
 {
-    <span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+    <span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="comment">// Sanity check for normal cases.
         </span><span class="kw">if </span>buf.is_empty() || <span class="self">self</span>.cur &gt;= <span class="self">self</span>.size.unwrap_or(u64::MAX) {
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(<span class="number">0</span>));
@@ -1170,7 +1172,7 @@
         }
     }
 
-    <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, pos: SeekFrom) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;u64&gt;&gt; {
+    <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, pos: SeekFrom) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;u64&gt;&gt; {
         <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.state {
             State::Idle =&gt; {
                 <span class="kw">let </span>(base, amt) = <span class="kw">match </span>pos {
@@ -1191,7 +1193,7 @@
                     <span class="kw">_ </span>=&gt; {
                         <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
                             ErrorKind::InvalidInput,
-                            <span class="string">&quot;invalid seek to a negative or overflowing position&quot;</span>,
+                            <span class="string">"invalid seek to a negative or overflowing position"</span>,
                         )))
                     }
                 };
@@ -1214,7 +1216,7 @@
                 <span class="self">self</span>.poll_seek(cx, pos)
             }
             State::SendRead(<span class="kw">_</span>) =&gt; {
-                <span class="comment">// It&#39;s impossible for us to go into this state while
+                <span class="comment">// It's impossible for us to go into this state while
                 // poll_seek. We can just drop this future and check state.
                 </span><span class="self">self</span>.state = State::Idle;
                 <span class="self">self</span>.poll_seek(cx, pos)
@@ -1233,7 +1235,7 @@
         }
     }
 
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
         <span class="comment">// Sanity check for normal cases.
         </span><span class="kw">if </span><span class="self">self</span>.cur &gt;= <span class="self">self</span>.size.unwrap_or(u64::MAX) {
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">None</span>);
@@ -1345,10 +1347,10 @@
                 }
             }
             State::SendStat(<span class="kw">_</span>) =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;It&#39;s invalid to go into State::SendStat for BlockingRead, please report this bug&quot;</span>)
+                <span class="macro">unreachable!</span>(<span class="string">"It's invalid to go into State::SendStat for BlockingRead, please report this bug"</span>)
             }
             State::SendRead(<span class="kw">_</span>) =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;It&#39;s invalid to go into State::SendRead for BlockingRead, please report this bug&quot;</span>)
+                <span class="macro">unreachable!</span>(<span class="string">"It's invalid to go into State::SendRead for BlockingRead, please report this bug"</span>)
             }
         }
     }
@@ -1366,7 +1368,7 @@
                             <span class="kw">let </span>length = rp.into_metadata().content_length();
                             <span class="self">self</span>.ensure_offset(length)<span class="question-mark">?</span>;
 
-                            <span class="kw">let </span>size = <span class="self">self</span>.size.expect(<span class="string">&quot;size must be valid after fill_range&quot;</span>);
+                            <span class="kw">let </span>size = <span class="self">self</span>.size.expect(<span class="string">"size must be valid after fill_range"</span>);
                             (size <span class="kw">as </span>i64, n)
                         }
                     }
@@ -1378,7 +1380,7 @@
                     <span class="kw">_ </span>=&gt; {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                             ErrorKind::InvalidInput,
-                            <span class="string">&quot;invalid seek to a negative or overflowing position&quot;</span>,
+                            <span class="string">"invalid seek to a negative or overflowing position"</span>,
                         ));
                     }
                 };
@@ -1398,10 +1400,10 @@
                 <span class="self">self</span>.seek(pos)
             }
             State::SendStat(<span class="kw">_</span>) =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;It&#39;s invalid to go into State::SendStat for BlockingRead, please report this bug&quot;</span>)
+                <span class="macro">unreachable!</span>(<span class="string">"It's invalid to go into State::SendStat for BlockingRead, please report this bug"</span>)
             }
             State::SendRead(<span class="kw">_</span>) =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;It&#39;s invalid to go into State::SendRead for BlockingRead, please report this bug&quot;</span>)
+                <span class="macro">unreachable!</span>(<span class="string">"It's invalid to go into State::SendRead for BlockingRead, please report this bug"</span>)
             }
         }
     }
@@ -1453,10 +1455,10 @@
                 </span>}
             },
             State::SendStat(<span class="kw">_</span>) =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;It&#39;s invalid to go into State::SendStat for BlockingRead, please report this bug&quot;</span>)
+                <span class="macro">unreachable!</span>(<span class="string">"It's invalid to go into State::SendStat for BlockingRead, please report this bug"</span>)
             }
             State::SendRead(<span class="kw">_</span>) =&gt; {
-                <span class="macro">unreachable!</span>(<span class="string">&quot;It&#39;s invalid to go into State::SendRead for BlockingRead, please report this bug&quot;</span>)
+                <span class="macro">unreachable!</span>(<span class="string">"It's invalid to go into State::SendRead for BlockingRead, please report this bug"</span>)
             }
         }
     }
@@ -1502,10 +1504,10 @@
     <span class="attr">#[async_trait]
     </span><span class="kw">impl </span>Accessor <span class="kw">for </span>MockReadService {
         <span class="kw">type </span>Reader = MockReader;
-        <span class="kw">type </span>BlockingReader = ();
         <span class="kw">type </span>Writer = ();
-        <span class="kw">type </span>BlockingWriter = ();
         <span class="kw">type </span>Lister = ();
+        <span class="kw">type </span>BlockingReader = ();
+        <span class="kw">type </span>BlockingWriter = ();
         <span class="kw">type </span>BlockingLister = ();
 
         <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -1538,25 +1540,25 @@
     <span class="kw">impl </span>oio::Read <span class="kw">for </span>MockReader {
         <span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
             Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.inner).poll_read(cx, buf).map_err(|err| {
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;read data from mock&quot;</span>).set_source(err)
+                Error::new(ErrorKind::Unexpected, <span class="string">"read data from mock"</span>).set_source(err)
             })
         }
 
-        <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, pos: SeekFrom) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;u64&gt;&gt; {
+        <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, pos: SeekFrom) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;u64&gt;&gt; {
             <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (cx, pos);
 
             Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unsupported,
-                <span class="string">&quot;output reader doesn&#39;t support seeking&quot;</span>,
+                <span class="string">"output reader doesn't support seeking"</span>,
             )))
         }
 
-        <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
+        <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>bs = <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">4 </span>* <span class="number">1024</span>];
             <span class="kw">let </span>n = <span class="macro">ready!</span>(Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.inner)
                 .poll_read(cx, <span class="kw-2">&amp;mut </span>bs)
                 .map_err(
-                    |err| Error::new(ErrorKind::Unexpected, <span class="string">&quot;read data from mock&quot;</span>).set_source(err)
+                    |err| Error::new(ErrorKind::Unexpected, <span class="string">"read data from mock"</span>).set_source(err)
                 )<span class="question-mark">?</span>);
             <span class="kw">if </span>n == <span class="number">0 </span>{
                 Poll::Ready(<span class="prelude-val">None</span>)
@@ -1573,29 +1575,29 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>r = Box::new(RangeReader::new(
             acc,
-            <span class="string">&quot;x&quot;</span>,
+            <span class="string">"x"</span>,
             OpRead::default().with_range(BytesRange::from(..)),
         )) <span class="kw">as </span>oio::Reader;
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
         r.read_to_end(<span class="kw-2">&amp;mut </span>buf).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(bs.len(), buf.len(), <span class="string">&quot;read size&quot;</span>);
+        <span class="macro">assert_eq!</span>(bs.len(), buf.len(), <span class="string">"read size"</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs)),
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
-            <span class="string">&quot;read content&quot;
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs)),
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
+            <span class="string">"read content"
         </span>);
 
         <span class="kw">let </span>n = r.seek(SeekFrom::Start(<span class="number">0</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(n, <span class="number">0</span>, <span class="string">&quot;seek position must be 0&quot;</span>);
+        <span class="macro">assert_eq!</span>(n, <span class="number">0</span>, <span class="string">"seek position must be 0"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
         r.read_to_end(<span class="kw-2">&amp;mut </span>buf).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(bs.len(), buf.len(), <span class="string">&quot;read twice size&quot;</span>);
+        <span class="macro">assert_eq!</span>(bs.len(), buf.len(), <span class="string">"read twice size"</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs)),
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
-            <span class="string">&quot;read twice content&quot;
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs)),
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
+            <span class="string">"read twice content"
         </span>);
 
         <span class="prelude-val">Ok</span>(())
@@ -1608,51 +1610,51 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>r = Box::new(RangeReader::new(
             acc,
-            <span class="string">&quot;x&quot;</span>,
+            <span class="string">"x"</span>,
             OpRead::default().with_range(BytesRange::from(<span class="number">4096</span>..<span class="number">4096 </span>+ <span class="number">4096</span>)),
         )) <span class="kw">as </span>oio::Reader;
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
         r.read_to_end(<span class="kw-2">&amp;mut </span>buf).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="number">4096</span>, buf.len(), <span class="string">&quot;read size&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">4096</span>, buf.len(), <span class="string">"read size"</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096</span>..<span class="number">4096 </span>+ <span class="number">4096</span>])),
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
-            <span class="string">&quot;read content&quot;
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096</span>..<span class="number">4096 </span>+ <span class="number">4096</span>])),
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
+            <span class="string">"read content"
         </span>);
 
         <span class="kw">let </span>n = r.seek(SeekFrom::Start(<span class="number">0</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(n, <span class="number">0</span>, <span class="string">&quot;seek position must be 0&quot;</span>);
+        <span class="macro">assert_eq!</span>(n, <span class="number">0</span>, <span class="string">"seek position must be 0"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
         r.read_to_end(<span class="kw-2">&amp;mut </span>buf).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="number">4096</span>, buf.len(), <span class="string">&quot;read twice size&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">4096</span>, buf.len(), <span class="string">"read twice size"</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096</span>..<span class="number">4096 </span>+ <span class="number">4096</span>])),
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
-            <span class="string">&quot;read twice content&quot;
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096</span>..<span class="number">4096 </span>+ <span class="number">4096</span>])),
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
+            <span class="string">"read twice content"
         </span>);
 
         <span class="kw">let </span>n = r.seek(SeekFrom::Start(<span class="number">1024</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="number">1024</span>, n, <span class="string">&quot;seek to 1024&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1024</span>, n, <span class="string">"seek to 1024"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">1024</span>];
         r.read_exact(<span class="kw-2">&amp;mut </span>buf).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="macro">assert_eq!</span>(
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096 </span>+ <span class="number">1024</span>..<span class="number">4096 </span>+ <span class="number">2048</span>])),
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
-            <span class="string">&quot;read after seek 1024&quot;
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096 </span>+ <span class="number">1024</span>..<span class="number">4096 </span>+ <span class="number">2048</span>])),
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
+            <span class="string">"read after seek 1024"
         </span>);
 
         <span class="kw">let </span>n = r.seek(SeekFrom::Current(<span class="number">1024</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="number">3072</span>, n, <span class="string">&quot;seek to 3072&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3072</span>, n, <span class="string">"seek to 3072"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">1024</span>];
         r.read_exact(<span class="kw-2">&amp;mut </span>buf).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="macro">assert_eq!</span>(
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096 </span>+ <span class="number">3072</span>..<span class="number">4096 </span>+ <span class="number">3072 </span>+ <span class="number">1024</span>])),
-            <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
-            <span class="string">&quot;read after seek to 3072&quot;
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>bs[<span class="number">4096 </span>+ <span class="number">3072</span>..<span class="number">4096 </span>+ <span class="number">3072 </span>+ <span class="number">1024</span>])),
+            <span class="macro">format!</span>(<span class="string">"{:x}"</span>, Sha256::digest(<span class="kw-2">&amp;</span>buf)),
+            <span class="string">"read after seek to 3072"
         </span>);
 
         <span class="prelude-val">Ok</span>(())

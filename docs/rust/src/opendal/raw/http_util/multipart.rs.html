@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/raw/http_util/multipart.rs`."><title>multipart.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/raw/http_util/multipart.rs`."><title>multipart.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1215,14 +1217,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1276,7 +1278,7 @@
     <span class="doccomment">/// Create a new multipart with random boundary.
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         Multipart {
-            boundary: <span class="macro">format!</span>(<span class="string">&quot;opendal-{}&quot;</span>, uuid::Uuid::new_v4()),
+            boundary: <span class="macro">format!</span>(<span class="string">"opendal-{}"</span>, uuid::Uuid::new_v4()),
             parts: Vec::default(),
         }
     }
@@ -1303,17 +1305,17 @@
         <span class="kw">let </span>s = String::from_utf8(bs.to_vec()).map_err(|err| {
             Error::new(
                 ErrorKind::Unexpected,
-                <span class="string">&quot;multipart response contains invalid utf-8 chars&quot;</span>,
+                <span class="string">"multipart response contains invalid utf-8 chars"</span>,
             )
             .set_source(err)
         })<span class="question-mark">?</span>;
 
         <span class="kw">let </span>parts = s
-            .split(<span class="macro">format!</span>(<span class="string">&quot;--{}&quot;</span>, <span class="self">self</span>.boundary).as_str())
+            .split(<span class="macro">format!</span>(<span class="string">"--{}"</span>, <span class="self">self</span>.boundary).as_str())
             .collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
 
         <span class="kw">for </span>part <span class="kw">in </span>parts {
-            <span class="kw">if </span>part.is_empty() || part.starts_with(<span class="string">&quot;--&quot;</span>) {
+            <span class="kw">if </span>part.is_empty() || part.starts_with(<span class="string">"--"</span>) {
                 <span class="kw">continue</span>;
             }
 
@@ -1327,9 +1329,9 @@
         <span class="kw">let </span><span class="kw-2">mut </span>total_size = <span class="number">0</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>bs = BytesMut::new();
-        bs.extend_from_slice(<span class="string">b&quot;--&quot;</span>);
+        bs.extend_from_slice(<span class="string">b"--"</span>);
         bs.extend_from_slice(<span class="self">self</span>.boundary.as_bytes());
-        bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+        bs.extend_from_slice(<span class="string">b"\r\n"</span>);
 
         <span class="kw">let </span>pre_part = bs.freeze();
 
@@ -1343,10 +1345,10 @@
 
         <span class="comment">// Write the last boundary
         </span><span class="kw">let </span><span class="kw-2">mut </span>bs = BytesMut::new();
-        bs.extend_from_slice(<span class="string">b&quot;--&quot;</span>);
+        bs.extend_from_slice(<span class="string">b"--"</span>);
         bs.extend_from_slice(<span class="self">self</span>.boundary.as_bytes());
-        bs.extend_from_slice(<span class="string">b&quot;--&quot;</span>);
-        bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+        bs.extend_from_slice(<span class="string">b"--"</span>);
+        bs.extend_from_slice(<span class="string">b"\r\n"</span>);
         <span class="kw">let </span>final_part = bs.freeze();
 
         total_size += final_part.len() <span class="kw">as </span>u64;
@@ -1372,7 +1374,7 @@
         <span class="comment">// Insert content type with correct boundary.
         </span>builder = builder.header(
             CONTENT_TYPE,
-            <span class="macro">format!</span>(<span class="string">&quot;multipart/{}; boundary={}&quot;</span>, T::TYPE, boundary).as_str(),
+            <span class="macro">format!</span>(<span class="string">"multipart/{}; boundary={}"</span>, T::TYPE, boundary).as_str(),
         );
         <span class="comment">// Insert content length with calculated size.
         </span>builder = builder.header(CONTENT_LENGTH, content_length);
@@ -1393,7 +1395,7 @@
 }
 
 <span class="kw">impl</span>&lt;T: Part&gt; Stream <span class="kw">for </span>MultipartStream&lt;T&gt; {
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(stream) = <span class="self">self</span>.parts.front_mut() {
             <span class="kw">if </span>!<span class="self">self</span>.pre_part_consumed {
                 <span class="self">self</span>.pre_part_consumed = <span class="bool-val">true</span>;
@@ -1418,11 +1420,11 @@
 }
 
 <span class="doccomment">/// Part is a trait for multipart part.
-</span><span class="kw">pub trait </span>Part: Sized + <span class="lifetime">&#39;static </span>{
+</span><span class="kw">pub trait </span>Part: Sized + <span class="lifetime">'static </span>{
     <span class="doccomment">/// TYPE is the type of multipart.
     ///
     /// Current available types are: `form-data` and `mixed`
-    </span><span class="kw">const </span>TYPE: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str;
+    </span><span class="kw">const </span>TYPE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str;
     <span class="doccomment">/// STREAM is the stream representation of this part which can be used in multipart body.
     </span><span class="kw">type </span>STREAM: Stream;
 
@@ -1452,7 +1454,7 @@
         </span><span class="kw">let </span><span class="kw-2">mut </span>headers = HeaderMap::new();
         headers.insert(
             CONTENT_DISPOSITION,
-            <span class="macro">format!</span>(<span class="string">&quot;form-data; name=\&quot;{}\&quot;&quot;</span>, name).parse().unwrap(),
+            <span class="macro">format!</span>(<span class="string">"form-data; name=\"{}\""</span>, name).parse().unwrap(),
         );
 
         <span class="self">Self </span>{
@@ -1486,7 +1488,7 @@
 }
 
 <span class="kw">impl </span>Part <span class="kw">for </span>FormDataPart {
-    <span class="kw">const </span>TYPE: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;form-data&quot;</span>;
+    <span class="kw">const </span>TYPE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"form-data"</span>;
     <span class="kw">type </span>STREAM = FormDataPartStream;
 
     <span class="kw">fn </span>format(<span class="self">self</span>) -&gt; (u64, FormDataPartStream) {
@@ -1500,18 +1502,18 @@
             // and requires to use `Content-Disposition`. So we hardcode the part
             // headers name here.
             </span><span class="kw">match </span>k.as_str() {
-                <span class="string">&quot;content-disposition&quot; </span>=&gt; {
-                    bs.extend_from_slice(<span class="string">&quot;Content-Disposition&quot;</span>.as_bytes());
+                <span class="string">"content-disposition" </span>=&gt; {
+                    bs.extend_from_slice(<span class="string">"Content-Disposition"</span>.as_bytes());
                 }
                 <span class="kw">_ </span>=&gt; {
                     bs.extend_from_slice(k.as_str().as_bytes());
                 }
             }
-            bs.extend_from_slice(<span class="string">b&quot;: &quot;</span>);
+            bs.extend_from_slice(<span class="string">b": "</span>);
             bs.extend_from_slice(v.as_bytes());
-            bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+            bs.extend_from_slice(<span class="string">b"\r\n"</span>);
         }
-        bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+        bs.extend_from_slice(<span class="string">b"\r\n"</span>);
         <span class="kw">let </span>bs = bs.freeze();
 
         <span class="comment">// pre-content + content + post-content (b`\r\n`)
@@ -1529,7 +1531,7 @@
     <span class="kw">fn </span>parse(<span class="kw">_</span>: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;parse of form-data is not supported&quot;</span>,
+            <span class="string">"parse of form-data is not supported"</span>,
         ))
     }
 }
@@ -1541,7 +1543,7 @@
 }
 
 <span class="kw">impl </span>Stream <span class="kw">for </span>FormDataPartStream {
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(pre_content) = <span class="self">self</span>.pre_content.take() {
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(pre_content)));
         }
@@ -1550,7 +1552,7 @@
             <span class="kw">return match </span><span class="macro">ready!</span>(stream.poll_next(cx)) {
                 <span class="prelude-val">None </span>=&gt; {
                     <span class="self">self</span>.content = <span class="prelude-val">None</span>;
-                    Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Bytes::from_static(<span class="string">b&quot;\r\n&quot;</span>))))
+                    Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Bytes::from_static(<span class="string">b"\r\n"</span>))))
                 }
                 <span class="prelude-val">Some</span>(v) =&gt; Poll::Ready(<span class="prelude-val">Some</span>(v)),
             };
@@ -1582,10 +1584,10 @@
     <span class="doccomment">/// Create a new mixed part with given uri.
     </span><span class="kw">pub fn </span>new(uri: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>part_headers = HeaderMap::new();
-        part_headers.insert(CONTENT_TYPE, <span class="string">&quot;application/http&quot;</span>.parse().unwrap());
-        part_headers.insert(<span class="string">&quot;content-transfer-encoding&quot;</span>, <span class="string">&quot;binary&quot;</span>.parse().unwrap());
+        part_headers.insert(CONTENT_TYPE, <span class="string">"application/http"</span>.parse().unwrap());
+        part_headers.insert(<span class="string">"content-transfer-encoding"</span>, <span class="string">"binary"</span>.parse().unwrap());
 
-        <span class="kw">let </span>uri = Uri::from_str(uri).expect(<span class="string">&quot;the uri used to build a mixed part must be valid&quot;</span>);
+        <span class="kw">let </span>uri = Uri::from_str(uri).expect(<span class="string">"the uri used to build a mixed part must be valid"</span>);
 
         <span class="self">Self </span>{
             part_headers,
@@ -1605,8 +1607,8 @@
     <span class="doccomment">/// Build a mixed part from a request.
     </span><span class="kw">pub fn </span>from_request(req: Request&lt;AsyncBody&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>part_headers = HeaderMap::new();
-        part_headers.insert(CONTENT_TYPE, <span class="string">&quot;application/http&quot;</span>.parse().unwrap());
-        part_headers.insert(<span class="string">&quot;content-transfer-encoding&quot;</span>, <span class="string">&quot;binary&quot;</span>.parse().unwrap());
+        part_headers.insert(CONTENT_TYPE, <span class="string">"application/http"</span>.parse().unwrap());
+        part_headers.insert(<span class="string">"content-transfer-encoding"</span>, <span class="string">"binary"</span>.parse().unwrap());
 
         <span class="kw">let </span>(parts, body) = req.into_parts();
 
@@ -1623,7 +1625,7 @@
                     .get(CONTENT_LENGTH)
                     .and_then(|v| v.to_str().ok())
                     .and_then(|v| v.parse::&lt;u64&gt;().ok())
-                    .expect(<span class="string">&quot;the content length of a mixed part must be valid&quot;</span>);
+                    .expect(<span class="string">"the content length of a mixed part must be valid"</span>);
                 (len, <span class="prelude-val">Some</span>(stream))
             }
         };
@@ -1635,10 +1637,10 @@
                     parts
                         .uri
                         .path_and_query()
-                        .unwrap_or(<span class="kw-2">&amp;</span>PathAndQuery::from_static(<span class="string">&quot;/&quot;</span>))
+                        .unwrap_or(<span class="kw-2">&amp;</span>PathAndQuery::from_static(<span class="string">"/"</span>))
                         .as_str(),
                 )
-                .expect(<span class="string">&quot;the uri used to build a mixed part must be valid&quot;</span>),
+                .expect(<span class="string">"the uri used to build a mixed part must be valid"</span>),
             ),
             version: parts.version,
             headers: parts.headers,
@@ -1667,7 +1669,7 @@
 
         builder
             .body(body)
-            .expect(<span class="string">&quot;mixed part must be valid response&quot;</span>)
+            .expect(<span class="string">"mixed part must be valid response"</span>)
     }
 
     <span class="doccomment">/// Insert a part header into part.
@@ -1712,7 +1714,7 @@
 }
 
 <span class="kw">impl </span>Part <span class="kw">for </span>MixedPart {
-    <span class="kw">const </span>TYPE: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;mixed&quot;</span>;
+    <span class="kw">const </span>TYPE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"mixed"</span>;
     <span class="kw">type </span>STREAM = MixedPartStream;
 
     <span class="kw">fn </span>format(<span class="self">self</span>) -&gt; (u64, <span class="self">Self</span>::STREAM) {
@@ -1726,53 +1728,53 @@
             // and requires to use `Content-Type`. So we hardcode the part
             // headers name here.
             </span><span class="kw">match </span>k.as_str() {
-                <span class="string">&quot;content-type&quot; </span>=&gt; {
-                    bs.extend_from_slice(<span class="string">&quot;Content-Type&quot;</span>.as_bytes());
+                <span class="string">"content-type" </span>=&gt; {
+                    bs.extend_from_slice(<span class="string">"Content-Type"</span>.as_bytes());
                 }
-                <span class="string">&quot;content-id&quot; </span>=&gt; {
-                    bs.extend_from_slice(<span class="string">&quot;Content-ID&quot;</span>.as_bytes());
+                <span class="string">"content-id" </span>=&gt; {
+                    bs.extend_from_slice(<span class="string">"Content-ID"</span>.as_bytes());
                 }
-                <span class="string">&quot;content-transfer-encoding&quot; </span>=&gt; {
-                    bs.extend_from_slice(<span class="string">&quot;Content-Transfer-Encoding&quot;</span>.as_bytes());
+                <span class="string">"content-transfer-encoding" </span>=&gt; {
+                    bs.extend_from_slice(<span class="string">"Content-Transfer-Encoding"</span>.as_bytes());
                 }
                 <span class="kw">_ </span>=&gt; {
                     bs.extend_from_slice(k.as_str().as_bytes());
                 }
             }
-            bs.extend_from_slice(<span class="string">b&quot;: &quot;</span>);
+            bs.extend_from_slice(<span class="string">b": "</span>);
             bs.extend_from_slice(v.as_bytes());
-            bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+            bs.extend_from_slice(<span class="string">b"\r\n"</span>);
         }
 
         <span class="comment">// Write request line: `DELETE /container0/blob0 HTTP/1.1`
-        </span>bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+        </span>bs.extend_from_slice(<span class="string">b"\r\n"</span>);
         bs.extend_from_slice(
             <span class="self">self</span>.method
                 .as_ref()
-                .expect(<span class="string">&quot;mixed part must be a valid request that contains method&quot;</span>)
+                .expect(<span class="string">"mixed part must be a valid request that contains method"</span>)
                 .as_str()
                 .as_bytes(),
         );
-        bs.extend_from_slice(<span class="string">b&quot; &quot;</span>);
+        bs.extend_from_slice(<span class="string">b" "</span>);
         bs.extend_from_slice(
             <span class="self">self</span>.uri
                 .as_ref()
-                .expect(<span class="string">&quot;mixed part must be a valid request that contains uri&quot;</span>)
+                .expect(<span class="string">"mixed part must be a valid request that contains uri"</span>)
                 .path()
                 .as_bytes(),
         );
-        bs.extend_from_slice(<span class="string">b&quot; &quot;</span>);
-        bs.extend_from_slice(<span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.version).as_bytes());
-        bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+        bs.extend_from_slice(<span class="string">b" "</span>);
+        bs.extend_from_slice(<span class="macro">format!</span>(<span class="string">"{:?}"</span>, <span class="self">self</span>.version).as_bytes());
+        bs.extend_from_slice(<span class="string">b"\r\n"</span>);
 
         <span class="comment">// Write request headers.
         </span><span class="kw">for </span>(k, v) <span class="kw">in </span><span class="self">self</span>.headers.iter() {
             bs.extend_from_slice(k.as_str().as_bytes());
-            bs.extend_from_slice(<span class="string">b&quot;: &quot;</span>);
+            bs.extend_from_slice(<span class="string">b": "</span>);
             bs.extend_from_slice(v.as_bytes());
-            bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+            bs.extend_from_slice(<span class="string">b"\r\n"</span>);
         }
-        bs.extend_from_slice(<span class="string">b&quot;\r\n&quot;</span>);
+        bs.extend_from_slice(<span class="string">b"\r\n"</span>);
 
         <span class="kw">let </span>bs = bs.freeze();
 
@@ -1796,25 +1798,25 @@
     ///
     /// This is a simple implementation and have a lot of space to improve.
     </span><span class="kw">fn </span>parse(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">let </span>parts = s.splitn(<span class="number">2</span>, <span class="string">&quot;\r\n\r\n&quot;</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
+        <span class="kw">let </span>parts = s.splitn(<span class="number">2</span>, <span class="string">"\r\n\r\n"</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
         <span class="kw">let </span>part_headers_content = parts[<span class="number">0</span>];
-        <span class="kw">let </span>http_response = parts.get(<span class="number">1</span>).unwrap_or(<span class="kw-2">&amp;</span><span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>http_response = parts.get(<span class="number">1</span>).unwrap_or(<span class="kw-2">&amp;</span><span class="string">""</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>part_headers = HeaderMap::new();
         <span class="kw">for </span>line <span class="kw">in </span>part_headers_content.lines() {
-            <span class="kw">let </span>parts = line.splitn(<span class="number">2</span>, <span class="string">&quot;: &quot;</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
+            <span class="kw">let </span>parts = line.splitn(<span class="number">2</span>, <span class="string">": "</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
             <span class="kw">if </span>parts.len() == <span class="number">2 </span>{
                 <span class="kw">let </span>header_name = HeaderName::from_str(parts[<span class="number">0</span>]).map_err(|err| {
                     Error::new(
                         ErrorKind::Unexpected,
-                        <span class="string">&quot;multipart response contains invalid part header name&quot;</span>,
+                        <span class="string">"multipart response contains invalid part header name"</span>,
                     )
                     .set_source(err)
                 })<span class="question-mark">?</span>;
                 <span class="kw">let </span>header_value = parts[<span class="number">1</span>].parse().map_err(|err| {
                     Error::new(
                         ErrorKind::Unexpected,
-                        <span class="string">&quot;multipart response contains invalid part header value&quot;</span>,
+                        <span class="string">"multipart response contains invalid part header value"</span>,
                     )
                     .set_source(err)
                 })<span class="question-mark">?</span>;
@@ -1823,34 +1825,34 @@
             }
         }
 
-        <span class="kw">let </span>parts = http_response.split(<span class="string">&quot;\r\n\r\n&quot;</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
+        <span class="kw">let </span>parts = http_response.split(<span class="string">"\r\n\r\n"</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
         <span class="kw">let </span>headers_content = parts[<span class="number">0</span>];
-        <span class="kw">let </span>body_content = parts.get(<span class="number">1</span>).unwrap_or(<span class="kw-2">&amp;</span><span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>body_content = parts.get(<span class="number">1</span>).unwrap_or(<span class="kw-2">&amp;</span><span class="string">""</span>);
         <span class="kw">let </span>body_bytes = Bytes::from(body_content.to_string());
 
-        <span class="kw">let </span>status_line = headers_content.lines().next().unwrap_or(<span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>status_line = headers_content.lines().next().unwrap_or(<span class="string">""</span>);
         <span class="kw">let </span>status_code = status_line
             .split_whitespace()
             .nth(<span class="number">1</span>)
-            .unwrap_or(<span class="string">&quot;&quot;</span>)
+            .unwrap_or(<span class="string">""</span>)
             .parse::&lt;u16&gt;()
             .unwrap_or(<span class="number">200</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>headers = HeaderMap::new();
         <span class="kw">for </span>line <span class="kw">in </span>headers_content.lines().skip(<span class="number">1</span>) {
-            <span class="kw">let </span>parts = line.splitn(<span class="number">2</span>, <span class="string">&quot;: &quot;</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
+            <span class="kw">let </span>parts = line.splitn(<span class="number">2</span>, <span class="string">": "</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
             <span class="kw">if </span>parts.len() == <span class="number">2 </span>{
                 <span class="kw">let </span>header_name = HeaderName::from_str(parts[<span class="number">0</span>]).map_err(|err| {
                     Error::new(
                         ErrorKind::Unexpected,
-                        <span class="string">&quot;multipart response contains invalid part header name&quot;</span>,
+                        <span class="string">"multipart response contains invalid part header name"</span>,
                     )
                     .set_source(err)
                 })<span class="question-mark">?</span>;
                 <span class="kw">let </span>header_value = parts[<span class="number">1</span>].parse().map_err(|err| {
                     Error::new(
                         ErrorKind::Unexpected,
-                        <span class="string">&quot;multipart response contains invalid part header value&quot;</span>,
+                        <span class="string">"multipart response contains invalid part header value"</span>,
                     )
                     .set_source(err)
                 })<span class="question-mark">?</span>;
@@ -1872,7 +1874,7 @@
             status_code: <span class="prelude-val">Some</span>(StatusCode::from_u16(status_code).map_err(|err| {
                 Error::new(
                     ErrorKind::Unexpected,
-                    <span class="string">&quot;multipart response contains invalid status code&quot;</span>,
+                    <span class="string">"multipart response contains invalid status code"</span>,
                 )
                 .set_source(err)
             })<span class="question-mark">?</span>),
@@ -1887,7 +1889,7 @@
 }
 
 <span class="kw">impl </span>Stream <span class="kw">for </span>MixedPartStream {
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(pre_content) = <span class="self">self</span>.pre_content.take() {
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(pre_content)));
         }
@@ -1896,7 +1898,7 @@
             <span class="kw">return match </span><span class="macro">ready!</span>(stream.poll_next(cx)) {
                 <span class="prelude-val">None </span>=&gt; {
                     <span class="self">self</span>.content = <span class="prelude-val">None</span>;
-                    Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Bytes::from_static(<span class="string">b&quot;\r\n&quot;</span>))))
+                    Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Bytes::from_static(<span class="string">b"\r\n"</span>))))
                 }
                 <span class="prelude-val">Some</span>(v) =&gt; Poll::Ready(<span class="prelude-val">Some</span>(v)),
             };
@@ -1917,23 +1919,23 @@
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_multipart_formdata_basic() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>multipart = Multipart::new()
-            .with_boundary(<span class="string">&quot;lalala&quot;</span>)
-            .part(FormDataPart::new(<span class="string">&quot;foo&quot;</span>).content(Bytes::from(<span class="string">&quot;bar&quot;</span>)))
-            .part(FormDataPart::new(<span class="string">&quot;hello&quot;</span>).content(Bytes::from(<span class="string">&quot;world&quot;</span>)));
+            .with_boundary(<span class="string">"lalala"</span>)
+            .part(FormDataPart::new(<span class="string">"foo"</span>).content(Bytes::from(<span class="string">"bar"</span>)))
+            .part(FormDataPart::new(<span class="string">"hello"</span>).content(Bytes::from(<span class="string">"world"</span>)));
 
         <span class="kw">let </span>(size, body) = multipart.build();
         <span class="kw">let </span>bs = body.collect().<span class="kw">await</span>.unwrap();
         <span class="macro">assert_eq!</span>(size, bs.len() <span class="kw">as </span>u64);
 
-        <span class="kw">let </span>expected = <span class="string">&quot;--lalala\r\n\
-             Content-Disposition: form-data; name=\&quot;foo\&quot;\r\n\
+        <span class="kw">let </span>expected = <span class="string">"--lalala\r\n\
+             Content-Disposition: form-data; name=\"foo\"\r\n\
              \r\n\
              bar\r\n\
              --lalala\r\n\
-             Content-Disposition: form-data; name=\&quot;hello\&quot;\r\n\
+             Content-Disposition: form-data; name=\"hello\"\r\n\
              \r\n\
              world\r\n\
-             --lalala--\r\n&quot;</span>;
+             --lalala--\r\n"</span>;
 
         <span class="macro">assert_eq!</span>(Bytes::from(expected), bs);
         <span class="prelude-val">Ok</span>(())
@@ -1943,79 +1945,79 @@
     </span><span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_multipart_formdata_s3_form_upload() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>multipart = Multipart::new()
-            .with_boundary(<span class="string">&quot;9431149156168&quot;</span>)
-            .part(FormDataPart::new(<span class="string">&quot;key&quot;</span>).content(<span class="string">&quot;user/eric/MyPicture.jpg&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;acl&quot;</span>).content(<span class="string">&quot;public-read&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;success_action_redirect&quot;</span>).content(
-                <span class="string">&quot;https://awsexamplebucket1.s3.us-west-1.amazonaws.com/successful_upload.html&quot;</span>,
+            .with_boundary(<span class="string">"9431149156168"</span>)
+            .part(FormDataPart::new(<span class="string">"key"</span>).content(<span class="string">"user/eric/MyPicture.jpg"</span>))
+            .part(FormDataPart::new(<span class="string">"acl"</span>).content(<span class="string">"public-read"</span>))
+            .part(FormDataPart::new(<span class="string">"success_action_redirect"</span>).content(
+                <span class="string">"https://awsexamplebucket1.s3.us-west-1.amazonaws.com/successful_upload.html"</span>,
             ))
-            .part(FormDataPart::new(<span class="string">&quot;content-type&quot;</span>).content(<span class="string">&quot;image/jpeg&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;x-amz-meta-uuid&quot;</span>).content(<span class="string">&quot;14365123651274&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;x-amz-meta-tag&quot;</span>).content(<span class="string">&quot;Some,Tag,For,Picture&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;AWSAccessKeyId&quot;</span>).content(<span class="string">&quot;AKIAIOSFODNN7EXAMPLE&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;Policy&quot;</span>).content(<span class="string">&quot;eyAiZXhwaXJhdGlvbiI6ICIyMDA3LTEyLTAxVDEyOjAwOjAwLjAwMFoiLAogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiam9obnNtaXRoIn0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiRrZXkiLCAidXNlci9lcmljLyJdLAogICAgeyJhY2wiOiAicHVibGljLXJlYWQifSwKICAgIHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiAiaHR0cDovL2pvaG5zbWl0aC5zMy5hbWF6b25hd3MuY29tL3N1Y2Nlc3NmdWxfdXBsb2FkLmh0bWwifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJENvbnRlbnQtVHlwZSIsICJpbWFnZS8iXSwKICAgIHsieC1hbXotbWV0YS11dWlkIjogIjE0MzY1MTIzNjUxMjc0In0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiR4LWFtei1tZXRhLXRhZyIsICIiXQogIF0KfQo=&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;Signature&quot;</span>).content(<span class="string">&quot;0RavWzkygo6QX9caELEqKi9kDbU=&quot;</span>))
-            .part(FormDataPart::new(<span class="string">&quot;file&quot;</span>).header(CONTENT_TYPE, <span class="string">&quot;image/jpeg&quot;</span>.parse().unwrap()).content(<span class="string">&quot;...file content...&quot;</span>)).part(FormDataPart::new(<span class="string">&quot;submit&quot;</span>).content(<span class="string">&quot;Upload to Amazon S3&quot;</span>));
+            .part(FormDataPart::new(<span class="string">"content-type"</span>).content(<span class="string">"image/jpeg"</span>))
+            .part(FormDataPart::new(<span class="string">"x-amz-meta-uuid"</span>).content(<span class="string">"14365123651274"</span>))
+            .part(FormDataPart::new(<span class="string">"x-amz-meta-tag"</span>).content(<span class="string">"Some,Tag,For,Picture"</span>))
+            .part(FormDataPart::new(<span class="string">"AWSAccessKeyId"</span>).content(<span class="string">"AKIAIOSFODNN7EXAMPLE"</span>))
+            .part(FormDataPart::new(<span class="string">"Policy"</span>).content(<span class="string">"eyAiZXhwaXJhdGlvbiI6ICIyMDA3LTEyLTAxVDEyOjAwOjAwLjAwMFoiLAogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiam9obnNtaXRoIn0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiRrZXkiLCAidXNlci9lcmljLyJdLAogICAgeyJhY2wiOiAicHVibGljLXJlYWQifSwKICAgIHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiAiaHR0cDovL2pvaG5zbWl0aC5zMy5hbWF6b25hd3MuY29tL3N1Y2Nlc3NmdWxfdXBsb2FkLmh0bWwifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJENvbnRlbnQtVHlwZSIsICJpbWFnZS8iXSwKICAgIHsieC1hbXotbWV0YS11dWlkIjogIjE0MzY1MTIzNjUxMjc0In0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiR4LWFtei1tZXRhLXRhZyIsICIiXQogIF0KfQo="</span>))
+            .part(FormDataPart::new(<span class="string">"Signature"</span>).content(<span class="string">"0RavWzkygo6QX9caELEqKi9kDbU="</span>))
+            .part(FormDataPart::new(<span class="string">"file"</span>).header(CONTENT_TYPE, <span class="string">"image/jpeg"</span>.parse().unwrap()).content(<span class="string">"...file content..."</span>)).part(FormDataPart::new(<span class="string">"submit"</span>).content(<span class="string">"Upload to Amazon S3"</span>));
 
         <span class="kw">let </span>(size, body) = multipart.build();
         <span class="kw">let </span>bs = body.collect().<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="macro">assert_eq!</span>(size, bs.len() <span class="kw">as </span>u64);
 
-        <span class="kw">let </span>expected = <span class="string">r#&quot;--9431149156168
-Content-Disposition: form-data; name=&quot;key&quot;
+        <span class="kw">let </span>expected = <span class="string">r#"--9431149156168
+Content-Disposition: form-data; name="key"
 
 user/eric/MyPicture.jpg
 --9431149156168
-Content-Disposition: form-data; name=&quot;acl&quot;
+Content-Disposition: form-data; name="acl"
 
 public-read
 --9431149156168
-Content-Disposition: form-data; name=&quot;success_action_redirect&quot;
+Content-Disposition: form-data; name="success_action_redirect"
 
 https://awsexamplebucket1.s3.us-west-1.amazonaws.com/successful_upload.html
 --9431149156168
-Content-Disposition: form-data; name=&quot;content-type&quot;
+Content-Disposition: form-data; name="content-type"
 
 image/jpeg
 --9431149156168
-Content-Disposition: form-data; name=&quot;x-amz-meta-uuid&quot;
+Content-Disposition: form-data; name="x-amz-meta-uuid"
 
 14365123651274
 --9431149156168
-Content-Disposition: form-data; name=&quot;x-amz-meta-tag&quot;
+Content-Disposition: form-data; name="x-amz-meta-tag"
 
 Some,Tag,For,Picture
 --9431149156168
-Content-Disposition: form-data; name=&quot;AWSAccessKeyId&quot;
+Content-Disposition: form-data; name="AWSAccessKeyId"
 
 AKIAIOSFODNN7EXAMPLE
 --9431149156168
-Content-Disposition: form-data; name=&quot;Policy&quot;
+Content-Disposition: form-data; name="Policy"
 
 eyAiZXhwaXJhdGlvbiI6ICIyMDA3LTEyLTAxVDEyOjAwOjAwLjAwMFoiLAogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiam9obnNtaXRoIn0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiRrZXkiLCAidXNlci9lcmljLyJdLAogICAgeyJhY2wiOiAicHVibGljLXJlYWQifSwKICAgIHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiAiaHR0cDovL2pvaG5zbWl0aC5zMy5hbWF6b25hd3MuY29tL3N1Y2Nlc3NmdWxfdXBsb2FkLmh0bWwifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJENvbnRlbnQtVHlwZSIsICJpbWFnZS8iXSwKICAgIHsieC1hbXotbWV0YS11dWlkIjogIjE0MzY1MTIzNjUxMjc0In0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiR4LWFtei1tZXRhLXRhZyIsICIiXQogIF0KfQo=
 --9431149156168
-Content-Disposition: form-data; name=&quot;Signature&quot;
+Content-Disposition: form-data; name="Signature"
 
 0RavWzkygo6QX9caELEqKi9kDbU=
 --9431149156168
-Content-Disposition: form-data; name=&quot;file&quot;
+Content-Disposition: form-data; name="file"
 content-type: image/jpeg
 
 ...file content...
 --9431149156168
-Content-Disposition: form-data; name=&quot;submit&quot;
+Content-Disposition: form-data; name="submit"
 
 Upload to Amazon S3
 --9431149156168--
-&quot;#</span>;
+"#</span>;
 
         <span class="macro">assert_eq!</span>(
             expected,
-            <span class="comment">// Rust can&#39;t represent `\r` in a string literal, so we
+            <span class="comment">// Rust can't represent `\r` in a string literal, so we
             // replace `\r\n` with `\n` for comparison
             </span>String::from_utf8(bs.to_vec())
                 .unwrap()
-                .replace(<span class="string">&quot;\r\n&quot;</span>, <span class="string">&quot;\n&quot;</span>)
+                .replace(<span class="string">"\r\n"</span>, <span class="string">"\n"</span>)
         );
 
         <span class="prelude-val">Ok</span>(())
@@ -2025,67 +2027,67 @@ Upload to Amazon S3
     </span><span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_multipart_mixed_gcs_batch_metadata() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>multipart = Multipart::new()
-            .with_boundary(<span class="string">&quot;===============7330845974216740156==&quot;</span>)
+            .with_boundary(<span class="string">"===============7330845974216740156=="</span>)
             .part(
-                MixedPart::new(<span class="string">&quot;/storage/v1/b/example-bucket/o/obj1&quot;</span>)
+                MixedPart::new(<span class="string">"/storage/v1/b/example-bucket/o/obj1"</span>)
                     .method(Method::PATCH)
                     .part_header(
-                        <span class="string">&quot;content-id&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;&lt;b29c5de2-0db4-490b-b421-6a51b598bd22+1&gt;&quot;</span>.parse().unwrap(),
+                        <span class="string">"content-id"</span>.parse().unwrap(),
+                        <span class="string">"&lt;b29c5de2-0db4-490b-b421-6a51b598bd22+1&gt;"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;content-type&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;application/json&quot;</span>.parse().unwrap(),
+                        <span class="string">"content-type"</span>.parse().unwrap(),
+                        <span class="string">"application/json"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;accept&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;application/json&quot;</span>.parse().unwrap(),
+                        <span class="string">"accept"</span>.parse().unwrap(),
+                        <span class="string">"application/json"</span>.parse().unwrap(),
                     )
-                    .header(<span class="string">&quot;content-length&quot;</span>.parse().unwrap(), <span class="string">&quot;31&quot;</span>.parse().unwrap())
-                    .content(<span class="string">r#&quot;{&quot;metadata&quot;: {&quot;type&quot;: &quot;tabby&quot;}}&quot;#</span>),
+                    .header(<span class="string">"content-length"</span>.parse().unwrap(), <span class="string">"31"</span>.parse().unwrap())
+                    .content(<span class="string">r#"{"metadata": {"type": "tabby"}}"#</span>),
             )
             .part(
-                MixedPart::new(<span class="string">&quot;/storage/v1/b/example-bucket/o/obj2&quot;</span>)
+                MixedPart::new(<span class="string">"/storage/v1/b/example-bucket/o/obj2"</span>)
                     .method(Method::PATCH)
                     .part_header(
-                        <span class="string">&quot;content-id&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;&lt;b29c5de2-0db4-490b-b421-6a51b598bd22+2&gt;&quot;</span>.parse().unwrap(),
+                        <span class="string">"content-id"</span>.parse().unwrap(),
+                        <span class="string">"&lt;b29c5de2-0db4-490b-b421-6a51b598bd22+2&gt;"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;content-type&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;application/json&quot;</span>.parse().unwrap(),
+                        <span class="string">"content-type"</span>.parse().unwrap(),
+                        <span class="string">"application/json"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;accept&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;application/json&quot;</span>.parse().unwrap(),
+                        <span class="string">"accept"</span>.parse().unwrap(),
+                        <span class="string">"application/json"</span>.parse().unwrap(),
                     )
-                    .header(<span class="string">&quot;content-length&quot;</span>.parse().unwrap(), <span class="string">&quot;32&quot;</span>.parse().unwrap())
-                    .content(<span class="string">r#&quot;{&quot;metadata&quot;: {&quot;type&quot;: &quot;tuxedo&quot;}}&quot;#</span>),
+                    .header(<span class="string">"content-length"</span>.parse().unwrap(), <span class="string">"32"</span>.parse().unwrap())
+                    .content(<span class="string">r#"{"metadata": {"type": "tuxedo"}}"#</span>),
             )
             .part(
-                MixedPart::new(<span class="string">&quot;/storage/v1/b/example-bucket/o/obj3&quot;</span>)
+                MixedPart::new(<span class="string">"/storage/v1/b/example-bucket/o/obj3"</span>)
                     .method(Method::PATCH)
                     .part_header(
-                        <span class="string">&quot;content-id&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;&lt;b29c5de2-0db4-490b-b421-6a51b598bd22+3&gt;&quot;</span>.parse().unwrap(),
+                        <span class="string">"content-id"</span>.parse().unwrap(),
+                        <span class="string">"&lt;b29c5de2-0db4-490b-b421-6a51b598bd22+3&gt;"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;content-type&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;application/json&quot;</span>.parse().unwrap(),
+                        <span class="string">"content-type"</span>.parse().unwrap(),
+                        <span class="string">"application/json"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;accept&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;application/json&quot;</span>.parse().unwrap(),
+                        <span class="string">"accept"</span>.parse().unwrap(),
+                        <span class="string">"application/json"</span>.parse().unwrap(),
                     )
-                    .header(<span class="string">&quot;content-length&quot;</span>.parse().unwrap(), <span class="string">&quot;32&quot;</span>.parse().unwrap())
-                    .content(<span class="string">r#&quot;{&quot;metadata&quot;: {&quot;type&quot;: &quot;calico&quot;}}&quot;#</span>),
+                    .header(<span class="string">"content-length"</span>.parse().unwrap(), <span class="string">"32"</span>.parse().unwrap())
+                    .content(<span class="string">r#"{"metadata": {"type": "calico"}}"#</span>),
             );
 
         <span class="kw">let </span>(size, body) = multipart.build();
         <span class="kw">let </span>bs = body.collect().<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="macro">assert_eq!</span>(size, bs.len() <span class="kw">as </span>u64);
 
-        <span class="kw">let </span>expected = <span class="string">r#&quot;--===============7330845974216740156==
+        <span class="kw">let </span>expected = <span class="string">r#"--===============7330845974216740156==
 Content-Type: application/http
 Content-Transfer-Encoding: binary
 Content-ID: &lt;b29c5de2-0db4-490b-b421-6a51b598bd22+1&gt;
@@ -2095,7 +2097,7 @@ content-type: application/json
 accept: application/json
 content-length: 31
 
-{&quot;metadata&quot;: {&quot;type&quot;: &quot;tabby&quot;}}
+{"metadata": {"type": "tabby"}}
 --===============7330845974216740156==
 Content-Type: application/http
 Content-Transfer-Encoding: binary
@@ -2106,7 +2108,7 @@ content-type: application/json
 accept: application/json
 content-length: 32
 
-{&quot;metadata&quot;: {&quot;type&quot;: &quot;tuxedo&quot;}}
+{"metadata": {"type": "tuxedo"}}
 --===============7330845974216740156==
 Content-Type: application/http
 Content-Transfer-Encoding: binary
@@ -2117,17 +2119,17 @@ content-type: application/json
 accept: application/json
 content-length: 32
 
-{&quot;metadata&quot;: {&quot;type&quot;: &quot;calico&quot;}}
+{"metadata": {"type": "calico"}}
 --===============7330845974216740156==--
-&quot;#</span>;
+"#</span>;
 
         <span class="macro">assert_eq!</span>(
             expected,
-            <span class="comment">// Rust can&#39;t represent `\r` in a string literal, so we
+            <span class="comment">// Rust can't represent `\r` in a string literal, so we
             // replace `\r\n` with `\n` for comparison
             </span>String::from_utf8(bs.to_vec())
                 .unwrap()
-                .replace(<span class="string">&quot;\r\n&quot;</span>, <span class="string">&quot;\n&quot;</span>)
+                .replace(<span class="string">"\r\n"</span>, <span class="string">"\n"</span>)
         );
 
         <span class="prelude-val">Ok</span>(())
@@ -2137,61 +2139,61 @@ content-length: 32
     </span><span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_multipart_mixed_azblob_batch_delete() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>multipart = Multipart::new()
-            .with_boundary(<span class="string">&quot;batch_357de4f7-6d0b-4e02-8cd2-6361411a9525&quot;</span>)
+            .with_boundary(<span class="string">"batch_357de4f7-6d0b-4e02-8cd2-6361411a9525"</span>)
             .part(
-                MixedPart::new(<span class="string">&quot;/container0/blob0&quot;</span>)
+                MixedPart::new(<span class="string">"/container0/blob0"</span>)
                     .method(Method::DELETE)
-                    .part_header(<span class="string">&quot;content-id&quot;</span>.parse().unwrap(), <span class="string">&quot;0&quot;</span>.parse().unwrap())
+                    .part_header(<span class="string">"content-id"</span>.parse().unwrap(), <span class="string">"0"</span>.parse().unwrap())
                     .header(
-                        <span class="string">&quot;x-ms-date&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;Thu, 14 Jun 2018 16:46:54 GMT&quot;</span>.parse().unwrap(),
+                        <span class="string">"x-ms-date"</span>.parse().unwrap(),
+                        <span class="string">"Thu, 14 Jun 2018 16:46:54 GMT"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;authorization&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;SharedKey account:G4jjBXA7LI/RnWKIOQ8i9xH4p76pAQ+4Fs4R1VxasaE=&quot;
+                        <span class="string">"authorization"</span>.parse().unwrap(),
+                        <span class="string">"SharedKey account:G4jjBXA7LI/RnWKIOQ8i9xH4p76pAQ+4Fs4R1VxasaE="
                             </span>.parse()
                             .unwrap(),
                     )
-                    .header(<span class="string">&quot;content-length&quot;</span>.parse().unwrap(), <span class="string">&quot;0&quot;</span>.parse().unwrap()),
+                    .header(<span class="string">"content-length"</span>.parse().unwrap(), <span class="string">"0"</span>.parse().unwrap()),
             )
             .part(
-                MixedPart::new(<span class="string">&quot;/container1/blob1&quot;</span>)
+                MixedPart::new(<span class="string">"/container1/blob1"</span>)
                     .method(Method::DELETE)
-                    .part_header(<span class="string">&quot;content-id&quot;</span>.parse().unwrap(), <span class="string">&quot;1&quot;</span>.parse().unwrap())
+                    .part_header(<span class="string">"content-id"</span>.parse().unwrap(), <span class="string">"1"</span>.parse().unwrap())
                     .header(
-                        <span class="string">&quot;x-ms-date&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;Thu, 14 Jun 2018 16:46:54 GMT&quot;</span>.parse().unwrap(),
+                        <span class="string">"x-ms-date"</span>.parse().unwrap(),
+                        <span class="string">"Thu, 14 Jun 2018 16:46:54 GMT"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;authorization&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;SharedKey account:IvCoYDQ+0VcaA/hKFjUmQmIxXv2RT3XwwTsOTHL39HI=&quot;
+                        <span class="string">"authorization"</span>.parse().unwrap(),
+                        <span class="string">"SharedKey account:IvCoYDQ+0VcaA/hKFjUmQmIxXv2RT3XwwTsOTHL39HI="
                             </span>.parse()
                             .unwrap(),
                     )
-                    .header(<span class="string">&quot;content-length&quot;</span>.parse().unwrap(), <span class="string">&quot;0&quot;</span>.parse().unwrap()),
+                    .header(<span class="string">"content-length"</span>.parse().unwrap(), <span class="string">"0"</span>.parse().unwrap()),
             )
             .part(
-                MixedPart::new(<span class="string">&quot;/container2/blob2&quot;</span>)
+                MixedPart::new(<span class="string">"/container2/blob2"</span>)
                     .method(Method::DELETE)
-                    .part_header(<span class="string">&quot;content-id&quot;</span>.parse().unwrap(), <span class="string">&quot;2&quot;</span>.parse().unwrap())
+                    .part_header(<span class="string">"content-id"</span>.parse().unwrap(), <span class="string">"2"</span>.parse().unwrap())
                     .header(
-                        <span class="string">&quot;x-ms-date&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;Thu, 14 Jun 2018 16:46:54 GMT&quot;</span>.parse().unwrap(),
+                        <span class="string">"x-ms-date"</span>.parse().unwrap(),
+                        <span class="string">"Thu, 14 Jun 2018 16:46:54 GMT"</span>.parse().unwrap(),
                     )
                     .header(
-                        <span class="string">&quot;authorization&quot;</span>.parse().unwrap(),
-                        <span class="string">&quot;SharedKey account:S37N2JTjcmOQVLHLbDmp2johz+KpTJvKhbVc4M7+UqI=&quot;
+                        <span class="string">"authorization"</span>.parse().unwrap(),
+                        <span class="string">"SharedKey account:S37N2JTjcmOQVLHLbDmp2johz+KpTJvKhbVc4M7+UqI="
                             </span>.parse()
                             .unwrap(),
                     )
-                    .header(<span class="string">&quot;content-length&quot;</span>.parse().unwrap(), <span class="string">&quot;0&quot;</span>.parse().unwrap()),
+                    .header(<span class="string">"content-length"</span>.parse().unwrap(), <span class="string">"0"</span>.parse().unwrap()),
             );
 
         <span class="kw">let </span>(size, body) = multipart.build();
         <span class="kw">let </span>bs = body.collect().<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="macro">assert_eq!</span>(size, bs.len() <span class="kw">as </span>u64);
 
-        <span class="kw">let </span>expected = <span class="string">r#&quot;--batch_357de4f7-6d0b-4e02-8cd2-6361411a9525
+        <span class="kw">let </span>expected = <span class="string">r#"--batch_357de4f7-6d0b-4e02-8cd2-6361411a9525
 Content-Type: application/http
 Content-Transfer-Encoding: binary
 Content-ID: 0
@@ -2222,15 +2224,15 @@ authorization: SharedKey account:S37N2JTjcmOQVLHLbDmp2johz+KpTJvKhbVc4M7+UqI=
 content-length: 0
 
 --batch_357de4f7-6d0b-4e02-8cd2-6361411a9525--
-&quot;#</span>;
+"#</span>;
 
         <span class="macro">assert_eq!</span>(
             expected,
-            <span class="comment">// Rust can&#39;t represent `\r` in a string literal, so we
+            <span class="comment">// Rust can't represent `\r` in a string literal, so we
             // replace `\r\n` with `\n` for comparison
             </span>String::from_utf8(bs.to_vec())
                 .unwrap()
-                .replace(<span class="string">&quot;\r\n&quot;</span>, <span class="string">&quot;\n&quot;</span>)
+                .replace(<span class="string">"\r\n"</span>, <span class="string">"\n"</span>)
         );
 
         <span class="prelude-val">Ok</span>(())
@@ -2239,63 +2241,63 @@ content-length: 0
     <span class="doccomment">/// This test is inspired by &lt;https://cloud.google.com/storage/docs/batch&gt;
     </span><span class="attr">#[test]
     </span><span class="kw">fn </span>test_multipart_mixed_gcs_batch_metadata_response() {
-        <span class="kw">let </span>response = <span class="string">r#&quot;--batch_pK7JBAk73-E=_AA5eFwv4m2Q=
+        <span class="kw">let </span>response = <span class="string">r#"--batch_pK7JBAk73-E=_AA5eFwv4m2Q=
 Content-Type: application/http
 Content-ID: &lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+1&gt;
 
 HTTP/1.1 200 OK
-ETag: &quot;lGaP-E0memYDumK16YuUDM_6Gf0/V43j6azD55CPRGb9b6uytDYl61Y&quot;
+ETag: "lGaP-E0memYDumK16YuUDM_6Gf0/V43j6azD55CPRGb9b6uytDYl61Y"
 Content-Type: application/json; charset=UTF-8
 Date: Mon, 22 Jan 2018 18:56:00 GMT
 Expires: Mon, 22 Jan 2018 18:56:00 GMT
 Cache-Control: private, max-age=0
 Content-Length: 846
 
-{&quot;kind&quot;: &quot;storage#object&quot;,&quot;id&quot;: &quot;example-bucket/obj1/1495822576643790&quot;,&quot;metadata&quot;: {&quot;type&quot;: &quot;tabby&quot;}}
+{"kind": "storage#object","id": "example-bucket/obj1/1495822576643790","metadata": {"type": "tabby"}}
 
 --batch_pK7JBAk73-E=_AA5eFwv4m2Q=
 Content-Type: application/http
 Content-ID: &lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+2&gt;
 
 HTTP/1.1 200 OK
-ETag: &quot;lGaP-E0memYDumK16YuUDM_6Gf0/91POdd-sxSAkJnS8Dm7wMxBSDKk&quot;
+ETag: "lGaP-E0memYDumK16YuUDM_6Gf0/91POdd-sxSAkJnS8Dm7wMxBSDKk"
 Content-Type: application/json; charset=UTF-8
 Date: Mon, 22 Jan 2018 18:56:00 GMT
 Expires: Mon, 22 Jan 2018 18:56:00 GMT
 Cache-Control: private, max-age=0
 Content-Length: 846
 
-{&quot;kind&quot;: &quot;storage#object&quot;,&quot;id&quot;: &quot;example-bucket/obj2/1495822576643790&quot;,&quot;metadata&quot;: {&quot;type&quot;: &quot;tuxedo&quot;}}
+{"kind": "storage#object","id": "example-bucket/obj2/1495822576643790","metadata": {"type": "tuxedo"}}
 
 --batch_pK7JBAk73-E=_AA5eFwv4m2Q=
 Content-Type: application/http
 Content-ID: &lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+3&gt;
 
 HTTP/1.1 200 OK
-ETag: &quot;lGaP-E0memYDumK16YuUDM_6Gf0/d2Z1F1_ZVbB1dC0YKM9rX5VAgIQ&quot;
+ETag: "lGaP-E0memYDumK16YuUDM_6Gf0/d2Z1F1_ZVbB1dC0YKM9rX5VAgIQ"
 Content-Type: application/json; charset=UTF-8
 Date: Mon, 22 Jan 2018 18:56:00 GMT
 Expires: Mon, 22 Jan 2018 18:56:00 GMT
 Cache-Control: private, max-age=0
 Content-Length: 846
 
-{&quot;kind&quot;: &quot;storage#object&quot;,&quot;id&quot;: &quot;example-bucket/obj3/1495822576643790&quot;,&quot;metadata&quot;: {&quot;type&quot;: &quot;calico&quot;}}
+{"kind": "storage#object","id": "example-bucket/obj3/1495822576643790","metadata": {"type": "calico"}}
 
---batch_pK7JBAk73-E=_AA5eFwv4m2Q=--&quot;#</span>.replace(<span class="string">&#39;\n&#39;</span>, <span class="string">&quot;\r\n&quot;</span>);
+--batch_pK7JBAk73-E=_AA5eFwv4m2Q=--"#</span>.replace(<span class="string">'\n'</span>, <span class="string">"\r\n"</span>);
 
         <span class="kw">let </span>multipart: Multipart&lt;MixedPart&gt; = Multipart::new()
-            .with_boundary(<span class="string">&quot;batch_pK7JBAk73-E=_AA5eFwv4m2Q=&quot;</span>)
+            .with_boundary(<span class="string">"batch_pK7JBAk73-E=_AA5eFwv4m2Q="</span>)
             .parse(Bytes::from(response))
             .unwrap();
 
         <span class="kw">let </span>part0_bs = Bytes::from_static(
-            <span class="string">r#&quot;{&quot;kind&quot;: &quot;storage#object&quot;,&quot;id&quot;: &quot;example-bucket/obj1/1495822576643790&quot;,&quot;metadata&quot;: {&quot;type&quot;: &quot;tabby&quot;}}&quot;#</span>.as_bytes());
+            <span class="string">r#"{"kind": "storage#object","id": "example-bucket/obj1/1495822576643790","metadata": {"type": "tabby"}}"#</span>.as_bytes());
         <span class="kw">let </span>part1_bs = Bytes::from_static(
-            <span class="string">r#&quot;{&quot;kind&quot;: &quot;storage#object&quot;,&quot;id&quot;: &quot;example-bucket/obj2/1495822576643790&quot;,&quot;metadata&quot;: {&quot;type&quot;: &quot;tuxedo&quot;}}&quot;#
+            <span class="string">r#"{"kind": "storage#object","id": "example-bucket/obj2/1495822576643790","metadata": {"type": "tuxedo"}}"#
                 </span>.as_bytes()
         );
         <span class="kw">let </span>part2_bs = Bytes::from_static(
-            <span class="string">r#&quot;{&quot;kind&quot;: &quot;storage#object&quot;,&quot;id&quot;: &quot;example-bucket/obj3/1495822576643790&quot;,&quot;metadata&quot;: {&quot;type&quot;: &quot;calico&quot;}}&quot;#
+            <span class="string">r#"{"kind": "storage#object","id": "example-bucket/obj3/1495822576643790","metadata": {"type": "calico"}}"#
                 </span>.as_bytes()
         );
 
@@ -2303,10 +2305,10 @@ Content-Length: 846
 
         <span class="macro">assert_eq!</span>(multipart.parts[<span class="number">0</span>].part_headers, {
             <span class="kw">let </span><span class="kw-2">mut </span>h = HeaderMap::new();
-            h.insert(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/http&quot;</span>.parse().unwrap());
+            h.insert(<span class="string">"Content-Type"</span>, <span class="string">"application/http"</span>.parse().unwrap());
             h.insert(
-                <span class="string">&quot;Content-ID&quot;</span>,
-                <span class="string">&quot;&lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+1&gt;&quot;
+                <span class="string">"Content-ID"</span>,
+                <span class="string">"&lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+1&gt;"
                     </span>.parse()
                     .unwrap(),
             );
@@ -2317,19 +2319,19 @@ Content-Length: 846
         <span class="macro">assert_eq!</span>(multipart.parts[<span class="number">0</span>].headers, {
             <span class="kw">let </span><span class="kw-2">mut </span>h = HeaderMap::new();
             h.insert(
-                <span class="string">&quot;ETag&quot;</span>,
-                <span class="string">&quot;\&quot;lGaP-E0memYDumK16YuUDM_6Gf0/V43j6azD55CPRGb9b6uytDYl61Y\&quot;&quot;
+                <span class="string">"ETag"</span>,
+                <span class="string">"\"lGaP-E0memYDumK16YuUDM_6Gf0/V43j6azD55CPRGb9b6uytDYl61Y\""
                     </span>.parse()
                     .unwrap(),
             );
             h.insert(
-                <span class="string">&quot;Content-Type&quot;</span>,
-                <span class="string">&quot;application/json; charset=UTF-8&quot;</span>.parse().unwrap(),
+                <span class="string">"Content-Type"</span>,
+                <span class="string">"application/json; charset=UTF-8"</span>.parse().unwrap(),
             );
-            h.insert(<span class="string">&quot;Date&quot;</span>, <span class="string">&quot;Mon, 22 Jan 2018 18:56:00 GMT&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Expires&quot;</span>, <span class="string">&quot;Mon, 22 Jan 2018 18:56:00 GMT&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;private, max-age=0&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Content-Length&quot;</span>, <span class="string">&quot;846&quot;</span>.parse().unwrap());
+            h.insert(<span class="string">"Date"</span>, <span class="string">"Mon, 22 Jan 2018 18:56:00 GMT"</span>.parse().unwrap());
+            h.insert(<span class="string">"Expires"</span>, <span class="string">"Mon, 22 Jan 2018 18:56:00 GMT"</span>.parse().unwrap());
+            h.insert(<span class="string">"Cache-Control"</span>, <span class="string">"private, max-age=0"</span>.parse().unwrap());
+            h.insert(<span class="string">"Content-Length"</span>, <span class="string">"846"</span>.parse().unwrap());
 
             h
         });
@@ -2343,10 +2345,10 @@ Content-Length: 846
 
         <span class="macro">assert_eq!</span>(multipart.parts[<span class="number">1</span>].part_headers, {
             <span class="kw">let </span><span class="kw-2">mut </span>h = HeaderMap::new();
-            h.insert(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/http&quot;</span>.parse().unwrap());
+            h.insert(<span class="string">"Content-Type"</span>, <span class="string">"application/http"</span>.parse().unwrap());
             h.insert(
-                <span class="string">&quot;Content-ID&quot;</span>,
-                <span class="string">&quot;&lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+2&gt;&quot;
+                <span class="string">"Content-ID"</span>,
+                <span class="string">"&lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+2&gt;"
                     </span>.parse()
                     .unwrap(),
             );
@@ -2357,19 +2359,19 @@ Content-Length: 846
         <span class="macro">assert_eq!</span>(multipart.parts[<span class="number">1</span>].headers, {
             <span class="kw">let </span><span class="kw-2">mut </span>h = HeaderMap::new();
             h.insert(
-                <span class="string">&quot;ETag&quot;</span>,
-                <span class="string">&quot;\&quot;lGaP-E0memYDumK16YuUDM_6Gf0/91POdd-sxSAkJnS8Dm7wMxBSDKk\&quot;&quot;
+                <span class="string">"ETag"</span>,
+                <span class="string">"\"lGaP-E0memYDumK16YuUDM_6Gf0/91POdd-sxSAkJnS8Dm7wMxBSDKk\""
                     </span>.parse()
                     .unwrap(),
             );
             h.insert(
-                <span class="string">&quot;Content-Type&quot;</span>,
-                <span class="string">&quot;application/json; charset=UTF-8&quot;</span>.parse().unwrap(),
+                <span class="string">"Content-Type"</span>,
+                <span class="string">"application/json; charset=UTF-8"</span>.parse().unwrap(),
             );
-            h.insert(<span class="string">&quot;Date&quot;</span>, <span class="string">&quot;Mon, 22 Jan 2018 18:56:00 GMT&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Expires&quot;</span>, <span class="string">&quot;Mon, 22 Jan 2018 18:56:00 GMT&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;private, max-age=0&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Content-Length&quot;</span>, <span class="string">&quot;846&quot;</span>.parse().unwrap());
+            h.insert(<span class="string">"Date"</span>, <span class="string">"Mon, 22 Jan 2018 18:56:00 GMT"</span>.parse().unwrap());
+            h.insert(<span class="string">"Expires"</span>, <span class="string">"Mon, 22 Jan 2018 18:56:00 GMT"</span>.parse().unwrap());
+            h.insert(<span class="string">"Cache-Control"</span>, <span class="string">"private, max-age=0"</span>.parse().unwrap());
+            h.insert(<span class="string">"Content-Length"</span>, <span class="string">"846"</span>.parse().unwrap());
 
             h
         });
@@ -2383,10 +2385,10 @@ Content-Length: 846
 
         <span class="macro">assert_eq!</span>(multipart.parts[<span class="number">2</span>].part_headers, {
             <span class="kw">let </span><span class="kw-2">mut </span>h = HeaderMap::new();
-            h.insert(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/http&quot;</span>.parse().unwrap());
+            h.insert(<span class="string">"Content-Type"</span>, <span class="string">"application/http"</span>.parse().unwrap());
             h.insert(
-                <span class="string">&quot;Content-ID&quot;</span>,
-                <span class="string">&quot;&lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+3&gt;&quot;
+                <span class="string">"Content-ID"</span>,
+                <span class="string">"&lt;response-b29c5de2-0db4-490b-b421-6a51b598bd22+3&gt;"
                     </span>.parse()
                     .unwrap(),
             );
@@ -2397,19 +2399,19 @@ Content-Length: 846
         <span class="macro">assert_eq!</span>(multipart.parts[<span class="number">2</span>].headers, {
             <span class="kw">let </span><span class="kw-2">mut </span>h = HeaderMap::new();
             h.insert(
-                <span class="string">&quot;ETag&quot;</span>,
-                <span class="string">&quot;\&quot;lGaP-E0memYDumK16YuUDM_6Gf0/d2Z1F1_ZVbB1dC0YKM9rX5VAgIQ\&quot;&quot;
+                <span class="string">"ETag"</span>,
+                <span class="string">"\"lGaP-E0memYDumK16YuUDM_6Gf0/d2Z1F1_ZVbB1dC0YKM9rX5VAgIQ\""
                     </span>.parse()
                     .unwrap(),
             );
             h.insert(
-                <span class="string">&quot;Content-Type&quot;</span>,
-                <span class="string">&quot;application/json; charset=UTF-8&quot;</span>.parse().unwrap(),
+                <span class="string">"Content-Type"</span>,
+                <span class="string">"application/json; charset=UTF-8"</span>.parse().unwrap(),
             );
-            h.insert(<span class="string">&quot;Date&quot;</span>, <span class="string">&quot;Mon, 22 Jan 2018 18:56:00 GMT&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Expires&quot;</span>, <span class="string">&quot;Mon, 22 Jan 2018 18:56:00 GMT&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;private, max-age=0&quot;</span>.parse().unwrap());
-            h.insert(<span class="string">&quot;Content-Length&quot;</span>, <span class="string">&quot;846&quot;</span>.parse().unwrap());
+            h.insert(<span class="string">"Date"</span>, <span class="string">"Mon, 22 Jan 2018 18:56:00 GMT"</span>.parse().unwrap());
+            h.insert(<span class="string">"Expires"</span>, <span class="string">"Mon, 22 Jan 2018 18:56:00 GMT"</span>.parse().unwrap());
+            h.insert(<span class="string">"Cache-Control"</span>, <span class="string">"private, max-age=0"</span>.parse().unwrap());
+            h.insert(<span class="string">"Content-Length"</span>, <span class="string">"846"</span>.parse().unwrap());
 
             h
         });

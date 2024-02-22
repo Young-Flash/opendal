@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/types/operator/blocking_operator.rs`."><title>blocking_operator.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/types/operator/blocking_operator.rs`."><title>blocking_operator.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1194,20 +1196,19 @@
 <a href="#1194" id="1194">1194</a>
 <a href="#1195" id="1195">1195</a>
 <a href="#1196" id="1196">1196</a>
-<a href="#1197" id="1197">1197</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1230,7 +1231,7 @@
 ///
 /// Read more backend init examples in [`services`]
 ///
-/// ```
+/// ```rust
 /// # use anyhow::Result;
 /// use opendal::services::Fs;
 /// use opendal::BlockingOperator;
@@ -1242,7 +1243,7 @@
 ///     // Set the root for fs, all operations will happen under this root.
 ///     //
 ///     // NOTE: the root must be absolute path.
-///     builder.root(&quot;/tmp&quot;);
+///     builder.root("/tmp");
 ///
 ///     // Build an `BlockingOperator` to start operating the storage.
 ///     let _: BlockingOperator = Operator::new(builder)?.finish().blocking();
@@ -1253,11 +1254,11 @@
 ///
 /// ## Init backends with blocking layer
 ///
-/// Some services like s3, gcs doesn&#39;t have native blocking supports, we can use [`layers::BlockingLayer`]
+/// Some services like s3, gcs doesn't have native blocking supports, we can use [`layers::BlockingLayer`]
 /// to wrap the async operator to make it blocking.
-///
-/// ```rust
-/// # use anyhow::Result;
+</span><span class="attr">#[cfg_attr(feature = <span class="string">"layers-blocking"</span>, doc = <span class="string">"```rust"</span>)]
+#[cfg_attr(not(feature = <span class="string">"layers-blocking"</span>), doc = <span class="string">"```ignore"</span>)]
+</span><span class="doccomment">/// # use anyhow::Result;
 /// use opendal::layers::BlockingLayer;
 /// use opendal::services::S3;
 /// use opendal::BlockingOperator;
@@ -1267,8 +1268,8 @@
 /// async fn main() -&gt; Result&lt;()&gt; {
 ///     // Create fs backend builder.
 ///     let mut builder = S3::default();
-///     builder.bucket(&quot;test&quot;);
-///     builder.region(&quot;us-east-1&quot;);
+///     builder.bucket("test");
+///     builder.region("us-east-1");
 ///
 ///     // Build an `BlockingOperator` with blocking layer to start operating the storage.
 ///     let _: BlockingOperator = Operator::new(builder)?
@@ -1304,7 +1305,7 @@
         <span class="self">Self </span>{ accessor, limit }
     }
 
-    <span class="doccomment">/// Get current operator&#39;s limit
+    <span class="doccomment">/// Get current operator's limit
     </span><span class="kw">pub fn </span>limit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="self">self</span>.limit
     }
@@ -1339,11 +1340,11 @@
 
 <span class="doccomment">/// # Operator blocking API.
 </span><span class="kw">impl </span>BlockingOperator {
-    <span class="doccomment">/// Get given path&#39;s metadata.
+    <span class="doccomment">/// Get given path's metadata.
     ///
     /// # Notes
     ///
-    /// For fetch metadata of entries returned by [`Lister`], it&#39;s better to use [`list_with`] and
+    /// For fetch metadata of entries returned by [`Lister`], it's better to use [`list_with`] and
     /// [`lister_with`] with `metakey` query like `Metakey::ContentLength | Metakey::LastModified`
     /// so that we can avoid extra requests.
     ///
@@ -1352,8 +1353,8 @@
     /// ## Services that support `create_dir`
     ///
     /// `test` and `test/` may vary in some services such as S3. However, on a local file system,
-    /// they&#39;re identical. Therefore, the behavior of `stat(&quot;test&quot;)` and `stat(&quot;test/&quot;)` might differ
-    /// in certain edge cases. Always use `stat(&quot;test/&quot;)` when you need to access a directory if possible.
+    /// they're identical. Therefore, the behavior of `stat("test")` and `stat("test/")` might differ
+    /// in certain edge cases. Always use `stat("test/")` when you need to access a directory if possible.
     ///
     /// Here are the behavior list:
     ///
@@ -1369,8 +1370,8 @@
     ///
     /// ## Services that not support `create_dir`
     ///
-    /// For services that not support `create_dir`, `stat(&quot;test/&quot;)` will return `NotFound` even
-    /// when `test/abc` exists since the service won&#39;t have the concept of dir. There is nothing
+    /// For services that not support `create_dir`, `stat("test/")` will return `NotFound` even
+    /// when `test/abc` exists since the service won't have the concept of dir. There is nothing
     /// we can do about this.
     ///
     /// # Examples
@@ -1384,9 +1385,9 @@
     /// use opendal::ErrorKind;
     /// #
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// if let Err(e) = op.stat(&quot;test&quot;) {
+    /// if let Err(e) = op.stat("test") {
     ///     if e.kind() == ErrorKind::NotFound {
-    ///         println!(&quot;file not exist&quot;)
+    ///         println!("file not exist")
     ///     }
     /// }
     /// # Ok(())
@@ -1396,11 +1397,11 @@
         <span class="self">self</span>.stat_with(path).call()
     }
 
-    <span class="doccomment">/// Get given path&#39;s metadata with extra options.
+    <span class="doccomment">/// Get given path's metadata with extra options.
     ///
     /// # Notes
     ///
-    /// For fetch metadata of entries returned by [`Lister`], it&#39;s better to use [`list_with`] and
+    /// For fetch metadata of entries returned by [`Lister`], it's better to use [`list_with`] and
     /// [`lister_with`] with `metakey` query like `Metakey::ContentLength | Metakey::LastModified`
     /// so that we can avoid extra requests.
     ///
@@ -1409,8 +1410,8 @@
     /// ## Services that support `create_dir`
     ///
     /// `test` and `test/` may vary in some services such as S3. However, on a local file system,
-    /// they&#39;re identical. Therefore, the behavior of `stat(&quot;test&quot;)` and `stat(&quot;test/&quot;)` might differ
-    /// in certain edge cases. Always use `stat(&quot;test/&quot;)` when you need to access a directory if possible.
+    /// they're identical. Therefore, the behavior of `stat("test")` and `stat("test/")` might differ
+    /// in certain edge cases. Always use `stat("test/")` when you need to access a directory if possible.
     ///
     /// Here are the behavior list:
     ///
@@ -1426,8 +1427,8 @@
     ///
     /// ## Services that not support `create_dir`
     ///
-    /// For services that not support `create_dir`, `stat(&quot;test/&quot;)` will return `NotFound` even
-    /// when `test/abc` exists since the service won&#39;t have the concept of dir. There is nothing
+    /// For services that not support `create_dir`, `stat("test/")` will return `NotFound` even
+    /// when `test/abc` exists since the service won't have the concept of dir. There is nothing
     /// we can do about this.
     ///
     /// # Examples
@@ -1447,12 +1448,12 @@
     /// use opendal::ErrorKind;
     /// #
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// if let Err(e) = op.stat_with(&quot;test&quot;).if_match(&quot;&lt;etag&gt;&quot;).call() {
+    /// if let Err(e) = op.stat_with("test").if_match("&lt;etag&gt;").call() {
     ///     if e.kind() == ErrorKind::ConditionNotMatch {
-    ///         println!(&quot;file exists, but etag mismatch&quot;)
+    ///         println!("file exists, but etag mismatch")
     ///     }
     ///     if e.kind() == ErrorKind::NotFound {
-    ///         println!(&quot;file not exist&quot;)
+    ///         println!("file not exist")
     ///     }
     /// }
     /// # Ok(())
@@ -1482,7 +1483,7 @@
     /// use anyhow::Result;
     /// use opendal::BlockingOperator;
     /// fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    ///     let _ = op.is_exist(&quot;test&quot;)?;
+    ///     let _ = op.is_exist("test")?;
     ///
     ///     Ok(())
     /// }
@@ -1518,7 +1519,7 @@
     /// # use opendal::BlockingOperator;
     /// # use futures::TryStreamExt;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// op.create_dir(&quot;path/to/dir/&quot;)?;
+    /// op.create_dir("path/to/dir/")?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1528,11 +1529,11 @@
         <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>path, EntryMode::DIR) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::NotADirectory,
-                <span class="string">&quot;the path trying to create should end with `/`&quot;</span>,
+                <span class="string">"the path trying to create should end with `/`"</span>,
             )
-            .with_operation(<span class="string">&quot;create_dir&quot;</span>)
-            .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.inner().info().scheme())
-            .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span>path));
+            .with_operation(<span class="string">"create_dir"</span>)
+            .with_context(<span class="string">"service"</span>, <span class="self">self</span>.inner().info().scheme())
+            .with_context(<span class="string">"path"</span>, <span class="kw-2">&amp;</span>path));
         }
 
         <span class="self">self</span>.inner()
@@ -1553,7 +1554,7 @@
     /// # use opendal::BlockingOperator;
     /// #
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let bs = op.read(&quot;path/to/file&quot;)?;
+    /// let bs = op.read("path/to/file")?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1574,7 +1575,7 @@
     /// use opendal::EntryMode;
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let bs = op.read_with(&quot;path/to/file&quot;).range(0..10).call()?;
+    /// let bs = op.read_with("path/to/file").range(0..10).call()?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1588,10 +1589,10 @@
             |inner, path, args| {
                 <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>path, EntryMode::FILE) {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(
-                        Error::new(ErrorKind::IsADirectory, <span class="string">&quot;read path is a directory&quot;</span>)
-                            .with_operation(<span class="string">&quot;BlockingOperator::read_with&quot;</span>)
-                            .with_context(<span class="string">&quot;service&quot;</span>, inner.info().scheme().into_static())
-                            .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span>path),
+                        Error::new(ErrorKind::IsADirectory, <span class="string">"read path is a directory"</span>)
+                            .with_operation(<span class="string">"BlockingOperator::read_with"</span>)
+                            .with_context(<span class="string">"service"</span>, inner.info().scheme().into_static())
+                            .with_context(<span class="string">"path"</span>, <span class="kw-2">&amp;</span>path),
                     );
                 }
 
@@ -1625,7 +1626,7 @@
     /// # use opendal::BlockingOperator;
     /// # use futures::TryStreamExt;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let r = op.reader(&quot;path/to/file&quot;)?;
+    /// let r = op.reader("path/to/file")?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1643,7 +1644,7 @@
     /// use opendal::EntryMode;
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let r = op.reader_with(&quot;path/to/file&quot;).range(0..10).call()?;
+    /// let r = op.reader_with("path/to/file").range(0..10).call()?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1657,10 +1658,10 @@
             |inner, path, args| {
                 <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>path, EntryMode::FILE) {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(
-                        Error::new(ErrorKind::IsADirectory, <span class="string">&quot;reader path is a directory&quot;</span>)
-                            .with_operation(<span class="string">&quot;BlockingOperator::reader_with&quot;</span>)
-                            .with_context(<span class="string">&quot;service&quot;</span>, inner.info().scheme().into_static())
-                            .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span>path),
+                        Error::new(ErrorKind::IsADirectory, <span class="string">"reader path is a directory"</span>)
+                            .with_operation(<span class="string">"BlockingOperator::reader_with"</span>)
+                            .with_context(<span class="string">"service"</span>, inner.info().scheme().into_static())
+                            .with_context(<span class="string">"path"</span>, <span class="kw-2">&amp;</span>path),
                     );
                 }
 
@@ -1685,7 +1686,7 @@
     /// use bytes::Bytes;
     ///
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// op.write(&quot;path/to/file&quot;, vec![0; 4096])?;
+    /// op.write("path/to/file", vec![0; 4096])?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1709,7 +1710,7 @@
     /// # use opendal::BlockingOperator;
     ///
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// op.copy(&quot;path/to/file&quot;, &quot;path/to/file2&quot;)?;
+    /// op.copy("path/to/file", "path/to/file2")?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1718,10 +1719,10 @@
 
         <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>from, EntryMode::FILE) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::IsADirectory, <span class="string">&quot;from path is a directory&quot;</span>)
-                    .with_operation(<span class="string">&quot;BlockingOperator::copy&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.info().scheme())
-                    .with_context(<span class="string">&quot;from&quot;</span>, from),
+                Error::new(ErrorKind::IsADirectory, <span class="string">"from path is a directory"</span>)
+                    .with_operation(<span class="string">"BlockingOperator::copy"</span>)
+                    .with_context(<span class="string">"service"</span>, <span class="self">self</span>.info().scheme())
+                    .with_context(<span class="string">"from"</span>, from),
             );
         }
 
@@ -1729,20 +1730,20 @@
 
         <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>to, EntryMode::FILE) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::IsADirectory, <span class="string">&quot;to path is a directory&quot;</span>)
-                    .with_operation(<span class="string">&quot;BlockingOperator::copy&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.info().scheme())
-                    .with_context(<span class="string">&quot;to&quot;</span>, to),
+                Error::new(ErrorKind::IsADirectory, <span class="string">"to path is a directory"</span>)
+                    .with_operation(<span class="string">"BlockingOperator::copy"</span>)
+                    .with_context(<span class="string">"service"</span>, <span class="self">self</span>.info().scheme())
+                    .with_context(<span class="string">"to"</span>, to),
             );
         }
 
         <span class="kw">if </span>from == to {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::IsSameFile, <span class="string">&quot;from and to paths are same&quot;</span>)
-                    .with_operation(<span class="string">&quot;BlockingOperator::copy&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.info().scheme())
-                    .with_context(<span class="string">&quot;from&quot;</span>, from)
-                    .with_context(<span class="string">&quot;to&quot;</span>, to),
+                Error::new(ErrorKind::IsSameFile, <span class="string">"from and to paths are same"</span>)
+                    .with_operation(<span class="string">"BlockingOperator::copy"</span>)
+                    .with_context(<span class="string">"service"</span>, <span class="self">self</span>.info().scheme())
+                    .with_context(<span class="string">"from"</span>, from)
+                    .with_context(<span class="string">"to"</span>, to),
             );
         }
 
@@ -1766,7 +1767,7 @@
     /// # use opendal::BlockingOperator;
     ///
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// op.rename(&quot;path/to/file&quot;, &quot;path/to/file2&quot;)?;
+    /// op.rename("path/to/file", "path/to/file2")?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1775,10 +1776,10 @@
 
         <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>from, EntryMode::FILE) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::IsADirectory, <span class="string">&quot;from path is a directory&quot;</span>)
-                    .with_operation(<span class="string">&quot;BlockingOperator::move&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.info().scheme())
-                    .with_context(<span class="string">&quot;from&quot;</span>, from),
+                Error::new(ErrorKind::IsADirectory, <span class="string">"from path is a directory"</span>)
+                    .with_operation(<span class="string">"BlockingOperator::move"</span>)
+                    .with_context(<span class="string">"service"</span>, <span class="self">self</span>.info().scheme())
+                    .with_context(<span class="string">"from"</span>, from),
             );
         }
 
@@ -1786,20 +1787,20 @@
 
         <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>to, EntryMode::FILE) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::IsADirectory, <span class="string">&quot;to path is a directory&quot;</span>)
-                    .with_operation(<span class="string">&quot;BlockingOperator::move&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.info().scheme())
-                    .with_context(<span class="string">&quot;to&quot;</span>, to),
+                Error::new(ErrorKind::IsADirectory, <span class="string">"to path is a directory"</span>)
+                    .with_operation(<span class="string">"BlockingOperator::move"</span>)
+                    .with_context(<span class="string">"service"</span>, <span class="self">self</span>.info().scheme())
+                    .with_context(<span class="string">"to"</span>, to),
             );
         }
 
         <span class="kw">if </span>from == to {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::IsSameFile, <span class="string">&quot;from and to paths are same&quot;</span>)
-                    .with_operation(<span class="string">&quot;BlockingOperator::move&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, <span class="self">self</span>.info().scheme())
-                    .with_context(<span class="string">&quot;from&quot;</span>, from)
-                    .with_context(<span class="string">&quot;to&quot;</span>, to),
+                Error::new(ErrorKind::IsSameFile, <span class="string">"from and to paths are same"</span>)
+                    .with_operation(<span class="string">"BlockingOperator::move"</span>)
+                    .with_context(<span class="string">"service"</span>, <span class="self">self</span>.info().scheme())
+                    .with_context(<span class="string">"from"</span>, from)
+                    .with_context(<span class="string">"to"</span>, to),
             );
         }
 
@@ -1822,10 +1823,10 @@
     /// use bytes::Bytes;
     ///
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let bs = b&quot;hello, world!&quot;.to_vec();
+    /// let bs = b"hello, world!".to_vec();
     /// let _ = op
-    ///     .write_with(&quot;hello.txt&quot;, bs)
-    ///     .content_type(&quot;text/plain&quot;)
+    ///     .write_with("hello.txt", bs)
+    ///     .content_type("text/plain")
     ///     .call()?;
     /// # Ok(())
     /// # }
@@ -1842,10 +1843,10 @@
             |inner, path, (args, <span class="kw-2">mut </span>bs)| {
                 <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>path, EntryMode::FILE) {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(
-                        Error::new(ErrorKind::IsADirectory, <span class="string">&quot;write path is a directory&quot;</span>)
-                            .with_operation(<span class="string">&quot;BlockingOperator::write_with&quot;</span>)
-                            .with_context(<span class="string">&quot;service&quot;</span>, inner.info().scheme().into_static())
-                            .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span>path),
+                        Error::new(ErrorKind::IsADirectory, <span class="string">"write path is a directory"</span>)
+                            .with_operation(<span class="string">"BlockingOperator::write_with"</span>)
+                            .with_context(<span class="string">"service"</span>, inner.info().scheme().into_static())
+                            .with_context(<span class="string">"path"</span>, <span class="kw-2">&amp;</span>path),
                     );
                 }
 
@@ -1877,7 +1878,7 @@
     /// use bytes::Bytes;
     ///
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let mut w = op.writer(&quot;path/to/file&quot;)?;
+    /// let mut w = op.writer("path/to/file")?;
     /// w.write(vec![0; 4096])?;
     /// w.write(vec![1; 4096])?;
     /// w.close()?;
@@ -1898,7 +1899,7 @@
     /// use opendal::EntryMode;
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let mut w = op.writer_with(&quot;path/to/file&quot;).call()?;
+    /// let mut w = op.writer_with("path/to/file").call()?;
     /// w.write(vec![0; 4096])?;
     /// w.write(vec![1; 4096])?;
     /// w.close()?;
@@ -1917,10 +1918,10 @@
 
                 <span class="kw">if </span>!validate_path(<span class="kw-2">&amp;</span>path, EntryMode::FILE) {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(
-                        Error::new(ErrorKind::IsADirectory, <span class="string">&quot;write path is a directory&quot;</span>)
-                            .with_operation(<span class="string">&quot;BlockingOperator::writer_with&quot;</span>)
-                            .with_context(<span class="string">&quot;service&quot;</span>, inner.info().scheme().into_static())
-                            .with_context(<span class="string">&quot;path&quot;</span>, <span class="kw-2">&amp;</span>path),
+                        Error::new(ErrorKind::IsADirectory, <span class="string">"write path is a directory"</span>)
+                            .with_operation(<span class="string">"BlockingOperator::writer_with"</span>)
+                            .with_context(<span class="string">"service"</span>, inner.info().scheme().into_static())
+                            .with_context(<span class="string">"path"</span>, <span class="kw-2">&amp;</span>path),
                     );
                 }
 
@@ -1933,7 +1934,7 @@
     ///
     /// # Notes
     ///
-    /// - Delete not existing error won&#39;t return errors.
+    /// - Delete not existing error won't return errors.
     ///
     /// # Examples
     ///
@@ -1942,7 +1943,7 @@
     /// # use futures::io;
     /// # use opendal::BlockingOperator;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// op.delete(&quot;path/to/file&quot;)?;
+    /// op.delete("path/to/file")?;
     /// # Ok(())
     /// # }
     /// ```
@@ -1956,7 +1957,7 @@
     ///
     /// # Notes
     ///
-    /// - Delete not existing error won&#39;t return errors.
+    /// - Delete not existing error won't return errors.
     ///
     /// # Examples
     ///
@@ -1966,8 +1967,8 @@
     /// # use opendal::BlockingOperator;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
     /// let _ = op
-    ///     .delete_with(&quot;path/to/file&quot;)
-    ///     .version(&quot;example_version&quot;)
+    ///     .delete_with("path/to/file")
+    ///     .version("example_version")
     ///     .call()?;
     /// # Ok(())
     /// # }
@@ -1993,7 +1994,7 @@
     ///
     /// # Notes
     ///
-    /// We don&#39;t support batch delete now.
+    /// We don't support batch delete now.
     ///
     /// # Examples
     ///
@@ -2002,7 +2003,7 @@
     /// # use futures::io;
     /// # use opendal::BlockingOperator;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let stream = vec![&quot;abc&quot;.to_string(), &quot;def&quot;.to_string()].into_iter();
+    /// let stream = vec!["abc".to_string(), "def".to_string()].into_iter();
     /// op.remove_via(stream)?;
     /// # Ok(())
     /// # }
@@ -2016,7 +2017,7 @@
 
     <span class="doccomment">/// # Notes
     ///
-    /// We don&#39;t support batch delete now.
+    /// We don't support batch delete now.
     ///
     /// # Examples
     ///
@@ -2025,7 +2026,7 @@
     /// # use futures::io;
     /// # use opendal::BlockingOperator;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// op.remove(vec![&quot;abc&quot;.to_string(), &quot;def&quot;.to_string()])?;
+    /// op.remove(vec!["abc".to_string(), "def".to_string()])?;
     /// # Ok(())
     /// # }
     /// ```
@@ -2039,7 +2040,7 @@
     ///
     /// # Notes
     ///
-    /// We don&#39;t support batch delete now.
+    /// We don't support batch delete now.
     ///
     /// # Examples
     ///
@@ -2048,7 +2049,7 @@
     /// # use futures::io;
     /// # use opendal::BlockingOperator;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// op.remove_all(&quot;path/to/dir&quot;)?;
+    /// op.remove_all("path/to/dir")?;
     /// # Ok(())
     /// # }
     /// ```
@@ -2083,17 +2084,17 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// List entries within a given directory.
+    <span class="doccomment">/// List entries that starts with given `path` in parent dir.
     ///
     /// # Notes
     ///
-    /// ## Listing recursively
+    /// ## Recursively List
     ///
     /// This function only read the children of the given directory. To read
-    /// all entries recursively, use `BlockingOperator::list_with(&quot;path&quot;).recursive(true)`
+    /// all entries recursively, use `BlockingOperator::list_with("path").recursive(true)`
     /// instead.
     ///
-    /// ## Streaming
+    /// ## Streaming List
     ///
     /// This function will read all entries in the given directory. It could
     /// take very long time and consume a lot of memory if the directory
@@ -2102,7 +2103,7 @@
     /// In order to avoid this, you can use [`BlockingOperator::lister`] to list entries in
     /// a streaming way.
     ///
-    /// ## Metadata
+    /// ## Reuse Metadata
     ///
     /// The only metadata that is guaranteed to be available is the `Mode`.
     /// For fetching more metadata, please use [`BlockingOperator::list_with`] and `metakey`.
@@ -2115,14 +2116,14 @@
     /// use opendal::EntryMode;
     /// use opendal::Metakey;
     /// #  fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let mut entries = op.list(&quot;path/to/dir/&quot;)?;
+    /// let mut entries = op.list("path/to/dir/")?;
     /// for entry in entries {
     ///     match entry.metadata().mode() {
     ///         EntryMode::FILE =&gt; {
-    ///             println!(&quot;Handling file&quot;)
+    ///             println!("Handling file")
     ///         }
     ///         EntryMode::DIR =&gt; {
-    ///             println!(&quot;Handling dir {}&quot;, entry.path())
+    ///             println!("Handling dir {}", entry.path())
     ///         }
     ///         EntryMode::Unknown =&gt; continue,
     ///     }
@@ -2134,20 +2135,20 @@
         <span class="self">self</span>.list_with(path).call()
     }
 
-    <span class="doccomment">/// List entries within a given directory with options.
+    <span class="doccomment">/// List entries that starts with given `path` in parent dir. with options.
     ///
     /// # Notes
     ///
-    /// ## For streaming
+    /// ## Streaming List
     ///
     /// This function will read all entries in the given directory. It could
     /// take very long time and consume a lot of memory if the directory
     /// contains a lot of entries.
     ///
-    /// In order to avoid this, you can use [`Operator::lister`] to list entries in
+    /// In order to avoid this, you can use [`BlockingOperator::lister`] to list entries in
     /// a streaming way.
     ///
-    /// ## Metadata
+    /// ## Reuse Metadata
     ///
     /// The only metadata that is guaranteed to be available is the `Mode`.
     /// For fetching more metadata, please specify the `metakey`.
@@ -2164,14 +2165,14 @@
     /// use opendal::EntryMode;
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let mut entries = op.list_with(&quot;prefix/&quot;).recursive(true).call()?;
+    /// let mut entries = op.list_with("prefix/").recursive(true).call()?;
     /// for entry in entries {
     ///     match entry.metadata().mode() {
     ///         EntryMode::FILE =&gt; {
-    ///             println!(&quot;Handling file&quot;)
+    ///             println!("Handling file")
     ///         }
     ///         EntryMode::DIR =&gt; {
-    ///             println!(&quot;Handling dir like start a new list via meta.path()&quot;)
+    ///             println!("Handling dir like start a new list via meta.path()")
     ///         }
     ///         EntryMode::Unknown =&gt; continue,
     ///     }
@@ -2189,7 +2190,7 @@
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
     /// let mut entries = op
-    ///     .list_with(&quot;dir/&quot;)
+    ///     .list_with("dir/")
     ///     .metakey(Metakey::ContentLength | Metakey::LastModified)
     ///     .call()?;
     /// for entry in entries {
@@ -2197,13 +2198,13 @@
     ///     match meta.mode() {
     ///         EntryMode::FILE =&gt; {
     ///             println!(
-    ///                 &quot;Handling file {} with size {}&quot;,
+    ///                 "Handling file {} with size {}",
     ///                 entry.path(),
     ///                 meta.content_length()
     ///             )
     ///         }
     ///         EntryMode::DIR =&gt; {
-    ///             println!(&quot;Handling dir {}&quot;, entry.path())
+    ///             println!("Handling dir {}", entry.path())
     ///         }
     ///         EntryMode::Unknown =&gt; continue,
     ///     }
@@ -2226,18 +2227,17 @@
         ))
     }
 
-    <span class="doccomment">/// List entries within a given directory as an iterator.
+    <span class="doccomment">/// List entries that starts with given `path` in parent dir.
     ///
-    /// This function will create a new handle to list entries.
-    ///
-    /// An error will be returned if given path doesn&#39;t end with `/`.
+    /// This function will create a new [`BlockingLister`] to list entries. Users can stop listing
+    /// via dropping this [`Lister`].
     ///
     /// # Notes
     ///
-    /// ## Listing recursively
+    /// ## Recursively List
     ///
     /// This function only read the children of the given directory. To read
-    /// all entries recursively, use [`BlockingOperator::lister_with`] and `delimiter(&quot;&quot;)`
+    /// all entries recursively, use [`BlockingOperator::lister_with`] and `delimiter("")`
     /// instead.
     ///
     /// ## Metadata
@@ -2255,15 +2255,15 @@
     /// use opendal::EntryMode;
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let mut ds = op.lister(&quot;path/to/dir/&quot;)?;
+    /// let mut ds = op.lister("path/to/dir/")?;
     /// for de in ds {
     ///     let de = de?;
     ///     match de.metadata().mode() {
     ///         EntryMode::FILE =&gt; {
-    ///             println!(&quot;Handling file&quot;)
+    ///             println!("Handling file")
     ///         }
     ///         EntryMode::DIR =&gt; {
-    ///             println!(&quot;Handling dir like start a new list via meta.path()&quot;)
+    ///             println!("Handling dir like start a new list via meta.path()")
     ///         }
     ///         EntryMode::Unknown =&gt; continue,
     ///     }
@@ -2279,7 +2279,7 @@
     ///
     /// This function will create a new handle to list entries.
     ///
-    /// An error will be returned if given path doesn&#39;t end with `/`.
+    /// An error will be returned if given path doesn't end with `/`.
     ///
     /// # Examples
     ///
@@ -2294,18 +2294,18 @@
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
     /// let mut ds = op
-    ///     .lister_with(&quot;path/to/dir/&quot;)
+    ///     .lister_with("path/to/dir/")
     ///     .limit(10)
-    ///     .start_after(&quot;start&quot;)
+    ///     .start_after("start")
     ///     .call()?;
     /// for entry in ds {
     ///     let entry = entry?;
     ///     match entry.metadata().mode() {
     ///         EntryMode::FILE =&gt; {
-    ///             println!(&quot;Handling file {}&quot;, entry.path())
+    ///             println!("Handling file {}", entry.path())
     ///         }
     ///         EntryMode::DIR =&gt; {
-    ///             println!(&quot;Handling dir {}&quot;, entry.path())
+    ///             println!("Handling dir {}", entry.path())
     ///         }
     ///         EntryMode::Unknown =&gt; continue,
     ///     }
@@ -2324,15 +2324,15 @@
     /// use opendal::EntryMode;
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
-    /// let mut ds = op.lister_with(&quot;path/to/dir/&quot;).recursive(true).call()?;
+    /// let mut ds = op.lister_with("path/to/dir/").recursive(true).call()?;
     /// for entry in ds {
     ///     let entry = entry?;
     ///     match entry.metadata().mode() {
     ///         EntryMode::FILE =&gt; {
-    ///             println!(&quot;Handling file {}&quot;, entry.path())
+    ///             println!("Handling file {}", entry.path())
     ///         }
     ///         EntryMode::DIR =&gt; {
-    ///             println!(&quot;Handling dir {}&quot;, entry.path())
+    ///             println!("Handling dir {}", entry.path())
     ///         }
     ///         EntryMode::Unknown =&gt; continue,
     ///     }
@@ -2352,7 +2352,7 @@
     /// use opendal::Metakey;
     /// # fn test(op: BlockingOperator) -&gt; Result&lt;()&gt; {
     /// let mut ds = op
-    ///     .lister_with(&quot;path/to/dir/&quot;)
+    ///     .lister_with("path/to/dir/")
     ///     .metakey(Metakey::ContentLength | Metakey::LastModified)
     ///     .call()?;
     /// for entry in ds {
@@ -2361,13 +2361,13 @@
     ///     match meta.mode() {
     ///         EntryMode::FILE =&gt; {
     ///             println!(
-    ///                 &quot;Handling file {} with size {}&quot;,
+    ///                 "Handling file {} with size {}",
     ///                 entry.path(),
     ///                 meta.content_length()
     ///             )
     ///         }
     ///         EntryMode::DIR =&gt; {
-    ///             println!(&quot;Handling dir {}&quot;, entry.path())
+    ///             println!("Handling dir {}", entry.path())
     ///         }
     ///         EntryMode::Unknown =&gt; continue,
     ///     }

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/b2/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/b2/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -702,14 +704,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -737,9 +739,9 @@
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">mod </span>constants {
-    <span class="kw">pub const </span>X_BZ_FILE_NAME: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Bz-File-Name&quot;</span>;
-    <span class="kw">pub const </span>X_BZ_CONTENT_SHA1: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Bz-Content-Sha1&quot;</span>;
-    <span class="kw">pub const </span>X_BZ_PART_NUMBER: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Bz-Part-Number&quot;</span>;
+    <span class="kw">pub const </span>X_BZ_FILE_NAME: <span class="kw-2">&amp;</span>str = <span class="string">"X-Bz-File-Name"</span>;
+    <span class="kw">pub const </span>X_BZ_CONTENT_SHA1: <span class="kw-2">&amp;</span>str = <span class="string">"X-Bz-Content-Sha1"</span>;
+    <span class="kw">pub const </span>X_BZ_PART_NUMBER: <span class="kw-2">&amp;</span>str = <span class="string">"X-Bz-Part-Number"</span>;
 }
 
 <span class="doccomment">/// Core of [b2](https://www.backblaze.com/cloud-storage) services support.
@@ -758,11 +760,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>B2Core {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;Backend&quot;</span>)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;bucket_id&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket_id)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"Backend"</span>)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"bucket"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
+            .field(<span class="string">"bucket_id"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket_id)
             .finish_non_exhaustive()
     }
 }
@@ -788,7 +790,7 @@
 
         {
             <span class="kw">let </span><span class="kw-2">mut </span>signer = <span class="self">self</span>.signer.write().<span class="kw">await</span>;
-            <span class="kw">let </span>req = Request::get(<span class="string">&quot;https://api.backblazeb2.com/b2api/v2/b2_authorize_account&quot;</span>)
+            <span class="kw">let </span>req = Request::get(<span class="string">"https://api.backblazeb2.com/b2api/v2/b2_authorize_account"</span>)
                 .header(
                     header::AUTHORIZATION,
                     format_authorization_by_basic(
@@ -836,7 +838,7 @@
 
         <span class="comment">// Construct headers to add to the request
         </span><span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/file/{}/{}&quot;</span>,
+            <span class="string">"{}/file/{}/{}"</span>,
             auth_info.download_url,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>path)
@@ -862,7 +864,7 @@
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/b2api/v2/b2_get_upload_url?bucketId={}&quot;</span>,
+            <span class="string">"{}/b2api/v2/b2_get_upload_url?bucketId={}"</span>,
             auth_info.api_url, <span class="self">self</span>.bucket_id
         );
 
@@ -900,7 +902,7 @@
 
         <span class="comment">// Construct headers to add to the request
         </span><span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/b2api/v2/b2_get_download_authorization&quot;</span>,
+            <span class="string">"{}/b2api/v2/b2_get_download_authorization"</span>,
             auth_info.api_url
         );
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
@@ -954,7 +956,7 @@
 
         req = req.header(header::AUTHORIZATION, resp.authorization_token);
 
-        req = req.header(X_BZ_CONTENT_SHA1, <span class="string">&quot;do_not_verify&quot;</span>);
+        req = req.header(X_BZ_CONTENT_SHA1, <span class="string">"do_not_verify"</span>);
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(size) = size {
             req = req.header(header::CONTENT_LENGTH, size.to_string())
@@ -963,7 +965,7 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = args.content_type() {
             req = req.header(header::CONTENT_TYPE, mime)
         } <span class="kw">else </span>{
-            req = req.header(header::CONTENT_TYPE, <span class="string">&quot;b2/x-auto&quot;</span>)
+            req = req.header(header::CONTENT_TYPE, <span class="string">"b2/x-auto"</span>)
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = args.content_disposition() {
@@ -985,7 +987,7 @@
 
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/b2api/v2/b2_start_large_file&quot;</span>, auth_info.api_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/b2api/v2/b2_start_large_file"</span>, auth_info.api_url);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
 
@@ -994,7 +996,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>start_large_file_request = StartLargeFileRequest {
             bucket_id: <span class="self">self</span>.bucket_id.clone(),
             file_name: percent_encode_path(<span class="kw-2">&amp;</span>p),
-            content_type: <span class="string">&quot;b2/x-auto&quot;</span>.to_owned(),
+            content_type: <span class="string">"b2/x-auto"</span>.to_owned(),
         };
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = args.content_type() {
@@ -1016,7 +1018,7 @@
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/b2api/v2/b2_get_upload_part_url?fileId={}&quot;</span>,
+            <span class="string">"{}/b2api/v2/b2_get_upload_part_url?fileId={}"</span>,
             auth_info.api_url, file_id
         );
 
@@ -1060,7 +1062,7 @@
 
         req = req.header(header::AUTHORIZATION, resp.authorization_token);
 
-        req = req.header(X_BZ_CONTENT_SHA1, <span class="string">&quot;do_not_verify&quot;</span>);
+        req = req.header(X_BZ_CONTENT_SHA1, <span class="string">"do_not_verify"</span>);
 
         <span class="comment">// Set body
         </span><span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -1075,7 +1077,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/b2api/v2/b2_finish_large_file&quot;</span>, auth_info.api_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/b2api/v2/b2_finish_large_file"</span>, auth_info.api_url);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
 
@@ -1099,7 +1101,7 @@
     <span class="kw">pub async fn </span>cancel_large_file(<span class="kw-2">&amp;</span><span class="self">self</span>, file_id: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/b2api/v2/b2_cancel_large_file&quot;</span>, auth_info.api_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/b2api/v2/b2_cancel_large_file"</span>, auth_info.api_url);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
 
@@ -1129,28 +1131,28 @@
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/b2api/v2/b2_list_file_names?bucketId={}&quot;</span>,
+            <span class="string">"{}/b2api/v2/b2_list_file_names?bucketId={}"</span>,
             auth_info.api_url, <span class="self">self</span>.bucket_id
         );
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(prefix) = prefix {
             <span class="kw">let </span>prefix = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, prefix);
-            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;&amp;prefix={}&quot;</span>, percent_encode_path(<span class="kw-2">&amp;</span>prefix)));
+            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"&amp;prefix={}"</span>, percent_encode_path(<span class="kw-2">&amp;</span>prefix)));
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(limit) = limit {
-            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;&amp;maxFileCount={}&quot;</span>, limit));
+            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"&amp;maxFileCount={}"</span>, limit));
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(start_after) = start_after {
             url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                <span class="string">&quot;&amp;startFileName={}&quot;</span>,
+                <span class="string">"&amp;startFileName={}"</span>,
                 percent_encode_path(<span class="kw-2">&amp;</span>start_after)
             ));
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(delimiter) = delimiter {
-            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;&amp;delimiter={}&quot;</span>, delimiter));
+            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"&amp;delimiter={}"</span>, delimiter));
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
@@ -1174,7 +1176,7 @@
 
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/b2api/v2/b2_copy_file&quot;</span>, auth_info.api_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/b2api/v2/b2_copy_file"</span>, auth_info.api_url);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(url);
 
@@ -1201,7 +1203,7 @@
 
         <span class="kw">let </span>auth_info = <span class="self">self</span>.get_auth_info().<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/b2api/v2/b2_hide_file&quot;</span>, auth_info.api_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/b2api/v2/b2_hide_file"</span>, auth_info.api_url);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(url);
 
@@ -1263,7 +1265,7 @@
 
 <span class="doccomment">/// Request of [b2_start_large_file](https://www.backblaze.com/apidocs/b2-start-large-file).
 </span><span class="attr">#[derive(Debug, Serialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>StartLargeFileRequest {
     <span class="kw">pub </span>bucket_id: String,
     <span class="kw">pub </span>file_name: String,
@@ -1272,14 +1274,14 @@
 
 <span class="doccomment">/// Response of [b2_start_large_file](https://www.backblaze.com/apidocs/b2-start-large-file).
 </span><span class="attr">#[derive(Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>StartLargeFileResponse {
     <span class="kw">pub </span>file_id: String,
 }
 
 <span class="doccomment">/// Response of [b2_authorize_account](https://www.backblaze.com/apidocs/b2-authorize-account).
 </span><span class="attr">#[derive(Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>AuthorizeAccountResponse {
     <span class="doccomment">/// An authorization token to use with all calls, other than b2_authorize_account, that need an Authorization header. This authorization token is valid for at most 24 hours.
     /// So we should call b2_authorize_account every 24 hours.
@@ -1290,7 +1292,7 @@
 
 <span class="doccomment">/// Response of [b2_get_upload_url](https://www.backblaze.com/apidocs/b2-get-upload-url).
 </span><span class="attr">#[derive(Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>GetUploadUrlResponse {
     <span class="doccomment">/// The authorizationToken that must be used when uploading files to this bucket.
     /// This token is valid for 24 hours or until the uploadUrl endpoint rejects an upload, see b2_upload_file
@@ -1300,7 +1302,7 @@
 
 <span class="doccomment">/// Response of [b2_get_upload_url](https://www.backblaze.com/apidocs/b2-get-upload-part-url).
 </span><span class="attr">#[derive(Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>GetUploadPartUrlResponse {
     <span class="doccomment">/// The authorizationToken that must be used when uploading files to this bucket.
     /// This token is valid for 24 hours or until the uploadUrl endpoint rejects an upload, see b2_upload_file
@@ -1310,14 +1312,14 @@
 
 <span class="doccomment">/// Response of [b2_upload_part](https://www.backblaze.com/apidocs/b2-upload-part).
 </span><span class="attr">#[derive(Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>UploadPartResponse {
     <span class="kw">pub </span>content_sha1: String,
 }
 
 <span class="doccomment">/// Response of [b2_finish_large_file](https://www.backblaze.com/apidocs/b2-finish-large-file).
 </span><span class="attr">#[derive(Debug, Serialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>FinishLargeFileRequest {
     <span class="kw">pub </span>file_id: String,
     <span class="kw">pub </span>part_sha1_array: Vec&lt;String&gt;,
@@ -1325,21 +1327,21 @@
 
 <span class="doccomment">/// Response of [b2_cancel_large_file](https://www.backblaze.com/apidocs/b2-cancel-large-file).
 </span><span class="attr">#[derive(Debug, Serialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>CancelLargeFileRequest {
     <span class="kw">pub </span>file_id: String,
 }
 
 <span class="doccomment">/// Response of [list_file_names](https://www.backblaze.com/apidocs/b2-list-file-names).
 </span><span class="attr">#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>ListFileNamesResponse {
     <span class="kw">pub </span>files: Vec&lt;File&gt;,
     <span class="kw">pub </span>next_file_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
 <span class="attr">#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>File {
     <span class="kw">pub </span>file_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="kw">pub </span>content_length: u64,
@@ -1350,7 +1352,7 @@
 }
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>parse_file_info(file: <span class="kw-2">&amp;</span>File) -&gt; Metadata {
-    <span class="kw">if </span>file.file_name.ends_with(<span class="string">&#39;/&#39;</span>) {
+    <span class="kw">if </span>file.file_name.ends_with(<span class="string">'/'</span>) {
         <span class="kw">return </span>Metadata::new(EntryMode::DIR);
     }
 
@@ -1370,21 +1372,21 @@
 }
 
 <span class="attr">#[derive(Debug, Serialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>CopyFileRequest {
     <span class="kw">pub </span>source_file_id: String,
     <span class="kw">pub </span>file_name: String,
 }
 
 <span class="attr">#[derive(Debug, Serialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>HideFileRequest {
     <span class="kw">pub </span>bucket_id: String,
     <span class="kw">pub </span>file_name: String,
 }
 
 <span class="attr">#[derive(Debug, Serialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>GetDownloadAuthorizationRequest {
     <span class="kw">pub </span>bucket_id: String,
     <span class="kw">pub </span>file_name_prefix: String,
@@ -1392,7 +1394,7 @@
 }
 
 <span class="attr">#[derive(Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>GetDownloadAuthorizationResponse {
     <span class="kw">pub </span>authorization_token: String,
 }

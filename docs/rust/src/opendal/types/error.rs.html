@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/types/error.rs`."><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/types/error.rs`."><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -479,14 +481,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -502,9 +504,9 @@
 //! use opendal::ErrorKind;
 //! # #[tokio::main]
 //! # async fn test(op: Operator) -&gt; Result&lt;()&gt; {
-//! if let Err(e) = op.stat(&quot;test_file&quot;).await {
+//! if let Err(e) = op.stat("test_file").await {
 //!     if e.kind() == ErrorKind::NotFound {
-//!         println!(&quot;entry not exist&quot;)
+//!         println!("entry not exist")
 //!     }
 //! }
 //! # Ok(())
@@ -526,17 +528,17 @@
 </span><span class="attr">#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[non_exhaustive]
 </span><span class="kw">pub enum </span>ErrorKind {
-    <span class="doccomment">/// OpenDAL don&#39;t know what happened here, and no actions other than just
+    <span class="doccomment">/// OpenDAL don't know what happened here, and no actions other than just
     /// returning it back. For example, s3 returns an internal service error.
     </span>Unexpected,
-    <span class="doccomment">/// Underlying service doesn&#39;t support this operation.
+    <span class="doccomment">/// Underlying service doesn't support this operation.
     </span>Unsupported,
 
     <span class="doccomment">/// The config for backend is invalid.
     </span>ConfigInvalid,
     <span class="doccomment">/// The given path is not found.
     </span>NotFound,
-    <span class="doccomment">/// The given path doesn&#39;t have enough permission for this operation
+    <span class="doccomment">/// The given path doesn't have enough permission for this operation
     </span>PermissionDenied,
     <span class="doccomment">/// The given path is a directory.
     </span>IsADirectory,
@@ -553,8 +555,8 @@
     /// The `condition` itself is context based.
     ///
     /// For example, in S3, the `condition` can be:
-    /// 1. writing a file with If-Match header but the file&#39;s ETag is not match (will get a 412 Precondition Failed).
-    /// 2. reading a file with If-None-Match header but the file&#39;s ETag is match (will get a 304 Not Modified).
+    /// 1. writing a file with If-Match header but the file's ETag is not match (will get a 412 Precondition Failed).
+    /// 2. reading a file with If-None-Match header but the file's ETag is match (will get a 304 Not Modified).
     ///
     /// As OpenDAL cannot handle the `condition not match` error, it will always return this error to users.
     /// So users could to handle this error by themselves.
@@ -585,34 +587,34 @@
 
 <span class="kw">impl </span>ErrorKind {
     <span class="doccomment">/// Convert self into static str.
-    </span><span class="kw">pub fn </span>into_static(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str {
+    </span><span class="kw">pub fn </span>into_static(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
         <span class="self">self</span>.into()
     }
 }
 
 <span class="kw">impl </span>Display <span class="kw">for </span>ErrorKind {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.into_static())
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.into_static())
     }
 }
 
-<span class="kw">impl </span>From&lt;ErrorKind&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str {
-    <span class="kw">fn </span>from(v: ErrorKind) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str {
+<span class="kw">impl </span>From&lt;ErrorKind&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
+    <span class="kw">fn </span>from(v: ErrorKind) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
         <span class="kw">match </span>v {
-            ErrorKind::Unexpected =&gt; <span class="string">&quot;Unexpected&quot;</span>,
-            ErrorKind::Unsupported =&gt; <span class="string">&quot;Unsupported&quot;</span>,
-            ErrorKind::ConfigInvalid =&gt; <span class="string">&quot;ConfigInvalid&quot;</span>,
-            ErrorKind::NotFound =&gt; <span class="string">&quot;NotFound&quot;</span>,
-            ErrorKind::PermissionDenied =&gt; <span class="string">&quot;PermissionDenied&quot;</span>,
-            ErrorKind::IsADirectory =&gt; <span class="string">&quot;IsADirectory&quot;</span>,
-            ErrorKind::NotADirectory =&gt; <span class="string">&quot;NotADirectory&quot;</span>,
-            ErrorKind::AlreadyExists =&gt; <span class="string">&quot;AlreadyExists&quot;</span>,
-            ErrorKind::RateLimited =&gt; <span class="string">&quot;RateLimited&quot;</span>,
-            ErrorKind::IsSameFile =&gt; <span class="string">&quot;IsSameFile&quot;</span>,
-            ErrorKind::ConditionNotMatch =&gt; <span class="string">&quot;ConditionNotMatch&quot;</span>,
-            ErrorKind::ContentTruncated =&gt; <span class="string">&quot;ContentTruncated&quot;</span>,
-            ErrorKind::ContentIncomplete =&gt; <span class="string">&quot;ContentIncomplete&quot;</span>,
-            ErrorKind::InvalidInput =&gt; <span class="string">&quot;InvalidInput&quot;</span>,
+            ErrorKind::Unexpected =&gt; <span class="string">"Unexpected"</span>,
+            ErrorKind::Unsupported =&gt; <span class="string">"Unsupported"</span>,
+            ErrorKind::ConfigInvalid =&gt; <span class="string">"ConfigInvalid"</span>,
+            ErrorKind::NotFound =&gt; <span class="string">"NotFound"</span>,
+            ErrorKind::PermissionDenied =&gt; <span class="string">"PermissionDenied"</span>,
+            ErrorKind::IsADirectory =&gt; <span class="string">"IsADirectory"</span>,
+            ErrorKind::NotADirectory =&gt; <span class="string">"NotADirectory"</span>,
+            ErrorKind::AlreadyExists =&gt; <span class="string">"AlreadyExists"</span>,
+            ErrorKind::RateLimited =&gt; <span class="string">"RateLimited"</span>,
+            ErrorKind::IsSameFile =&gt; <span class="string">"IsSameFile"</span>,
+            ErrorKind::ConditionNotMatch =&gt; <span class="string">"ConditionNotMatch"</span>,
+            ErrorKind::ContentTruncated =&gt; <span class="string">"ContentTruncated"</span>,
+            ErrorKind::ContentIncomplete =&gt; <span class="string">"ContentIncomplete"</span>,
+            ErrorKind::InvalidInput =&gt; <span class="string">"InvalidInput"</span>,
         }
     }
 }
@@ -635,16 +637,16 @@
     ///
     /// For example, underlying services kept returning network errors.
     ///
-    /// Users MAY retry this operation but it&#39;s highly possible to error again.
+    /// Users MAY retry this operation but it's highly possible to error again.
     </span>Persistent,
 }
 
 <span class="kw">impl </span>Display <span class="kw">for </span>ErrorStatus {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
         <span class="kw">match </span><span class="self">self </span>{
-            ErrorStatus::Permanent =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;permanent&quot;</span>),
-            ErrorStatus::Temporary =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;temporary&quot;</span>),
-            ErrorStatus::Persistent =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;persistent&quot;</span>),
+            ErrorStatus::Permanent =&gt; <span class="macro">write!</span>(f, <span class="string">"permanent"</span>),
+            ErrorStatus::Temporary =&gt; <span class="macro">write!</span>(f, <span class="string">"temporary"</span>),
+            ErrorStatus::Persistent =&gt; <span class="macro">write!</span>(f, <span class="string">"persistent"</span>),
         }
     }
 }
@@ -655,15 +657,15 @@
 ///
 /// Error can be displayed in two ways:
 ///
-/// - Via `Display`: like `err.to_string()` or `format!(&quot;{err}&quot;)`
+/// - Via `Display`: like `err.to_string()` or `format!("{err}")`
 ///
 /// Error will be printed in a single line:
 ///
 /// ```shell
-/// Unexpected, context: { path: /path/to/file, called: send_async } =&gt; something wrong happened, source: networking error&quot;
+/// Unexpected, context: { path: /path/to/file, called: send_async } =&gt; something wrong happened, source: networking error"
 /// ```
 ///
-/// - Via `Debug`: like `format!(&quot;{err:?}&quot;)`
+/// - Via `Debug`: like `format!("{err:?}")`
 ///
 /// Error will be printed in multi lines with more details and backtraces (if captured):
 ///
@@ -686,26 +688,26 @@
 ///    ...
 /// ```
 ///
-/// - For conventional struct-style Debug representation, like `format!(&quot;{err:#?}&quot;)`:
+/// - For conventional struct-style Debug representation, like `format!("{err:#?}")`:
 ///
 /// ```shell
 /// Error {
 ///     kind: Unexpected,
-///     message: &quot;something wrong happened&quot;,
+///     message: "something wrong happened",
 ///     status: Permanent,
-///     operation: &quot;Read&quot;,
+///     operation: "Read",
 ///     context: [
 ///         (
-///             &quot;path&quot;,
-///             &quot;/path/to/file&quot;,
+///             "path",
+///             "/path/to/file",
 ///         ),
 ///         (
-///             &quot;called&quot;,
-///             &quot;send_async&quot;,
+///             "called",
+///             "send_async",
 ///         ),
 ///     ],
 ///     source: Some(
-///         &quot;networking error&quot;,
+///         "networking error",
 ///     ),
 /// }
 /// ```
@@ -714,36 +716,36 @@
     message: String,
 
     status: ErrorStatus,
-    operation: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-    context: Vec&lt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, String)&gt;,
+    operation: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
+    context: Vec&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, String)&gt;,
     source: <span class="prelude-ty">Option</span>&lt;anyhow::Error&gt;,
     backtrace: Backtrace,
 }
 
 <span class="kw">impl </span>Display <span class="kw">for </span>Error {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;{} ({}) at {}&quot;</span>, <span class="self">self</span>.kind, <span class="self">self</span>.status, <span class="self">self</span>.operation)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">"{} ({}) at {}"</span>, <span class="self">self</span>.kind, <span class="self">self</span>.status, <span class="self">self</span>.operation)<span class="question-mark">?</span>;
 
         <span class="kw">if </span>!<span class="self">self</span>.context.is_empty() {
-            <span class="macro">write!</span>(f, <span class="string">&quot;, context: {{ &quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">write!</span>(f, <span class="string">", context: {{ "</span>)<span class="question-mark">?</span>;
             <span class="macro">write!</span>(
                 f,
-                <span class="string">&quot;{}&quot;</span>,
+                <span class="string">"{}"</span>,
                 <span class="self">self</span>.context
                     .iter()
-                    .map(|(k, v)| <span class="macro">format!</span>(<span class="string">&quot;{k}: {v}&quot;</span>))
+                    .map(|(k, v)| <span class="macro">format!</span>(<span class="string">"{k}: {v}"</span>))
                     .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
-                    .join(<span class="string">&quot;, &quot;</span>)
+                    .join(<span class="string">", "</span>)
             )<span class="question-mark">?</span>;
-            <span class="macro">write!</span>(f, <span class="string">&quot; }}&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">write!</span>(f, <span class="string">" }}"</span>)<span class="question-mark">?</span>;
         }
 
         <span class="kw">if </span>!<span class="self">self</span>.message.is_empty() {
-            <span class="macro">write!</span>(f, <span class="string">&quot; =&gt; {}&quot;</span>, <span class="self">self</span>.message)<span class="question-mark">?</span>;
+            <span class="macro">write!</span>(f, <span class="string">" =&gt; {}"</span>, <span class="self">self</span>.message)<span class="question-mark">?</span>;
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(source) = <span class="kw-2">&amp;</span><span class="self">self</span>.source {
-            <span class="macro">write!</span>(f, <span class="string">&quot;, source: {source}&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">write!</span>(f, <span class="string">", source: {source}"</span>)<span class="question-mark">?</span>;
         }
 
         <span class="prelude-val">Ok</span>(())
@@ -751,41 +753,41 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>Error {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
         <span class="comment">// If alternate has been specified, we will print like Debug.
         </span><span class="kw">if </span>f.alternate() {
-            <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">&quot;Error&quot;</span>);
-            de.field(<span class="string">&quot;kind&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.kind);
-            de.field(<span class="string">&quot;message&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.message);
-            de.field(<span class="string">&quot;status&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.status);
-            de.field(<span class="string">&quot;operation&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.operation);
-            de.field(<span class="string">&quot;context&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.context);
-            de.field(<span class="string">&quot;source&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.source);
+            <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">"Error"</span>);
+            de.field(<span class="string">"kind"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.kind);
+            de.field(<span class="string">"message"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.message);
+            de.field(<span class="string">"status"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.status);
+            de.field(<span class="string">"operation"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.operation);
+            de.field(<span class="string">"context"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.context);
+            de.field(<span class="string">"source"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.source);
             <span class="kw">return </span>de.finish();
         }
 
-        <span class="macro">write!</span>(f, <span class="string">&quot;{} ({}) at {}&quot;</span>, <span class="self">self</span>.kind, <span class="self">self</span>.status, <span class="self">self</span>.operation)<span class="question-mark">?</span>;
+        <span class="macro">write!</span>(f, <span class="string">"{} ({}) at {}"</span>, <span class="self">self</span>.kind, <span class="self">self</span>.status, <span class="self">self</span>.operation)<span class="question-mark">?</span>;
         <span class="kw">if </span>!<span class="self">self</span>.message.is_empty() {
-            <span class="macro">write!</span>(f, <span class="string">&quot; =&gt; {}&quot;</span>, <span class="self">self</span>.message)<span class="question-mark">?</span>;
+            <span class="macro">write!</span>(f, <span class="string">" =&gt; {}"</span>, <span class="self">self</span>.message)<span class="question-mark">?</span>;
         }
         <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
 
         <span class="kw">if </span>!<span class="self">self</span>.context.is_empty() {
             <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(f, <span class="string">&quot;Context:&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(f, <span class="string">"Context:"</span>)<span class="question-mark">?</span>;
             <span class="kw">for </span>(k, v) <span class="kw">in </span><span class="self">self</span>.context.iter() {
-                <span class="macro">writeln!</span>(f, <span class="string">&quot;   {k}: {v}&quot;</span>)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">"   {k}: {v}"</span>)<span class="question-mark">?</span>;
             }
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(source) = <span class="kw-2">&amp;</span><span class="self">self</span>.source {
             <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(f, <span class="string">&quot;Source:&quot;</span>)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(f, <span class="string">&quot;   {source:#}&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(f, <span class="string">"Source:"</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(f, <span class="string">"   {source:#}"</span>)<span class="question-mark">?</span>;
         }
         <span class="kw">if </span><span class="self">self</span>.backtrace.status() == BacktraceStatus::Captured {
             <span class="macro">writeln!</span>(f)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(f, <span class="string">&quot;Backtrace:&quot;</span>)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.backtrace)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(f, <span class="string">"Backtrace:"</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.backtrace)<span class="question-mark">?</span>;
         }
 
         <span class="prelude-val">Ok</span>(())
@@ -793,7 +795,7 @@
 }
 
 <span class="kw">impl </span>std::error::Error <span class="kw">for </span>Error {
-    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">&#39;static</span>)&gt; {
+    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">'static</span>)&gt; {
         <span class="self">self</span>.source.as_ref().map(|v| v.as_ref())
     }
 }
@@ -806,24 +808,24 @@
             message: message.to_string(),
 
             status: ErrorStatus::Permanent,
-            operation: <span class="string">&quot;&quot;</span>,
+            operation: <span class="string">""</span>,
             context: Vec::default(),
             source: <span class="prelude-val">None</span>,
             <span class="comment">// `Backtrace::capture()` will check if backtrace has been enabled
-            // internally. It&#39;s zero cost if backtrace is disabled.
+            // internally. It's zero cost if backtrace is disabled.
             </span>backtrace: Backtrace::capture(),
         }
     }
 
-    <span class="doccomment">/// Update error&#39;s operation.
+    <span class="doccomment">/// Update error's operation.
     ///
     /// # Notes
     ///
     /// If the error already carries an operation, we will push a new context
     /// `(called, operation)`.
-    </span><span class="kw">pub fn </span>with_operation(<span class="kw-2">mut </span><span class="self">self</span>, operation: <span class="kw">impl </span>Into&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>with_operation(<span class="kw-2">mut </span><span class="self">self</span>, operation: <span class="kw">impl </span>Into&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">if </span>!<span class="self">self</span>.operation.is_empty() {
-            <span class="self">self</span>.context.push((<span class="string">&quot;called&quot;</span>, <span class="self">self</span>.operation.to_string()));
+            <span class="self">self</span>.context.push((<span class="string">"called"</span>, <span class="self">self</span>.operation.to_string()));
         }
 
         <span class="self">self</span>.operation = operation.into();
@@ -831,7 +833,7 @@
     </span>}
 
     <span class="doccomment">/// Add more context in error.
-    </span><span class="kw">pub fn </span>with_context(<span class="kw-2">mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw">impl </span>Into&lt;String&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>with_context(<span class="kw-2">mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, value: <span class="kw">impl </span>Into&lt;String&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.context.push((key, value.into()));
         <span class="self">self
     </span>}
@@ -842,7 +844,7 @@
     ///
     /// If the source has been set, we will raise a panic here.
     </span><span class="kw">pub fn </span>set_source(<span class="kw-2">mut </span><span class="self">self</span>, src: <span class="kw">impl </span>Into&lt;anyhow::Error&gt;) -&gt; <span class="self">Self </span>{
-        <span class="macro">debug_assert!</span>(<span class="self">self</span>.source.is_none(), <span class="string">&quot;the source error has been set&quot;</span>);
+        <span class="macro">debug_assert!</span>(<span class="self">self</span>.source.is_none(), <span class="string">"the source error has been set"</span>);
 
         <span class="self">self</span>.source = <span class="prelude-val">Some</span>(src.into());
         <span class="self">self
@@ -878,7 +880,7 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Return error&#39;s kind.
+    <span class="doccomment">/// Return error's kind.
     </span><span class="kw">pub fn </span>kind(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ErrorKind {
         <span class="self">self</span>.kind
     }
@@ -912,33 +914,33 @@
 
     <span class="kw">static </span>TEST_ERROR: Lazy&lt;Error&gt; = Lazy::new(|| Error {
         kind: ErrorKind::Unexpected,
-        message: <span class="string">&quot;something wrong happened&quot;</span>.to_string(),
+        message: <span class="string">"something wrong happened"</span>.to_string(),
         status: ErrorStatus::Permanent,
-        operation: <span class="string">&quot;Read&quot;</span>,
+        operation: <span class="string">"Read"</span>,
         context: <span class="macro">vec!</span>[
-            (<span class="string">&quot;path&quot;</span>, <span class="string">&quot;/path/to/file&quot;</span>.to_string()),
-            (<span class="string">&quot;called&quot;</span>, <span class="string">&quot;send_async&quot;</span>.to_string()),
+            (<span class="string">"path"</span>, <span class="string">"/path/to/file"</span>.to_string()),
+            (<span class="string">"called"</span>, <span class="string">"send_async"</span>.to_string()),
         ],
-        source: <span class="prelude-val">Some</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;networking error&quot;</span>)),
+        source: <span class="prelude-val">Some</span>(<span class="macro">anyhow!</span>(<span class="string">"networking error"</span>)),
         backtrace: Backtrace::disabled(),
     });
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_error_display() {
-        <span class="kw">let </span>s = <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, Lazy::force(<span class="kw-2">&amp;</span>TEST_ERROR));
+        <span class="kw">let </span>s = <span class="macro">format!</span>(<span class="string">"{}"</span>, Lazy::force(<span class="kw-2">&amp;</span>TEST_ERROR));
         <span class="macro">assert_eq!</span>(
             s,
-            <span class="string">r#&quot;Unexpected (permanent) at Read, context: { path: /path/to/file, called: send_async } =&gt; something wrong happened, source: networking error&quot;#
+            <span class="string">r#"Unexpected (permanent) at Read, context: { path: /path/to/file, called: send_async } =&gt; something wrong happened, source: networking error"#
         </span>);
-        <span class="macro">println!</span>(<span class="string">&quot;{:#?}&quot;</span>, Lazy::force(<span class="kw-2">&amp;</span>TEST_ERROR));
+        <span class="macro">println!</span>(<span class="string">"{:#?}"</span>, Lazy::force(<span class="kw-2">&amp;</span>TEST_ERROR));
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_error_debug() {
-        <span class="kw">let </span>s = <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, Lazy::force(<span class="kw-2">&amp;</span>TEST_ERROR));
+        <span class="kw">let </span>s = <span class="macro">format!</span>(<span class="string">"{:?}"</span>, Lazy::force(<span class="kw-2">&amp;</span>TEST_ERROR));
         <span class="macro">assert_eq!</span>(
             s,
-            <span class="string">r#&quot;Unexpected (permanent) at Read =&gt; something wrong happened
+            <span class="string">r#"Unexpected (permanent) at Read =&gt; something wrong happened
 
 Context:
    path: /path/to/file
@@ -946,7 +948,7 @@ Context:
 
 Source:
    networking error
-&quot;#
+"#
         </span>)
     }
 }

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/oss/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/oss/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -628,14 +630,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -666,7 +668,7 @@
 <span class="kw">const </span>DEFAULT_BATCH_MAX_OPERATIONS: usize = <span class="number">1000</span>;
 
 <span class="doccomment">/// Aliyun Object Storage Service (OSS) support
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default)]
 </span><span class="kw">pub struct </span>OssBuilder {
     root: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -690,12 +692,12 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>OssBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
-        d.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">&quot;allow_anonymous&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.allow_anonymous);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">"Builder"</span>);
+        d.field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"bucket"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
+            .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">"allow_anonymous"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.allow_anonymous);
 
         d.finish_non_exhaustive()
     }
@@ -726,7 +728,7 @@
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoint.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string())
+            </span><span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">'/'</span>).to_string())
         }
 
         <span class="self">self
@@ -743,7 +745,7 @@
     </span><span class="kw">pub fn </span>presign_endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoint.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.presign_endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string())
+            </span><span class="self">self</span>.presign_endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">'/'</span>).to_string())
         }
 
         <span class="self">self
@@ -751,7 +753,7 @@
 
     <span class="doccomment">/// Set access_key_id of this backend.
     ///
-    /// - If access_key_id is set, we will take user&#39;s input first.
+    /// - If access_key_id is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>access_key_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
@@ -763,7 +765,7 @@
 
     <span class="doccomment">/// Set access_key_secret of this backend.
     ///
-    /// - If access_key_secret is set, we will take user&#39;s input first.
+    /// - If access_key_secret is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>access_key_secret(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!v.is_empty() {
@@ -777,7 +779,7 @@
     ///
     /// # Notes
     ///
-    /// This API is part of OpenDAL&#39;s Raw API. `HttpClient` could be changed
+    /// This API is part of OpenDAL's Raw API. `HttpClient` could be changed
     /// during minor updates.
     </span><span class="kw">pub fn </span>http_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>, client: HttpClient) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.http_client = <span class="prelude-val">Some</span>(client);
@@ -789,35 +791,35 @@
         <span class="kw">let </span>(endpoint, host) = <span class="kw">match </span>endpoint.clone() {
             <span class="prelude-val">Some</span>(ep) =&gt; {
                 <span class="kw">let </span>uri = ep.parse::&lt;Uri&gt;().map_err(|err| {
-                    Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint is invalid&quot;</span>)
-                        .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss)
-                        .with_context(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span>ep)
+                    Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint is invalid"</span>)
+                        .with_context(<span class="string">"service"</span>, Scheme::Oss)
+                        .with_context(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span>ep)
                         .set_source(err)
                 })<span class="question-mark">?</span>;
                 <span class="kw">let </span>host = uri.host().ok_or_else(|| {
-                    Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint host is empty&quot;</span>)
-                        .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss)
-                        .with_context(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span>ep)
+                    Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint host is empty"</span>)
+                        .with_context(<span class="string">"service"</span>, Scheme::Oss)
+                        .with_context(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span>ep)
                 })<span class="question-mark">?</span>;
-                <span class="kw">let </span>full_host = <span class="macro">format!</span>(<span class="string">&quot;{bucket}.{host}&quot;</span>);
+                <span class="kw">let </span>full_host = <span class="macro">format!</span>(<span class="string">"{bucket}.{host}"</span>);
                 <span class="kw">let </span>endpoint = <span class="kw">match </span>uri.scheme_str() {
                     <span class="prelude-val">Some</span>(scheme_str) =&gt; <span class="kw">match </span>scheme_str {
-                        <span class="string">&quot;http&quot; </span>| <span class="string">&quot;https&quot; </span>=&gt; <span class="macro">format!</span>(<span class="string">&quot;{scheme_str}://{full_host}&quot;</span>),
+                        <span class="string">"http" </span>| <span class="string">"https" </span>=&gt; <span class="macro">format!</span>(<span class="string">"{scheme_str}://{full_host}"</span>),
                         <span class="kw">_ </span>=&gt; {
                             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                                 ErrorKind::ConfigInvalid,
-                                <span class="string">&quot;endpoint protocol is invalid&quot;</span>,
+                                <span class="string">"endpoint protocol is invalid"</span>,
                             )
-                            .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss));
+                            .with_context(<span class="string">"service"</span>, Scheme::Oss));
                         }
                     },
-                    <span class="prelude-val">None </span>=&gt; <span class="macro">format!</span>(<span class="string">&quot;https://{full_host}&quot;</span>),
+                    <span class="prelude-val">None </span>=&gt; <span class="macro">format!</span>(<span class="string">"https://{full_host}"</span>),
                 };
                 (endpoint, full_host)
             }
             <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint is empty&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss));
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint is empty"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Oss));
             }
         };
         <span class="prelude-val">Ok</span>((endpoint, host))
@@ -880,39 +882,39 @@
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>builder = OssBuilder::default();
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;bucket&quot;</span>).map(|v| builder.bucket(v));
-        map.get(<span class="string">&quot;endpoint&quot;</span>).map(|v| builder.endpoint(v));
-        map.get(<span class="string">&quot;presign_endpoint&quot;</span>)
+        map.get(<span class="string">"root"</span>).map(|v| builder.root(v));
+        map.get(<span class="string">"bucket"</span>).map(|v| builder.bucket(v));
+        map.get(<span class="string">"endpoint"</span>).map(|v| builder.endpoint(v));
+        map.get(<span class="string">"presign_endpoint"</span>)
             .map(|v| builder.presign_endpoint(v));
-        map.get(<span class="string">&quot;access_key_id&quot;</span>).map(|v| builder.access_key_id(v));
-        map.get(<span class="string">&quot;access_key_secret&quot;</span>)
+        map.get(<span class="string">"access_key_id"</span>).map(|v| builder.access_key_id(v));
+        map.get(<span class="string">"access_key_secret"</span>)
             .map(|v| builder.access_key_secret(v));
-        map.get(<span class="string">&quot;server_side_encryption&quot;</span>)
+        map.get(<span class="string">"server_side_encryption"</span>)
             .map(|v| builder.server_side_encryption(v));
-        map.get(<span class="string">&quot;server_side_encryption_key_id&quot;</span>)
+        map.get(<span class="string">"server_side_encryption_key_id"</span>)
             .map(|v| builder.server_side_encryption_key_id(v));
-        map.get(<span class="string">&quot;batch_max_operations&quot;</span>)
+        map.get(<span class="string">"batch_max_operations"</span>)
             .map(|v| builder.batch_max_operations(v.parse::&lt;usize&gt;().unwrap()));
-        map.get(<span class="string">&quot;allow_anonymous&quot;</span>)
-            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
+        map.get(<span class="string">"allow_anonymous"</span>)
+            .filter(|v| <span class="kw-2">*</span>v == <span class="string">"on" </span>|| <span class="kw-2">*</span>v == <span class="string">"true"</span>)
             .map(|<span class="kw">_</span>| builder.allow_anonymous());
 
         builder
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.clone().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, <span class="kw-2">&amp;</span>root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, <span class="kw-2">&amp;</span>root);
 
         <span class="comment">// Handle endpoint, region and bucket name.
         </span><span class="kw">let </span>bucket = <span class="kw">match </span><span class="self">self</span>.bucket.is_empty() {
             <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.bucket),
             <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;The bucket is misconfigured&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss),
+                Error::new(ErrorKind::ConfigInvalid, <span class="string">"The bucket is misconfigured"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Oss),
             ),
         }<span class="question-mark">?</span>;
 
@@ -920,28 +922,28 @@
             client
         } <span class="kw">else </span>{
             HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Oss)
             })<span class="question-mark">?
         </span>};
 
         <span class="comment">// Retrieve endpoint and host by parsing the endpoint option and bucket. If presign_endpoint is not
         // set, take endpoint as default presign_endpoint.
         </span><span class="kw">let </span>(endpoint, host) = <span class="self">self</span>.parse_endpoint(<span class="kw-2">&amp;</span><span class="self">self</span>.endpoint, bucket)<span class="question-mark">?</span>;
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use bucket {}, endpoint: {}&quot;</span>, <span class="kw-2">&amp;</span>bucket, <span class="kw-2">&amp;</span>endpoint);
+        <span class="macro">debug!</span>(<span class="string">"backend use bucket {}, endpoint: {}"</span>, <span class="kw-2">&amp;</span>bucket, <span class="kw-2">&amp;</span>endpoint);
 
         <span class="kw">let </span>presign_endpoint = <span class="kw">if </span><span class="self">self</span>.presign_endpoint.is_some() {
             <span class="self">self</span>.parse_endpoint(<span class="kw-2">&amp;</span><span class="self">self</span>.presign_endpoint, bucket)<span class="question-mark">?</span>.<span class="number">0
         </span>} <span class="kw">else </span>{
             endpoint.clone()
         };
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use presign_endpoint: {}&quot;</span>, <span class="kw-2">&amp;</span>presign_endpoint);
+        <span class="macro">debug!</span>(<span class="string">"backend use presign_endpoint: {}"</span>, <span class="kw-2">&amp;</span>presign_endpoint);
 
         <span class="kw">let </span>server_side_encryption = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(
                 build_header_value(v)
-                    .map_err(|err| err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption&quot;</span>))<span class="question-mark">?</span>,
+                    .map_err(|err| err.with_context(<span class="string">"key"</span>, <span class="string">"server_side_encryption"</span>))<span class="question-mark">?</span>,
             ),
         };
 
@@ -949,7 +951,7 @@
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(
                 build_header_value(v)
-                    .map_err(|err| err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_key_id&quot;</span>))<span class="question-mark">?</span>,
+                    .map_err(|err| err.with_context(<span class="string">"key"</span>, <span class="string">"server_side_encryption_key_id"</span>))<span class="question-mark">?</span>,
             ),
         };
 
@@ -972,7 +974,7 @@
         <span class="kw">let </span>batch_max_operations = <span class="self">self
             </span>.batch_max_operations
             .unwrap_or(DEFAULT_BATCH_MAX_OPERATIONS);
-        <span class="macro">debug!</span>(<span class="string">&quot;Backend build finished&quot;</span>);
+        <span class="macro">debug!</span>(<span class="string">"Backend build finished"</span>);
 
         <span class="prelude-val">Ok</span>(OssBackend {
             core: Arc::new(OssCore {
@@ -1002,10 +1004,10 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>OssBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
-    <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = OssWriters;
-    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Lister = oio::PageLister&lt;OssLister&gt;;
+    <span class="kw">type </span>BlockingReader = ();
+    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -1038,7 +1040,7 @@
                 <span class="comment">// The max multipart size of OSS is 5 GiB.
                 //
                 // ref: &lt;https://www.alibabacloud.com/help/en/oss/user-guide/multipart-upload-12&gt;
-                </span>write_multi_max_size: <span class="kw">if </span><span class="macro">cfg!</span>(target_pointer_width = <span class="string">&quot;64&quot;</span>) {
+                </span>write_multi_max_size: <span class="kw">if </span><span class="macro">cfg!</span>(target_pointer_width = <span class="string">"64"</span>) {
                     <span class="prelude-val">Some</span>(<span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>* <span class="number">1024</span>)
                 } <span class="kw">else </span>{
                     <span class="prelude-val">Some</span>(usize::MAX)
@@ -1064,6 +1066,20 @@
             });
 
         am
+    }
+
+    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="kw">let </span>resp = <span class="self">self
+            </span>.core
+            .oss_head_object(path, args.if_match(), args.if_none_match())
+            .<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -1101,39 +1117,12 @@
         <span class="kw">let </span>writer = OssWriter::new(<span class="self">self</span>.core.clone(), path, args.clone());
 
         <span class="kw">let </span>w = <span class="kw">if </span>args.append() {
-            OssWriters::Two(oio::AppendObjectWriter::new(writer))
+            OssWriters::Two(oio::AppendWriter::new(writer))
         } <span class="kw">else </span>{
-            OssWriters::One(oio::MultipartUploadWriter::new(writer))
+            OssWriters::One(oio::MultipartWriter::new(writer, args.concurrent()))
         };
 
         <span class="prelude-val">Ok</span>((RpWrite::default(), w))
-    }
-
-    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.oss_copy_object(from, to).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; {
-                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(RpCopy::default())
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
-
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="kw">let </span>resp = <span class="self">self
-            </span>.core
-            .oss_head_object(path, args.if_match(), args.if_none_match())
-            .<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
     }
 
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
@@ -1159,6 +1148,19 @@
         <span class="prelude-val">Ok</span>((RpList::default(), oio::PageLister::new(l)))
     }
 
+    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.oss_copy_object(from, to).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; {
+                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(RpCopy::default())
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
     <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
         <span class="comment">// We will not send this request out, just for signing.
         </span><span class="kw">let </span><span class="kw-2">mut </span>req = <span class="kw">match </span>args.operation() {
@@ -1182,7 +1184,7 @@
 
         <span class="self">self</span>.core.sign_query(<span class="kw-2">&amp;mut </span>req, args.expire()).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="comment">// We don&#39;t need this request anymore, consume it directly.
+        <span class="comment">// We don't need this request anymore, consume it directly.
         </span><span class="kw">let </span>(parts, <span class="kw">_</span>) = req.into_parts();
 
         <span class="prelude-val">Ok</span>(RpPresign::new(PresignedRequest::new(
@@ -1202,9 +1204,9 @@
         <span class="kw">if </span>ops_len &gt; <span class="number">1000 </span>{
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unsupported,
-                <span class="string">&quot;oss services only allow delete up to 1000 keys at once&quot;</span>,
+                <span class="string">"oss services only allow delete up to 1000 keys at once"</span>,
             )
-            .with_context(<span class="string">&quot;length&quot;</span>, ops_len.to_string()));
+            .with_context(<span class="string">"length"</span>, ops_len.to_string()));
         }
 
         <span class="kw">let </span>paths = ops
@@ -1237,7 +1239,7 @@
                     i,
                     <span class="prelude-val">Err</span>(Error::new(
                         ErrorKind::Unexpected,
-                        <span class="string">&quot;oss delete this key failed for reason we don&#39;t know&quot;</span>,
+                        <span class="string">"oss delete this key failed for reason we don't know"</span>,
                     )),
                 ));
             }

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/http/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/http/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -553,14 +555,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -601,17 +603,17 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HttpConfig {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">&quot;HttpConfig&quot;</span>);
-        de.field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
-        de.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">"HttpConfig"</span>);
+        de.field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
+        de.field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
 
         de.finish_non_exhaustive()
     }
 }
 
 <span class="doccomment">/// HTTP Read-only service support like [Nginx](https://www.nginx.com/) and [Caddy](https://caddyserver.com/).
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default)]
 </span><span class="kw">pub struct </span>HttpBuilder {
     config: HttpConfig,
@@ -619,10 +621,10 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HttpBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">&quot;HttpBuilder&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">"HttpBuilder"</span>);
 
-        de.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config).finish()
+        de.field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config).finish()
     }
 }
 
@@ -640,9 +642,9 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// set password for http backend
+    <span class="doccomment">/// set username for http backend
     ///
-    /// default: no password
+    /// default: no username
     </span><span class="kw">pub fn </span>username(<span class="kw-2">&amp;mut </span><span class="self">self</span>, username: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!username.is_empty() {
             <span class="self">self</span>.config.username = <span class="prelude-val">Some</span>(username.to_owned());
@@ -685,7 +687,7 @@
     ///
     /// # Notes
     ///
-    /// This API is part of OpenDAL&#39;s Raw API. `HttpClient` could be changed
+    /// This API is part of OpenDAL's Raw API. `HttpClient` could be changed
     /// during minor updates.
     </span><span class="kw">pub fn </span>http_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>, client: HttpClient) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.http_client = <span class="prelude-val">Some</span>(client);
@@ -699,7 +701,7 @@
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>config = HttpConfig::deserialize(ConfigDeserializer::new(map))
-            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
+            .expect(<span class="string">"config deserialize must succeed"</span>);
 
         HttpBuilder {
             config,
@@ -708,25 +710,25 @@
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
         <span class="kw">let </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.endpoint {
             <span class="prelude-val">Some</span>(v) =&gt; v,
             <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint is empty&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Http))
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint is empty"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Http))
             }
         };
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, root);
 
         <span class="kw">let </span>client = <span class="kw">if let </span><span class="prelude-val">Some</span>(client) = <span class="self">self</span>.http_client.take() {
             client
         } <span class="kw">else </span>{
             HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Http)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Http)
             })<span class="question-mark">?
         </span>};
 
@@ -741,7 +743,7 @@
             auth = <span class="prelude-val">Some</span>(format_authorization_by_bearer(token)<span class="question-mark">?</span>)
         }
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build finished: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
         <span class="prelude-val">Ok</span>(HttpBackend {
             endpoint: endpoint.to_string(),
             authorization: auth,
@@ -762,11 +764,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HttpBackend {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;Backend&quot;</span>)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;client&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.client)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"Backend"</span>)
+            .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"client"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.client)
             .finish()
     }
 }
@@ -774,10 +776,10 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>HttpBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
-    <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = ();
-    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Lister = ();
+    <span class="kw">type </span>BlockingReader = ();
+    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -801,6 +803,27 @@
         ma
     }
 
+    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="comment">// Stat root always returns a DIR.
+        </span><span class="kw">if </span>path == <span class="string">"/" </span>{
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
+        }
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.http_head(path, <span class="kw-2">&amp;</span>args).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
+            <span class="comment">// HTTP Server like nginx could return FORBIDDEN if auto-index
+            // is not enabled, we should ignore them.
+            </span>StatusCode::NOT_FOUND | StatusCode::FORBIDDEN <span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) =&gt; {
+                <span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)))
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
         <span class="kw">let </span>resp = <span class="self">self</span>.http_get(path, <span class="kw-2">&amp;</span>args).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -822,34 +845,13 @@
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
-
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="comment">// Stat root always returns a DIR.
-        </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
-        }
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.http_head(path, <span class="kw-2">&amp;</span>args).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
-            <span class="comment">// HTTP Server like nginx could return FORBIDDEN if auto-index
-            // is not enabled, we should ignore them.
-            </span>StatusCode::NOT_FOUND | StatusCode::FORBIDDEN <span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) =&gt; {
-                <span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)))
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
 }
 
 <span class="kw">impl </span>HttpBackend {
     <span class="kw">async fn </span>http_get(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: <span class="kw-2">&amp;</span>OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
 
@@ -879,7 +881,7 @@
     <span class="kw">async fn </span>http_head(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: <span class="kw-2">&amp;</span>OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::head(<span class="kw-2">&amp;</span>url);
 
@@ -923,29 +925,29 @@
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
         <span class="kw">let </span>mock_server = MockServer::start().<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;GET&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
+        Mock::given(method(<span class="string">"GET"</span>))
+            .and(path(<span class="string">"/hello"</span>))
             .respond_with(
                 ResponseTemplate::new(<span class="number">200</span>)
-                    .insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>)
-                    .set_body_string(<span class="string">&quot;Hello, World!&quot;</span>),
+                    .insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>)
+                    .set_body_string(<span class="string">"Hello, World!"</span>),
             )
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;HEAD&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
-            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>))
+        Mock::given(method(<span class="string">"HEAD"</span>))
+            .and(path(<span class="string">"/hello"</span>))
+            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>))
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = HttpBuilder::default();
         builder.endpoint(<span class="kw-2">&amp;</span>mock_server.uri());
-        builder.root(<span class="string">&quot;/&quot;</span>);
+        builder.root(<span class="string">"/"</span>);
         <span class="kw">let </span>op = Operator::new(builder)<span class="question-mark">?</span>.finish();
 
-        <span class="kw">let </span>bs = op.read(<span class="string">&quot;hello&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>bs = op.read(<span class="string">"hello"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="macro">assert_eq!</span>(bs, <span class="string">b&quot;Hello, World!&quot;</span>);
+        <span class="macro">assert_eq!</span>(bs, <span class="string">b"Hello, World!"</span>);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -953,35 +955,35 @@
     </span><span class="kw">async fn </span>test_read_via_basic_auth() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
-        <span class="kw">let </span>(username, password) = (<span class="string">&quot;your_username&quot;</span>, <span class="string">&quot;your_password&quot;</span>);
+        <span class="kw">let </span>(username, password) = (<span class="string">"your_username"</span>, <span class="string">"your_password"</span>);
 
         <span class="kw">let </span>mock_server = MockServer::start().<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;GET&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
+        Mock::given(method(<span class="string">"GET"</span>))
+            .and(path(<span class="string">"/hello"</span>))
             .and(basic_auth(username, password))
             .respond_with(
                 ResponseTemplate::new(<span class="number">200</span>)
-                    .insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>)
-                    .set_body_string(<span class="string">&quot;Hello, World!&quot;</span>),
+                    .insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>)
+                    .set_body_string(<span class="string">"Hello, World!"</span>),
             )
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;HEAD&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
+        Mock::given(method(<span class="string">"HEAD"</span>))
+            .and(path(<span class="string">"/hello"</span>))
             .and(basic_auth(username, password))
-            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>))
+            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>))
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = HttpBuilder::default();
         builder.endpoint(<span class="kw-2">&amp;</span>mock_server.uri());
-        builder.root(<span class="string">&quot;/&quot;</span>);
+        builder.root(<span class="string">"/"</span>);
         builder.username(username).password(password);
         <span class="kw">let </span>op = Operator::new(builder)<span class="question-mark">?</span>.finish();
 
-        <span class="kw">let </span>bs = op.read(<span class="string">&quot;hello&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>bs = op.read(<span class="string">"hello"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="macro">assert_eq!</span>(bs, <span class="string">b&quot;Hello, World!&quot;</span>);
+        <span class="macro">assert_eq!</span>(bs, <span class="string">b"Hello, World!"</span>);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -989,35 +991,35 @@
     </span><span class="kw">async fn </span>test_read_via_bearer_auth() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
-        <span class="kw">let </span>token = <span class="string">&quot;your_token&quot;</span>;
+        <span class="kw">let </span>token = <span class="string">"your_token"</span>;
 
         <span class="kw">let </span>mock_server = MockServer::start().<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;GET&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
+        Mock::given(method(<span class="string">"GET"</span>))
+            .and(path(<span class="string">"/hello"</span>))
             .and(bearer_token(token))
             .respond_with(
                 ResponseTemplate::new(<span class="number">200</span>)
-                    .insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>)
-                    .set_body_string(<span class="string">&quot;Hello, World!&quot;</span>),
+                    .insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>)
+                    .set_body_string(<span class="string">"Hello, World!"</span>),
             )
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;HEAD&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
+        Mock::given(method(<span class="string">"HEAD"</span>))
+            .and(path(<span class="string">"/hello"</span>))
             .and(bearer_token(token))
-            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>))
+            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>))
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = HttpBuilder::default();
         builder.endpoint(<span class="kw-2">&amp;</span>mock_server.uri());
-        builder.root(<span class="string">&quot;/&quot;</span>);
+        builder.root(<span class="string">"/"</span>);
         builder.token(token);
         <span class="kw">let </span>op = Operator::new(builder)<span class="question-mark">?</span>.finish();
 
-        <span class="kw">let </span>bs = op.read(<span class="string">&quot;hello&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>bs = op.read(<span class="string">"hello"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="macro">assert_eq!</span>(bs, <span class="string">b&quot;Hello, World!&quot;</span>);
+        <span class="macro">assert_eq!</span>(bs, <span class="string">b"Hello, World!"</span>);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -1026,17 +1028,17 @@
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
         <span class="kw">let </span>mock_server = MockServer::start().<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;HEAD&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
-            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;128&quot;</span>))
+        Mock::given(method(<span class="string">"HEAD"</span>))
+            .and(path(<span class="string">"/hello"</span>))
+            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">"content-length"</span>, <span class="string">"128"</span>))
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = HttpBuilder::default();
         builder.endpoint(<span class="kw-2">&amp;</span>mock_server.uri());
-        builder.root(<span class="string">&quot;/&quot;</span>);
+        builder.root(<span class="string">"/"</span>);
         <span class="kw">let </span>op = Operator::new(builder)<span class="question-mark">?</span>.finish();
-        <span class="kw">let </span>bs = op.stat(<span class="string">&quot;hello&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>bs = op.stat(<span class="string">"hello"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="macro">assert_eq!</span>(bs.mode(), EntryMode::FILE);
         <span class="macro">assert_eq!</span>(bs.content_length(), <span class="number">128</span>);
@@ -1048,29 +1050,29 @@
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
         <span class="kw">let </span>mock_server = MockServer::start().<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;GET&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
-            .and(headers(<span class="string">&quot;if-none-match&quot;</span>, <span class="macro">vec!</span>[<span class="string">&quot;*&quot;</span>]))
+        Mock::given(method(<span class="string">"GET"</span>))
+            .and(path(<span class="string">"/hello"</span>))
+            .and(headers(<span class="string">"if-none-match"</span>, <span class="macro">vec!</span>[<span class="string">"*"</span>]))
             .respond_with(
                 ResponseTemplate::new(<span class="number">200</span>)
-                    .insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>)
-                    .set_body_string(<span class="string">&quot;Hello, World!&quot;</span>),
+                    .insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>)
+                    .set_body_string(<span class="string">"Hello, World!"</span>),
             )
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;HEAD&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
-            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;13&quot;</span>))
+        Mock::given(method(<span class="string">"HEAD"</span>))
+            .and(path(<span class="string">"/hello"</span>))
+            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">"content-length"</span>, <span class="string">"13"</span>))
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = HttpBuilder::default();
         builder.endpoint(<span class="kw-2">&amp;</span>mock_server.uri());
-        builder.root(<span class="string">&quot;/&quot;</span>);
+        builder.root(<span class="string">"/"</span>);
         <span class="kw">let </span>op = Operator::new(builder)<span class="question-mark">?</span>.finish();
 
-        <span class="kw">let </span>match_bs = op.read_with(<span class="string">&quot;hello&quot;</span>).if_none_match(<span class="string">&quot;*&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(match_bs, <span class="string">b&quot;Hello, World!&quot;</span>);
+        <span class="kw">let </span>match_bs = op.read_with(<span class="string">"hello"</span>).if_none_match(<span class="string">"*"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(match_bs, <span class="string">b"Hello, World!"</span>);
 
         <span class="prelude-val">Ok</span>(())
     }
@@ -1080,18 +1082,18 @@
         <span class="kw">let _ </span>= tracing_subscriber::fmt().with_test_writer().try_init();
 
         <span class="kw">let </span>mock_server = MockServer::start().<span class="kw">await</span>;
-        Mock::given(method(<span class="string">&quot;HEAD&quot;</span>))
-            .and(path(<span class="string">&quot;/hello&quot;</span>))
-            .and(headers(<span class="string">&quot;if-none-match&quot;</span>, <span class="macro">vec!</span>[<span class="string">&quot;*&quot;</span>]))
-            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">&quot;content-length&quot;</span>, <span class="string">&quot;128&quot;</span>))
+        Mock::given(method(<span class="string">"HEAD"</span>))
+            .and(path(<span class="string">"/hello"</span>))
+            .and(headers(<span class="string">"if-none-match"</span>, <span class="macro">vec!</span>[<span class="string">"*"</span>]))
+            .respond_with(ResponseTemplate::new(<span class="number">200</span>).insert_header(<span class="string">"content-length"</span>, <span class="string">"128"</span>))
             .mount(<span class="kw-2">&amp;</span>mock_server)
             .<span class="kw">await</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = HttpBuilder::default();
         builder.endpoint(<span class="kw-2">&amp;</span>mock_server.uri());
-        builder.root(<span class="string">&quot;/&quot;</span>);
+        builder.root(<span class="string">"/"</span>);
         <span class="kw">let </span>op = Operator::new(builder)<span class="question-mark">?</span>.finish();
-        <span class="kw">let </span>bs = op.stat_with(<span class="string">&quot;hello&quot;</span>).if_none_match(<span class="string">&quot;*&quot;</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>bs = op.stat_with(<span class="string">"hello"</span>).if_none_match(<span class="string">"*"</span>).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="macro">assert_eq!</span>(bs.mode(), EntryMode::FILE);
         <span class="macro">assert_eq!</span>(bs.content_length(), <span class="number">128</span>);

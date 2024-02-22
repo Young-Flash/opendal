@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/azdls/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/azdls/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -496,14 +498,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -533,13 +535,13 @@
 /// Azure US Government: https://accountname.dfs.core.usgovcloudapi.net
 /// Azure China: https://accountname.dfs.core.chinacloudapi.cn
 </span><span class="kw">const </span>KNOWN_AZDLS_ENDPOINT_SUFFIX: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>str] = <span class="kw-2">&amp;</span>[
-    <span class="string">&quot;dfs.core.windows.net&quot;</span>,
-    <span class="string">&quot;dfs.core.usgovcloudapi.net&quot;</span>,
-    <span class="string">&quot;dfs.core.chinacloudapi.cn&quot;</span>,
+    <span class="string">"dfs.core.windows.net"</span>,
+    <span class="string">"dfs.core.usgovcloudapi.net"</span>,
+    <span class="string">"dfs.core.chinacloudapi.cn"</span>,
 ];
 
 <span class="doccomment">/// Azure Data Lake Storage Gen2 Support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default, Clone)]
 </span><span class="kw">pub struct </span>AzdlsBuilder {
     root: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -551,18 +553,18 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>AzdlsBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"Builder"</span>);
 
-        ds.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
-        ds.field(<span class="string">&quot;filesystem&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.filesystem);
-        ds.field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
+        ds.field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
+        ds.field(<span class="string">"filesystem"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.filesystem);
+        ds.field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
 
         <span class="kw">if </span><span class="self">self</span>.account_name.is_some() {
-            ds.field(<span class="string">&quot;account_name&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
+            ds.field(<span class="string">"account_name"</span>, <span class="kw-2">&amp;</span><span class="string">"&lt;redacted&gt;"</span>);
         }
         <span class="kw">if </span><span class="self">self</span>.account_key.is_some() {
-            ds.field(<span class="string">&quot;account_key&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
+            ds.field(<span class="string">"account_key"</span>, <span class="kw-2">&amp;</span><span class="string">"&lt;redacted&gt;"</span>);
         }
 
         ds.finish()
@@ -597,7 +599,7 @@
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoint.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string());
+            </span><span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">'/'</span>).to_string());
         }
 
         <span class="self">self
@@ -605,7 +607,7 @@
 
     <span class="doccomment">/// Set account_name of this backend.
     ///
-    /// - If account_name is set, we will take user&#39;s input first.
+    /// - If account_name is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>account_name(<span class="kw-2">&amp;mut </span><span class="self">self</span>, account_name: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!account_name.is_empty() {
@@ -617,7 +619,7 @@
 
     <span class="doccomment">/// Set account_key of this backend.
     ///
-    /// - If account_key is set, we will take user&#39;s input first.
+    /// - If account_key is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>account_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, account_key: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!account_key.is_empty() {
@@ -631,7 +633,7 @@
     ///
     /// # Notes
     ///
-    /// This API is part of OpenDAL&#39;s Raw API. `HttpClient` could be changed
+    /// This API is part of OpenDAL's Raw API. `HttpClient` could be changed
     /// during minor updates.
     </span><span class="kw">pub fn </span>http_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>, client: HttpClient) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.http_client = <span class="prelude-val">Some</span>(client);
@@ -644,34 +646,34 @@
     <span class="kw">const </span>SCHEME: Scheme = Scheme::Azdls;
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.take().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, root);
 
         <span class="comment">// Handle endpoint, region and container name.
         </span><span class="kw">let </span>filesystem = <span class="kw">match </span><span class="self">self</span>.filesystem.is_empty() {
             <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.filesystem),
-            <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;filesystem is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Azdls)),
+            <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"filesystem is empty"</span>)
+                .with_operation(<span class="string">"Builder::build"</span>)
+                .with_context(<span class="string">"service"</span>, Scheme::Azdls)),
         }<span class="question-mark">?</span>;
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use filesystem {}&quot;</span>, <span class="kw-2">&amp;</span>filesystem);
+        <span class="macro">debug!</span>(<span class="string">"backend use filesystem {}"</span>, <span class="kw-2">&amp;</span>filesystem);
 
         <span class="kw">let </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.endpoint {
             <span class="prelude-val">Some</span>(endpoint) =&gt; <span class="prelude-val">Ok</span>(endpoint.clone()),
-            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Azdls)),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint is empty"</span>)
+                .with_operation(<span class="string">"Builder::build"</span>)
+                .with_context(<span class="string">"service"</span>, Scheme::Azdls)),
         }<span class="question-mark">?</span>;
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use endpoint {}&quot;</span>, <span class="kw-2">&amp;</span>endpoint);
+        <span class="macro">debug!</span>(<span class="string">"backend use endpoint {}"</span>, <span class="kw-2">&amp;</span>endpoint);
 
         <span class="kw">let </span>client = <span class="kw">if let </span><span class="prelude-val">Some</span>(client) = <span class="self">self</span>.http_client.take() {
             client
         } <span class="kw">else </span>{
             HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Azdls)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Azdls)
             })<span class="question-mark">?
         </span>};
 
@@ -688,7 +690,7 @@
         <span class="kw">let </span>cred_loader = AzureStorageLoader::new(config_loader);
         <span class="kw">let </span>signer = AzureStorageSigner::new();
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build finished: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
         <span class="prelude-val">Ok</span>(AzdlsBackend {
             core: Arc::new(AzdlsCore {
                 filesystem: <span class="self">self</span>.filesystem.clone(),
@@ -704,11 +706,11 @@
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>builder = AzdlsBuilder::default();
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;filesystem&quot;</span>).map(|v| builder.filesystem(v));
-        map.get(<span class="string">&quot;endpoint&quot;</span>).map(|v| builder.endpoint(v));
-        map.get(<span class="string">&quot;account_name&quot;</span>).map(|v| builder.account_name(v));
-        map.get(<span class="string">&quot;account_key&quot;</span>).map(|v| builder.account_key(v));
+        map.get(<span class="string">"root"</span>).map(|v| builder.root(v));
+        map.get(<span class="string">"filesystem"</span>).map(|v| builder.filesystem(v));
+        map.get(<span class="string">"endpoint"</span>).map(|v| builder.endpoint(v));
+        map.get(<span class="string">"account_name"</span>).map(|v| builder.account_name(v));
+        map.get(<span class="string">"account_key"</span>).map(|v| builder.account_key(v));
 
         builder
     }
@@ -723,10 +725,10 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>AzdlsBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
-    <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = AzdlsWriters;
-    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Lister = oio::PageLister&lt;AzdlsLister&gt;;
+    <span class="kw">type </span>BlockingReader = ();
+    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -758,7 +760,7 @@
     <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.core.azdls_create_request(
             path,
-            <span class="string">&quot;directory&quot;</span>,
+            <span class="string">"directory"</span>,
             <span class="kw-2">&amp;</span>OpWrite::default(),
             AsyncBody::Empty,
         )<span class="question-mark">?</span>;
@@ -776,6 +778,52 @@
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
+    }
+
+    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="comment">// Stat root always returns a DIR.
+        </span><span class="kw">if </span>path == <span class="string">"/" </span>{
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
+        }
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.azdls_get_properties(path).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">if </span>resp.status() != StatusCode::OK {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
+        <span class="kw">let </span>resource = resp
+            .headers()
+            .get(<span class="string">"x-ms-resource-type"</span>)
+            .ok_or_else(|| {
+                Error::new(
+                    ErrorKind::Unexpected,
+                    <span class="string">"azdls should return x-ms-resource-type header, but it's missing"</span>,
+                )
+            })<span class="question-mark">?
+            </span>.to_str()
+            .map_err(|err| {
+                Error::new(
+                    ErrorKind::Unexpected,
+                    <span class="string">"azdls should return x-ms-resource-type header, but it's not a valid string"</span>,
+                )
+                .set_source(err)
+            })<span class="question-mark">?</span>;
+
+        meta = <span class="kw">match </span>resource {
+            <span class="string">"file" </span>=&gt; meta.with_mode(EntryMode::FILE),
+            <span class="string">"directory" </span>=&gt; meta.with_mode(EntryMode::DIR),
+            v =&gt; {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                    ErrorKind::Unexpected,
+                    <span class="string">"azdls returns not supported x-ms-resource-type"</span>,
+                )
+                .with_context(<span class="string">"resource"</span>, v))
+            }
+        };
+
+        <span class="prelude-val">Ok</span>(RpStat::new(meta))
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -803,11 +851,28 @@
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
         <span class="kw">let </span>w = AzdlsWriter::new(<span class="self">self</span>.core.clone(), args.clone(), path.to_string());
         <span class="kw">let </span>w = <span class="kw">if </span>args.append() {
-            AzdlsWriters::Two(oio::AppendObjectWriter::new(w))
+            AzdlsWriters::Two(oio::AppendWriter::new(w))
         } <span class="kw">else </span>{
             AzdlsWriters::One(oio::OneShotWriter::new(w))
         };
         <span class="prelude-val">Ok</span>((RpWrite::default(), w))
+    }
+
+    <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.azdls_delete(path).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK | StatusCode::NOT_FOUND =&gt; <span class="prelude-val">Ok</span>(RpDelete::default()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
+    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
+        <span class="kw">let </span>l = AzdlsLister::new(<span class="self">self</span>.core.clone(), path.to_string(), args.limit());
+
+        <span class="prelude-val">Ok</span>((RpList::default(), oio::PageLister::new(l)))
     }
 
     <span class="kw">async fn </span>rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
@@ -833,83 +898,20 @@
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
-
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="comment">// Stat root always returns a DIR.
-        </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
-        }
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.azdls_get_properties(path).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">if </span>resp.status() != StatusCode::OK {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
-        }
-
-        <span class="kw">let </span><span class="kw-2">mut </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-        <span class="kw">let </span>resource = resp
-            .headers()
-            .get(<span class="string">&quot;x-ms-resource-type&quot;</span>)
-            .ok_or_else(|| {
-                Error::new(
-                    ErrorKind::Unexpected,
-                    <span class="string">&quot;azdls should return x-ms-resource-type header, but it&#39;s missing&quot;</span>,
-                )
-            })<span class="question-mark">?
-            </span>.to_str()
-            .map_err(|err| {
-                Error::new(
-                    ErrorKind::Unexpected,
-                    <span class="string">&quot;azdls should return x-ms-resource-type header, but it&#39;s not a valid string&quot;</span>,
-                )
-                .set_source(err)
-            })<span class="question-mark">?</span>;
-
-        meta = <span class="kw">match </span>resource {
-            <span class="string">&quot;file&quot; </span>=&gt; meta.with_mode(EntryMode::FILE),
-            <span class="string">&quot;directory&quot; </span>=&gt; meta.with_mode(EntryMode::DIR),
-            v =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                    ErrorKind::Unexpected,
-                    <span class="string">&quot;azdls returns not supported x-ms-resource-type&quot;</span>,
-                )
-                .with_context(<span class="string">&quot;resource&quot;</span>, v))
-            }
-        };
-
-        <span class="prelude-val">Ok</span>(RpStat::new(meta))
-    }
-
-    <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.azdls_delete(path).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK | StatusCode::NOT_FOUND =&gt; <span class="prelude-val">Ok</span>(RpDelete::default()),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
-
-    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
-        <span class="kw">let </span>l = AzdlsLister::new(<span class="self">self</span>.core.clone(), path.to_string(), args.limit());
-
-        <span class="prelude-val">Ok</span>((RpList::default(), oio::PageLister::new(l)))
-    }
 }
 
 <span class="kw">fn </span>infer_storage_name_from_endpoint(endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
     <span class="kw">let </span>endpoint: <span class="kw-2">&amp;</span>str = endpoint
-        .strip_prefix(<span class="string">&quot;http://&quot;</span>)
-        .or_else(|| endpoint.strip_prefix(<span class="string">&quot;https://&quot;</span>))
+        .strip_prefix(<span class="string">"http://"</span>)
+        .or_else(|| endpoint.strip_prefix(<span class="string">"https://"</span>))
         .unwrap_or(endpoint);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>parts = endpoint.splitn(<span class="number">2</span>, <span class="string">&#39;.&#39;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>parts = endpoint.splitn(<span class="number">2</span>, <span class="string">'.'</span>);
     <span class="kw">let </span>storage_name = parts.next();
     <span class="kw">let </span>endpoint_suffix = parts
         .next()
         .unwrap_or_default()
-        .trim_end_matches(<span class="string">&#39;/&#39;</span>)
+        .trim_end_matches(<span class="string">'/'</span>)
         .to_lowercase();
 
     <span class="kw">if </span>KNOWN_AZDLS_ENDPOINT_SUFFIX
@@ -930,56 +932,56 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_infer_storage_name_from_endpoint() {
-        <span class="kw">let </span>endpoint = <span class="string">&quot;https://account.dfs.core.windows.net&quot;</span>;
+        <span class="kw">let </span>endpoint = <span class="string">"https://account.dfs.core.windows.net"</span>;
         <span class="kw">let </span>storage_name = infer_storage_name_from_endpoint(endpoint);
-        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">&quot;account&quot;</span>.to_string()));
+        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">"account"</span>.to_string()));
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_infer_storage_name_from_endpoint_with_trailing_slash() {
-        <span class="kw">let </span>endpoint = <span class="string">&quot;https://account.dfs.core.windows.net/&quot;</span>;
+        <span class="kw">let </span>endpoint = <span class="string">"https://account.dfs.core.windows.net/"</span>;
         <span class="kw">let </span>storage_name = infer_storage_name_from_endpoint(endpoint);
-        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">&quot;account&quot;</span>.to_string()));
+        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">"account"</span>.to_string()));
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_builder_from_endpoint_and_key_infer_account_name() {
         <span class="kw">let </span><span class="kw-2">mut </span>azdls_builder = AzdlsBuilder::default();
-        azdls_builder.endpoint(<span class="string">&quot;https://storagesample.dfs.core.chinacloudapi.cn&quot;</span>);
-        azdls_builder.account_key(<span class="string">&quot;account-key&quot;</span>);
-        azdls_builder.filesystem(<span class="string">&quot;filesystem&quot;</span>);
+        azdls_builder.endpoint(<span class="string">"https://storagesample.dfs.core.chinacloudapi.cn"</span>);
+        azdls_builder.account_key(<span class="string">"account-key"</span>);
+        azdls_builder.filesystem(<span class="string">"filesystem"</span>);
         <span class="kw">let </span>azdls = azdls_builder
             .build()
-            .expect(<span class="string">&quot;build Azdls should be succeeded.&quot;</span>);
+            .expect(<span class="string">"build Azdls should be succeeded."</span>);
 
         <span class="macro">assert_eq!</span>(
             azdls.core.endpoint,
-            <span class="string">&quot;https://storagesample.dfs.core.chinacloudapi.cn&quot;
+            <span class="string">"https://storagesample.dfs.core.chinacloudapi.cn"
         </span>);
 
-        <span class="macro">assert_eq!</span>(azdls.core.filesystem, <span class="string">&quot;filesystem&quot;</span>.to_string());
+        <span class="macro">assert_eq!</span>(azdls.core.filesystem, <span class="string">"filesystem"</span>.to_string());
 
         <span class="macro">assert_eq!</span>(
             azdls_builder.account_key.unwrap(),
-            <span class="string">&quot;account-key&quot;</span>.to_string()
+            <span class="string">"account-key"</span>.to_string()
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_no_key_wont_infer_account_name() {
         <span class="kw">let </span><span class="kw-2">mut </span>azdls_builder = AzdlsBuilder::default();
-        azdls_builder.endpoint(<span class="string">&quot;https://storagesample.dfs.core.windows.net&quot;</span>);
-        azdls_builder.filesystem(<span class="string">&quot;filesystem&quot;</span>);
+        azdls_builder.endpoint(<span class="string">"https://storagesample.dfs.core.windows.net"</span>);
+        azdls_builder.filesystem(<span class="string">"filesystem"</span>);
         <span class="kw">let </span>azdls = azdls_builder
             .build()
-            .expect(<span class="string">&quot;build Azdls should be succeeded.&quot;</span>);
+            .expect(<span class="string">"build Azdls should be succeeded."</span>);
 
         <span class="macro">assert_eq!</span>(
             azdls.core.endpoint,
-            <span class="string">&quot;https://storagesample.dfs.core.windows.net&quot;
+            <span class="string">"https://storagesample.dfs.core.windows.net"
         </span>);
 
-        <span class="macro">assert_eq!</span>(azdls.core.filesystem, <span class="string">&quot;filesystem&quot;</span>.to_string());
+        <span class="macro">assert_eq!</span>(azdls.core.filesystem, <span class="string">"filesystem"</span>.to_string());
 
         <span class="macro">assert_eq!</span>(azdls_builder.account_key, <span class="prelude-val">None</span>);
     }

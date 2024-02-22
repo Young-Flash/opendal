@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/memcached/ascii.rs`."><title>ascii.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/memcached/ascii.rs`."><title>ascii.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -175,14 +177,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -213,7 +215,7 @@
         <span class="comment">// Send command
         </span><span class="kw">let </span>writer = <span class="self">self</span>.io.get_mut();
         writer
-            .write_all(<span class="kw-2">&amp;</span>[<span class="string">b&quot;get &quot;</span>, key.as_bytes(), <span class="string">b&quot;\r\n&quot;</span>].concat())
+            .write_all(<span class="kw-2">&amp;</span>[<span class="string">b"get "</span>, key.as_bytes(), <span class="string">b"\r\n"</span>].concat())
             .<span class="kw">await
             </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
         writer.flush().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
@@ -222,21 +224,21 @@
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="comment">// Check response header and parse value length
-        </span><span class="kw">if </span>header.contains(<span class="string">&quot;ERROR&quot;</span>) {
+        </span><span class="kw">if </span>header.contains(<span class="string">"ERROR"</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;unexpected data received&quot;</span>)
-                    .with_context(<span class="string">&quot;message&quot;</span>, header),
+                Error::new(ErrorKind::Unexpected, <span class="string">"unexpected data received"</span>)
+                    .with_context(<span class="string">"message"</span>, header),
             );
-        } <span class="kw">else if </span>header.starts_with(<span class="string">&quot;END&quot;</span>) {
+        } <span class="kw">else if </span>header.starts_with(<span class="string">"END"</span>) {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
         }
 
         <span class="comment">// VALUE &lt;key&gt; &lt;flags&gt; &lt;bytes&gt; [&lt;cas unique&gt;]\r\n
         </span><span class="kw">let </span>length: usize = header
-            .split(<span class="string">&#39; &#39;</span>)
+            .split(<span class="string">' '</span>)
             .nth(<span class="number">3</span>)
             .and_then(|len| len.trim_end().parse().ok())
-            .ok_or_else(|| Error::new(ErrorKind::Unexpected, <span class="string">&quot;invalid data received&quot;</span>))<span class="question-mark">?</span>;
+            .ok_or_else(|| Error::new(ErrorKind::Unexpected, <span class="string">"invalid data received"</span>))<span class="question-mark">?</span>;
 
         <span class="comment">// Read value
         </span><span class="kw">let </span><span class="kw-2">mut </span>buffer: Vec&lt;u8&gt; = <span class="macro">vec!</span>[<span class="number">0</span>; length];
@@ -253,32 +255,32 @@
     }
 
     <span class="kw">pub async fn </span>set(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>str, val: <span class="kw-2">&amp;</span>[u8], expiration: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>header = <span class="macro">format!</span>(<span class="string">&quot;set {} 0 {} {}\r\n&quot;</span>, key, expiration, val.len());
+        <span class="kw">let </span>header = <span class="macro">format!</span>(<span class="string">"set {} 0 {} {}\r\n"</span>, key, expiration, val.len());
         <span class="self">self</span>.io
             .write_all(header.as_bytes())
             .<span class="kw">await
             </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
         <span class="self">self</span>.io.write_all(val).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.io.write_all(<span class="string">b&quot;\r\n&quot;</span>).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.io.write_all(<span class="string">b"\r\n"</span>).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
         <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="comment">// Read response header
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="comment">// Check response header and make sure we got a `STORED`
-        </span><span class="kw">if </span>header.contains(<span class="string">&quot;STORED&quot;</span>) {
+        </span><span class="kw">if </span>header.contains(<span class="string">"STORED"</span>) {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
-        } <span class="kw">else if </span>header.contains(<span class="string">&quot;ERROR&quot;</span>) {
+        } <span class="kw">else if </span>header.contains(<span class="string">"ERROR"</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;unexpected data received&quot;</span>)
-                    .with_context(<span class="string">&quot;message&quot;</span>, header),
+                Error::new(ErrorKind::Unexpected, <span class="string">"unexpected data received"</span>)
+                    .with_context(<span class="string">"message"</span>, header),
             );
         }
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">pub async fn </span>delete(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>header = <span class="macro">format!</span>(<span class="string">&quot;delete {}\r\n&quot;</span>, key);
+        <span class="kw">let </span>header = <span class="macro">format!</span>(<span class="string">"delete {}\r\n"</span>, key);
         <span class="self">self</span>.io
             .write_all(header.as_bytes())
             .<span class="kw">await
@@ -289,12 +291,12 @@
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="comment">// Check response header and parse value length
-        </span><span class="kw">if </span>header.contains(<span class="string">&quot;NOT_FOUND&quot;</span>) || header.starts_with(<span class="string">&quot;END&quot;</span>) {
+        </span><span class="kw">if </span>header.contains(<span class="string">"NOT_FOUND"</span>) || header.starts_with(<span class="string">"END"</span>) {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
-        } <span class="kw">else if </span>header.contains(<span class="string">&quot;ERROR&quot;</span>) || !header.contains(<span class="string">&quot;DELETED&quot;</span>) {
+        } <span class="kw">else if </span>header.contains(<span class="string">"ERROR"</span>) || !header.contains(<span class="string">"DELETED"</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;unexpected data received&quot;</span>)
-                    .with_context(<span class="string">&quot;message&quot;</span>, header),
+                Error::new(ErrorKind::Unexpected, <span class="string">"unexpected data received"</span>)
+                    .with_context(<span class="string">"message"</span>, header),
             );
         }
         <span class="prelude-val">Ok</span>(())
@@ -302,7 +304,7 @@
 
     <span class="kw">pub async fn </span>version(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
         <span class="self">self</span>.io
-            .write_all(<span class="string">b&quot;version\r\n&quot;</span>)
+            .write_all(<span class="string">b"version\r\n"</span>)
             .<span class="kw">await
             </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
         <span class="self">self</span>.io.flush().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
@@ -310,24 +312,24 @@
         <span class="comment">// Read response header
         </span><span class="kw">let </span>header = <span class="self">self</span>.read_header().<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">if </span>!header.starts_with(<span class="string">&quot;VERSION&quot;</span>) {
+        <span class="kw">if </span>!header.starts_with(<span class="string">"VERSION"</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;unexpected data received&quot;</span>)
-                    .with_context(<span class="string">&quot;message&quot;</span>, header),
+                Error::new(ErrorKind::Unexpected, <span class="string">"unexpected data received"</span>)
+                    .with_context(<span class="string">"message"</span>, header),
             );
         }
-        <span class="kw">let </span>version = header.trim_start_matches(<span class="string">&quot;VERSION &quot;</span>).trim_end();
+        <span class="kw">let </span>version = header.trim_start_matches(<span class="string">"VERSION "</span>).trim_end();
         <span class="prelude-val">Ok</span>(version.to_string())
     }
 
     <span class="kw">async fn </span>read_line(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt; {
         <span class="kw">let </span><span class="self">Self </span>{ io, buf } = <span class="self">self</span>;
         buf.clear();
-        io.read_until(<span class="string">b&#39;\n&#39;</span>, buf).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
-        <span class="kw">if </span>buf.last().copied() != <span class="prelude-val">Some</span>(<span class="string">b&#39;\n&#39;</span>) {
+        io.read_until(<span class="string">b'\n'</span>, buf).<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        <span class="kw">if </span>buf.last().copied() != <span class="prelude-val">Some</span>(<span class="string">b'\n'</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ContentIncomplete,
-                <span class="string">&quot;unexpected eof, the response must be incomplete&quot;</span>,
+                <span class="string">"unexpected eof, the response must be incomplete"</span>,
             ));
         }
         <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span>buf[..])
@@ -336,7 +338,7 @@
     <span class="kw">async fn </span>read_header(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="kw">let </span>header = <span class="self">self</span>.read_line().<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>header = std::str::from_utf8(header).map_err(|err| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;invalid data received&quot;</span>).set_source(err)
+            Error::new(ErrorKind::Unexpected, <span class="string">"invalid data received"</span>).set_source(err)
         })<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(header)

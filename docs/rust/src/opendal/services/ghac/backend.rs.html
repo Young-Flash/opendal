@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/ghac/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/ghac/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -525,19 +527,30 @@
 <a href="#525" id="525">525</a>
 <a href="#526" id="526">526</a>
 <a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -547,6 +560,7 @@
 
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>bytes::Bytes;
+<span class="kw">use </span>http::header;
 <span class="kw">use </span>http::header::ACCEPT;
 <span class="kw">use </span>http::header::AUTHORIZATION;
 <span class="kw">use </span>http::header::CONTENT_LENGTH;
@@ -566,31 +580,31 @@
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// The base url for cache url.
-</span><span class="kw">const </span>CACHE_URL_BASE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;_apis/artifactcache&quot;</span>;
+</span><span class="kw">const </span>CACHE_URL_BASE: <span class="kw-2">&amp;</span>str = <span class="string">"_apis/artifactcache"</span>;
 <span class="doccomment">/// Cache API requires to provide an accept header.
-</span><span class="kw">const </span>CACHE_HEADER_ACCEPT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;application/json;api-version=6.0-preview.1&quot;</span>;
+</span><span class="kw">const </span>CACHE_HEADER_ACCEPT: <span class="kw-2">&amp;</span>str = <span class="string">"application/json;api-version=6.0-preview.1"</span>;
 <span class="doccomment">/// The cache url env for ghac.
 ///
 /// The url will be like `https://artifactcache.actions.githubusercontent.com/&lt;id&gt;/`
-</span><span class="kw">const </span>ACTIONS_CACHE_URL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ACTIONS_CACHE_URL&quot;</span>;
+</span><span class="kw">const </span>ACTIONS_CACHE_URL: <span class="kw-2">&amp;</span>str = <span class="string">"ACTIONS_CACHE_URL"</span>;
 <span class="doccomment">/// The runtime token env for ghac.
 ///
 /// This token will be valid for 6h and github action will running for 6
-/// hours at most. So we don&#39;t need to refetch it again.
-</span><span class="kw">const </span>ACTIONS_RUNTIME_TOKEN: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ACTIONS_RUNTIME_TOKEN&quot;</span>;
+/// hours at most. So we don't need to refetch it again.
+</span><span class="kw">const </span>ACTIONS_RUNTIME_TOKEN: <span class="kw-2">&amp;</span>str = <span class="string">"ACTIONS_RUNTIME_TOKEN"</span>;
 <span class="doccomment">/// The token provided by workflow;
-</span><span class="kw">const </span>GITHUB_TOKEN: <span class="kw-2">&amp;</span>str = <span class="string">&quot;GITHUB_TOKEN&quot;</span>;
+</span><span class="kw">const </span>GITHUB_TOKEN: <span class="kw-2">&amp;</span>str = <span class="string">"GITHUB_TOKEN"</span>;
 <span class="doccomment">/// The github api url for ghac.
-</span><span class="kw">const </span>GITHUB_API_URL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;GITHUB_API_URL&quot;</span>;
+</span><span class="kw">const </span>GITHUB_API_URL: <span class="kw-2">&amp;</span>str = <span class="string">"GITHUB_API_URL"</span>;
 <span class="doccomment">/// The repository that runs this action.
-</span><span class="kw">const </span>GITHUB_REPOSITORY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;GITHUB_REPOSITORY&quot;</span>;
+</span><span class="kw">const </span>GITHUB_REPOSITORY: <span class="kw-2">&amp;</span>str = <span class="string">"GITHUB_REPOSITORY"</span>;
 <span class="doccomment">/// The github API version that used by OpenDAL.
-</span><span class="kw">const </span>GITHUB_API_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;2022-11-28&quot;</span>;
+</span><span class="kw">const </span>GITHUB_API_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">"2022-11-28"</span>;
 
 <span class="kw">fn </span>value_or_env(
     explicit_value: <span class="prelude-ty">Option</span>&lt;String&gt;,
     env_var_name: <span class="kw-2">&amp;</span>str,
-    operation: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    operation: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
     <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = explicit_value {
         <span class="kw">return </span><span class="prelude-val">Ok</span>(value);
@@ -598,7 +612,7 @@
 
     env::var(env_var_name).map_err(|err| {
         <span class="kw">let </span>text = <span class="macro">format!</span>(
-            <span class="string">&quot;{} not found, maybe not in github action environment?&quot;</span>,
+            <span class="string">"{} not found, maybe not in github action environment?"</span>,
             env_var_name
         );
         Error::new(ErrorKind::ConfigInvalid, <span class="kw-2">&amp;</span>text)
@@ -608,7 +622,7 @@
 }
 
 <span class="doccomment">/// GitHub Action Cache Services support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Debug, Default)]
 </span><span class="kw">pub struct </span>GhacBuilder {
     root: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -632,7 +646,7 @@
     <span class="doccomment">/// set the version that used by cache.
     ///
     /// The version is the unique value that provides namespacing.
-    /// It&#39;s better to make sure this value is only used by this backend.
+    /// It's better to make sure this value is only used by this backend.
     ///
     /// If not set, we will use `opendal` as default.
     </span><span class="kw">pub fn </span>version(<span class="kw-2">&amp;mut </span><span class="self">self</span>, version: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
@@ -672,7 +686,7 @@
     ///
     /// # Notes
     ///
-    /// This API is part of OpenDAL&#39;s Raw API. `HttpClient` could be changed
+    /// This API is part of OpenDAL's Raw API. `HttpClient` could be changed
     /// during minor updates.
     </span><span class="kw">pub fn </span>http_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>, client: HttpClient) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.http_client = <span class="prelude-val">Some</span>(client);
@@ -687,43 +701,43 @@
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>builder = GhacBuilder::default();
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;version&quot;</span>).map(|v| builder.version(v));
+        map.get(<span class="string">"root"</span>).map(|v| builder.root(v));
+        map.get(<span class="string">"version"</span>).map(|v| builder.version(v));
 
         builder
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="self">self</span>);
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.take().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, root);
 
         <span class="kw">let </span>client = <span class="kw">if let </span><span class="prelude-val">Some</span>(client) = <span class="self">self</span>.http_client.take() {
             client
         } <span class="kw">else </span>{
             HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Ghac)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Ghac)
             })<span class="question-mark">?
         </span>};
 
         <span class="kw">let </span>backend = GhacBackend {
             root,
 
-            cache_url: value_or_env(<span class="self">self</span>.endpoint.take(), ACTIONS_CACHE_URL, <span class="string">&quot;Builder::build&quot;</span>)<span class="question-mark">?</span>,
+            cache_url: value_or_env(<span class="self">self</span>.endpoint.take(), ACTIONS_CACHE_URL, <span class="string">"Builder::build"</span>)<span class="question-mark">?</span>,
             catch_token: value_or_env(
                 <span class="self">self</span>.runtime_token.take(),
                 ACTIONS_RUNTIME_TOKEN,
-                <span class="string">&quot;Builder::build&quot;</span>,
+                <span class="string">"Builder::build"</span>,
             )<span class="question-mark">?</span>,
             version: <span class="self">self
                 </span>.version
                 .clone()
-                .unwrap_or_else(|| <span class="string">&quot;opendal&quot;</span>.to_string()),
+                .unwrap_or_else(|| <span class="string">"opendal"</span>.to_string()),
 
             api_url: env::var(GITHUB_API_URL)
-                .unwrap_or_else(|<span class="kw">_</span>| <span class="string">&quot;https://api.github.com&quot;</span>.to_string()),
+                .unwrap_or_else(|<span class="kw">_</span>| <span class="string">"https://api.github.com"</span>.to_string()),
             api_token: env::var(GITHUB_TOKEN).unwrap_or_default(),
             repo: env::var(GITHUB_REPOSITORY).unwrap_or_default(),
 
@@ -737,7 +751,7 @@
 <span class="doccomment">/// Backend for github action cache services.
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>GhacBackend {
-    <span class="comment">// root should end with &quot;/&quot;
+    <span class="comment">// root should end with "/"
     </span>root: String,
 
     cache_url: String,
@@ -754,10 +768,10 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>GhacBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
-    <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = GhacWriter;
-    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Lister = ();
+    <span class="kw">type </span>BlockingReader = ();
+    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -779,6 +793,50 @@
                 ..Default::default()
             });
         am
+    }
+
+    <span class="doccomment">/// Some self-hosted GHES instances are backed by AWS S3 services which only returns
+    /// signed url with `GET` method. So we will use `GET` with empty range to simulate
+    /// `HEAD` instead.
+    ///
+    /// In this way, we can support both self-hosted GHES and `github.com`.
+    </span><span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="kw">let </span>req = <span class="self">self</span>.ghac_query(path).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>location = <span class="kw">if </span>resp.status() == StatusCode::OK {
+            <span class="kw">let </span>slc = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span>query_resp: GhacQueryResponse =
+                serde_json::from_slice(<span class="kw-2">&amp;</span>slc).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
+            query_resp.archive_location
+        } <span class="kw">else </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
+        };
+
+        <span class="kw">let </span>req = Request::get(location)
+            .header(header::RANGE, <span class="string">"bytes=0-0"</span>)
+            .body(AsyncBody::Empty)
+            .map_err(new_request_build_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+        <span class="kw">match </span>status {
+            StatusCode::OK | StatusCode::PARTIAL_CONTENT | StatusCode::RANGE_NOT_SATISFIABLE =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
+                <span class="comment">// Correct content length via returning content range.
+                </span>meta.set_content_length(
+                    meta.content_range()
+                        .expect(<span class="string">"content range must be valid"</span>)
+                        .size()
+                        .expect(<span class="string">"content range must contains size"</span>),
+                );
+
+                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(RpStat::new(meta))
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -829,45 +887,17 @@
         } <span class="kw">else </span>{
             <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp)
                 .<span class="kw">await
-                </span>.map(|err| err.with_operation(<span class="string">&quot;Backend::ghac_reserve&quot;</span>))<span class="question-mark">?</span>);
+                </span>.map(|err| err.with_operation(<span class="string">"Backend::ghac_reserve"</span>))<span class="question-mark">?</span>);
         };
 
         <span class="prelude-val">Ok</span>((RpWrite::default(), GhacWriter::new(<span class="self">self</span>.clone(), cache_id)))
-    }
-
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="kw">let </span>req = <span class="self">self</span>.ghac_query(path).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>location = <span class="kw">if </span>resp.status() == StatusCode::OK {
-            <span class="kw">let </span>slc = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="kw">let </span>query_resp: GhacQueryResponse =
-                serde_json::from_slice(<span class="kw-2">&amp;</span>slc).map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
-            query_resp.archive_location
-        } <span class="kw">else </span>{
-            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
-        };
-
-        <span class="kw">let </span>req = <span class="self">self</span>.ghac_head_location(<span class="kw-2">&amp;</span>location).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>resp = <span class="self">self</span>.client.send(req).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; {
-                <span class="kw">let </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-
-                <span class="prelude-val">Ok</span>(RpStat::new(meta))
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
     }
 
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
         <span class="kw">if </span><span class="self">self</span>.api_token.is_empty() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::PermissionDenied,
-                <span class="string">&quot;github token is not configured, delete is permission denied&quot;</span>,
+                <span class="string">"github token is not configured, delete is permission denied"</span>,
             ));
         }
 
@@ -887,14 +917,14 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}{CACHE_URL_BASE}/cache?keys={}&amp;version={}&quot;</span>,
+            <span class="string">"{}{CACHE_URL_BASE}/cache?keys={}&amp;version={}"</span>,
             <span class="self">self</span>.cache_url,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
             <span class="self">self</span>.version
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
-        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">&quot;Bearer {}&quot;</span>, <span class="self">self</span>.catch_token));
+        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">"Bearer {}"</span>, <span class="self">self</span>.catch_token));
         req = req.header(ACCEPT, CACHE_HEADER_ACCEPT);
 
         <span class="kw">let </span>req = req
@@ -912,14 +942,14 @@
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(location);
 
         <span class="kw">if </span>!range.is_full() {
-            <span class="comment">// ghac is backed by azblob, and azblob doesn&#39;t support
+            <span class="comment">// ghac is backed by azblob, and azblob doesn't support
             // read with suffix range
             //
             // ref: https://learn.microsoft.com/en-us/rest/api/storageservices/specifying-the-range-header-for-blob-service-operations
             </span><span class="kw">if </span>range.offset().is_none() &amp;&amp; range.size().is_some() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::Unsupported,
-                    <span class="string">&quot;ghac doesn&#39;t support read with suffix range&quot;</span>,
+                    <span class="string">"ghac doesn't support read with suffix range"</span>,
                 ));
             }
 
@@ -929,16 +959,10 @@
         req.body(AsyncBody::Empty).map_err(new_request_build_error)
     }
 
-    <span class="kw">async fn </span>ghac_head_location(<span class="kw-2">&amp;</span><span class="self">self</span>, location: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        Request::head(location)
-            .body(AsyncBody::Empty)
-            .map_err(new_request_build_error)
-    }
-
     <span class="kw">async fn </span>ghac_reserve(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}{CACHE_URL_BASE}/caches&quot;</span>, <span class="self">self</span>.cache_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}{CACHE_URL_BASE}/caches"</span>, <span class="self">self</span>.cache_url);
 
         <span class="kw">let </span>bs = serde_json::to_vec(<span class="kw-2">&amp;</span>GhacReserveRequest {
             key: p,
@@ -947,10 +971,10 @@
         .map_err(new_json_serialize_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
-        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">&quot;Bearer {}&quot;</span>, <span class="self">self</span>.catch_token));
+        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">"Bearer {}"</span>, <span class="self">self</span>.catch_token));
         req = req.header(ACCEPT, CACHE_HEADER_ACCEPT);
         req = req.header(CONTENT_LENGTH, bs.len());
-        req = req.header(CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>);
+        req = req.header(CONTENT_TYPE, <span class="string">"application/json"</span>);
 
         <span class="kw">let </span>req = req
             .body(AsyncBody::Bytes(Bytes::from(bs)))
@@ -966,13 +990,13 @@
         size: u64,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}{CACHE_URL_BASE}/caches/{cache_id}&quot;</span>, <span class="self">self</span>.cache_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}{CACHE_URL_BASE}/caches/{cache_id}"</span>, <span class="self">self</span>.cache_url);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::patch(<span class="kw-2">&amp;</span>url);
-        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">&quot;Bearer {}&quot;</span>, <span class="self">self</span>.catch_token));
+        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">"Bearer {}"</span>, <span class="self">self</span>.catch_token));
         req = req.header(ACCEPT, CACHE_HEADER_ACCEPT);
         req = req.header(CONTENT_LENGTH, size);
-        req = req.header(CONTENT_TYPE, <span class="string">&quot;application/octet-stream&quot;</span>);
+        req = req.header(CONTENT_TYPE, <span class="string">"application/octet-stream"</span>);
         req = req.header(
             CONTENT_RANGE,
             BytesContentRange::default()
@@ -986,15 +1010,15 @@
     }
 
     <span class="kw">pub async fn </span>ghac_commit(<span class="kw-2">&amp;</span><span class="self">self</span>, cache_id: i64, size: u64) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}{CACHE_URL_BASE}/caches/{cache_id}&quot;</span>, <span class="self">self</span>.cache_url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}{CACHE_URL_BASE}/caches/{cache_id}"</span>, <span class="self">self</span>.cache_url);
 
         <span class="kw">let </span>bs =
             serde_json::to_vec(<span class="kw-2">&amp;</span>GhacCommitRequest { size }).map_err(new_json_serialize_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
-        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">&quot;Bearer {}&quot;</span>, <span class="self">self</span>.catch_token));
+        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">"Bearer {}"</span>, <span class="self">self</span>.catch_token));
         req = req.header(ACCEPT, CACHE_HEADER_ACCEPT);
-        req = req.header(CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>);
+        req = req.header(CONTENT_TYPE, <span class="string">"application/json"</span>);
         req = req.header(CONTENT_LENGTH, bs.len());
 
         <span class="kw">let </span>req = req
@@ -1008,16 +1032,16 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/repos/{}/actions/caches?key={}&quot;</span>,
+            <span class="string">"{}/repos/{}/actions/caches?key={}"</span>,
             <span class="self">self</span>.api_url,
             <span class="self">self</span>.repo,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::delete(<span class="kw-2">&amp;</span>url);
-        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">&quot;Bearer {}&quot;</span>, <span class="self">self</span>.api_token));
-        req = req.header(USER_AGENT, <span class="macro">format!</span>(<span class="string">&quot;opendal/{VERSION} (service ghac)&quot;</span>));
-        req = req.header(<span class="string">&quot;X-GitHub-Api-Version&quot;</span>, GITHUB_API_VERSION);
+        req = req.header(AUTHORIZATION, <span class="macro">format!</span>(<span class="string">"Bearer {}"</span>, <span class="self">self</span>.api_token));
+        req = req.header(USER_AGENT, <span class="macro">format!</span>(<span class="string">"opendal/{VERSION} (service ghac)"</span>));
+        req = req.header(<span class="string">"X-GitHub-Api-Version"</span>, GITHUB_API_VERSION);
 
         <span class="kw">let </span>req = req
             .body(AsyncBody::Empty)
@@ -1028,7 +1052,7 @@
 }
 
 <span class="attr">#[derive(Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">struct </span>GhacQueryResponse {
     <span class="comment">// Not used fields.
     // cache_key: String,
@@ -1043,7 +1067,7 @@
 }
 
 <span class="attr">#[derive(Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">struct </span>GhacReserveResponse {
     cache_id: i64,
 }

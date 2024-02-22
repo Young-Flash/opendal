@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/upyun/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/upyun/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -514,123 +516,57 @@
 <a href="#514" id="514">514</a>
 <a href="#515" id="515">515</a>
 <a href="#516" id="516">516</a>
-<a href="#517" id="517">517</a>
-<a href="#518" id="518">518</a>
-<a href="#519" id="519">519</a>
-<a href="#520" id="520">520</a>
-<a href="#521" id="521">521</a>
-<a href="#522" id="522">522</a>
-<a href="#523" id="523">523</a>
-<a href="#524" id="524">524</a>
-<a href="#525" id="525">525</a>
-<a href="#526" id="526">526</a>
-<a href="#527" id="527">527</a>
-<a href="#528" id="528">528</a>
-<a href="#529" id="529">529</a>
-<a href="#530" id="530">530</a>
-<a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
-<a href="#537" id="537">537</a>
-<a href="#538" id="538">538</a>
-<a href="#539" id="539">539</a>
-<a href="#540" id="540">540</a>
-<a href="#541" id="541">541</a>
-<a href="#542" id="542">542</a>
-<a href="#543" id="543">543</a>
-<a href="#544" id="544">544</a>
-<a href="#545" id="545">545</a>
-<a href="#546" id="546">546</a>
-<a href="#547" id="547">547</a>
-<a href="#548" id="548">548</a>
-<a href="#549" id="549">549</a>
-<a href="#550" id="550">550</a>
-<a href="#551" id="551">551</a>
-<a href="#552" id="552">552</a>
-<a href="#553" id="553">553</a>
-<a href="#554" id="554">554</a>
-<a href="#555" id="555">555</a>
-<a href="#556" id="556">556</a>
-<a href="#557" id="557">557</a>
-<a href="#558" id="558">558</a>
-<a href="#559" id="559">559</a>
-<a href="#560" id="560">560</a>
-<a href="#561" id="561">561</a>
-<a href="#562" id="562">562</a>
-<a href="#563" id="563">563</a>
-<a href="#564" id="564">564</a>
-<a href="#565" id="565">565</a>
-<a href="#566" id="566">566</a>
-<a href="#567" id="567">567</a>
-<a href="#568" id="568">568</a>
-<a href="#569" id="569">569</a>
-<a href="#570" id="570">570</a>
-<a href="#571" id="571">571</a>
-<a href="#572" id="572">572</a>
-<a href="#573" id="573">573</a>
-<a href="#574" id="574">574</a>
-<a href="#575" id="575">575</a>
-<a href="#576" id="576">576</a>
-<a href="#577" id="577">577</a>
-<a href="#578" id="578">578</a>
-<a href="#579" id="579">579</a>
-<a href="#580" id="580">580</a>
-<a href="#581" id="581">581</a>
-<a href="#582" id="582">582</a>
-<a href="#583" id="583">583</a>
-<a href="#584" id="584">584</a>
-<a href="#585" id="585">585</a>
-<a href="#586" id="586">586</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::fmt::{Debug, Formatter};
+</span><span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::fmt::Formatter;
 
 <span class="kw">use </span>base64::Engine;
-<span class="kw">use </span>hmac::{Hmac, Mac};
-<span class="kw">use </span>http::{header, HeaderMap, Request, Response};
+<span class="kw">use </span>hmac::Hmac;
+<span class="kw">use </span>hmac::Mac;
+<span class="kw">use </span>http::header;
+<span class="kw">use </span>http::HeaderMap;
+<span class="kw">use </span>http::Request;
+<span class="kw">use </span>http::Response;
 <span class="kw">use </span>md5::Digest;
 <span class="kw">use </span>serde::Deserialize;
 <span class="kw">use </span>sha1::Sha1;
 
+<span class="kw">use </span><span class="self">self</span>::constants::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use </span><span class="self">self</span>::constants::<span class="kw-2">*</span>;
-
-<span class="kw">mod </span>constants {
-    <span class="kw">pub const </span>X_UPYUN_FILE_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-upyun-file-type&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_FILE_SIZE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-upyun-file-size&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_CACHE_CONTROL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-upyun-meta-cache-control&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_CONTENT_DISPOSITION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-upyun-meta-content-disposition&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_MULTI_STAGE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Multi-Stage&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_MULTI_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Multi-Type&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_MULTI_DISORDER: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Multi-Disorder&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_MULTI_UUID: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Multi-Uuid&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_PART_ID: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Part-Id&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_FOLDER: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-upyun-folder&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_MOVE_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Move-Source&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_COPY_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Copy-Source&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_METADATA_DIRECTIVE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-Upyun-Metadata-Directive&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_LIST_ITER: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-list-iter&quot;</span>;
-    <span class="kw">pub const </span>X_UPYUN_LIST_LIMIT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;X-List-Limit&quot;</span>;
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">mod </span>constants {
+    <span class="kw">pub const </span>X_UPYUN_FILE_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">"x-upyun-file-type"</span>;
+    <span class="kw">pub const </span>X_UPYUN_FILE_SIZE: <span class="kw-2">&amp;</span>str = <span class="string">"x-upyun-file-size"</span>;
+    <span class="kw">pub const </span>X_UPYUN_CACHE_CONTROL: <span class="kw-2">&amp;</span>str = <span class="string">"x-upyun-meta-cache-control"</span>;
+    <span class="kw">pub const </span>X_UPYUN_CONTENT_DISPOSITION: <span class="kw-2">&amp;</span>str = <span class="string">"x-upyun-meta-content-disposition"</span>;
+    <span class="kw">pub const </span>X_UPYUN_MULTI_STAGE: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Multi-Stage"</span>;
+    <span class="kw">pub const </span>X_UPYUN_MULTI_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Multi-Type"</span>;
+    <span class="kw">pub const </span>X_UPYUN_MULTI_DISORDER: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Multi-Disorder"</span>;
+    <span class="kw">pub const </span>X_UPYUN_MULTI_UUID: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Multi-Uuid"</span>;
+    <span class="kw">pub const </span>X_UPYUN_PART_ID: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Part-Id"</span>;
+    <span class="kw">pub const </span>X_UPYUN_FOLDER: <span class="kw-2">&amp;</span>str = <span class="string">"x-upyun-folder"</span>;
+    <span class="kw">pub const </span>X_UPYUN_MOVE_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Move-Source"</span>;
+    <span class="kw">pub const </span>X_UPYUN_COPY_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Copy-Source"</span>;
+    <span class="kw">pub const </span>X_UPYUN_METADATA_DIRECTIVE: <span class="kw-2">&amp;</span>str = <span class="string">"X-Upyun-Metadata-Directive"</span>;
+    <span class="kw">pub const </span>X_UPYUN_LIST_ITER: <span class="kw-2">&amp;</span>str = <span class="string">"x-list-iter"</span>;
+    <span class="kw">pub const </span>X_UPYUN_LIST_LIMIT: <span class="kw-2">&amp;</span>str = <span class="string">"X-List-Limit"</span>;
     <span class="kw">pub const </span>X_UPYUN_LIST_MAX_LIMIT: usize = <span class="number">4096</span>;
     <span class="kw">pub const </span>X_UPYUN_LIST_DEFAULT_LIMIT: usize = <span class="number">256</span>;
 }
@@ -653,11 +589,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>UpyunCore {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;Backend&quot;</span>)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;operator&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.operator)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"Backend"</span>)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"bucket"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
+            .field(<span class="string">"operator"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.operator)
             .finish_non_exhaustive()
     }
 }
@@ -671,15 +607,15 @@
     <span class="kw">pub async fn </span>sign(<span class="kw-2">&amp;</span><span class="self">self</span>, req: <span class="kw-2">&amp;mut </span>Request&lt;AsyncBody&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="comment">// get rfc1123 date
         </span><span class="kw">let </span>date = chrono::Utc::now()
-            .format(<span class="string">&quot;%a, %d %b %Y %H:%M:%S GMT&quot;</span>)
+            .format(<span class="string">"%a, %d %b %Y %H:%M:%S GMT"</span>)
             .to_string();
         <span class="kw">let </span>authorization =
             <span class="self">self</span>.signer
                 .authorization(<span class="kw-2">&amp;</span>date, req.method().as_str(), req.uri().path());
 
         req.headers_mut()
-            .insert(<span class="string">&quot;Authorization&quot;</span>, authorization.parse().unwrap());
-        req.headers_mut().insert(<span class="string">&quot;Date&quot;</span>, date.parse().unwrap());
+            .insert(<span class="string">"Authorization"</span>, authorization.parse().unwrap());
+        req.headers_mut().insert(<span class="string">"Date"</span>, date.parse().unwrap());
 
         <span class="prelude-val">Ok</span>(())
     }
@@ -690,7 +626,7 @@
         <span class="kw">let </span>path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>path)
         );
@@ -710,7 +646,7 @@
         <span class="kw">let </span>path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>path)
         );
@@ -736,7 +672,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
@@ -771,7 +707,7 @@
         <span class="kw">let </span>path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>path)
         );
@@ -788,22 +724,22 @@
     </span>}
 
     <span class="kw">pub async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>from = <span class="macro">format!</span>(<span class="string">&quot;/{}/{}&quot;</span>, <span class="self">self</span>.bucket, build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from));
+        <span class="kw">let </span>from = <span class="macro">format!</span>(<span class="string">"/{}/{}"</span>, <span class="self">self</span>.bucket, build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from));
         <span class="kw">let </span>to = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>to)
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(url);
 
-        req = req.header(header::CONTENT_LENGTH, <span class="string">&quot;0&quot;</span>);
+        req = req.header(header::CONTENT_LENGTH, <span class="string">"0"</span>);
 
         req = req.header(X_UPYUN_COPY_SOURCE, from);
 
-        req = req.header(X_UPYUN_METADATA_DIRECTIVE, <span class="string">&quot;copy&quot;</span>);
+        req = req.header(X_UPYUN_METADATA_DIRECTIVE, <span class="string">"copy"</span>);
 
         <span class="comment">// Set body
         </span><span class="kw">let </span><span class="kw-2">mut </span>req = req
@@ -816,22 +752,22 @@
     </span>}
 
     <span class="kw">pub async fn </span>move_object(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>from = <span class="macro">format!</span>(<span class="string">&quot;/{}/{}&quot;</span>, <span class="self">self</span>.bucket, build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from));
+        <span class="kw">let </span>from = <span class="macro">format!</span>(<span class="string">"/{}/{}"</span>, <span class="self">self</span>.bucket, build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from));
         <span class="kw">let </span>to = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>to)
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(url);
 
-        req = req.header(header::CONTENT_LENGTH, <span class="string">&quot;0&quot;</span>);
+        req = req.header(header::CONTENT_LENGTH, <span class="string">"0"</span>);
 
         req = req.header(X_UPYUN_MOVE_SOURCE, from);
 
-        req = req.header(X_UPYUN_METADATA_DIRECTIVE, <span class="string">&quot;copy&quot;</span>);
+        req = req.header(X_UPYUN_METADATA_DIRECTIVE, <span class="string">"copy"</span>);
 
         <span class="comment">// Set body
         </span><span class="kw">let </span><span class="kw-2">mut </span>req = req
@@ -848,16 +784,16 @@
         <span class="kw">let </span>path = path[..path.len() - <span class="number">1</span>].to_string();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>path)
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(url);
 
-        req = req.header(<span class="string">&quot;folder&quot;</span>, <span class="string">&quot;true&quot;</span>);
+        req = req.header(<span class="string">"folder"</span>, <span class="string">"true"</span>);
 
-        req = req.header(X_UPYUN_FOLDER, <span class="string">&quot;true&quot;</span>);
+        req = req.header(X_UPYUN_FOLDER, <span class="string">"true"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = req
             .body(AsyncBody::Empty)
@@ -876,16 +812,16 @@
         <span class="kw">let </span>path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>path)
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(url);
 
-        req = req.header(X_UPYUN_MULTI_STAGE, <span class="string">&quot;initiate&quot;</span>);
+        req = req.header(X_UPYUN_MULTI_STAGE, <span class="string">"initiate"</span>);
 
-        req = req.header(X_UPYUN_MULTI_DISORDER, <span class="string">&quot;true&quot;</span>);
+        req = req.header(X_UPYUN_MULTI_DISORDER, <span class="string">"true"</span>);
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(content_type) = args.content_type() {
             req = req.header(X_UPYUN_MULTI_TYPE, content_type);
@@ -919,7 +855,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
         );
@@ -928,7 +864,7 @@
 
         req = req.header(header::CONTENT_LENGTH, size);
 
-        req = req.header(X_UPYUN_MULTI_STAGE, <span class="string">&quot;upload&quot;</span>);
+        req = req.header(X_UPYUN_MULTI_STAGE, <span class="string">"upload"</span>);
 
         req = req.header(X_UPYUN_MULTI_UUID, upload_id);
 
@@ -950,14 +886,14 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(url);
 
-        req = req.header(X_UPYUN_MULTI_STAGE, <span class="string">&quot;complete&quot;</span>);
+        req = req.header(X_UPYUN_MULTI_STAGE, <span class="string">"complete"</span>);
 
         req = req.header(X_UPYUN_MULTI_UUID, upload_id);
 
@@ -979,14 +915,14 @@
         <span class="kw">let </span>path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://v0.api.upyun.com/{}/{}&quot;</span>,
+            <span class="string">"https://v0.api.upyun.com/{}/{}"</span>,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>path),
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(url.clone());
 
-        req = req.header(header::ACCEPT, <span class="string">&quot;application/json&quot;</span>);
+        req = req.header(header::ACCEPT, <span class="string">"application/json"</span>);
 
         <span class="kw">if </span>!iter.is_empty() {
             req = req.header(X_UPYUN_LIST_ITER, iter);
@@ -1026,34 +962,20 @@
             .into_iter()
             .filter(|s| !s.is_empty())
             .collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;()
-            .join(<span class="string">&quot;&amp;&quot;</span>);
+            .join(<span class="string">"&amp;"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>mac = HmacSha1::new_from_slice(format_md5(<span class="self">self</span>.password.as_bytes()).as_bytes())
-            .expect(<span class="string">&quot;HMAC can take key of any size&quot;</span>);
+            .expect(<span class="string">"HMAC can take key of any size"</span>);
         mac.update(sign.as_bytes());
         <span class="kw">let </span>sign_str = mac.finalize().into_bytes();
 
         <span class="kw">let </span>sign = base64::engine::general_purpose::STANDARD.encode(sign_str.as_slice());
-        <span class="macro">format!</span>(<span class="string">&quot;UPYUN {}:{}&quot;</span>, <span class="self">self</span>.operator, sign)
-    }
-}
-
-<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>parse_initiate_part(headers: <span class="kw-2">&amp;</span>HeaderMap) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
-    <span class="kw">match </span>headers.get(X_UPYUN_MULTI_UUID) {
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">&quot;missing uuid&quot;</span>)),
-        <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Ok</span>(v.to_str().map_err(|e| {
-            Error::new(
-                ErrorKind::Unexpected,
-                <span class="string">&quot;header value has to be valid utf-8 string&quot;</span>,
-            )
-            .with_operation(<span class="string">&quot;parse_initiate_part&quot;</span>)
-            .set_source(e)
-        })<span class="question-mark">?</span>),
+        <span class="macro">format!</span>(<span class="string">"UPYUN {}:{}"</span>, <span class="self">self</span>.operator, sign)
     }
 }
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>parse_info(headers: <span class="kw-2">&amp;</span>HeaderMap) -&gt; <span class="prelude-ty">Result</span>&lt;Metadata&gt; {
-    <span class="kw">let </span>mode = <span class="kw">if </span>parse_file_type(headers)<span class="question-mark">? </span>== <span class="string">&quot;file&quot; </span>{
+    <span class="kw">let </span>mode = <span class="kw">if </span>parse_header_to_str(headers, X_UPYUN_FILE_TYPE)<span class="question-mark">? </span>== <span class="prelude-val">Some</span>(<span class="string">"file"</span>) {
         EntryMode::FILE
     } <span class="kw">else </span>{
         EntryMode::DIR
@@ -1061,8 +983,13 @@
 
     <span class="kw">let </span><span class="kw-2">mut </span>m = Metadata::new(mode);
 
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = parse_file_size(headers)<span class="question-mark">? </span>{
-        m.set_content_length(v);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = parse_header_to_str(headers, X_UPYUN_FILE_SIZE)<span class="question-mark">? </span>{
+        <span class="kw">let </span>size = v.parse::&lt;u64&gt;().map_err(|e| {
+            Error::new(ErrorKind::Unexpected, <span class="string">"header value is not valid integer"</span>)
+                .with_operation(<span class="string">"parse_info"</span>)
+                .set_source(e)
+        })<span class="question-mark">?</span>;
+        m.set_content_length(size);
     }
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = parse_content_type(headers)<span class="question-mark">? </span>{
@@ -1073,92 +1000,27 @@
         m.set_content_md5(v);
     }
 
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = parse_cache_control(headers)<span class="question-mark">? </span>{
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = parse_header_to_str(headers, X_UPYUN_CACHE_CONTROL)<span class="question-mark">? </span>{
         m.set_cache_control(v);
     }
 
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = parse_content_disposition(headers)<span class="question-mark">? </span>{
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = parse_header_to_str(headers, X_UPYUN_CONTENT_DISPOSITION)<span class="question-mark">? </span>{
         m.set_content_disposition(v);
     }
 
     <span class="prelude-val">Ok</span>(m)
 }
 
-<span class="kw">fn </span>parse_file_type(headers: <span class="kw-2">&amp;</span>HeaderMap) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
-    <span class="kw">match </span>headers.get(X_UPYUN_FILE_TYPE) {
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">&quot;missing file type&quot;</span>)),
-        <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Ok</span>(v.to_str().map_err(|e| {
-            Error::new(
-                ErrorKind::Unexpected,
-                <span class="string">&quot;header value has to be valid utf-8 string&quot;</span>,
-            )
-            .with_operation(<span class="string">&quot;parse_file_type&quot;</span>)
-            .set_source(e)
-        })<span class="question-mark">?</span>),
-    }
-}
-
-<span class="kw">fn </span>parse_file_size(headers: <span class="kw-2">&amp;</span>HeaderMap) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;u64&gt;&gt; {
-    <span class="kw">match </span>headers.get(X_UPYUN_FILE_SIZE) {
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
-        <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(
-            v.to_str()
-                .map_err(|e| {
-                    Error::new(
-                        ErrorKind::Unexpected,
-                        <span class="string">&quot;header value is not valid utf-8 string&quot;</span>,
-                    )
-                    .with_operation(<span class="string">&quot;http_util::parse_content_length&quot;</span>)
-                    .set_source(e)
-                })<span class="question-mark">?
-                </span>.parse::&lt;u64&gt;()
-                .map_err(|e| {
-                    Error::new(ErrorKind::Unexpected, <span class="string">&quot;header value is not valid integer&quot;</span>)
-                        .with_operation(<span class="string">&quot;http_util::parse_content_length&quot;</span>)
-                        .set_source(e)
-                })<span class="question-mark">?</span>,
-        )),
-    }
-}
-
-<span class="kw">fn </span>parse_cache_control(headers: <span class="kw-2">&amp;</span>HeaderMap) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;&gt; {
-    <span class="kw">match </span>headers.get(X_UPYUN_CACHE_CONTROL) {
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
-        <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(v.to_str().map_err(|e| {
-            Error::new(
-                ErrorKind::Unexpected,
-                <span class="string">&quot;header value has to be valid utf-8 string&quot;</span>,
-            )
-            .with_operation(<span class="string">&quot;parse_cache_control&quot;</span>)
-            .set_source(e)
-        })<span class="question-mark">?</span>)),
-    }
-}
-
-<span class="kw">fn </span>parse_content_disposition(headers: <span class="kw-2">&amp;</span>HeaderMap) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;&gt; {
-    <span class="kw">match </span>headers.get(X_UPYUN_CONTENT_DISPOSITION) {
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
-        <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(v.to_str().map_err(|e| {
-            Error::new(
-                ErrorKind::Unexpected,
-                <span class="string">&quot;header value has to be valid utf-8 string&quot;</span>,
-            )
-            .with_operation(<span class="string">&quot;parse_content_disposition&quot;</span>)
-            .set_source(e)
-        })<span class="question-mark">?</span>)),
-    }
-}
-
 <span class="kw">pub fn </span>format_md5(bs: <span class="kw-2">&amp;</span>[u8]) -&gt; String {
     <span class="kw">let </span><span class="kw-2">mut </span>hasher = md5::Md5::new();
     hasher.update(bs);
 
-    <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, hasher.finalize())
+    <span class="macro">format!</span>(<span class="string">"{:x}"</span>, hasher.finalize())
 }
 
 <span class="attr">#[derive(Debug, Deserialize)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>File {
-    <span class="attr">#[serde(rename = <span class="string">&quot;type&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"type"</span>)]
     </span><span class="kw">pub </span>type_field: String,
     <span class="kw">pub </span>name: String,
     <span class="kw">pub </span>length: u64,

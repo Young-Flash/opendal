@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/azfile/lister.rs`."><title>lister.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/azfile/lister.rs`."><title>lister.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -214,14 +216,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -270,7 +272,7 @@
 
         <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>text = String::from_utf8(bs.to_vec()).expect(<span class="string">&quot;response convert to string must success&quot;</span>);
+        <span class="kw">let </span>text = String::from_utf8(bs.to_vec()).expect(<span class="string">"response convert to string must success"</span>);
 
         <span class="kw">let </span>results: EnumerationResults = from_str(<span class="kw-2">&amp;</span>text).map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
 
@@ -285,7 +287,7 @@
                 .with_etag(file.properties.etag)
                 .with_content_length(file.properties.content_length.unwrap_or(<span class="number">0</span>))
                 .with_last_modified(parse_datetime_from_rfc2822(<span class="kw-2">&amp;</span>file.properties.last_modified)<span class="question-mark">?</span>);
-            <span class="kw">let </span>path = <span class="self">self</span>.path.clone().trim_start_matches(<span class="string">&#39;/&#39;</span>).to_string() + <span class="kw-2">&amp;</span>file.name;
+            <span class="kw">let </span>path = <span class="self">self</span>.path.clone().trim_start_matches(<span class="string">'/'</span>).to_string() + <span class="kw-2">&amp;</span>file.name;
             ctx.entries.push_back(oio::Entry::new(<span class="kw-2">&amp;</span>path, meta));
         }
 
@@ -293,7 +295,7 @@
             <span class="kw">let </span>meta = Metadata::new(EntryMode::DIR)
                 .with_etag(dir.properties.etag)
                 .with_last_modified(parse_datetime_from_rfc2822(<span class="kw-2">&amp;</span>dir.properties.last_modified)<span class="question-mark">?</span>);
-            <span class="kw">let </span>path = <span class="self">self</span>.path.clone().trim_start_matches(<span class="string">&#39;/&#39;</span>).to_string() + <span class="kw-2">&amp;</span>dir.name + <span class="string">&quot;/&quot;</span>;
+            <span class="kw">let </span>path = <span class="self">self</span>.path.clone().trim_start_matches(<span class="string">'/'</span>).to_string() + <span class="kw-2">&amp;</span>dir.name + <span class="string">"/"</span>;
             ctx.entries.push_back(oio::Entry::new(<span class="kw-2">&amp;</span>path, meta));
         }
 
@@ -302,7 +304,7 @@
 }
 
 <span class="attr">#[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">struct </span>EnumerationResults {
     marker: <span class="prelude-ty">Option</span>&lt;String&gt;,
     prefix: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -314,7 +316,7 @@
 }
 
 <span class="attr">#[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">struct </span>Entries {
     <span class="attr">#[serde(default)]
     </span>file: Vec&lt;File&gt;,
@@ -323,39 +325,39 @@
 }
 
 <span class="attr">#[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">struct </span>File {
-    <span class="attr">#[serde(rename = <span class="string">&quot;FileId&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"FileId"</span>)]
     </span>file_id: String,
     name: String,
     properties: Properties,
 }
 
 <span class="attr">#[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">struct </span>Directory {
-    <span class="attr">#[serde(rename = <span class="string">&quot;FileId&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"FileId"</span>)]
     </span>file_id: String,
     name: String,
     properties: Properties,
 }
 
 <span class="attr">#[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">struct </span>Properties {
-    <span class="attr">#[serde(rename = <span class="string">&quot;Content-Length&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"Content-Length"</span>)]
     </span>content_length: <span class="prelude-ty">Option</span>&lt;u64&gt;,
-    <span class="attr">#[serde(rename = <span class="string">&quot;CreationTime&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"CreationTime"</span>)]
     </span>creation_time: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;LastAccessTime&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"LastAccessTime"</span>)]
     </span>last_access_time: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;LastWriteTime&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"LastWriteTime"</span>)]
     </span>last_write_time: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;ChangeTime&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"ChangeTime"</span>)]
     </span>change_time: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;Last-Modified&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"Last-Modified"</span>)]
     </span>last_modified: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;Etag&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"Etag"</span>)]
     </span>etag: String,
 }
 
@@ -365,9 +367,9 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_parse_list_result() {
-        <span class="kw">let </span>xml = <span class="string">r#&quot;
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;EnumerationResults ServiceEndpoint=&quot;https://myaccount.file.core.windows.net/&quot; ShareName=&quot;myshare&quot; ShareSnapshot=&quot;date-time&quot; DirectoryPath=&quot;directory-path&quot;&gt;
+        <span class="kw">let </span>xml = <span class="string">r#"
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;EnumerationResults ServiceEndpoint="https://myaccount.file.core.windows.net/" ShareName="myshare" ShareSnapshot="date-time" DirectoryPath="directory-path"&gt;
   &lt;Marker&gt;string-value&lt;/Marker&gt;
   &lt;Prefix&gt;string-value&lt;/Prefix&gt;
   &lt;MaxResults&gt;100&lt;/MaxResults&gt;
@@ -383,7 +385,7 @@
             &lt;LastWriteTime&gt;2023-09-25T12:43:08.6337775Z&lt;/LastWriteTime&gt;
             &lt;ChangeTime&gt;2023-09-25T12:43:08.6337775Z&lt;/ChangeTime&gt;
             &lt;Last-Modified&gt;Mon, 25 Sep 2023 12:43:08 GMT&lt;/Last-Modified&gt;
-            &lt;Etag&gt;\&quot;0x8DBBDC4F8AC4AEF\&quot;&lt;/Etag&gt;
+            &lt;Etag&gt;\"0x8DBBDC4F8AC4AEF\"&lt;/Etag&gt;
         &lt;/Properties&gt;
     &lt;/File&gt;
     &lt;Directory&gt;
@@ -395,28 +397,28 @@
             &lt;LastWriteTime&gt;2023-10-15T12:03:40.7194774Z&lt;/LastWriteTime&gt;
             &lt;ChangeTime&gt;2023-10-15T12:03:40.7194774Z&lt;/ChangeTime&gt;
             &lt;Last-Modified&gt;Sun, 15 Oct 2023 12:03:40 GMT&lt;/Last-Modified&gt;
-            &lt;Etag&gt;\&quot;0x8DBCD76C58C3E96\&quot;&lt;/Etag&gt;
+            &lt;Etag&gt;\"0x8DBCD76C58C3E96\"&lt;/Etag&gt;
         &lt;/Properties&gt;
     &lt;/Directory&gt;
   &lt;/Entries&gt;
   &lt;NextMarker /&gt;
 &lt;/EnumerationResults&gt;
-        &quot;#</span>;
+        "#</span>;
 
         <span class="kw">let </span>results: EnumerationResults = from_str(xml).unwrap();
 
-        <span class="macro">assert_eq!</span>(results.entries.file[<span class="number">0</span>].name, <span class="string">&quot;Rust By Example.pdf&quot;</span>);
+        <span class="macro">assert_eq!</span>(results.entries.file[<span class="number">0</span>].name, <span class="string">"Rust By Example.pdf"</span>);
 
         <span class="macro">assert_eq!</span>(
             results.entries.file[<span class="number">0</span>].properties.etag,
-            <span class="string">&quot;\\\&quot;0x8DBBDC4F8AC4AEF\\\&quot;&quot;
+            <span class="string">"\\\"0x8DBBDC4F8AC4AEF\\\""
         </span>);
 
-        <span class="macro">assert_eq!</span>(results.entries.directory[<span class="number">0</span>].name, <span class="string">&quot;test_list_rich_dir&quot;</span>);
+        <span class="macro">assert_eq!</span>(results.entries.directory[<span class="number">0</span>].name, <span class="string">"test_list_rich_dir"</span>);
 
         <span class="macro">assert_eq!</span>(
             results.entries.directory[<span class="number">0</span>].properties.etag,
-            <span class="string">&quot;\\\&quot;0x8DBCD76C58C3E96\\\&quot;&quot;
+            <span class="string">"\\\"0x8DBCD76C58C3E96\\\""
         </span>);
     }
 }

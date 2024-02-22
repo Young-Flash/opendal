@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/gcs/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/gcs/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -777,14 +779,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -833,11 +835,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>GcsCore {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">&quot;Backend&quot;</span>);
-        de.field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">"Backend"</span>);
+        de.field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">"bucket"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .finish_non_exhaustive()
     }
 }
@@ -857,7 +859,7 @@
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ConfigInvalid,
-                <span class="string">&quot;no valid credential found&quot;</span>,
+                <span class="string">"no valid credential found"</span>,
             ))
         }
     }
@@ -873,7 +875,7 @@
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ConfigInvalid,
-                <span class="string">&quot;no valid credential found&quot;</span>,
+                <span class="string">"no valid credential found"</span>,
             ))
         }
     }
@@ -885,7 +887,7 @@
             .sign(req, <span class="kw-2">&amp;</span>cred)
             .map_err(new_request_sign_error)<span class="question-mark">?</span>;
 
-        <span class="comment">// Always remove host header, let users&#39; client to set it based on HTTP
+        <span class="comment">// Always remove host header, let users' client to set it based on HTTP
         // version.
         //
         // As discussed in &lt;https://github.com/seanmonstar/reqwest/issues/1809&gt;,
@@ -903,7 +905,7 @@
             .sign_query(req, duration, <span class="kw-2">&amp;</span>cred)
             .map_err(new_request_sign_error)<span class="question-mark">?</span>;
 
-        <span class="comment">// Always remove host header, let users&#39; client to set it based on HTTP
+        <span class="comment">// Always remove host header, let users' client to set it based on HTTP
         // version.
         //
         // As discussed in &lt;https://github.com/seanmonstar/reqwest/issues/1809&gt;,
@@ -925,7 +927,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/storage/v1/b/{}/o/{}?alt=media&quot;</span>,
+            <span class="string">"{}/storage/v1/b/{}/o/{}?alt=media"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -950,7 +952,7 @@
         <span class="prelude-val">Ok</span>(req)
     }
 
-    <span class="comment">// It&#39;s for presign operation. Gcs only supports query sign over XML API.
+    <span class="comment">// It's for presign operation. Gcs only supports query sign over XML API.
     </span><span class="kw">pub fn </span>gcs_get_object_xml_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
@@ -958,7 +960,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}/{}&quot;</span>, <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, p);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}/{}"</span>, <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, p);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
 
@@ -1001,26 +1003,26 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>metadata = HashMap::new();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(storage_class) = <span class="kw-2">&amp;</span><span class="self">self</span>.default_storage_class {
-            metadata.insert(<span class="string">&quot;storageClass&quot;</span>, storage_class.as_str());
+            metadata.insert(<span class="string">"storageClass"</span>, storage_class.as_str());
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = op.cache_control() {
-            metadata.insert(<span class="string">&quot;cacheControl&quot;</span>, cache_control);
+            metadata.insert(<span class="string">"cacheControl"</span>, cache_control);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/upload/storage/v1/b/{}/o?uploadType={}&amp;name={}&quot;</span>,
+            <span class="string">"{}/upload/storage/v1/b/{}/o?uploadType={}&amp;name={}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.bucket,
             <span class="kw">if </span>metadata.is_empty() {
-                <span class="string">&quot;media&quot;
+                <span class="string">"media"
             </span>} <span class="kw">else </span>{
-                <span class="string">&quot;multipart&quot;
+                <span class="string">"multipart"
             </span>},
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(acl) = <span class="kw-2">&amp;</span><span class="self">self</span>.predefined_acl {
-            <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>url, <span class="string">&quot;&amp;predefinedAcl={}&quot;</span>, acl).unwrap();
+            <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>url, <span class="string">"&amp;predefinedAcl={}"</span>, acl).unwrap();
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
@@ -1038,22 +1040,22 @@
             <span class="kw">let </span><span class="kw-2">mut </span>multipart = Multipart::new();
 
             multipart = multipart.part(
-                FormDataPart::new(<span class="string">&quot;metadata&quot;</span>)
+                FormDataPart::new(<span class="string">"metadata"</span>)
                     .header(
                         CONTENT_TYPE,
-                        <span class="string">&quot;application/json; charset=UTF-8&quot;</span>.parse().unwrap(),
+                        <span class="string">"application/json; charset=UTF-8"</span>.parse().unwrap(),
                     )
                     .content(<span class="macro">json!</span>(metadata).to_string()),
             );
 
-            <span class="kw">let </span><span class="kw-2">mut </span>media_part = FormDataPart::new(<span class="string">&quot;media&quot;</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>media_part = FormDataPart::new(<span class="string">"media"</span>);
 
             <span class="kw">if let </span><span class="prelude-val">Some</span>(content_type) = op.content_type() {
                 media_part = media_part.header(
                     CONTENT_TYPE,
                     content_type
                         .parse()
-                        .map_err(|<span class="kw">_</span>| Error::new(ErrorKind::Unexpected, <span class="string">&quot;invalid header value&quot;</span>))<span class="question-mark">?</span>,
+                        .map_err(|<span class="kw">_</span>| Error::new(ErrorKind::Unexpected, <span class="string">"invalid header value"</span>))<span class="question-mark">?</span>,
                 );
             }
 
@@ -1077,7 +1079,7 @@
         }
     }
 
-    <span class="comment">// It&#39;s for presign operation. Gcs only supports query sign over XML API.
+    <span class="comment">// It's for presign operation. Gcs only supports query sign over XML API.
     </span><span class="kw">pub fn </span>gcs_insert_object_xml_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
@@ -1086,7 +1088,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}/{}&quot;</span>, <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, p);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}/{}"</span>, <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, p);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(<span class="kw-2">&amp;</span>url);
 
@@ -1095,11 +1097,11 @@
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(acl) = <span class="kw-2">&amp;</span><span class="self">self</span>.predefined_acl {
-            req = req.header(<span class="string">&quot;x-goog-acl&quot;</span>, acl);
+            req = req.header(<span class="string">"x-goog-acl"</span>, acl);
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(storage_class) = <span class="kw-2">&amp;</span><span class="self">self</span>.default_storage_class {
-            req = req.header(<span class="string">&quot;x-goog-storage-class&quot;</span>, storage_class);
+            req = req.header(<span class="string">"x-goog-storage-class"</span>, storage_class);
         }
 
         <span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -1111,7 +1113,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/storage/v1/b/{}/o/{}&quot;</span>,
+            <span class="string">"{}/storage/v1/b/{}/o/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -1134,7 +1136,7 @@
         <span class="prelude-val">Ok</span>(req)
     }
 
-    <span class="comment">// It&#39;s for presign operation. Gcs only supports query sign over XML API.
+    <span class="comment">// It's for presign operation. Gcs only supports query sign over XML API.
     </span><span class="kw">pub fn </span>gcs_head_object_xml_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
@@ -1142,7 +1144,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}/{}&quot;</span>, <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, p);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}/{}"</span>, <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, p);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::head(<span class="kw-2">&amp;</span>url);
 
@@ -1184,7 +1186,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/storage/v1/b/{}/o/{}&quot;</span>,
+            <span class="string">"{}/storage/v1/b/{}/o/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -1199,7 +1201,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         paths: Vec&lt;String&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>uri = <span class="macro">format!</span>(<span class="string">&quot;{}/batch/storage/v1&quot;</span>, <span class="self">self</span>.endpoint);
+        <span class="kw">let </span>uri = <span class="macro">format!</span>(<span class="string">"{}/batch/storage/v1"</span>, <span class="self">self</span>.endpoint);
 
         <span class="kw">let </span><span class="kw-2">mut </span>multipart = Multipart::new();
 
@@ -1207,7 +1209,7 @@
             <span class="kw">let </span>req = <span class="self">self</span>.gcs_delete_object_request(path)<span class="question-mark">?</span>;
 
             multipart = multipart.part(
-                MixedPart::from_request(req).part_header(<span class="string">&quot;content-id&quot;</span>.parse().unwrap(), idx.into()),
+                MixedPart::from_request(req).part_header(<span class="string">"content-id"</span>.parse().unwrap(), idx.into()),
             );
         }
 
@@ -1227,7 +1229,7 @@
         <span class="kw">let </span>dest = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
 
         <span class="kw">let </span>req_uri = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/storage/v1/b/{}/o/{}/copyTo/b/{}/o/{}&quot;</span>,
+            <span class="string">"{}/storage/v1/b/{}/o/{}/copyTo/b/{}/o/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>source),
@@ -1255,21 +1257,21 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/storage/v1/b/{}/o?prefix={}&quot;</span>,
+            <span class="string">"{}/storage/v1/b/{}/o?prefix={}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.bucket,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
         <span class="kw">if </span>!delimiter.is_empty() {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;delimiter={delimiter}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;delimiter={delimiter}"</span>).expect(<span class="string">"write into string must succeed"</span>);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(limit) = limit {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;maxResults={limit}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;maxResults={limit}"</span>).expect(<span class="string">"write into string must succeed"</span>);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(start_after) = start_after {
             <span class="kw">let </span>start_after = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, <span class="kw-2">&amp;</span>start_after);
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;startOffset={}&quot;</span>, percent_encode_path(<span class="kw-2">&amp;</span>start_after))
-                .expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;startOffset={}"</span>, percent_encode_path(<span class="kw-2">&amp;</span>start_after))
+                .expect(<span class="string">"write into string must succeed"</span>);
         }
 
         <span class="kw">if </span>!page_token.is_empty() {
@@ -1277,10 +1279,10 @@
             //
             // GCS uses pageToken in request and nextPageToken in response
             //
-            // Don&#39;t know how will those tokens be like so this part are copied
+            // Don't know how will those tokens be like so this part are copied
             // directly from AWS S3 service.
-            </span><span class="macro">write!</span>(url, <span class="string">&quot;&amp;pageToken={}&quot;</span>, percent_encode_path(page_token))
-                .expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            </span><span class="macro">write!</span>(url, <span class="string">"&amp;pageToken={}"</span>, percent_encode_path(page_token))
+                .expect(<span class="string">"write into string must succeed"</span>);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url)
@@ -1298,7 +1300,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/upload/storage/v1/b/{}/o?uploadType=resumable&amp;name={}&quot;</span>,
+            <span class="string">"{}/upload/storage/v1/b/{}/o?uploadType=resumable&amp;name={}"</span>,
             <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, p
         );
 
@@ -1320,7 +1322,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(location);
 
-        <span class="kw">let </span>range_header = <span class="macro">format!</span>(<span class="string">&quot;bytes {}-{}/*&quot;</span>, written, written + size - <span class="number">1</span>);
+        <span class="kw">let </span>range_header = <span class="macro">format!</span>(<span class="string">"bytes {}-{}/*"</span>, written, written + size - <span class="number">1</span>);
 
         req = req
             .header(CONTENT_LENGTH, size)
@@ -1344,7 +1346,7 @@
             .header(
                 CONTENT_RANGE,
                 <span class="macro">format!</span>(
-                    <span class="string">&quot;bytes {}-{}/{}&quot;</span>,
+                    <span class="string">"bytes {}-{}/{}"</span>,
                     written,
                     written + size - <span class="number">1</span>,
                     written + size
@@ -1377,7 +1379,7 @@
 ///
 /// refer to https://cloud.google.com/storage/docs/json_api/v1/objects/list for details
 </span><span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>ListResponse {
     <span class="doccomment">/// The continuation token.
     ///
@@ -1391,7 +1393,7 @@
 }
 
 <span class="attr">#[derive(Default, Debug, Eq, PartialEq, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;camelCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>ListResponseItem {
     <span class="kw">pub </span>name: String,
     <span class="kw">pub </span>size: String,
@@ -1408,142 +1410,142 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_deserialize_list_response() {
-        <span class="kw">let </span>content = <span class="string">r#&quot;
+        <span class="kw">let </span>content = <span class="string">r#"
     {
-  &quot;kind&quot;: &quot;storage#objects&quot;,
-  &quot;prefixes&quot;: [
-    &quot;dir/&quot;,
-    &quot;test/&quot;
+  "kind": "storage#objects",
+  "prefixes": [
+    "dir/",
+    "test/"
   ],
-  &quot;items&quot;: [
+  "items": [
     {
-      &quot;kind&quot;: &quot;storage#object&quot;,
-      &quot;id&quot;: &quot;example/1.png/1660563214863653&quot;,
-      &quot;selfLink&quot;: &quot;https://www.googleapis.com/storage/v1/b/example/o/1.png&quot;,
-      &quot;mediaLink&quot;: &quot;https://content-storage.googleapis.com/download/storage/v1/b/example/o/1.png?generation=1660563214863653&amp;alt=media&quot;,
-      &quot;name&quot;: &quot;1.png&quot;,
-      &quot;bucket&quot;: &quot;example&quot;,
-      &quot;generation&quot;: &quot;1660563214863653&quot;,
-      &quot;metageneration&quot;: &quot;1&quot;,
-      &quot;contentType&quot;: &quot;image/png&quot;,
-      &quot;storageClass&quot;: &quot;STANDARD&quot;,
-      &quot;size&quot;: &quot;56535&quot;,
-      &quot;md5Hash&quot;: &quot;fHcEH1vPwA6eTPqxuasXcg==&quot;,
-      &quot;crc32c&quot;: &quot;j/un9g==&quot;,
-      &quot;etag&quot;: &quot;CKWasoTgyPkCEAE=&quot;,
-      &quot;timeCreated&quot;: &quot;2022-08-15T11:33:34.866Z&quot;,
-      &quot;updated&quot;: &quot;2022-08-15T11:33:34.866Z&quot;,
-      &quot;timeStorageClassUpdated&quot;: &quot;2022-08-15T11:33:34.866Z&quot;
+      "kind": "storage#object",
+      "id": "example/1.png/1660563214863653",
+      "selfLink": "https://www.googleapis.com/storage/v1/b/example/o/1.png",
+      "mediaLink": "https://content-storage.googleapis.com/download/storage/v1/b/example/o/1.png?generation=1660563214863653&amp;alt=media",
+      "name": "1.png",
+      "bucket": "example",
+      "generation": "1660563214863653",
+      "metageneration": "1",
+      "contentType": "image/png",
+      "storageClass": "STANDARD",
+      "size": "56535",
+      "md5Hash": "fHcEH1vPwA6eTPqxuasXcg==",
+      "crc32c": "j/un9g==",
+      "etag": "CKWasoTgyPkCEAE=",
+      "timeCreated": "2022-08-15T11:33:34.866Z",
+      "updated": "2022-08-15T11:33:34.866Z",
+      "timeStorageClassUpdated": "2022-08-15T11:33:34.866Z"
     },
     {
-      &quot;kind&quot;: &quot;storage#object&quot;,
-      &quot;id&quot;: &quot;example/2.png/1660563214883337&quot;,
-      &quot;selfLink&quot;: &quot;https://www.googleapis.com/storage/v1/b/example/o/2.png&quot;,
-      &quot;mediaLink&quot;: &quot;https://content-storage.googleapis.com/download/storage/v1/b/example/o/2.png?generation=1660563214883337&amp;alt=media&quot;,
-      &quot;name&quot;: &quot;2.png&quot;,
-      &quot;bucket&quot;: &quot;example&quot;,
-      &quot;generation&quot;: &quot;1660563214883337&quot;,
-      &quot;metageneration&quot;: &quot;1&quot;,
-      &quot;contentType&quot;: &quot;image/png&quot;,
-      &quot;storageClass&quot;: &quot;STANDARD&quot;,
-      &quot;size&quot;: &quot;45506&quot;,
-      &quot;md5Hash&quot;: &quot;e6LsGusU7pFJZk+114NV1g==&quot;,
-      &quot;crc32c&quot;: &quot;L00QAg==&quot;,
-      &quot;etag&quot;: &quot;CIm0s4TgyPkCEAE=&quot;,
-      &quot;timeCreated&quot;: &quot;2022-08-15T11:33:34.886Z&quot;,
-      &quot;updated&quot;: &quot;2022-08-15T11:33:34.886Z&quot;,
-      &quot;timeStorageClassUpdated&quot;: &quot;2022-08-15T11:33:34.886Z&quot;
+      "kind": "storage#object",
+      "id": "example/2.png/1660563214883337",
+      "selfLink": "https://www.googleapis.com/storage/v1/b/example/o/2.png",
+      "mediaLink": "https://content-storage.googleapis.com/download/storage/v1/b/example/o/2.png?generation=1660563214883337&amp;alt=media",
+      "name": "2.png",
+      "bucket": "example",
+      "generation": "1660563214883337",
+      "metageneration": "1",
+      "contentType": "image/png",
+      "storageClass": "STANDARD",
+      "size": "45506",
+      "md5Hash": "e6LsGusU7pFJZk+114NV1g==",
+      "crc32c": "L00QAg==",
+      "etag": "CIm0s4TgyPkCEAE=",
+      "timeCreated": "2022-08-15T11:33:34.886Z",
+      "updated": "2022-08-15T11:33:34.886Z",
+      "timeStorageClassUpdated": "2022-08-15T11:33:34.886Z"
     }
   ]
 }
-    &quot;#</span>;
+    "#</span>;
 
         <span class="kw">let </span>output: ListResponse =
-            serde_json::from_str(content).expect(<span class="string">&quot;JSON deserialize must succeed&quot;</span>);
+            serde_json::from_str(content).expect(<span class="string">"JSON deserialize must succeed"</span>);
         <span class="macro">assert!</span>(output.next_page_token.is_none());
         <span class="macro">assert_eq!</span>(output.items.len(), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].name, <span class="string">&quot;1.png&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].size, <span class="string">&quot;56535&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].md5_hash, <span class="string">&quot;fHcEH1vPwA6eTPqxuasXcg==&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].etag, <span class="string">&quot;CKWasoTgyPkCEAE=&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].updated, <span class="string">&quot;2022-08-15T11:33:34.866Z&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].name, <span class="string">&quot;2.png&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].size, <span class="string">&quot;45506&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].md5_hash, <span class="string">&quot;e6LsGusU7pFJZk+114NV1g==&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].etag, <span class="string">&quot;CIm0s4TgyPkCEAE=&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].updated, <span class="string">&quot;2022-08-15T11:33:34.886Z&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].content_type, <span class="string">&quot;image/png&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.prefixes, <span class="macro">vec!</span>[<span class="string">&quot;dir/&quot;</span>, <span class="string">&quot;test/&quot;</span>])
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].name, <span class="string">"1.png"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].size, <span class="string">"56535"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].md5_hash, <span class="string">"fHcEH1vPwA6eTPqxuasXcg=="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].etag, <span class="string">"CKWasoTgyPkCEAE="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].updated, <span class="string">"2022-08-15T11:33:34.866Z"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].name, <span class="string">"2.png"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].size, <span class="string">"45506"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].md5_hash, <span class="string">"e6LsGusU7pFJZk+114NV1g=="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].etag, <span class="string">"CIm0s4TgyPkCEAE="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].updated, <span class="string">"2022-08-15T11:33:34.886Z"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].content_type, <span class="string">"image/png"</span>);
+        <span class="macro">assert_eq!</span>(output.prefixes, <span class="macro">vec!</span>[<span class="string">"dir/"</span>, <span class="string">"test/"</span>])
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_deserialize_list_response_with_next_page_token() {
-        <span class="kw">let </span>content = <span class="string">r#&quot;
+        <span class="kw">let </span>content = <span class="string">r#"
     {
-  &quot;kind&quot;: &quot;storage#objects&quot;,
-  &quot;prefixes&quot;: [
-    &quot;dir/&quot;,
-    &quot;test/&quot;
+  "kind": "storage#objects",
+  "prefixes": [
+    "dir/",
+    "test/"
   ],
-  &quot;nextPageToken&quot;: &quot;CgYxMC5wbmc=&quot;,
-  &quot;items&quot;: [
+  "nextPageToken": "CgYxMC5wbmc=",
+  "items": [
     {
-      &quot;kind&quot;: &quot;storage#object&quot;,
-      &quot;id&quot;: &quot;example/1.png/1660563214863653&quot;,
-      &quot;selfLink&quot;: &quot;https://www.googleapis.com/storage/v1/b/example/o/1.png&quot;,
-      &quot;mediaLink&quot;: &quot;https://content-storage.googleapis.com/download/storage/v1/b/example/o/1.png?generation=1660563214863653&amp;alt=media&quot;,
-      &quot;name&quot;: &quot;1.png&quot;,
-      &quot;bucket&quot;: &quot;example&quot;,
-      &quot;generation&quot;: &quot;1660563214863653&quot;,
-      &quot;metageneration&quot;: &quot;1&quot;,
-      &quot;contentType&quot;: &quot;image/png&quot;,
-      &quot;storageClass&quot;: &quot;STANDARD&quot;,
-      &quot;size&quot;: &quot;56535&quot;,
-      &quot;md5Hash&quot;: &quot;fHcEH1vPwA6eTPqxuasXcg==&quot;,
-      &quot;crc32c&quot;: &quot;j/un9g==&quot;,
-      &quot;etag&quot;: &quot;CKWasoTgyPkCEAE=&quot;,
-      &quot;timeCreated&quot;: &quot;2022-08-15T11:33:34.866Z&quot;,
-      &quot;updated&quot;: &quot;2022-08-15T11:33:34.866Z&quot;,
-      &quot;timeStorageClassUpdated&quot;: &quot;2022-08-15T11:33:34.866Z&quot;
+      "kind": "storage#object",
+      "id": "example/1.png/1660563214863653",
+      "selfLink": "https://www.googleapis.com/storage/v1/b/example/o/1.png",
+      "mediaLink": "https://content-storage.googleapis.com/download/storage/v1/b/example/o/1.png?generation=1660563214863653&amp;alt=media",
+      "name": "1.png",
+      "bucket": "example",
+      "generation": "1660563214863653",
+      "metageneration": "1",
+      "contentType": "image/png",
+      "storageClass": "STANDARD",
+      "size": "56535",
+      "md5Hash": "fHcEH1vPwA6eTPqxuasXcg==",
+      "crc32c": "j/un9g==",
+      "etag": "CKWasoTgyPkCEAE=",
+      "timeCreated": "2022-08-15T11:33:34.866Z",
+      "updated": "2022-08-15T11:33:34.866Z",
+      "timeStorageClassUpdated": "2022-08-15T11:33:34.866Z"
     },
     {
-      &quot;kind&quot;: &quot;storage#object&quot;,
-      &quot;id&quot;: &quot;example/2.png/1660563214883337&quot;,
-      &quot;selfLink&quot;: &quot;https://www.googleapis.com/storage/v1/b/example/o/2.png&quot;,
-      &quot;mediaLink&quot;: &quot;https://content-storage.googleapis.com/download/storage/v1/b/example/o/2.png?generation=1660563214883337&amp;alt=media&quot;,
-      &quot;name&quot;: &quot;2.png&quot;,
-      &quot;bucket&quot;: &quot;example&quot;,
-      &quot;generation&quot;: &quot;1660563214883337&quot;,
-      &quot;metageneration&quot;: &quot;1&quot;,
-      &quot;contentType&quot;: &quot;image/png&quot;,
-      &quot;storageClass&quot;: &quot;STANDARD&quot;,
-      &quot;size&quot;: &quot;45506&quot;,
-      &quot;md5Hash&quot;: &quot;e6LsGusU7pFJZk+114NV1g==&quot;,
-      &quot;crc32c&quot;: &quot;L00QAg==&quot;,
-      &quot;etag&quot;: &quot;CIm0s4TgyPkCEAE=&quot;,
-      &quot;timeCreated&quot;: &quot;2022-08-15T11:33:34.886Z&quot;,
-      &quot;updated&quot;: &quot;2022-08-15T11:33:34.886Z&quot;,
-      &quot;timeStorageClassUpdated&quot;: &quot;2022-08-15T11:33:34.886Z&quot;
+      "kind": "storage#object",
+      "id": "example/2.png/1660563214883337",
+      "selfLink": "https://www.googleapis.com/storage/v1/b/example/o/2.png",
+      "mediaLink": "https://content-storage.googleapis.com/download/storage/v1/b/example/o/2.png?generation=1660563214883337&amp;alt=media",
+      "name": "2.png",
+      "bucket": "example",
+      "generation": "1660563214883337",
+      "metageneration": "1",
+      "contentType": "image/png",
+      "storageClass": "STANDARD",
+      "size": "45506",
+      "md5Hash": "e6LsGusU7pFJZk+114NV1g==",
+      "crc32c": "L00QAg==",
+      "etag": "CIm0s4TgyPkCEAE=",
+      "timeCreated": "2022-08-15T11:33:34.886Z",
+      "updated": "2022-08-15T11:33:34.886Z",
+      "timeStorageClassUpdated": "2022-08-15T11:33:34.886Z"
     }
   ]
 }
-    &quot;#</span>;
+    "#</span>;
 
         <span class="kw">let </span>output: ListResponse =
-            serde_json::from_str(content).expect(<span class="string">&quot;JSON deserialize must succeed&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.next_page_token, <span class="prelude-val">Some</span>(<span class="string">&quot;CgYxMC5wbmc=&quot;</span>.to_string()));
+            serde_json::from_str(content).expect(<span class="string">"JSON deserialize must succeed"</span>);
+        <span class="macro">assert_eq!</span>(output.next_page_token, <span class="prelude-val">Some</span>(<span class="string">"CgYxMC5wbmc="</span>.to_string()));
         <span class="macro">assert_eq!</span>(output.items.len(), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].name, <span class="string">&quot;1.png&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].size, <span class="string">&quot;56535&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].md5_hash, <span class="string">&quot;fHcEH1vPwA6eTPqxuasXcg==&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].etag, <span class="string">&quot;CKWasoTgyPkCEAE=&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].updated, <span class="string">&quot;2022-08-15T11:33:34.866Z&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].name, <span class="string">&quot;2.png&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].size, <span class="string">&quot;45506&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].md5_hash, <span class="string">&quot;e6LsGusU7pFJZk+114NV1g==&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].etag, <span class="string">&quot;CIm0s4TgyPkCEAE=&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].updated, <span class="string">&quot;2022-08-15T11:33:34.886Z&quot;</span>);
-        <span class="macro">assert_eq!</span>(output.prefixes, <span class="macro">vec!</span>[<span class="string">&quot;dir/&quot;</span>, <span class="string">&quot;test/&quot;</span>])
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].name, <span class="string">"1.png"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].size, <span class="string">"56535"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].md5_hash, <span class="string">"fHcEH1vPwA6eTPqxuasXcg=="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].etag, <span class="string">"CKWasoTgyPkCEAE="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">0</span>].updated, <span class="string">"2022-08-15T11:33:34.866Z"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].name, <span class="string">"2.png"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].size, <span class="string">"45506"</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].md5_hash, <span class="string">"e6LsGusU7pFJZk+114NV1g=="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].etag, <span class="string">"CIm0s4TgyPkCEAE="</span>);
+        <span class="macro">assert_eq!</span>(output.items[<span class="number">1</span>].updated, <span class="string">"2022-08-15T11:33:34.886Z"</span>);
+        <span class="macro">assert_eq!</span>(output.prefixes, <span class="macro">vec!</span>[<span class="string">"dir/"</span>, <span class="string">"test/"</span>])
     }
 }
 </code></pre></div></section></main></body></html>

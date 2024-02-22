@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/layers/madsim.rs`."><title>madsim.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/layers/madsim.rs`."><title>madsim.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -461,14 +463,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -524,11 +526,11 @@
 /// #[madsim::test]
 /// async fn deterministic_simulation_test() {
 ///     let handle = Handle::current();
-///     let ip1 = &quot;10.0.0.1&quot;.parse().unwrap();
-///     let ip2 = &quot;10.0.0.2&quot;.parse().unwrap();
-///     let server_addr = &quot;10.0.0.1:2379&quot;.parse().unwrap();
-///     let server = handle.create_node().name(&quot;server&quot;).ip(ip1).build();
-///     let client = handle.create_node().name(&quot;client&quot;).ip(ip2).build();
+///     let ip1 = "10.0.0.1".parse().unwrap();
+///     let ip2 = "10.0.0.2".parse().unwrap();
+///     let server_addr = "10.0.0.1:2379".parse().unwrap();
+///     let server = handle.create_node().name("server").ip(ip1).build();
+///     let client = handle.create_node().name("client").ip(ip2).build();
 ///
 ///     server.spawn(async move {
 ///         SimServer::serve(server_addr).await.unwrap();
@@ -537,23 +539,23 @@
 ///
 ///     let handle = client.spawn(async move {
 ///         let mut builder = services::Fs::default();
-///         builder.root(&quot;.&quot;);
+///         builder.root(".");
 ///         let op = Operator::new(builder)
 ///             .unwrap()
 ///             .layer(MadsimLayer::new(server_addr))
 ///             .finish();
 ///
-///         let path = &quot;hello.txt&quot;;
-///         let data = &quot;Hello, World!&quot;;
+///         let path = "hello.txt";
+///         let data = "Hello, World!";
 ///         op.write(path, data).await.unwrap();
 ///         assert_eq!(data.as_bytes(), op.read(path).await.unwrap());
 ///     });
 ///     handle.await.unwrap();
 /// }
 /// ```
-/// To enable logging output, please set `RUSTFLAGS=&quot;--cfg madsim&quot;`:
+/// To enable logging output, please set `RUSTFLAGS="--cfg madsim"`:
 /// ```shell
-/// RUSTFLAGS=&quot;--cfg madsim&quot; cargo test
+/// RUSTFLAGS="--cfg madsim" cargo test
 /// ```
 </span><span class="attr">#[derive(Debug, Copy, Clone)]
 </span><span class="kw">pub struct </span>MadsimLayer {
@@ -572,7 +574,7 @@
         }
         <span class="attr">#[cfg(not(madsim))]
         </span>{
-            <span class="macro">unreachable!</span>(<span class="string">&quot;madsim is not enabled&quot;</span>)
+            <span class="macro">unreachable!</span>(<span class="string">"madsim is not enabled"</span>)
         }
     }
 }
@@ -587,7 +589,7 @@
         }
         <span class="attr">#[cfg(not(madsim))]
         </span>{
-            <span class="macro">unreachable!</span>(<span class="string">&quot;madsim is not enabled&quot;</span>)
+            <span class="macro">unreachable!</span>(<span class="string">"madsim is not enabled"</span>)
         }
     }
 }
@@ -598,8 +600,8 @@
     </span>addr: SocketAddr,
 }
 
-<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
-#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">"wasm32"</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">"wasm32"</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl </span>LayeredAccessor <span class="kw">for </span>MadsimAccessor {
     <span class="kw">type </span>Inner = ();
     <span class="kw">type </span>Reader = MadsimReader;
@@ -615,7 +617,7 @@
 
     <span class="kw">fn </span>metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
         <span class="kw">let </span><span class="kw-2">mut </span>info = AccessorInfo::default();
-        info.set_name(<span class="string">&quot;madsim&quot;</span>);
+        info.set_name(<span class="string">"madsim"</span>);
 
         info.set_native_capability(Capability {
             read: <span class="bool-val">true</span>,
@@ -632,27 +634,27 @@
             <span class="kw">let </span>req = Request::Read(path.to_string(), args);
             <span class="kw">let </span>ep = Endpoint::connect(<span class="self">self</span>.addr)
                 .<span class="kw">await
-                </span>.expect(<span class="string">&quot;fail to connect to sim server&quot;</span>);
+                </span>.expect(<span class="string">"fail to connect to sim server"</span>);
             <span class="kw">let </span>(tx, <span class="kw-2">mut </span>rx) = ep
                 .connect1(<span class="self">self</span>.addr)
                 .<span class="kw">await
-                </span>.expect(<span class="string">&quot;fail to connect1 to sim server&quot;</span>);
+                </span>.expect(<span class="string">"fail to connect1 to sim server"</span>);
             tx.send(Box::new(req))
                 .<span class="kw">await
-                </span>.expect(<span class="string">&quot;fail to send request to sim server&quot;</span>);
+                </span>.expect(<span class="string">"fail to send request to sim server"</span>);
             <span class="kw">let </span>resp = rx
                 .recv()
                 .<span class="kw">await
-                </span>.expect(<span class="string">&quot;fail to recv response from sim server&quot;</span>);
+                </span>.expect(<span class="string">"fail to recv response from sim server"</span>);
             <span class="kw">let </span>resp = resp
                 .downcast::&lt;ReadResponse&gt;()
-                .expect(<span class="string">&quot;fail to downcast response to ReadResponse&quot;</span>);
+                .expect(<span class="string">"fail to downcast response to ReadResponse"</span>);
             <span class="kw">let </span>content_length = resp.data.as_ref().map(|b| b.len()).unwrap_or(<span class="number">0</span>);
             <span class="prelude-val">Ok</span>((RpRead::new(), MadsimReader { data: resp.data }))
         }
         <span class="attr">#[cfg(not(madsim))]
         </span>{
-            <span class="macro">unreachable!</span>(<span class="string">&quot;madsim is not enabled&quot;</span>)
+            <span class="macro">unreachable!</span>(<span class="string">"madsim is not enabled"</span>)
         }
     }
 
@@ -670,14 +672,14 @@
         }
         <span class="attr">#[cfg(not(madsim))]
         </span>{
-            <span class="macro">unreachable!</span>(<span class="string">&quot;madsim is not enabled&quot;</span>)
+            <span class="macro">unreachable!</span>(<span class="string">"madsim is not enabled"</span>)
         }
     }
 
     <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="kw">crate</span>::Result&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will be supported in the future&quot;</span>,
+            <span class="string">"will be supported in the future"</span>,
         ))
     }
 
@@ -688,7 +690,7 @@
     ) -&gt; <span class="kw">crate</span>::Result&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will not be supported in MadsimLayer&quot;</span>,
+            <span class="string">"will not be supported in MadsimLayer"</span>,
         ))
     }
 
@@ -699,7 +701,7 @@
     ) -&gt; <span class="kw">crate</span>::Result&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will not be supported in MadsimLayer&quot;</span>,
+            <span class="string">"will not be supported in MadsimLayer"</span>,
         ))
     }
 
@@ -710,7 +712,7 @@
     ) -&gt; <span class="kw">crate</span>::Result&lt;(RpList, <span class="self">Self</span>::BlockingLister)&gt; {
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will not be supported in MadsimLayer&quot;</span>,
+            <span class="string">"will not be supported in MadsimLayer"</span>,
         ))
     }
 }
@@ -720,7 +722,7 @@
 }
 
 <span class="kw">impl </span>oio::Read <span class="kw">for </span>MadsimReader {
-    <span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;usize&gt;&gt; {
+    <span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;usize&gt;&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>data) = <span class="self">self</span>.data {
             <span class="kw">let </span>len = data.len();
             buf[..len].copy_from_slice(data);
@@ -730,17 +732,17 @@
         }
     }
 
-    <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, <span class="kw">_</span>: SeekFrom) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;u64&gt;&gt; {
+    <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, <span class="kw">_</span>: SeekFrom) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;u64&gt;&gt; {
         Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will be supported in the future&quot;</span>,
+            <span class="string">"will be supported in the future"</span>,
         )))
     }
 
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::Result&lt;Bytes&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::Result&lt;Bytes&gt;&gt;&gt; {
         Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will be supported in the future&quot;</span>,
+            <span class="string">"will be supported in the future"</span>,
         ))))
     }
 }
@@ -757,7 +759,7 @@
 <span class="kw">impl </span>oio::Write <span class="kw">for </span>MadsimWriter {
     <span class="kw">fn </span>poll_write(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;,
+        cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;,
         bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf,
     ) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;usize&gt;&gt; {
         <span class="attr">#[cfg(madsim)]
@@ -771,18 +773,18 @@
         }
         <span class="attr">#[cfg(not(madsim))]
         </span>{
-            <span class="macro">unreachable!</span>(<span class="string">&quot;madsim is not enabled&quot;</span>)
+            <span class="macro">unreachable!</span>(<span class="string">"madsim is not enabled"</span>)
         }
     }
 
-    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;()&gt;&gt; {
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;()&gt;&gt; {
         Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will be supported in the future&quot;</span>,
+            <span class="string">"will be supported in the future"</span>,
         )))
     }
 
-    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;()&gt;&gt; {
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;()&gt;&gt; {
         Poll::Ready(<span class="prelude-val">Ok</span>(()))
     }
 }
@@ -790,10 +792,10 @@
 <span class="kw">pub struct </span>MadsimLister {}
 
 <span class="kw">impl </span>oio::List <span class="kw">for </span>MadsimLister {
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
         Poll::Ready(<span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
-            <span class="string">&quot;will be supported in the future&quot;</span>,
+            <span class="string">"will be supported in the future"</span>,
         )))
     }
 }
@@ -817,7 +819,7 @@
                         .recv()
                         .<span class="kw">await</span><span class="question-mark">?
                         </span>.downcast::&lt;Request&gt;()
-                        .expect(<span class="string">&quot;invalid request&quot;</span>);
+                        .expect(<span class="string">"invalid request"</span>);
                     <span class="kw">let </span>response = <span class="kw">match </span>request {
                         Request::Read(path, args) =&gt; {
                             Box::new(service.read(<span class="kw-2">&amp;</span>path, args).<span class="kw">await</span>) <span class="kw">as </span>Payload
@@ -833,7 +835,7 @@
         }
         <span class="attr">#[cfg(not(madsim))]
         </span>{
-            <span class="macro">unreachable!</span>(<span class="string">&quot;madsim is not enabled&quot;</span>)
+            <span class="macro">unreachable!</span>(<span class="string">"madsim is not enabled"</span>)
         }
     }
 }
@@ -885,11 +887,11 @@
     <span class="attr">#[madsim::test]
     </span><span class="kw">async fn </span>test_madsim_layer() {
         <span class="kw">let </span>handle = Handle::current();
-        <span class="kw">let </span>ip1 = <span class="string">&quot;10.0.0.1&quot;</span>.parse().unwrap();
-        <span class="kw">let </span>ip2 = <span class="string">&quot;10.0.0.2&quot;</span>.parse().unwrap();
-        <span class="kw">let </span>server_addr = <span class="string">&quot;10.0.0.1:2379&quot;</span>;
-        <span class="kw">let </span>server = handle.create_node().name(<span class="string">&quot;server&quot;</span>).ip(ip1).build();
-        <span class="kw">let </span>client = handle.create_node().name(<span class="string">&quot;client&quot;</span>).ip(ip2).build();
+        <span class="kw">let </span>ip1 = <span class="string">"10.0.0.1"</span>.parse().unwrap();
+        <span class="kw">let </span>ip2 = <span class="string">"10.0.0.2"</span>.parse().unwrap();
+        <span class="kw">let </span>server_addr = <span class="string">"10.0.0.1:2379"</span>;
+        <span class="kw">let </span>server = handle.create_node().name(<span class="string">"server"</span>).ip(ip1).build();
+        <span class="kw">let </span>client = handle.create_node().name(<span class="string">"client"</span>).ip(ip2).build();
 
         server.spawn(<span class="kw">async move </span>{
             MadsimServer::serve(server_addr.parse().unwrap())
@@ -900,14 +902,14 @@
 
         <span class="kw">let </span>handle = client.spawn(<span class="kw">async move </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>builder = services::Fs::default();
-            builder.root(<span class="string">&quot;.&quot;</span>);
+            builder.root(<span class="string">"."</span>);
             <span class="kw">let </span>op = Operator::new(builder)
                 .unwrap()
                 .layer(MadsimLayer::new(server_addr))
                 .finish();
 
-            <span class="kw">let </span>path = <span class="string">&quot;hello.txt&quot;</span>;
-            <span class="kw">let </span>data = <span class="string">&quot;Hello, World!&quot;</span>;
+            <span class="kw">let </span>path = <span class="string">"hello.txt"</span>;
+            <span class="kw">let </span>data = <span class="string">"Hello, World!"</span>;
             op.write(path, data).<span class="kw">await</span>.unwrap();
             <span class="macro">assert_eq!</span>(data.as_bytes(), op.read(path).<span class="kw">await</span>.unwrap());
         });

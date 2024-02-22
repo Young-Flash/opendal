@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/dropbox/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/dropbox/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -522,14 +524,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -577,9 +579,9 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>DropboxCore {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;DropboxCore&quot;</span>)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"DropboxCore"</span>)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .finish()
     }
 }
@@ -589,7 +591,7 @@
         <span class="kw">let </span>path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
         <span class="comment">// For dropbox, even the path is a directory,
         // we still need to remove the trailing slash.
-        </span>path.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string()
+        </span>path.trim_end_matches(<span class="string">'/'</span>).to_string()
     }
 
     <span class="kw">pub async fn </span>sign&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, req: <span class="kw-2">&amp;mut </span>Request&lt;T&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
@@ -597,24 +599,24 @@
 
         <span class="comment">// Access token is valid, use it directly.
         </span><span class="kw">if </span>!signer.access_token.is_empty() &amp;&amp; signer.expires_in &gt; Utc::now() {
-            <span class="kw">let </span>value = <span class="macro">format!</span>(<span class="string">&quot;Bearer {}&quot;</span>, signer.access_token)
+            <span class="kw">let </span>value = <span class="macro">format!</span>(<span class="string">"Bearer {}"</span>, signer.access_token)
                 .parse()
-                .expect(<span class="string">&quot;token must be valid header value&quot;</span>);
+                .expect(<span class="string">"token must be valid header value"</span>);
             req.headers_mut().insert(header::AUTHORIZATION, value);
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
 
         <span class="comment">// Refresh invalid token.
-        </span><span class="kw">let </span>url = <span class="string">&quot;https://api.dropboxapi.com/oauth2/token&quot;</span>.to_string();
+        </span><span class="kw">let </span>url = <span class="string">"https://api.dropboxapi.com/oauth2/token"</span>.to_string();
 
         <span class="kw">let </span>content = <span class="macro">format!</span>(
-            <span class="string">&quot;grant_type=refresh_token&amp;refresh_token={}&amp;client_id={}&amp;client_secret={}&quot;</span>,
+            <span class="string">"grant_type=refresh_token&amp;refresh_token={}&amp;client_id={}&amp;client_secret={}"</span>,
             signer.refresh_token, signer.client_id, signer.client_secret
         );
         <span class="kw">let </span>bs = Bytes::from(content);
 
         <span class="kw">let </span>request = Request::post(<span class="kw-2">&amp;</span>url)
-            .header(CONTENT_TYPE, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>)
+            .header(CONTENT_TYPE, <span class="string">"application/x-www-form-urlencoded"</span>)
             .header(CONTENT_LENGTH, bs.len())
             .body(AsyncBody::Bytes(bs))
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -632,9 +634,9 @@
         </span>signer.expires_in = Utc::now() + chrono::Duration::seconds(token.expires_in <span class="kw">as </span>i64)
             - chrono::Duration::seconds(<span class="number">120</span>);
 
-        <span class="kw">let </span>value = <span class="macro">format!</span>(<span class="string">&quot;Bearer {}&quot;</span>, token.access_token)
+        <span class="kw">let </span>value = <span class="macro">format!</span>(<span class="string">"Bearer {}"</span>, token.access_token)
             .parse()
-            .expect(<span class="string">&quot;token must be valid header value&quot;</span>);
+            .expect(<span class="string">"token must be valid header value"</span>);
         req.headers_mut().insert(header::AUTHORIZATION, value);
 
         <span class="prelude-val">Ok</span>(())
@@ -645,7 +647,7 @@
         path: <span class="kw-2">&amp;</span>str,
         args: OpRead,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url: String = <span class="string">&quot;https://content.dropboxapi.com/2/files/download&quot;</span>.to_string();
+        <span class="kw">let </span>url: String = <span class="string">"https://content.dropboxapi.com/2/files/download"</span>.to_string();
         <span class="kw">let </span>download_args = DropboxDownloadArgs {
             path: build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path),
         };
@@ -653,7 +655,7 @@
             serde_json::to_string(<span class="kw-2">&amp;</span>download_args).map_err(new_json_serialize_error)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url)
-            .header(<span class="string">&quot;Dropbox-API-Arg&quot;</span>, request_payload)
+            .header(<span class="string">"Dropbox-API-Arg"</span>, request_payload)
             .header(CONTENT_LENGTH, <span class="number">0</span>);
 
         <span class="kw">let </span>range = args.range();
@@ -676,7 +678,7 @@
         args: <span class="kw-2">&amp;</span>OpWrite,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="string">&quot;https://content.dropboxapi.com/2/files/upload&quot;</span>.to_string();
+        <span class="kw">let </span>url = <span class="string">"https://content.dropboxapi.com/2/files/upload"</span>.to_string();
         <span class="kw">let </span>dropbox_update_args = DropboxUploadArgs {
             path: build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path),
             ..Default::default()
@@ -687,12 +689,12 @@
         }
         request_builder = request_builder.header(
             CONTENT_TYPE,
-            args.content_type().unwrap_or(<span class="string">&quot;application/octet-stream&quot;</span>),
+            args.content_type().unwrap_or(<span class="string">"application/octet-stream"</span>),
         );
 
         <span class="kw">let </span><span class="kw-2">mut </span>request = request_builder
             .header(
-                <span class="string">&quot;Dropbox-API-Arg&quot;</span>,
+                <span class="string">"Dropbox-API-Arg"</span>,
                 serde_json::to_string(<span class="kw-2">&amp;</span>dropbox_update_args).map_err(new_json_serialize_error)<span class="question-mark">?</span>,
             )
             .body(body)
@@ -703,7 +705,7 @@
     </span>}
 
     <span class="kw">pub async fn </span>dropbox_delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="string">&quot;https://api.dropboxapi.com/2/files/delete_v2&quot;</span>.to_string();
+        <span class="kw">let </span>url = <span class="string">"https://api.dropboxapi.com/2/files/delete_v2"</span>.to_string();
         <span class="kw">let </span>args = DropboxDeleteArgs {
             path: <span class="self">self</span>.build_path(path),
         };
@@ -711,7 +713,7 @@
         <span class="kw">let </span>bs = Bytes::from(serde_json::to_string(<span class="kw-2">&amp;</span>args).map_err(new_json_serialize_error)<span class="question-mark">?</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>request = Request::post(<span class="kw-2">&amp;</span>url)
-            .header(CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>)
+            .header(CONTENT_TYPE, <span class="string">"application/json"</span>)
             .header(CONTENT_LENGTH, bs.len())
             .body(AsyncBody::Bytes(bs))
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -724,7 +726,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         paths: Vec&lt;String&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="string">&quot;https://api.dropboxapi.com/2/files/delete_batch&quot;</span>.to_string();
+        <span class="kw">let </span>url = <span class="string">"https://api.dropboxapi.com/2/files/delete_batch"</span>.to_string();
         <span class="kw">let </span>args = DropboxDeleteBatchArgs {
             entries: paths
                 .into_iter()
@@ -737,7 +739,7 @@
         <span class="kw">let </span>bs = Bytes::from(serde_json::to_string(<span class="kw-2">&amp;</span>args).map_err(new_json_serialize_error)<span class="question-mark">?</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>request = Request::post(<span class="kw-2">&amp;</span>url)
-            .header(CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>)
+            .header(CONTENT_TYPE, <span class="string">"application/json"</span>)
             .header(CONTENT_LENGTH, bs.len())
             .body(AsyncBody::Bytes(bs))
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -747,13 +749,13 @@
     </span>}
 
     <span class="kw">pub async fn </span>dropbox_delete_batch_check(<span class="kw-2">&amp;</span><span class="self">self</span>, async_job_id: String) -&gt; <span class="prelude-ty">Result</span>&lt;RpBatch&gt; {
-        <span class="kw">let </span>url = <span class="string">&quot;https://api.dropboxapi.com/2/files/delete_batch/check&quot;</span>.to_string();
+        <span class="kw">let </span>url = <span class="string">"https://api.dropboxapi.com/2/files/delete_batch/check"</span>.to_string();
         <span class="kw">let </span>args = DropboxDeleteBatchCheckArgs { async_job_id };
 
         <span class="kw">let </span>bs = Bytes::from(serde_json::to_vec(<span class="kw-2">&amp;</span>args).map_err(new_json_serialize_error)<span class="question-mark">?</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>request = Request::post(<span class="kw-2">&amp;</span>url)
-            .header(CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>)
+            .header(CONTENT_TYPE, <span class="string">"application/json"</span>)
             .header(CONTENT_LENGTH, bs.len())
             .body(AsyncBody::Bytes(bs))
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -770,12 +772,12 @@
         <span class="kw">let </span>decoded_response = serde_json::from_slice::&lt;DropboxDeleteBatchResponse&gt;(<span class="kw-2">&amp;</span>bs)
             .map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
         <span class="kw">match </span>decoded_response.tag.as_str() {
-            <span class="string">&quot;in_progress&quot; </span>=&gt; <span class="prelude-val">Err</span>(Error::new(
+            <span class="string">"in_progress" </span>=&gt; <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unexpected,
-                <span class="string">&quot;delete batch job still in progress&quot;</span>,
+                <span class="string">"delete batch job still in progress"</span>,
             )
             .set_temporary()),
-            <span class="string">&quot;complete&quot; </span>=&gt; {
+            <span class="string">"complete" </span>=&gt; {
                 <span class="kw">let </span>entries = decoded_response.entries.unwrap_or_default();
                 <span class="kw">let </span>results = <span class="self">self</span>.handle_batch_delete_complete_result(entries);
                 <span class="prelude-val">Ok</span>(RpBatch::new(results))
@@ -783,7 +785,7 @@
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unexpected,
                 <span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                    <span class="string">&quot;delete batch check failed with unexpected tag {}&quot;</span>,
+                    <span class="string">"delete batch check failed with unexpected tag {}"</span>,
                     decoded_response.tag
                 ),
             )),
@@ -791,7 +793,7 @@
     }
 
     <span class="kw">pub async fn </span>dropbox_create_folder(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
-        <span class="kw">let </span>url = <span class="string">&quot;https://api.dropboxapi.com/2/files/create_folder_v2&quot;</span>.to_string();
+        <span class="kw">let </span>url = <span class="string">"https://api.dropboxapi.com/2/files/create_folder_v2"</span>.to_string();
         <span class="kw">let </span>args = DropboxCreateFolderArgs {
             path: <span class="self">self</span>.build_path(path),
         };
@@ -799,7 +801,7 @@
         <span class="kw">let </span>bs = Bytes::from(serde_json::to_string(<span class="kw-2">&amp;</span>args).map_err(new_json_serialize_error)<span class="question-mark">?</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>request = Request::post(<span class="kw-2">&amp;</span>url)
-            .header(CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>)
+            .header(CONTENT_TYPE, <span class="string">"application/json"</span>)
             .header(CONTENT_LENGTH, bs.len())
             .body(AsyncBody::Bytes(bs))
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -820,7 +822,7 @@
     }
 
     <span class="kw">pub async fn </span>dropbox_get_metadata(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="string">&quot;https://api.dropboxapi.com/2/files/get_metadata&quot;</span>.to_string();
+        <span class="kw">let </span>url = <span class="string">"https://api.dropboxapi.com/2/files/get_metadata"</span>.to_string();
         <span class="kw">let </span>args = DropboxMetadataArgs {
             path: <span class="self">self</span>.build_path(path),
             ..Default::default()
@@ -829,7 +831,7 @@
         <span class="kw">let </span>bs = Bytes::from(serde_json::to_string(<span class="kw-2">&amp;</span>args).map_err(new_json_serialize_error)<span class="question-mark">?</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>request = Request::post(<span class="kw-2">&amp;</span>url)
-            .header(CONTENT_TYPE, <span class="string">&quot;application/json&quot;</span>)
+            .header(CONTENT_TYPE, <span class="string">"application/json"</span>)
             .header(CONTENT_LENGTH, bs.len())
             .body(AsyncBody::Bytes(bs))
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
@@ -848,26 +850,26 @@
             <span class="kw">let </span>result = <span class="kw">match </span>entry.tag.as_str() {
                 <span class="comment">// Only success response has metadata and then path,
                 // so we cannot tell which path failed.
-                </span><span class="string">&quot;success&quot; </span>=&gt; {
+                </span><span class="string">"success" </span>=&gt; {
                     <span class="kw">let </span>path = entry
                         .metadata
-                        .expect(<span class="string">&quot;metadata should be present&quot;</span>)
+                        .expect(<span class="string">"metadata should be present"</span>)
                         .path_display;
                     (path, <span class="prelude-val">Ok</span>(RpDelete::default().into()))
                 }
-                <span class="string">&quot;failure&quot; </span>=&gt; {
-                    <span class="kw">let </span>error = entry.error.expect(<span class="string">&quot;error should be present&quot;</span>);
+                <span class="string">"failure" </span>=&gt; {
+                    <span class="kw">let </span>error = entry.error.expect(<span class="string">"error should be present"</span>);
                     <span class="kw">let </span>err = Error::new(
                         ErrorKind::Unexpected,
-                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;delete failed with error {}&quot;</span>, error.error_summary),
+                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"delete failed with error {}"</span>, error.error_summary),
                     );
-                    (<span class="string">&quot;&quot;</span>.to_string(), <span class="prelude-val">Err</span>(err))
+                    (<span class="string">""</span>.to_string(), <span class="prelude-val">Err</span>(err))
                 }
                 <span class="kw">_ </span>=&gt; (
-                    <span class="string">&quot;&quot;</span>.to_string(),
+                    <span class="string">""</span>.to_string(),
                     <span class="prelude-val">Err</span>(Error::new(
                         ErrorKind::Unexpected,
-                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;delete failed with unexpected tag {}&quot;</span>, entry.tag),
+                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"delete failed with unexpected tag {}"</span>, entry.tag),
                     )),
                 ),
             };
@@ -917,8 +919,8 @@
 <span class="kw">impl </span>Default <span class="kw">for </span>DropboxUploadArgs {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         DropboxUploadArgs {
-            mode: <span class="string">&quot;overwrite&quot;</span>.to_string(),
-            path: <span class="string">&quot;&quot;</span>.to_string(),
+            mode: <span class="string">"overwrite"</span>.to_string(),
+            path: <span class="string">""</span>.to_string(),
             mute: <span class="bool-val">true</span>,
             autorename: <span class="bool-val">false</span>,
             strict_conflict: <span class="bool-val">false</span>,
@@ -968,7 +970,7 @@
 <span class="attr">#[derive(Default, Debug, Deserialize)]
 #[serde(default)]
 </span><span class="kw">pub struct </span>DropboxMetadataResponse {
-    <span class="attr">#[serde(rename(deserialize = <span class="string">&quot;.tag&quot;</span>))]
+    <span class="attr">#[serde(rename(deserialize = <span class="string">".tag"</span>))]
     </span><span class="kw">pub </span>tag: String,
     <span class="kw">pub </span>client_modified: String,
     <span class="kw">pub </span>content_hash: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -1022,7 +1024,7 @@
 <span class="attr">#[derive(Default, Debug, Deserialize)]
 #[serde(default)]
 </span><span class="kw">pub struct </span>DropboxDeleteBatchResponse {
-    <span class="attr">#[serde(rename(deserialize = <span class="string">&quot;.tag&quot;</span>))]
+    <span class="attr">#[serde(rename(deserialize = <span class="string">".tag"</span>))]
     </span><span class="kw">pub </span>tag: String,
     <span class="kw">pub </span>async_job_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="kw">pub </span>entries: <span class="prelude-ty">Option</span>&lt;Vec&lt;DropboxDeleteBatchResponseEntry&gt;&gt;,
@@ -1031,7 +1033,7 @@
 <span class="attr">#[derive(Default, Debug, Deserialize)]
 #[serde(default)]
 </span><span class="kw">pub struct </span>DropboxDeleteBatchResponseEntry {
-    <span class="attr">#[serde(rename(deserialize = <span class="string">&quot;.tag&quot;</span>))]
+    <span class="attr">#[serde(rename(deserialize = <span class="string">".tag"</span>))]
     </span><span class="kw">pub </span>tag: String,
     <span class="kw">pub </span>metadata: <span class="prelude-ty">Option</span>&lt;DropboxMetadataResponse&gt;,
     <span class="kw">pub </span>error: <span class="prelude-ty">Option</span>&lt;DropboxErrorResponse&gt;,

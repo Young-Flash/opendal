@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/azblob/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/azblob/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -934,19 +936,20 @@
 <a href="#934" id="934">934</a>
 <a href="#935" id="935">935</a>
 <a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -982,9 +985,9 @@
 /// Azure US Government: https://accountname.blob.core.usgovcloudapi.net
 /// Azure China: https://accountname.blob.core.chinacloudapi.cn
 </span><span class="kw">const </span>KNOWN_AZBLOB_ENDPOINT_SUFFIX: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>str] = <span class="kw-2">&amp;</span>[
-    <span class="string">&quot;blob.core.windows.net&quot;</span>,
-    <span class="string">&quot;blob.core.usgovcloudapi.net&quot;</span>,
-    <span class="string">&quot;blob.core.chinacloudapi.cn&quot;</span>,
+    <span class="string">"blob.core.windows.net"</span>,
+    <span class="string">"blob.core.usgovcloudapi.net"</span>,
+    <span class="string">"blob.core.chinacloudapi.cn"</span>,
 ];
 
 <span class="kw">const </span>AZBLOB_BATCH_LIMIT: usize = <span class="number">256</span>;
@@ -1030,28 +1033,28 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>AzblobConfig {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;AzblobConfig&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"AzblobConfig"</span>);
 
-        ds.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
-        ds.field(<span class="string">&quot;container&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.container);
-        ds.field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
+        ds.field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
+        ds.field(<span class="string">"container"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.container);
+        ds.field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
 
         <span class="kw">if </span><span class="self">self</span>.account_name.is_some() {
-            ds.field(<span class="string">&quot;account_name&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
+            ds.field(<span class="string">"account_name"</span>, <span class="kw-2">&amp;</span><span class="string">"&lt;redacted&gt;"</span>);
         }
         <span class="kw">if </span><span class="self">self</span>.account_key.is_some() {
-            ds.field(<span class="string">&quot;account_key&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
+            ds.field(<span class="string">"account_key"</span>, <span class="kw-2">&amp;</span><span class="string">"&lt;redacted&gt;"</span>);
         }
         <span class="kw">if </span><span class="self">self</span>.sas_token.is_some() {
-            ds.field(<span class="string">&quot;sas_token&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
+            ds.field(<span class="string">"sas_token"</span>, <span class="kw-2">&amp;</span><span class="string">"&lt;redacted&gt;"</span>);
         }
 
         ds.finish()
     }
 }
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default, Clone)]
 </span><span class="kw">pub struct </span>AzblobBuilder {
     config: AzblobConfig,
@@ -1059,10 +1062,10 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>AzblobBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"Builder"</span>);
 
-        ds.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+        ds.field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
 
         ds.finish()
     }
@@ -1096,7 +1099,7 @@
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoint.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.config.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string());
+            </span><span class="self">self</span>.config.endpoint = <span class="prelude-val">Some</span>(endpoint.trim_end_matches(<span class="string">'/'</span>).to_string());
         }
 
         <span class="self">self
@@ -1104,7 +1107,7 @@
 
     <span class="doccomment">/// Set account_name of this backend.
     ///
-    /// - If account_name is set, we will take user&#39;s input first.
+    /// - If account_name is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>account_name(<span class="kw-2">&amp;mut </span><span class="self">self</span>, account_name: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!account_name.is_empty() {
@@ -1116,7 +1119,7 @@
 
     <span class="doccomment">/// Set account_key of this backend.
     ///
-    /// - If account_key is set, we will take user&#39;s input first.
+    /// - If account_key is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     </span><span class="kw">pub fn </span>account_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, account_key: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!account_key.is_empty() {
@@ -1196,12 +1199,12 @@
     ///
     /// # Note
     ///
-    /// Function that helps the user to set the server-side customer-provided encryption key, the key&#39;s SHA256, and the algorithm.
+    /// Function that helps the user to set the server-side customer-provided encryption key, the key's SHA256, and the algorithm.
     /// See [Server-side encryption with customer-provided keys (CPK)](https://learn.microsoft.com/en-us/azure/storage/blobs/encryption-customer-provided-keys)
     /// for more info.
     </span><span class="kw">pub fn </span>server_side_encryption_with_customer_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="comment">// Only AES256 is supported for now
-        </span><span class="self">self</span>.config.encryption_algorithm = <span class="prelude-val">Some</span>(<span class="string">&quot;AES256&quot;</span>.to_string());
+        </span><span class="self">self</span>.config.encryption_algorithm = <span class="prelude-val">Some</span>(<span class="string">"AES256"</span>.to_string());
         <span class="self">self</span>.config.encryption_key = <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(key));
         <span class="self">self</span>.config.encryption_key_sha256 =
             <span class="prelude-val">Some</span>(BASE64_STANDARD.encode(Sha256::digest(key).as_slice()));
@@ -1210,7 +1213,7 @@
 
     <span class="doccomment">/// Set sas_token of this backend.
     ///
-    /// - If sas_token is set, we will take user&#39;s input first.
+    /// - If sas_token is set, we will take user's input first.
     /// - If not, we will try to load it from environment.
     ///
     /// See [Grant limited access to Azure Storage resources using shared access signatures (SAS)](https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview)
@@ -1227,7 +1230,7 @@
     ///
     /// # Notes
     ///
-    /// This API is part of OpenDAL&#39;s Raw API. `HttpClient` could be changed
+    /// This API is part of OpenDAL's Raw API. `HttpClient` could be changed
     /// during minor updates.
     </span><span class="kw">pub fn </span>http_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>, client: HttpClient) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.http_client = <span class="prelude-val">Some</span>(client);
@@ -1269,11 +1272,11 @@
     /// connection string only configures the endpoint, account name and account key.
     /// User still needs to configure bucket names.
     </span><span class="kw">pub fn </span>from_connection_string(conn: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">let </span>conn = conn.trim().replace(<span class="string">&#39;\n&#39;</span>, <span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>conn = conn.trim().replace(<span class="string">'\n'</span>, <span class="string">""</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>conn_map: HashMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt; = HashMap::default();
-        <span class="kw">for </span>v <span class="kw">in </span>conn.split(<span class="string">&#39;;&#39;</span>) {
-            <span class="kw">let </span>entry: Vec&lt;<span class="kw">_</span>&gt; = v.splitn(<span class="number">2</span>, <span class="string">&#39;=&#39;</span>).collect();
+        <span class="kw">for </span>v <span class="kw">in </span>conn.split(<span class="string">';'</span>) {
+            <span class="kw">let </span>entry: Vec&lt;<span class="kw">_</span>&gt; = v.splitn(<span class="number">2</span>, <span class="string">'='</span>).collect();
             <span class="kw">if </span>entry.len() != <span class="number">2 </span>{
                 <span class="comment">// Ignore invalid entries.
                 </span><span class="kw">continue</span>;
@@ -1283,31 +1286,31 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = AzblobBuilder::default();
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(sas_token) = conn_map.get(<span class="string">&quot;SharedAccessSignature&quot;</span>) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(sas_token) = conn_map.get(<span class="string">"SharedAccessSignature"</span>) {
             builder.sas_token(sas_token);
         } <span class="kw">else </span>{
-            <span class="kw">let </span>account_name = conn_map.get(<span class="string">&quot;AccountName&quot;</span>).ok_or_else(|| {
+            <span class="kw">let </span>account_name = conn_map.get(<span class="string">"AccountName"</span>).ok_or_else(|| {
                 Error::new(
                     ErrorKind::ConfigInvalid,
-                    <span class="string">&quot;connection string must have AccountName&quot;</span>,
+                    <span class="string">"connection string must have AccountName"</span>,
                 )
-                .with_operation(<span class="string">&quot;Builder::from_connection_string&quot;</span>)
+                .with_operation(<span class="string">"Builder::from_connection_string"</span>)
             })<span class="question-mark">?</span>;
             builder.account_name(account_name);
-            <span class="kw">let </span>account_key = conn_map.get(<span class="string">&quot;AccountKey&quot;</span>).ok_or_else(|| {
+            <span class="kw">let </span>account_key = conn_map.get(<span class="string">"AccountKey"</span>).ok_or_else(|| {
                 Error::new(
                     ErrorKind::ConfigInvalid,
-                    <span class="string">&quot;connection string must have AccountKey&quot;</span>,
+                    <span class="string">"connection string must have AccountKey"</span>,
                 )
-                .with_operation(<span class="string">&quot;Builder::from_connection_string&quot;</span>)
+                .with_operation(<span class="string">"Builder::from_connection_string"</span>)
             })<span class="question-mark">?</span>;
             builder.account_key(account_key);
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = conn_map.get(<span class="string">&quot;BlobEndpoint&quot;</span>) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = conn_map.get(<span class="string">"BlobEndpoint"</span>) {
             builder.endpoint(v);
-        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(v) = conn_map.get(<span class="string">&quot;EndpointSuffix&quot;</span>) {
-            <span class="kw">let </span>protocol = conn_map.get(<span class="string">&quot;DefaultEndpointsProtocol&quot;</span>).unwrap_or(<span class="kw-2">&amp;</span><span class="string">&quot;https&quot;</span>);
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(v) = conn_map.get(<span class="string">"EndpointSuffix"</span>) {
+            <span class="kw">let </span>protocol = conn_map.get(<span class="string">"DefaultEndpointsProtocol"</span>).unwrap_or(<span class="kw-2">&amp;</span><span class="string">"https"</span>);
             <span class="kw">let </span>account_name = builder
                 .config
                 .account_name
@@ -1315,12 +1318,12 @@
                 .ok_or_else(|| {
                     Error::new(
                         ErrorKind::ConfigInvalid,
-                        <span class="string">&quot;connection string must have AccountName&quot;</span>,
+                        <span class="string">"connection string must have AccountName"</span>,
                     )
-                    .with_operation(<span class="string">&quot;Builder::from_connection_string&quot;</span>)
+                    .with_operation(<span class="string">"Builder::from_connection_string"</span>)
                 })<span class="question-mark">?
                 </span>.clone();
-            builder.endpoint(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{protocol}://{account_name}.blob.{v}&quot;</span>));
+            builder.endpoint(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{protocol}://{account_name}.blob.{v}"</span>));
         }
 
         <span class="prelude-val">Ok</span>(builder)
@@ -1333,7 +1336,7 @@
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>config = AzblobConfig::deserialize(ConfigDeserializer::new(map))
-            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
+            .expect(<span class="string">"config deserialize must succeed"</span>);
 
         AzblobBuilder {
             config,
@@ -1342,34 +1345,34 @@
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, root);
 
         <span class="comment">// Handle endpoint, region and container name.
         </span><span class="kw">let </span>container = <span class="kw">match </span><span class="self">self</span>.config.container.is_empty() {
             <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.config.container),
-            <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;container is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Azblob)),
+            <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"container is empty"</span>)
+                .with_operation(<span class="string">"Builder::build"</span>)
+                .with_context(<span class="string">"service"</span>, Scheme::Azblob)),
         }<span class="question-mark">?</span>;
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use container {}&quot;</span>, <span class="kw-2">&amp;</span>container);
+        <span class="macro">debug!</span>(<span class="string">"backend use container {}"</span>, <span class="kw-2">&amp;</span>container);
 
         <span class="kw">let </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.endpoint {
             <span class="prelude-val">Some</span>(endpoint) =&gt; <span class="prelude-val">Ok</span>(endpoint.clone()),
-            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Azblob)),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint is empty"</span>)
+                .with_operation(<span class="string">"Builder::build"</span>)
+                .with_context(<span class="string">"service"</span>, Scheme::Azblob)),
         }<span class="question-mark">?</span>;
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use endpoint {}&quot;</span>, <span class="kw-2">&amp;</span>container);
+        <span class="macro">debug!</span>(<span class="string">"backend use endpoint {}"</span>, <span class="kw-2">&amp;</span>container);
 
         <span class="kw">let </span>client = <span class="kw">if let </span><span class="prelude-val">Some</span>(client) = <span class="self">self</span>.http_client.take() {
             client
         } <span class="kw">else </span>{
             HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Azblob)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Azblob)
             })<span class="question-mark">?
         </span>};
 
@@ -1388,28 +1391,28 @@
             <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.encryption_key {
                 <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
-                    err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_key&quot;</span>)
+                    err.with_context(<span class="string">"key"</span>, <span class="string">"server_side_encryption_customer_key"</span>)
                 })<span class="question-mark">?</span>),
             };
 
         <span class="kw">let </span>encryption_key_sha256 = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.encryption_key_sha256 {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
-                err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_key_sha256&quot;</span>)
+                err.with_context(<span class="string">"key"</span>, <span class="string">"server_side_encryption_customer_key_sha256"</span>)
             })<span class="question-mark">?</span>),
         };
 
         <span class="kw">let </span>encryption_algorithm = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.encryption_algorithm {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(v) =&gt; {
-                <span class="kw">if </span>v == <span class="string">&quot;AES256&quot; </span>{
+                <span class="kw">if </span>v == <span class="string">"AES256" </span>{
                     <span class="prelude-val">Some</span>(build_header_value(v).map_err(|err| {
-                        err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_customer_algorithm&quot;</span>)
+                        err.with_context(<span class="string">"key"</span>, <span class="string">"server_side_encryption_customer_algorithm"</span>)
                     })<span class="question-mark">?</span>)
                 } <span class="kw">else </span>{
                     <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                         ErrorKind::ConfigInvalid,
-                        <span class="string">&quot;encryption_algorithm value must be AES256&quot;</span>,
+                        <span class="string">"encryption_algorithm value must be AES256"</span>,
                     ));
                 }
             }
@@ -1424,7 +1427,7 @@
             .batch_max_operations
             .unwrap_or(AZBLOB_BATCH_LIMIT);
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build finished: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
         <span class="prelude-val">Ok</span>(AzblobBackend {
             core: Arc::new(AzblobCore {
                 root,
@@ -1446,16 +1449,16 @@
 
 <span class="kw">fn </span>infer_storage_name_from_endpoint(endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
     <span class="kw">let </span>endpoint: <span class="kw-2">&amp;</span>str = endpoint
-        .strip_prefix(<span class="string">&quot;http://&quot;</span>)
-        .or_else(|| endpoint.strip_prefix(<span class="string">&quot;https://&quot;</span>))
+        .strip_prefix(<span class="string">"http://"</span>)
+        .or_else(|| endpoint.strip_prefix(<span class="string">"https://"</span>))
         .unwrap_or(endpoint);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>parts = endpoint.splitn(<span class="number">2</span>, <span class="string">&#39;.&#39;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>parts = endpoint.splitn(<span class="number">2</span>, <span class="string">'.'</span>);
     <span class="kw">let </span>storage_name = parts.next();
     <span class="kw">let </span>endpoint_suffix = parts
         .next()
         .unwrap_or_default()
-        .trim_end_matches(<span class="string">&#39;/&#39;</span>)
+        .trim_end_matches(<span class="string">'/'</span>)
         .to_lowercase();
 
     <span class="kw">if </span>KNOWN_AZBLOB_ENDPOINT_SUFFIX
@@ -1475,14 +1478,14 @@
     has_sas_token: bool,
 }
 
-<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
-#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">"wasm32"</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">"wasm32"</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>AzblobBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
-    <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = AzblobWriters;
-    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Lister = oio::PageLister&lt;AzblobLister&gt;;
+    <span class="kw">type </span>BlockingReader = ();
+    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -1503,8 +1506,9 @@
                 read_with_override_content_disposition: <span class="bool-val">true</span>,
 
                 write: <span class="bool-val">true</span>,
-                write_can_empty: <span class="bool-val">true</span>,
                 write_can_append: <span class="bool-val">true</span>,
+                write_can_empty: <span class="bool-val">true</span>,
+                write_can_multi: <span class="bool-val">true</span>,
                 write_with_cache_control: <span class="bool-val">true</span>,
                 write_with_content_type: <span class="bool-val">true</span>,
 
@@ -1527,6 +1531,17 @@
             });
 
         am
+    }
+
+    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.azblob_get_blob_properties(path, <span class="kw-2">&amp;</span>args).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -1554,37 +1569,12 @@
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
         <span class="kw">let </span>w = AzblobWriter::new(<span class="self">self</span>.core.clone(), args.clone(), path.to_string());
         <span class="kw">let </span>w = <span class="kw">if </span>args.append() {
-            AzblobWriters::Two(oio::AppendObjectWriter::new(w))
+            AzblobWriters::Two(oio::AppendWriter::new(w))
         } <span class="kw">else </span>{
-            AzblobWriters::One(oio::OneShotWriter::new(w))
+            AzblobWriters::One(oio::BlockWriter::new(w, args.concurrent()))
         };
 
         <span class="prelude-val">Ok</span>((RpWrite::default(), w))
-    }
-
-    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.azblob_copy_blob(from, to).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::ACCEPTED =&gt; {
-                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(RpCopy::default())
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
-
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.azblob_get_blob_properties(path, <span class="kw-2">&amp;</span>args).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; parse_into_metadata(path, resp.headers()).map(RpStat::new),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
     }
 
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
@@ -1607,6 +1597,20 @@
         );
 
         <span class="prelude-val">Ok</span>((RpList::default(), oio::PageLister::new(l)))
+    }
+
+    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.azblob_copy_blob(from, to).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::ACCEPTED =&gt; {
+                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(RpCopy::default())
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
     }
 
     <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
@@ -1638,7 +1642,7 @@
         <span class="kw">if </span>paths.len() &gt; AZBLOB_BATCH_LIMIT {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unsupported,
-                <span class="string">&quot;batch delete limit exceeded&quot;</span>,
+                <span class="string">"batch delete limit exceeded"</span>,
             ));
         }
 
@@ -1654,7 +1658,7 @@
         </span><span class="kw">let </span>content_type = resp.headers().get(CONTENT_TYPE).ok_or_else(|| {
             Error::new(
                 ErrorKind::Unexpected,
-                <span class="string">&quot;response data should have CONTENT_TYPE header&quot;</span>,
+                <span class="string">"response data should have CONTENT_TYPE header"</span>,
             )
         })<span class="question-mark">?</span>;
         <span class="kw">let </span>content_type = content_type
@@ -1663,14 +1667,14 @@
             .map_err(|e| {
                 Error::new(
                     ErrorKind::Unexpected,
-                    <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;get invalid CONTENT_TYPE header in response: {:?}&quot;</span>, e),
+                    <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"get invalid CONTENT_TYPE header in response: {:?}"</span>, e),
                 )
             })<span class="question-mark">?</span>;
-        <span class="kw">let </span>splits = content_type.split(<span class="string">&quot;boundary=&quot;</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
+        <span class="kw">let </span>splits = content_type.split(<span class="string">"boundary="</span>).collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
         <span class="kw">let </span>boundary = splits.get(<span class="number">1</span>).to_owned().ok_or_else(|| {
             Error::new(
                 ErrorKind::Unexpected,
-                <span class="string">&quot;No boundary message provided in CONTENT_TYPE&quot;</span>,
+                <span class="string">"No boundary message provided in CONTENT_TYPE"</span>,
             )
         })<span class="question-mark">?</span>;
 
@@ -1682,7 +1686,7 @@
         <span class="kw">if </span>paths.len() != parts.len() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unexpected,
-                <span class="string">&quot;invalid batch response, paths and response parts don&#39;t match&quot;</span>,
+                <span class="string">"invalid batch response, paths and response parts don't match"</span>,
             ));
         }
 
@@ -1711,56 +1715,56 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_infer_storage_name_from_endpoint() {
-        <span class="kw">let </span>endpoint = <span class="string">&quot;https://account.blob.core.windows.net&quot;</span>;
+        <span class="kw">let </span>endpoint = <span class="string">"https://account.blob.core.windows.net"</span>;
         <span class="kw">let </span>storage_name = infer_storage_name_from_endpoint(endpoint);
-        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">&quot;account&quot;</span>.to_string()));
+        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">"account"</span>.to_string()));
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_infer_storage_name_from_endpoint_with_trailing_slash() {
-        <span class="kw">let </span>endpoint = <span class="string">&quot;https://account.blob.core.windows.net/&quot;</span>;
+        <span class="kw">let </span>endpoint = <span class="string">"https://account.blob.core.windows.net/"</span>;
         <span class="kw">let </span>storage_name = infer_storage_name_from_endpoint(endpoint);
-        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">&quot;account&quot;</span>.to_string()));
+        <span class="macro">assert_eq!</span>(storage_name, <span class="prelude-val">Some</span>(<span class="string">"account"</span>.to_string()));
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_builder_from_endpoint_and_key_infer_account_name() {
         <span class="kw">let </span><span class="kw-2">mut </span>azblob_builder = AzblobBuilder::default();
-        azblob_builder.endpoint(<span class="string">&quot;https://storagesample.blob.core.chinacloudapi.cn&quot;</span>);
-        azblob_builder.container(<span class="string">&quot;container&quot;</span>);
-        azblob_builder.account_key(<span class="string">&quot;account-key&quot;</span>);
+        azblob_builder.endpoint(<span class="string">"https://storagesample.blob.core.chinacloudapi.cn"</span>);
+        azblob_builder.container(<span class="string">"container"</span>);
+        azblob_builder.account_key(<span class="string">"account-key"</span>);
         <span class="kw">let </span>azblob = azblob_builder
             .build()
-            .expect(<span class="string">&quot;build azblob should be succeeded.&quot;</span>);
+            .expect(<span class="string">"build azblob should be succeeded."</span>);
 
         <span class="macro">assert_eq!</span>(
             azblob.core.endpoint,
-            <span class="string">&quot;https://storagesample.blob.core.chinacloudapi.cn&quot;
+            <span class="string">"https://storagesample.blob.core.chinacloudapi.cn"
         </span>);
 
-        <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">&quot;container&quot;</span>.to_string());
+        <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">"container"</span>.to_string());
 
         <span class="macro">assert_eq!</span>(
             azblob_builder.config.account_key.unwrap(),
-            <span class="string">&quot;account-key&quot;</span>.to_string()
+            <span class="string">"account-key"</span>.to_string()
         );
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_no_key_wont_infer_account_name() {
         <span class="kw">let </span><span class="kw-2">mut </span>azblob_builder = AzblobBuilder::default();
-        azblob_builder.endpoint(<span class="string">&quot;https://storagesample.blob.core.windows.net&quot;</span>);
-        azblob_builder.container(<span class="string">&quot;container&quot;</span>);
+        azblob_builder.endpoint(<span class="string">"https://storagesample.blob.core.windows.net"</span>);
+        azblob_builder.container(<span class="string">"container"</span>);
         <span class="kw">let </span>azblob = azblob_builder
             .build()
-            .expect(<span class="string">&quot;build azblob should be succeeded.&quot;</span>);
+            .expect(<span class="string">"build azblob should be succeeded."</span>);
 
         <span class="macro">assert_eq!</span>(
             azblob.core.endpoint,
-            <span class="string">&quot;https://storagesample.blob.core.windows.net&quot;
+            <span class="string">"https://storagesample.blob.core.windows.net"
         </span>);
 
-        <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">&quot;container&quot;</span>.to_string());
+        <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">"container"</span>.to_string());
 
         <span class="macro">assert_eq!</span>(azblob_builder.config.account_key, <span class="prelude-val">None</span>);
     }
@@ -1768,86 +1772,86 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_builder_from_endpoint_and_sas() {
         <span class="kw">let </span><span class="kw-2">mut </span>azblob_builder = AzblobBuilder::default();
-        azblob_builder.endpoint(<span class="string">&quot;https://storagesample.blob.core.usgovcloudapi.net&quot;</span>);
-        azblob_builder.container(<span class="string">&quot;container&quot;</span>);
-        azblob_builder.account_name(<span class="string">&quot;storagesample&quot;</span>);
-        azblob_builder.account_key(<span class="string">&quot;account-key&quot;</span>);
-        azblob_builder.sas_token(<span class="string">&quot;sas&quot;</span>);
+        azblob_builder.endpoint(<span class="string">"https://storagesample.blob.core.usgovcloudapi.net"</span>);
+        azblob_builder.container(<span class="string">"container"</span>);
+        azblob_builder.account_name(<span class="string">"storagesample"</span>);
+        azblob_builder.account_key(<span class="string">"account-key"</span>);
+        azblob_builder.sas_token(<span class="string">"sas"</span>);
         <span class="kw">let </span>azblob = azblob_builder
             .build()
-            .expect(<span class="string">&quot;build azblob should be succeeded.&quot;</span>);
+            .expect(<span class="string">"build azblob should be succeeded."</span>);
 
         <span class="macro">assert_eq!</span>(
             azblob.core.endpoint,
-            <span class="string">&quot;https://storagesample.blob.core.usgovcloudapi.net&quot;
+            <span class="string">"https://storagesample.blob.core.usgovcloudapi.net"
         </span>);
 
-        <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">&quot;container&quot;</span>.to_string());
+        <span class="macro">assert_eq!</span>(azblob.core.container, <span class="string">"container"</span>.to_string());
 
         <span class="macro">assert_eq!</span>(
             azblob_builder.config.account_key.unwrap(),
-            <span class="string">&quot;account-key&quot;</span>.to_string()
+            <span class="string">"account-key"</span>.to_string()
         );
 
-        <span class="macro">assert_eq!</span>(azblob_builder.config.sas_token.unwrap(), <span class="string">&quot;sas&quot;</span>.to_string());
+        <span class="macro">assert_eq!</span>(azblob_builder.config.sas_token.unwrap(), <span class="string">"sas"</span>.to_string());
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_builder_from_connection_string() {
         <span class="kw">let </span>builder = AzblobBuilder::from_connection_string(
-            <span class="string">r#&quot;
+            <span class="string">r#"
 DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;
 AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;
 BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;
 QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;
 TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;
-        &quot;#</span>,
+        "#</span>,
         )
-        .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
+        .expect(<span class="string">"from connection string must succeed"</span>);
 
         <span class="macro">assert_eq!</span>(
             builder.config.endpoint.unwrap(),
-            <span class="string">&quot;http://127.0.0.1:10000/devstoreaccount1&quot;
+            <span class="string">"http://127.0.0.1:10000/devstoreaccount1"
         </span>);
-        <span class="macro">assert_eq!</span>(builder.config.account_name.unwrap(), <span class="string">&quot;devstoreaccount1&quot;</span>);
-        <span class="macro">assert_eq!</span>(builder.config.account_key.unwrap(), <span class="string">&quot;Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==&quot;</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_name.unwrap(), <span class="string">"devstoreaccount1"</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_key.unwrap(), <span class="string">"Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="</span>);
 
         <span class="kw">let </span>builder = AzblobBuilder::from_connection_string(
-            <span class="string">r#&quot;
+            <span class="string">r#"
 DefaultEndpointsProtocol=https;
 AccountName=storagesample;
 AccountKey=account-key;
 EndpointSuffix=core.chinacloudapi.cn;
-        &quot;#</span>,
+        "#</span>,
         )
-        .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
+        .expect(<span class="string">"from connection string must succeed"</span>);
 
         <span class="macro">assert_eq!</span>(
             builder.config.endpoint.unwrap(),
-            <span class="string">&quot;https://storagesample.blob.core.chinacloudapi.cn&quot;
+            <span class="string">"https://storagesample.blob.core.chinacloudapi.cn"
         </span>);
-        <span class="macro">assert_eq!</span>(builder.config.account_name.unwrap(), <span class="string">&quot;storagesample&quot;</span>);
-        <span class="macro">assert_eq!</span>(builder.config.account_key.unwrap(), <span class="string">&quot;account-key&quot;</span>)
+        <span class="macro">assert_eq!</span>(builder.config.account_name.unwrap(), <span class="string">"storagesample"</span>);
+        <span class="macro">assert_eq!</span>(builder.config.account_key.unwrap(), <span class="string">"account-key"</span>)
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_sas_from_connection_string() {
         <span class="comment">// Note, not a correct HMAC
         </span><span class="kw">let </span>builder = AzblobBuilder::from_connection_string(
-            <span class="string">r#&quot;
+            <span class="string">r#"
 BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;
 QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;
 TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;
 SharedAccessSignature=sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D
-        &quot;#</span>,
+        "#</span>,
         )
-        .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
+        .expect(<span class="string">"from connection string must succeed"</span>);
 
         <span class="macro">assert_eq!</span>(
             builder.config.endpoint.unwrap(),
-            <span class="string">&quot;http://127.0.0.1:10000/devstoreaccount1&quot;
+            <span class="string">"http://127.0.0.1:10000/devstoreaccount1"
         </span>);
-        <span class="macro">assert_eq!</span>(builder.config.sas_token.unwrap(), <span class="string">&quot;sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D&quot;</span>);
+        <span class="macro">assert_eq!</span>(builder.config.sas_token.unwrap(), <span class="string">"sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D"</span>);
         <span class="macro">assert_eq!</span>(builder.config.account_name, <span class="prelude-val">None</span>);
         <span class="macro">assert_eq!</span>(builder.config.account_key, <span class="prelude-val">None</span>);
     }
@@ -1855,17 +1859,17 @@ SharedAccessSignature=sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se
     <span class="attr">#[test]
     </span><span class="kw">pub fn </span>test_sas_preferred() {
         <span class="kw">let </span>builder = AzblobBuilder::from_connection_string(
-            <span class="string">r#&quot;
+            <span class="string">r#"
 BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;
 AccountName=storagesample;
 AccountKey=account-key;
 SharedAccessSignature=sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D
-        &quot;#</span>,
+        "#</span>,
         )
-        .expect(<span class="string">&quot;from connection string must succeed&quot;</span>);
+        .expect(<span class="string">"from connection string must succeed"</span>);
 
         <span class="comment">// SAS should be preferred over shared key
-        </span><span class="macro">assert_eq!</span>(builder.config.sas_token.unwrap(), <span class="string">&quot;sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D&quot;</span>);
+        </span><span class="macro">assert_eq!</span>(builder.config.sas_token.unwrap(), <span class="string">"sv=2021-01-01&amp;ss=b&amp;srt=c&amp;sp=rwdlaciytfx&amp;se=2022-01-01T11:00:14Z&amp;st=2022-01-02T03:00:14Z&amp;spr=https&amp;sig=KEllk4N8f7rJfLjQCmikL2fRVt%2B%2Bl73UBkbgH%2FK3VGE%3D"</span>);
         <span class="macro">assert_eq!</span>(builder.config.account_name, <span class="prelude-val">None</span>);
         <span class="macro">assert_eq!</span>(builder.config.account_key, <span class="prelude-val">None</span>);
     }

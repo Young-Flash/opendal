@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/atomicserver/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/atomicserver/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -451,19 +453,54 @@
 <a href="#451" id="451">451</a>
 <a href="#452" id="452">452</a>
 <a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -491,6 +528,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::raw::normalize_root;
 <span class="kw">use </span><span class="kw">crate</span>::raw::percent_encode_path;
 <span class="kw">use </span><span class="kw">crate</span>::raw::AsyncBody;
+<span class="kw">use </span><span class="kw">crate</span>::raw::ConfigDeserializer;
 <span class="kw">use </span><span class="kw">crate</span>::raw::FormDataPart;
 <span class="kw">use </span><span class="kw">crate</span>::raw::HttpClient;
 <span class="kw">use </span><span class="kw">crate</span>::raw::Multipart;
@@ -499,32 +537,65 @@
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Atomicserver service support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+
+/// Config for Atomicserver services support
+</span><span class="attr">#[derive(Default, Deserialize, Clone)]
+#[serde(default)]
+#[non_exhaustive]
+</span><span class="kw">pub struct </span>AtomicserverConfig {
+    <span class="doccomment">/// work dir of this backend
+    </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// endpoint of this backend
+    </span><span class="kw">pub </span>endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// private_key of this backend
+    </span><span class="kw">pub </span>private_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// public_key of this backend
+    </span><span class="kw">pub </span>public_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// parent_resource_id of this backend
+    </span><span class="kw">pub </span>parent_resource_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>AtomicserverConfig {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"AtomicserverConfig"</span>)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">"public_key"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.public_key)
+            .field(<span class="string">"parent_resource_id"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.parent_resource_id)
+            .finish_non_exhaustive()
+    }
+}
+
+<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default)]
 </span><span class="kw">pub struct </span>AtomicserverBuilder {
-    root: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    private_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    public_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    parent_resource_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    config: AtomicserverConfig,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>AtomicserverBuilder {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"AtomicserverBuilder"</span>)
+            .field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config)
+            .finish()
+    }
 }
 
 <span class="kw">impl </span>AtomicserverBuilder {
     <span class="doccomment">/// Set the root for Atomicserver.
     </span><span class="kw">pub fn </span>root(<span class="kw-2">&amp;mut </span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.root = <span class="prelude-val">Some</span>(path.into());
+        <span class="self">self</span>.config.root = <span class="prelude-val">Some</span>(path.into());
         <span class="self">self
     </span>}
 
     <span class="doccomment">/// Set the server address for Atomicserver.
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.endpoint = <span class="prelude-val">Some</span>(endpoint.into());
+        <span class="self">self</span>.config.endpoint = <span class="prelude-val">Some</span>(endpoint.into());
         <span class="self">self
     </span>}
 
     <span class="doccomment">/// Set the private key for agent used for Atomicserver.
     </span><span class="kw">pub fn </span>private_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, private_key: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.private_key = <span class="prelude-val">Some</span>(private_key.into());
+        <span class="self">self</span>.config.private_key = <span class="prelude-val">Some</span>(private_key.into());
         <span class="self">self
     </span>}
 
@@ -533,13 +604,13 @@
     /// is ${endpoint}/agents/lTB+W3C/2YfDu9IAVleEy34uCmb56iXXuzWCKBVwdRI=
     /// Then the required public key is `lTB+W3C/2YfDu9IAVleEy34uCmb56iXXuzWCKBVwdRI=`
     </span><span class="kw">pub fn </span>public_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, public_key: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.public_key = <span class="prelude-val">Some</span>(public_key.into());
+        <span class="self">self</span>.config.public_key = <span class="prelude-val">Some</span>(public_key.into());
         <span class="self">self
     </span>}
 
     <span class="doccomment">/// Set the parent resource id (url) that Atomicserver uses to store resources under.
     </span><span class="kw">pub fn </span>parent_resource_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, parent_resource_id: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.parent_resource_id = <span class="prelude-val">Some</span>(parent_resource_id.into());
+        <span class="self">self</span>.config.parent_resource_id = <span class="prelude-val">Some</span>(parent_resource_id.into());
         <span class="self">self
     </span>}
 }
@@ -549,35 +620,36 @@
     <span class="kw">type </span>Accessor = AtomicserverBackend;
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>builder = AtomicserverBuilder::default();
+        <span class="comment">// Deserialize the configuration from the HashMap.
+        </span><span class="kw">let </span>config = AtomicserverConfig::deserialize(ConfigDeserializer::new(map))
+            .expect(<span class="string">"config deserialize must succeed"</span>);
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;endpoint&quot;</span>).map(|v| builder.endpoint(v));
-        map.get(<span class="string">&quot;private_key&quot;</span>).map(|v| builder.private_key(v));
-        map.get(<span class="string">&quot;public_key&quot;</span>).map(|v| builder.public_key(v));
-        map.get(<span class="string">&quot;parent_resource_id&quot;</span>)
-            .map(|v| builder.parent_resource_id(v));
-
-        builder
+        <span class="comment">// Create an AtomicserverBuilder instance with the deserialized config.
+        </span>AtomicserverBuilder { config }
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
         <span class="kw">let </span>root = normalize_root(
-            <span class="self">self</span>.root
+            <span class="self">self</span>.config
+                .root
                 .clone()
-                .unwrap_or_else(|| <span class="string">&quot;/&quot;</span>.to_string())
+                .unwrap_or_else(|| <span class="string">"/"</span>.to_string())
                 .as_str(),
         );
 
-        <span class="kw">let </span>endpoint = <span class="self">self</span>.endpoint.clone().unwrap();
-        <span class="kw">let </span>parent_resource_id = <span class="self">self</span>.parent_resource_id.clone().unwrap();
+        <span class="kw">let </span>endpoint = <span class="self">self</span>.config.endpoint.clone().unwrap();
+        <span class="kw">let </span>parent_resource_id = <span class="self">self</span>.config.parent_resource_id.clone().unwrap();
 
         <span class="kw">let </span>agent = Agent {
-            private_key: <span class="self">self</span>.private_key.clone(),
-            public_key: <span class="self">self</span>.public_key.clone().unwrap(),
-            subject: <span class="macro">format!</span>(<span class="string">&quot;{}/agents/{}&quot;</span>, endpoint, <span class="self">self</span>.public_key.clone().unwrap()),
+            private_key: <span class="self">self</span>.config.private_key.clone(),
+            public_key: <span class="self">self</span>.config.public_key.clone().unwrap(),
+            subject: <span class="macro">format!</span>(
+                <span class="string">"{}/agents/{}"</span>,
+                endpoint,
+                <span class="self">self</span>.config.public_key.clone().unwrap()
+            ),
             created_at: <span class="number">1</span>,
-            name: <span class="prelude-val">Some</span>(<span class="string">&quot;agent&quot;</span>.to_string()),
+            name: <span class="prelude-val">Some</span>(<span class="string">"agent"</span>.to_string()),
         };
 
         <span class="prelude-val">Ok</span>(AtomicserverBackend::new(Adapter {
@@ -585,8 +657,8 @@
             endpoint,
             agent,
             client: HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Atomicserver)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Atomicserver)
             })<span class="question-mark">?</span>,
         })
         .with_root(<span class="kw-2">&amp;</span>root))
@@ -596,51 +668,51 @@
 <span class="doccomment">/// Backend for Atomicserver services.
 </span><span class="kw">pub type </span>AtomicserverBackend = kv::Backend&lt;Adapter&gt;;
 
-<span class="kw">const </span>FILENAME_PROPERTY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;https://atomicdata.dev/properties/filename&quot;</span>;
+<span class="kw">const </span>FILENAME_PROPERTY: <span class="kw-2">&amp;</span>str = <span class="string">"https://atomicdata.dev/properties/filename"</span>;
 
 <span class="attr">#[derive(Debug, Serialize)]
 </span><span class="kw">struct </span>CommitStruct {
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/createdAt&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/createdAt"</span>)]
     </span>created_at: i64,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/destroy&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/destroy"</span>)]
     </span>destroy: bool,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/isA&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/isA"</span>)]
     </span>is_a: Vec&lt;String&gt;,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/signer&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/signer"</span>)]
     </span>signer: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/subject&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/subject"</span>)]
     </span>subject: String,
 }
 
 <span class="attr">#[derive(Debug, Serialize)]
 </span><span class="kw">struct </span>CommitStructSigned {
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/createdAt&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/createdAt"</span>)]
     </span>created_at: i64,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/destroy&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/destroy"</span>)]
     </span>destroy: bool,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/isA&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/isA"</span>)]
     </span>is_a: Vec&lt;String&gt;,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/signature&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/signature"</span>)]
     </span>signature: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/signer&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/signer"</span>)]
     </span>signer: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/subject&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/subject"</span>)]
     </span>subject: String,
 }
 
 <span class="attr">#[derive(Debug, Deserialize)]
 </span><span class="kw">struct </span>FileStruct {
-    <span class="attr">#[serde(rename = <span class="string">&quot;@id&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"@id"</span>)]
     </span>id: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;https://atomicdata.dev/properties/downloadURL&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"https://atomicdata.dev/properties/downloadURL"</span>)]
     </span>download_url: String,
 }
 
 <span class="attr">#[derive(Debug, Deserialize)]
 </span><span class="kw">struct </span>QueryResultStruct {
     <span class="attr">#[serde(
-        rename = <span class="string">&quot;https://atomicdata.dev/properties/endpoint/results&quot;</span>,
-        default = <span class="string">&quot;empty_vec&quot;
+        rename = <span class="string">"https://atomicdata.dev/properties/endpoint/results"</span>,
+        default = <span class="string">"empty_vec"
     </span>)]
     </span>results: Vec&lt;FileStruct&gt;,
 }
@@ -658,8 +730,8 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>Adapter {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Adapter&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"Adapter"</span>);
         ds.finish()
     }
 }
@@ -670,9 +742,9 @@
             .map_err(|err| {
                 Error::new(
                     ErrorKind::Unexpected,
-                    <span class="string">&quot;Failed to get authentication headers&quot;</span>,
+                    <span class="string">"Failed to get authentication headers"</span>,
                 )
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Atomicserver)
+                .with_context(<span class="string">"service"</span>, Scheme::Atomicserver)
                 .set_source(err)
             })
             .unwrap();
@@ -690,9 +762,9 @@
         <span class="kw">let </span>path = normalize_path(path);
         <span class="kw">let </span>path = path.as_str();
 
-        <span class="kw">let </span>filename_property_escaped = FILENAME_PROPERTY.replace(<span class="string">&#39;:&#39;</span>, <span class="string">&quot;\\:&quot;</span>).replace(<span class="string">&#39;.&#39;</span>, <span class="string">&quot;\\.&quot;</span>);
+        <span class="kw">let </span>filename_property_escaped = FILENAME_PROPERTY.replace(<span class="string">':'</span>, <span class="string">"\\:"</span>).replace(<span class="string">'.'</span>, <span class="string">"\\."</span>);
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/search?filters={}:%22{}%22&quot;</span>,
+            <span class="string">"{}/search?filters={}:%22{}%22"</span>,
             <span class="self">self</span>.endpoint,
             percent_encode_path(<span class="kw-2">&amp;</span>filename_property_escaped),
             percent_encode_path(path)
@@ -700,7 +772,7 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
         req = <span class="self">self</span>.sign(<span class="kw-2">&amp;</span>url, req);
-        req = req.header(http::header::ACCEPT, <span class="string">&quot;application/ad+json&quot;</span>);
+        req = req.header(http::header::ACCEPT, <span class="string">"application/ad+json"</span>);
 
         <span class="kw">let </span>req = req
             .body(AsyncBody::Empty)
@@ -718,7 +790,7 @@
         <span class="kw">let </span>path = path.as_str();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/upload?parent={}&quot;</span>,
+            <span class="string">"{}/upload?parent={}"</span>,
             <span class="self">self</span>.endpoint,
             percent_encode_path(<span class="kw-2">&amp;</span><span class="self">self</span>.parent_resource_id)
         );
@@ -726,14 +798,14 @@
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
         req = <span class="self">self</span>.sign(<span class="kw-2">&amp;</span>url, req);
 
-        <span class="kw">let </span>datapart = FormDataPart::new(<span class="string">&quot;assets&quot;</span>)
+        <span class="kw">let </span>datapart = FormDataPart::new(<span class="string">"assets"</span>)
             .header(
                 CONTENT_DISPOSITION,
-                <span class="macro">format!</span>(<span class="string">&quot;form-data; name=\&quot;assets\&quot;; filename=\&quot;{}\&quot;&quot;</span>, path)
+                <span class="macro">format!</span>(<span class="string">"form-data; name=\"assets\"; filename=\"{}\""</span>, path)
                     .parse()
                     .unwrap(),
             )
-            .header(CONTENT_TYPE, <span class="string">&quot;text/plain&quot;</span>.parse().unwrap())
+            .header(CONTENT_TYPE, <span class="string">"text/plain"</span>.parse().unwrap())
             .content(value.to_vec());
 
         <span class="kw">let </span>multipart = Multipart::new().part(datapart);
@@ -743,17 +815,17 @@
     }
 
     <span class="kw">pub fn </span>atomic_delete_object_request(<span class="kw-2">&amp;</span><span class="self">self</span>, subject: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/commit&quot;</span>, <span class="self">self</span>.endpoint);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/commit"</span>, <span class="self">self</span>.endpoint);
 
         <span class="kw">let </span>timestamp = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
-            .expect(<span class="string">&quot;You&#39;re a time traveler&quot;</span>)
+            .expect(<span class="string">"You're a time traveler"</span>)
             .as_millis() <span class="kw">as </span>i64;
 
         <span class="kw">let </span>commit_to_sign = CommitStruct {
             created_at: timestamp,
             destroy: <span class="bool-val">true</span>,
-            is_a: [<span class="string">&quot;https://atomicdata.dev/classes/Commit&quot;</span>.to_string()].to_vec(),
+            is_a: [<span class="string">"https://atomicdata.dev/classes/Commit"</span>.to_string()].to_vec(),
             signer: <span class="self">self</span>.agent.subject.to_string(),
             subject: subject.to_string().clone(),
         };
@@ -770,7 +842,7 @@
         <span class="kw">let </span>commit = CommitStructSigned {
             created_at: timestamp,
             destroy: <span class="bool-val">true</span>,
-            is_a: [<span class="string">&quot;https://atomicdata.dev/classes/Commit&quot;</span>.to_string()].to_vec(),
+            is_a: [<span class="string">"https://atomicdata.dev/classes/Commit"</span>.to_string()].to_vec(),
             signature,
             signer: <span class="self">self</span>.agent.subject.to_string(),
             subject: subject.to_string().clone(),
@@ -829,7 +901,7 @@
     <span class="kw">fn </span>metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; kv::Metadata {
         kv::Metadata::new(
             Scheme::Atomicserver,
-            <span class="string">&quot;atomicserver&quot;</span>,
+            <span class="string">"atomicserver"</span>,
             Capability {
                 read: <span class="bool-val">true</span>,
                 write: <span class="bool-val">true</span>,
@@ -851,7 +923,7 @@
         <span class="kw">if </span>query_result.results.is_empty() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::NotFound,
-                <span class="string">&quot;atomicserver: key not found&quot;</span>,
+                <span class="string">"atomicserver: key not found"</span>,
             ));
         }
 

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenDAL-CPP: OpenDAL CPP Binding (WIP)</title>
+<title>Apache OpenDAL™ C++ Binding: Apache OpenDAL™ CPP Binding (WIP)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,9 +22,9 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">OpenDAL-CPP
+   <div id="projectname">Apache OpenDAL™ C++ Binding
    </div>
-   <div id="projectbrief">The Cpp binding for Apache OpenDAL</div>
+   <div id="projectbrief">The C++ binding for Apache OpenDAL™</div>
   </td>
  </tr>
  </tbody>
@@ -64,11 +64,11 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">OpenDAL CPP Binding (WIP) </div>  </div>
+<div class="title">Apache OpenDAL™ CPP Binding (WIP) </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__home_runner_work_opendal_opendal_bindings_cpp_README"></a> <img src="https://img.shields.io/badge/status-unreleased-red" alt="" class="inline"/></p>
-<p><img src="https://github.com/apache/incubator-opendal/assets/5351546/87bbf6e5-f19e-449a-b368-3e283016c887" alt="" class="inline"/></p>
+<p><img src="https://github.com/apache/opendal/assets/5351546/87bbf6e5-f19e-449a-b368-3e283016c887" alt="" class="inline"/></p>
 <p>Documents: <a href="https://opendal.apache.org/docs/cpp/"><img src="https://img.shields.io/badge/opendal-cpp-blue?logo=Apache&amp;logoColor=red" alt="Documents" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Example</h1>
@@ -91,7 +91,7 @@ CMake</h2>
 <p>You can use <code>FetchContent</code> to add OpenDAL to your project.</p>
 <div class="fragment"><div class="line">FetchContent_Declare(</div>
 <div class="line">  opendal-cpp</div>
-<div class="line">  GIT_REPOSITORY https://github.com/apache/incubator-opendal.git</div>
+<div class="line">  GIT_REPOSITORY https://github.com/apache/opendal.git</div>
 <div class="line">  GIT_TAG        v0.40.0</div>
 <div class="line">  SOURCE_SUBDIR  bindings/cpp</div>
 <div class="line">)</div>
@@ -99,9 +99,9 @@ CMake</h2>
 </div><!-- fragment --><p>Or you can download the source code and add it to your project.</p>
 <div class="fragment"><div class="line">mkdir third_party</div>
 <div class="line">cd third_party</div>
-<div class="line">git clone https://github.com/apache/incubator-opendal.git</div>
+<div class="line">git clone https://github.com/apache/opendal.git</div>
 <div class="line">git checkout v0.40.0</div>
-</div><!-- fragment --><div class="fragment"><div class="line">add_subdirectory(third_party/incubator-opendal/bindings/cpp)</div>
+</div><!-- fragment --><div class="fragment"><div class="line">add_subdirectory(third_party/opendal/bindings/cpp)</div>
 </div><!-- fragment --><p>Now you can use OpenDAL in your project.</p>
 <div class="fragment"><div class="line">target_link_libraries(your_target opendal_cpp)</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
@@ -138,8 +138,12 @@ CMake Options</h2>
 <li><code>OPENDAL_ENABLE_ADDRESS_SANITIZER</code>: Enable address sanitizer. Default: <code>OFF</code></li>
 <li><code>OPENDAL_ENABLE_DOCUMENTATION</code>: Enable documentation. Default: <code>OFF</code></li>
 <li><code>OPENDAL_DOCS_ONLY</code>: Only build documentation. Default: <code>OFF</code></li>
-<li><code>OPENDAL_ENABLE_TESTING</code>: Enable testing. Default: <code>OFF</code> </li>
+<li><code>OPENDAL_ENABLE_TESTING</code>: Enable testing. Default: <code>OFF</code></li>
 </ul>
+<h1><a class="anchor" id="autotoc_md11"></a>
+License and Trademarks</h1>
+<p>Licensed under the Apache License, Version 2.0: <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Apache OpenDAL, OpenDAL, and Apache are either registered trademarks or trademarks of the Apache Software Foundation. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

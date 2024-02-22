@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/azblob/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/azblob/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -762,29 +764,186 @@
 <a href="#762" id="762">762</a>
 <a href="#763" id="763">763</a>
 <a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
+<a href="#868" id="868">868</a>
+<a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a>
+<a href="#904" id="904">904</a>
+<a href="#905" id="905">905</a>
+<a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
 
-</span><span class="kw">use </span>std::fmt;
-<span class="kw">use </span>std::fmt::Debug;
-<span class="kw">use </span>std::fmt::Formatter;
-<span class="kw">use </span>std::fmt::Write;
-<span class="kw">use </span>std::time::Duration;
-
+</span><span class="kw">use </span>base64::prelude::BASE64_STANDARD;
+<span class="kw">use </span>base64::Engine;
+<span class="kw">use </span>bytes::Bytes;
 <span class="kw">use </span>http::header::HeaderName;
 <span class="kw">use </span>http::header::CONTENT_LENGTH;
 <span class="kw">use </span>http::header::CONTENT_TYPE;
@@ -796,23 +955,29 @@
 <span class="kw">use </span>reqsign::AzureStorageCredential;
 <span class="kw">use </span>reqsign::AzureStorageLoader;
 <span class="kw">use </span>reqsign::AzureStorageSigner;
-<span class="kw">use </span>serde::Deserialize;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>std::fmt;
+<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::fmt::Formatter;
+<span class="kw">use </span>std::fmt::Write;
+<span class="kw">use </span>std::time::Duration;
+<span class="kw">use </span>uuid::Uuid;
 
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">mod </span>constants {
-    <span class="kw">pub const </span>X_MS_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-version&quot;</span>;
+    <span class="kw">pub const </span>X_MS_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-version"</span>;
 
-    <span class="kw">pub const </span>X_MS_BLOB_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-blob-type&quot;</span>;
-    <span class="kw">pub const </span>X_MS_COPY_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-copy-source&quot;</span>;
-    <span class="kw">pub const </span>X_MS_BLOB_CACHE_CONTROL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-blob-cache-control&quot;</span>;
-    <span class="kw">pub const </span>X_MS_BLOB_CONDITION_APPENDPOS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-blob-condition-appendpos&quot;</span>;
+    <span class="kw">pub const </span>X_MS_BLOB_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-blob-type"</span>;
+    <span class="kw">pub const </span>X_MS_COPY_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-copy-source"</span>;
+    <span class="kw">pub const </span>X_MS_BLOB_CACHE_CONTROL: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-blob-cache-control"</span>;
+    <span class="kw">pub const </span>X_MS_BLOB_CONDITION_APPENDPOS: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-blob-condition-appendpos"</span>;
 
     <span class="comment">// Server-side encryption with customer-provided headers
-    </span><span class="kw">pub const </span>X_MS_ENCRYPTION_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-encryption-key&quot;</span>;
-    <span class="kw">pub const </span>X_MS_ENCRYPTION_KEY_SHA256: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-encryption-key-sha256&quot;</span>;
-    <span class="kw">pub const </span>X_MS_ENCRYPTION_ALGORITHM: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-encryption-algorithm&quot;</span>;
+    </span><span class="kw">pub const </span>X_MS_ENCRYPTION_KEY: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-encryption-key"</span>;
+    <span class="kw">pub const </span>X_MS_ENCRYPTION_KEY_SHA256: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-encryption-key-sha256"</span>;
+    <span class="kw">pub const </span>X_MS_ENCRYPTION_ALGORITHM: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-encryption-algorithm"</span>;
 }
 
 <span class="kw">pub struct </span>AzblobCore {
@@ -829,11 +994,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>AzblobCore {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        f.debug_struct(<span class="string">&quot;AzblobCore&quot;</span>)
-            .field(<span class="string">&quot;container&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.container)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+        f.debug_struct(<span class="string">"AzblobCore"</span>)
+            .field(<span class="string">"container"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.container)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
             .finish_non_exhaustive()
     }
 }
@@ -851,7 +1016,7 @@
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ConfigInvalid,
-                <span class="string">&quot;no valid credential found&quot;</span>,
+                <span class="string">"no valid credential found"</span>,
             ))
         }
     }
@@ -874,7 +1039,7 @@
             // sure most our developer happy.
             //
             // In the future, we could allow users to configure this value.
-            </span>HeaderValue::from_static(<span class="string">&quot;2022-11-02&quot;</span>),
+            </span>HeaderValue::from_static(<span class="string">"2022-11-02"</span>),
         );
         <span class="self">self</span>.signer.sign(req, <span class="kw-2">&amp;</span>cred).map_err(new_request_sign_error)
     }
@@ -926,7 +1091,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -935,13 +1100,13 @@
         <span class="kw">let </span><span class="kw-2">mut </span>query_args = Vec::new();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(override_content_disposition) = args.override_content_disposition() {
             query_args.push(<span class="macro">format!</span>(
-                <span class="string">&quot;rscd={}&quot;</span>,
+                <span class="string">"rscd={}"</span>,
                 percent_encode_path(override_content_disposition)
             ))
         }
 
         <span class="kw">if </span>!query_args.is_empty() {
-            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;?{}&quot;</span>, query_args.join(<span class="string">&quot;&amp;&quot;</span>)));
+            url.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"?{}"</span>, query_args.join(<span class="string">"&amp;"</span>)));
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
@@ -951,13 +1116,13 @@
 
         <span class="kw">let </span>range = args.range();
         <span class="kw">if </span>!range.is_full() {
-            <span class="comment">// azblob doesn&#39;t support read with suffix range.
+            <span class="comment">// azblob doesn't support read with suffix range.
             //
             // ref: https://learn.microsoft.com/en-us/rest/api/storageservices/specifying-the-range-header-for-blob-service-operations
             </span><span class="kw">if </span>range.offset().is_none() &amp;&amp; range.size().is_some() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::Unsupported,
-                    <span class="string">&quot;azblob doesn&#39;t support read with suffix range&quot;</span>,
+                    <span class="string">"azblob doesn't support read with suffix range"</span>,
                 ));
             }
 
@@ -1001,7 +1166,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -1025,7 +1190,7 @@
 
         req = req.header(
             HeaderName::from_static(constants::X_MS_BLOB_TYPE),
-            <span class="string">&quot;BlockBlob&quot;</span>,
+            <span class="string">"BlockBlob"</span>,
         );
 
         <span class="comment">// Set body
@@ -1036,13 +1201,13 @@
 
     <span class="doccomment">/// For appendable object, it could be created by `put` an empty blob
     /// with `x-ms-blob-type` header set to `AppendBlob`.
-    /// And it&#39;s just initialized with empty content.
+    /// And it's just initialized with empty content.
     ///
     /// If want to append content to it, we should use the following method `azblob_append_blob_request`.
     ///
     /// # Notes
     ///
-    /// Appendable blob&#39;s custom header could only be set when it&#39;s created.
+    /// Appendable blob's custom header could only be set when it's created.
     ///
     /// The following custom header could be set:
     /// - `content-type`
@@ -1059,7 +1224,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -1075,7 +1240,7 @@
         </span>req = req.header(CONTENT_LENGTH, <span class="number">0</span>);
         req = req.header(
             HeaderName::from_static(constants::X_MS_BLOB_TYPE),
-            <span class="string">&quot;AppendBlob&quot;</span>,
+            <span class="string">"AppendBlob"</span>,
         );
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(ty) = args.content_type() {
@@ -1114,7 +1279,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}?comp=appendblock&quot;</span>,
+            <span class="string">"{}/{}/{}?comp=appendblock"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -1134,6 +1299,118 @@
         <span class="prelude-val">Ok</span>(req)
     }
 
+    <span class="kw">pub fn </span>azblob_put_block_request(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        path: <span class="kw-2">&amp;</span>str,
+        block_id: Uuid,
+        size: <span class="prelude-ty">Option</span>&lt;u64&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
+        body: AsyncBody,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
+        <span class="comment">// To be written as part of a blob, a block must have been successfully written to the server in an earlier Put Block operation.
+        // refer to https://learn.microsoft.com/en-us/rest/api/storageservices/put-block?tabs=microsoft-entra-id
+        </span><span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+
+        <span class="kw">let </span>encoded_block_id: String =
+            percent_encode_path(<span class="kw-2">&amp;</span>BASE64_STANDARD.encode(block_id.as_bytes()));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(
+            <span class="string">"{}/{}/{}?comp=block&amp;blockid={}"</span>,
+            <span class="self">self</span>.endpoint,
+            <span class="self">self</span>.container,
+            percent_encode_path(<span class="kw-2">&amp;</span>p),
+            encoded_block_id,
+        );
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(<span class="kw-2">&amp;</span>url);
+        <span class="comment">// Set SSE headers.
+        </span>req = <span class="self">self</span>.insert_sse_headers(req);
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = args.cache_control() {
+            req = req.header(constants::X_MS_BLOB_CACHE_CONTROL, cache_control);
+        }
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(size) = size {
+            req = req.header(CONTENT_LENGTH, size)
+        }
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(ty) = args.content_type() {
+            req = req.header(CONTENT_TYPE, ty)
+        }
+        <span class="comment">// Set body
+        </span><span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(req)
+    }
+
+    <span class="kw">pub async fn </span>azblob_put_block(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        path: <span class="kw-2">&amp;</span>str,
+        block_id: Uuid,
+        size: <span class="prelude-ty">Option</span>&lt;u64&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
+        body: AsyncBody,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.azblob_put_block_request(path, block_id, size, args, body)<span class="question-mark">?</span>;
+
+        <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="self">self</span>.send(req).<span class="kw">await
+    </span>}
+
+    <span class="kw">pub async fn </span>azblob_complete_put_block_list_request(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        path: <span class="kw-2">&amp;</span>str,
+        block_ids: Vec&lt;Uuid&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
+        <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(
+            <span class="string">"{}/{}/{}?comp=blocklist"</span>,
+            <span class="self">self</span>.endpoint,
+            <span class="self">self</span>.container,
+            percent_encode_path(<span class="kw-2">&amp;</span>p),
+        );
+
+        <span class="kw">let </span>req = Request::put(<span class="kw-2">&amp;</span>url);
+
+        <span class="comment">// Set SSE headers.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.insert_sse_headers(req);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cache_control) = args.cache_control() {
+            req = req.header(constants::X_MS_BLOB_CACHE_CONTROL, cache_control);
+        }
+
+        <span class="kw">let </span>content = quick_xml::se::to_string(<span class="kw-2">&amp;</span>PutBlockListRequest {
+            latest: block_ids
+                .into_iter()
+                .map(|block_id| {
+                    <span class="kw">let </span>encoded_block_id: String = BASE64_STANDARD.encode(block_id.as_bytes());
+                    encoded_block_id
+                })
+                .collect(),
+        })
+        .map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
+
+        req = req.header(CONTENT_LENGTH, content.len());
+
+        <span class="kw">let </span>req = req
+            .body(AsyncBody::Bytes(Bytes::from(content)))
+            .map_err(new_request_build_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(req)
+    }
+
+    <span class="kw">pub async fn </span>azblob_complete_put_block_list(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        path: <span class="kw-2">&amp;</span>str,
+        block_ids: Vec&lt;Uuid&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self
+            </span>.azblob_complete_put_block_list_request(path, block_ids, args)
+            .<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="self">self</span>.sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="self">self</span>.send(req).<span class="kw">await
+    </span>}
+
     <span class="kw">pub fn </span>azblob_head_blob_request(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>str,
@@ -1142,7 +1419,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -1183,7 +1460,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -1212,13 +1489,13 @@
         <span class="kw">let </span>target = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
 
         <span class="kw">let </span>source = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>source)
         );
         <span class="kw">let </span>target = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>target)
@@ -1244,21 +1521,21 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}?restype=container&amp;comp=list&quot;</span>,
+            <span class="string">"{}/{}?restype=container&amp;comp=list"</span>,
             <span class="self">self</span>.endpoint, <span class="self">self</span>.container
         );
         <span class="kw">if </span>!p.is_empty() {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;prefix={}&quot;</span>, percent_encode_path(<span class="kw-2">&amp;</span>p))
-                .expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;prefix={}"</span>, percent_encode_path(<span class="kw-2">&amp;</span>p))
+                .expect(<span class="string">"write into string must succeed"</span>);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(limit) = limit {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;maxresults={limit}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;maxresults={limit}"</span>).expect(<span class="string">"write into string must succeed"</span>);
         }
         <span class="kw">if </span>!delimiter.is_empty() {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;delimiter={delimiter}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;delimiter={delimiter}"</span>).expect(<span class="string">"write into string must succeed"</span>);
         }
         <span class="kw">if </span>!next_marker.is_empty() {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;marker={next_marker}&quot;</span>).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;marker={next_marker}"</span>).expect(<span class="string">"write into string must succeed"</span>);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url)
@@ -1274,7 +1551,7 @@
         paths: <span class="kw-2">&amp;</span>[String],
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}?restype=container&amp;comp=batch&quot;</span>,
+            <span class="string">"{}/{}?restype=container&amp;comp=batch"</span>,
             <span class="self">self</span>.endpoint, <span class="self">self</span>.container
         );
 
@@ -1285,7 +1562,7 @@
             <span class="self">self</span>.batch_sign(<span class="kw-2">&amp;mut </span>req).<span class="kw">await</span><span class="question-mark">?</span>;
 
             multipart = multipart.part(
-                MixedPart::from_request(req).part_header(<span class="string">&quot;content-id&quot;</span>.parse().unwrap(), idx.into()),
+                MixedPart::from_request(req).part_header(<span class="string">"content-id"</span>.parse().unwrap(), idx.into()),
             );
         }
 
@@ -1297,44 +1574,51 @@
     </span>}
 }
 
+<span class="doccomment">/// Request of PutBlockListRequest
+</span><span class="attr">#[derive(Default, Debug, Serialize, Deserialize)]
+#[serde(default, rename = <span class="string">"BlockList"</span>, rename_all = <span class="string">"PascalCase"</span>)]
+</span><span class="kw">pub struct </span>PutBlockListRequest {
+    <span class="kw">pub </span>latest: Vec&lt;String&gt;,
+}
+
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>ListBlobsOutput {
     <span class="kw">pub </span>blobs: Blobs,
-    <span class="attr">#[serde(rename = <span class="string">&quot;NextMarker&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"NextMarker"</span>)]
     </span><span class="kw">pub </span>next_marker: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>Blobs {
     <span class="kw">pub </span>blob: Vec&lt;Blob&gt;,
     <span class="kw">pub </span>blob_prefix: Vec&lt;BlobPrefix&gt;,
 }
 
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>BlobPrefix {
     <span class="kw">pub </span>name: String,
 }
 
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>Blob {
     <span class="kw">pub </span>properties: Properties,
     <span class="kw">pub </span>name: String,
 }
 
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>Properties {
-    <span class="attr">#[serde(rename = <span class="string">&quot;Content-Length&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"Content-Length"</span>)]
     </span><span class="kw">pub </span>content_length: u64,
-    <span class="attr">#[serde(rename = <span class="string">&quot;Last-Modified&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"Last-Modified"</span>)]
     </span><span class="kw">pub </span>last_modified: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;Content-MD5&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"Content-MD5"</span>)]
     </span><span class="kw">pub </span>content_md5: String,
-    <span class="attr">#[serde(rename = <span class="string">&quot;Content-Type&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"Content-Type"</span>)]
     </span><span class="kw">pub </span>content_type: String,
     <span class="kw">pub </span>etag: String,
 }
@@ -1350,9 +1634,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_parse_xml() {
         <span class="kw">let </span>bs = bytes::Bytes::from(
-            <span class="string">r#&quot;
-            &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-            &lt;EnumerationResults ServiceEndpoint=&quot;https://test.blob.core.windows.net/&quot; ContainerName=&quot;myazurebucket&quot;&gt;
+            <span class="string">r#"
+            &lt;?xml version="1.0" encoding="utf-8"?&gt;
+            &lt;EnumerationResults ServiceEndpoint="https://test.blob.core.windows.net/" ContainerName="myazurebucket"&gt;
                 &lt;Prefix&gt;dir1/&lt;/Prefix&gt;
                 &lt;Delimiter&gt;/&lt;/Delimiter&gt;
                 &lt;Blobs&gt;
@@ -1433,10 +1717,10 @@
                     &lt;/BlobPrefix&gt;
                 &lt;/Blobs&gt;
                 &lt;NextMarker /&gt;
-            &lt;/EnumerationResults&gt;&quot;#</span>,
+            &lt;/EnumerationResults&gt;"#</span>,
         );
-        <span class="kw">let </span>out: ListBlobsOutput = de::from_reader(bs.reader()).expect(<span class="string">&quot;must success&quot;</span>);
-        <span class="macro">println!</span>(<span class="string">&quot;{out:?}&quot;</span>);
+        <span class="kw">let </span>out: ListBlobsOutput = de::from_reader(bs.reader()).expect(<span class="string">"must success"</span>);
+        <span class="macro">println!</span>(<span class="string">"{out:?}"</span>);
 
         <span class="macro">assert_eq!</span>(
             out.blobs
@@ -1445,9 +1729,9 @@
                 .map(|v| v.name.clone())
                 .collect::&lt;Vec&lt;String&gt;&gt;(),
             [
-                <span class="string">&quot;dir1/2f018bb5-466f-4af1-84fa-2b167374ee06&quot;</span>,
-                <span class="string">&quot;dir1/5b9432b2-79c0-48d8-90c2-7d3e153826ed&quot;</span>,
-                <span class="string">&quot;dir1/b2d96f8b-d467-40d1-bb11-4632dddbf5b5&quot;
+                <span class="string">"dir1/2f018bb5-466f-4af1-84fa-2b167374ee06"</span>,
+                <span class="string">"dir1/5b9432b2-79c0-48d8-90c2-7d3e153826ed"</span>,
+                <span class="string">"dir1/b2d96f8b-d467-40d1-bb11-4632dddbf5b5"
             </span>]
         );
         <span class="macro">assert_eq!</span>(
@@ -1465,9 +1749,9 @@
                 .map(|v| v.properties.content_md5.clone())
                 .collect::&lt;Vec&lt;String&gt;&gt;(),
             [
-                <span class="string">&quot;llJ/+jOlx5GdA1sL7SdKuw==&quot;</span>.to_string(),
-                <span class="string">&quot;xmgUltSnopLSJOukgCHFtg==&quot;</span>.to_string(),
-                <span class="string">&quot;AxTiFXHwrXKaZC5b7ZRybw==&quot;</span>.to_string()
+                <span class="string">"llJ/+jOlx5GdA1sL7SdKuw=="</span>.to_string(),
+                <span class="string">"xmgUltSnopLSJOukgCHFtg=="</span>.to_string(),
+                <span class="string">"AxTiFXHwrXKaZC5b7ZRybw=="</span>.to_string()
             ]
         );
         <span class="macro">assert_eq!</span>(
@@ -1477,9 +1761,9 @@
                 .map(|v| v.properties.last_modified.clone())
                 .collect::&lt;Vec&lt;String&gt;&gt;(),
             [
-                <span class="string">&quot;Sun, 20 Mar 2022 11:29:03 GMT&quot;</span>.to_string(),
-                <span class="string">&quot;Tue, 29 Mar 2022 01:54:07 GMT&quot;</span>.to_string(),
-                <span class="string">&quot;Sun, 20 Mar 2022 11:31:57 GMT&quot;</span>.to_string()
+                <span class="string">"Sun, 20 Mar 2022 11:29:03 GMT"</span>.to_string(),
+                <span class="string">"Tue, 29 Mar 2022 01:54:07 GMT"</span>.to_string(),
+                <span class="string">"Sun, 20 Mar 2022 11:31:57 GMT"</span>.to_string()
             ]
         );
         <span class="macro">assert_eq!</span>(
@@ -1489,9 +1773,9 @@
                 .map(|v| v.properties.etag.clone())
                 .collect::&lt;Vec&lt;String&gt;&gt;(),
             [
-                <span class="string">&quot;0x8DA0A64D66790C3&quot;</span>.to_string(),
-                <span class="string">&quot;0x8DA112702D88FE4&quot;</span>.to_string(),
-                <span class="string">&quot;0x8DA0A653DC82981&quot;</span>.to_string()
+                <span class="string">"0x8DA0A64D66790C3"</span>.to_string(),
+                <span class="string">"0x8DA112702D88FE4"</span>.to_string(),
+                <span class="string">"0x8DA0A653DC82981"</span>.to_string()
             ]
         );
         <span class="macro">assert_eq!</span>(
@@ -1500,13 +1784,13 @@
                 .iter()
                 .map(|v| v.name.clone())
                 .collect::&lt;Vec&lt;String&gt;&gt;(),
-            [<span class="string">&quot;dir1/dir2/&quot;</span>, <span class="string">&quot;dir1/dir21/&quot;</span>]
+            [<span class="string">"dir1/dir2/"</span>, <span class="string">"dir1/dir21/"</span>]
         );
     }
 
     <span class="doccomment">/// This case is copied from real environment for testing
     /// quick-xml overlapped-lists features. By default, quick-xml
-    /// can&#39;t deserialize content with overlapped-lists.
+    /// can't deserialize content with overlapped-lists.
     ///
     /// For example, this case list blobs in this way:
     ///
@@ -1521,9 +1805,47 @@
     /// If `overlapped-lists` feature not enabled, we will get error `duplicate field Blob`.
     </span><span class="attr">#[test]
     </span><span class="kw">fn </span>test_parse_overlapped_lists() {
-        <span class="kw">let </span>bs = <span class="string">&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;utf-8\&quot;?&gt;&lt;EnumerationResults ServiceEndpoint=\&quot;https://test.blob.core.windows.net/\&quot; ContainerName=\&quot;test\&quot;&gt;&lt;Prefix&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/&lt;/Prefix&gt;&lt;Delimiter&gt;/&lt;/Delimiter&gt;&lt;Blobs&gt;&lt;Blob&gt;&lt;Name&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/&lt;/Name&gt;&lt;Properties&gt;&lt;Creation-Time&gt;Thu, 01 Sep 2022 07:26:49 GMT&lt;/Creation-Time&gt;&lt;Last-Modified&gt;Thu, 01 Sep 2022 07:26:49 GMT&lt;/Last-Modified&gt;&lt;Etag&gt;0x8DA8BEB55D0EA35&lt;/Etag&gt;&lt;Content-Length&gt;0&lt;/Content-Length&gt;&lt;Content-Type&gt;application/octet-stream&lt;/Content-Type&gt;&lt;Content-Encoding /&gt;&lt;Content-Language /&gt;&lt;Content-CRC64 /&gt;&lt;Content-MD5&gt;1B2M2Y8AsgTpgAmY7PhCfg==&lt;/Content-MD5&gt;&lt;Cache-Control /&gt;&lt;Content-Disposition /&gt;&lt;BlobType&gt;BlockBlob&lt;/BlobType&gt;&lt;AccessTier&gt;Hot&lt;/AccessTier&gt;&lt;AccessTierInferred&gt;true&lt;/AccessTierInferred&gt;&lt;LeaseStatus&gt;unlocked&lt;/LeaseStatus&gt;&lt;LeaseState&gt;available&lt;/LeaseState&gt;&lt;ServerEncrypted&gt;true&lt;/ServerEncrypted&gt;&lt;/Properties&gt;&lt;OrMetadata /&gt;&lt;/Blob&gt;&lt;BlobPrefix&gt;&lt;Name&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/x/&lt;/Name&gt;&lt;/BlobPrefix&gt;&lt;Blob&gt;&lt;Name&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/y&lt;/Name&gt;&lt;Properties&gt;&lt;Creation-Time&gt;Thu, 01 Sep 2022 07:26:50 GMT&lt;/Creation-Time&gt;&lt;Last-Modified&gt;Thu, 01 Sep 2022 07:26:50 GMT&lt;/Last-Modified&gt;&lt;Etag&gt;0x8DA8BEB55D99C08&lt;/Etag&gt;&lt;Content-Length&gt;0&lt;/Content-Length&gt;&lt;Content-Type&gt;application/octet-stream&lt;/Content-Type&gt;&lt;Content-Encoding /&gt;&lt;Content-Language /&gt;&lt;Content-CRC64 /&gt;&lt;Content-MD5&gt;1B2M2Y8AsgTpgAmY7PhCfg==&lt;/Content-MD5&gt;&lt;Cache-Control /&gt;&lt;Content-Disposition /&gt;&lt;BlobType&gt;BlockBlob&lt;/BlobType&gt;&lt;AccessTier&gt;Hot&lt;/AccessTier&gt;&lt;AccessTierInferred&gt;true&lt;/AccessTierInferred&gt;&lt;LeaseStatus&gt;unlocked&lt;/LeaseStatus&gt;&lt;LeaseState&gt;available&lt;/LeaseState&gt;&lt;ServerEncrypted&gt;true&lt;/ServerEncrypted&gt;&lt;/Properties&gt;&lt;OrMetadata /&gt;&lt;/Blob&gt;&lt;/Blobs&gt;&lt;NextMarker /&gt;&lt;/EnumerationResults&gt;&quot;</span>;
+        <span class="kw">let </span>bs = <span class="string">"&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;&lt;EnumerationResults ServiceEndpoint=\"https://test.blob.core.windows.net/\" ContainerName=\"test\"&gt;&lt;Prefix&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/&lt;/Prefix&gt;&lt;Delimiter&gt;/&lt;/Delimiter&gt;&lt;Blobs&gt;&lt;Blob&gt;&lt;Name&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/&lt;/Name&gt;&lt;Properties&gt;&lt;Creation-Time&gt;Thu, 01 Sep 2022 07:26:49 GMT&lt;/Creation-Time&gt;&lt;Last-Modified&gt;Thu, 01 Sep 2022 07:26:49 GMT&lt;/Last-Modified&gt;&lt;Etag&gt;0x8DA8BEB55D0EA35&lt;/Etag&gt;&lt;Content-Length&gt;0&lt;/Content-Length&gt;&lt;Content-Type&gt;application/octet-stream&lt;/Content-Type&gt;&lt;Content-Encoding /&gt;&lt;Content-Language /&gt;&lt;Content-CRC64 /&gt;&lt;Content-MD5&gt;1B2M2Y8AsgTpgAmY7PhCfg==&lt;/Content-MD5&gt;&lt;Cache-Control /&gt;&lt;Content-Disposition /&gt;&lt;BlobType&gt;BlockBlob&lt;/BlobType&gt;&lt;AccessTier&gt;Hot&lt;/AccessTier&gt;&lt;AccessTierInferred&gt;true&lt;/AccessTierInferred&gt;&lt;LeaseStatus&gt;unlocked&lt;/LeaseStatus&gt;&lt;LeaseState&gt;available&lt;/LeaseState&gt;&lt;ServerEncrypted&gt;true&lt;/ServerEncrypted&gt;&lt;/Properties&gt;&lt;OrMetadata /&gt;&lt;/Blob&gt;&lt;BlobPrefix&gt;&lt;Name&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/x/&lt;/Name&gt;&lt;/BlobPrefix&gt;&lt;Blob&gt;&lt;Name&gt;9f7075e1-84d0-45ca-8196-ab9b71a8ef97/x/y&lt;/Name&gt;&lt;Properties&gt;&lt;Creation-Time&gt;Thu, 01 Sep 2022 07:26:50 GMT&lt;/Creation-Time&gt;&lt;Last-Modified&gt;Thu, 01 Sep 2022 07:26:50 GMT&lt;/Last-Modified&gt;&lt;Etag&gt;0x8DA8BEB55D99C08&lt;/Etag&gt;&lt;Content-Length&gt;0&lt;/Content-Length&gt;&lt;Content-Type&gt;application/octet-stream&lt;/Content-Type&gt;&lt;Content-Encoding /&gt;&lt;Content-Language /&gt;&lt;Content-CRC64 /&gt;&lt;Content-MD5&gt;1B2M2Y8AsgTpgAmY7PhCfg==&lt;/Content-MD5&gt;&lt;Cache-Control /&gt;&lt;Content-Disposition /&gt;&lt;BlobType&gt;BlockBlob&lt;/BlobType&gt;&lt;AccessTier&gt;Hot&lt;/AccessTier&gt;&lt;AccessTierInferred&gt;true&lt;/AccessTierInferred&gt;&lt;LeaseStatus&gt;unlocked&lt;/LeaseStatus&gt;&lt;LeaseState&gt;available&lt;/LeaseState&gt;&lt;ServerEncrypted&gt;true&lt;/ServerEncrypted&gt;&lt;/Properties&gt;&lt;OrMetadata /&gt;&lt;/Blob&gt;&lt;/Blobs&gt;&lt;NextMarker /&gt;&lt;/EnumerationResults&gt;"</span>;
 
-        de::from_reader(Bytes::from(bs).reader()).expect(<span class="string">&quot;must success&quot;</span>)
+        de::from_reader(Bytes::from(bs).reader()).expect(<span class="string">"must success"</span>)
+    }
+
+    <span class="doccomment">/// This example is from https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-list?tabs=microsoft-entra-id
+    </span><span class="attr">#[test]
+    </span><span class="kw">fn </span>test_serialize_put_block_list_request() {
+        <span class="kw">let </span>req = PutBlockListRequest {
+            latest: <span class="macro">vec!</span>[<span class="string">"1"</span>.to_string(), <span class="string">"2"</span>.to_string(), <span class="string">"3"</span>.to_string()],
+        };
+
+        <span class="kw">let </span>actual = quick_xml::se::to_string(<span class="kw-2">&amp;</span>req).expect(<span class="string">"must succeed"</span>);
+
+        <span class="macro">pretty_assertions::assert_eq!</span>(
+            actual,
+            <span class="string">r#"
+            &lt;BlockList&gt;
+               &lt;Latest&gt;1&lt;/Latest&gt;
+               &lt;Latest&gt;2&lt;/Latest&gt;
+               &lt;Latest&gt;3&lt;/Latest&gt;
+            &lt;/BlockList&gt;"#
+                </span><span class="comment">// Cleanup space and new line
+                </span>.replace([<span class="string">' '</span>, <span class="string">'\n'</span>], <span class="string">""</span>)
+                <span class="comment">// Escape `"` by hand to address &lt;https://github.com/tafia/quick-xml/issues/362&gt;
+                </span>.replace(<span class="string">'"'</span>, <span class="string">"&amp;quot;"</span>)
+        );
+
+        <span class="kw">let </span>bs = <span class="string">"&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;
+            &lt;BlockList&gt;
+               &lt;Latest&gt;1&lt;/Latest&gt;
+               &lt;Latest&gt;2&lt;/Latest&gt;
+               &lt;Latest&gt;3&lt;/Latest&gt;
+            &lt;/BlockList&gt;"</span>;
+
+        <span class="kw">let </span>out: PutBlockListRequest =
+            de::from_reader(Bytes::from(bs).reader()).expect(<span class="string">"must success"</span>);
+        <span class="macro">assert_eq!</span>(
+            out.latest,
+            <span class="macro">vec!</span>[<span class="string">"1"</span>.to_string(), <span class="string">"2"</span>.to_string(), <span class="string">"3"</span>.to_string()]
+        );
     }
 }
 </code></pre></div></section></main></body></html>

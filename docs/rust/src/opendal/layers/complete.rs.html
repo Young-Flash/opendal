@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/layers/complete.rs`."><title>complete.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/layers/complete.rs`."><title>complete.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -983,101 +985,19 @@
 <a href="#983" id="983">983</a>
 <a href="#984" id="984">984</a>
 <a href="#985" id="985">985</a>
-<a href="#986" id="986">986</a>
-<a href="#987" id="987">987</a>
-<a href="#988" id="988">988</a>
-<a href="#989" id="989">989</a>
-<a href="#990" id="990">990</a>
-<a href="#991" id="991">991</a>
-<a href="#992" id="992">992</a>
-<a href="#993" id="993">993</a>
-<a href="#994" id="994">994</a>
-<a href="#995" id="995">995</a>
-<a href="#996" id="996">996</a>
-<a href="#997" id="997">997</a>
-<a href="#998" id="998">998</a>
-<a href="#999" id="999">999</a>
-<a href="#1000" id="1000">1000</a>
-<a href="#1001" id="1001">1001</a>
-<a href="#1002" id="1002">1002</a>
-<a href="#1003" id="1003">1003</a>
-<a href="#1004" id="1004">1004</a>
-<a href="#1005" id="1005">1005</a>
-<a href="#1006" id="1006">1006</a>
-<a href="#1007" id="1007">1007</a>
-<a href="#1008" id="1008">1008</a>
-<a href="#1009" id="1009">1009</a>
-<a href="#1010" id="1010">1010</a>
-<a href="#1011" id="1011">1011</a>
-<a href="#1012" id="1012">1012</a>
-<a href="#1013" id="1013">1013</a>
-<a href="#1014" id="1014">1014</a>
-<a href="#1015" id="1015">1015</a>
-<a href="#1016" id="1016">1016</a>
-<a href="#1017" id="1017">1017</a>
-<a href="#1018" id="1018">1018</a>
-<a href="#1019" id="1019">1019</a>
-<a href="#1020" id="1020">1020</a>
-<a href="#1021" id="1021">1021</a>
-<a href="#1022" id="1022">1022</a>
-<a href="#1023" id="1023">1023</a>
-<a href="#1024" id="1024">1024</a>
-<a href="#1025" id="1025">1025</a>
-<a href="#1026" id="1026">1026</a>
-<a href="#1027" id="1027">1027</a>
-<a href="#1028" id="1028">1028</a>
-<a href="#1029" id="1029">1029</a>
-<a href="#1030" id="1030">1030</a>
-<a href="#1031" id="1031">1031</a>
-<a href="#1032" id="1032">1032</a>
-<a href="#1033" id="1033">1033</a>
-<a href="#1034" id="1034">1034</a>
-<a href="#1035" id="1035">1035</a>
-<a href="#1036" id="1036">1036</a>
-<a href="#1037" id="1037">1037</a>
-<a href="#1038" id="1038">1038</a>
-<a href="#1039" id="1039">1039</a>
-<a href="#1040" id="1040">1040</a>
-<a href="#1041" id="1041">1041</a>
-<a href="#1042" id="1042">1042</a>
-<a href="#1043" id="1043">1043</a>
-<a href="#1044" id="1044">1044</a>
-<a href="#1045" id="1045">1045</a>
-<a href="#1046" id="1046">1046</a>
-<a href="#1047" id="1047">1047</a>
-<a href="#1048" id="1048">1048</a>
-<a href="#1049" id="1049">1049</a>
-<a href="#1050" id="1050">1050</a>
-<a href="#1051" id="1051">1051</a>
-<a href="#1052" id="1052">1052</a>
-<a href="#1053" id="1053">1053</a>
-<a href="#1054" id="1054">1054</a>
-<a href="#1055" id="1055">1055</a>
-<a href="#1056" id="1056">1056</a>
-<a href="#1057" id="1057">1057</a>
-<a href="#1058" id="1058">1058</a>
-<a href="#1059" id="1059">1059</a>
-<a href="#1060" id="1060">1060</a>
-<a href="#1061" id="1061">1061</a>
-<a href="#1062" id="1062">1062</a>
-<a href="#1063" id="1063">1063</a>
-<a href="#1064" id="1064">1064</a>
-<a href="#1065" id="1065">1065</a>
-<a href="#1066" id="1066">1066</a>
-<a href="#1067" id="1067">1067</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1085,21 +1005,21 @@
 </span><span class="kw">use </span>std::cmp;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::fmt::Formatter;
-<span class="kw">use </span>std::io;
 <span class="kw">use </span>std::sync::Arc;
 <span class="kw">use </span>std::task::ready;
 <span class="kw">use </span>std::task::Context;
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>bytes::Bytes;
 
+<span class="kw">use </span><span class="kw">crate</span>::raw::oio::BufferReader;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::FileReader;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::FlatLister;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::LazyReader;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::PrefixLister;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::RangeReader;
 <span class="kw">use </span><span class="kw">crate</span>::raw::oio::StreamableReader;
+<span class="kw">use </span><span class="kw">crate</span>::raw::TwoWays;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -1201,18 +1121,18 @@
 }
 
 <span class="kw">impl</span>&lt;A: Accessor&gt; Debug <span class="kw">for </span>CompleteAccessor&lt;A&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         <span class="self">self</span>.inner.fmt(f)
     }
 }
 
 <span class="kw">impl</span>&lt;A: Accessor&gt; CompleteAccessor&lt;A&gt; {
-    <span class="kw">fn </span>new_unsupported_error(<span class="kw-2">&amp;</span><span class="self">self</span>, op: <span class="kw">impl </span>Into&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;) -&gt; Error {
+    <span class="kw">fn </span>new_unsupported_error(<span class="kw-2">&amp;</span><span class="self">self</span>, op: <span class="kw">impl </span>Into&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;) -&gt; Error {
         <span class="kw">let </span>scheme = <span class="self">self</span>.meta.scheme();
         <span class="kw">let </span>op = op.into();
         Error::new(
             ErrorKind::Unsupported,
-            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;service {scheme} doesn&#39;t support operation {op}&quot;</span>),
+            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"service {scheme} doesn't support operation {op}"</span>),
         )
         .with_operation(op)
     }
@@ -1251,18 +1171,18 @@
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.new_unsupported_error(Operation::Stat));
         }
 
-        <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
+        <span class="kw">if </span>path == <span class="string">"/" </span>{
             <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
         }
 
         <span class="comment">// Forward to inner if create_dir is supported.
-        </span><span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) &amp;&amp; capability.create_dir {
+        </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) &amp;&amp; capability.create_dir {
             <span class="kw">let </span>meta = <span class="self">self</span>.inner.stat(path, args).<span class="kw">await</span><span class="question-mark">?</span>.into_metadata();
 
             <span class="kw">if </span>meta.is_file() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::NotFound,
-                    <span class="string">&quot;stat expected a directory, but found a file&quot;</span>,
+                    <span class="string">"stat expected a directory, but found a file"</span>,
                 ));
             }
 
@@ -1270,11 +1190,11 @@
         }
 
         <span class="comment">// Otherwise, we can simulate stat dir via `list`.
-        </span><span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) &amp;&amp; capability.list_with_recursive {
+        </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) &amp;&amp; capability.list_with_recursive {
             <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw-2">mut </span>l) = <span class="self">self
                 </span>.inner
                 .list(
-                    path.trim_end_matches(<span class="string">&#39;/&#39;</span>),
+                    path.trim_end_matches(<span class="string">'/'</span>),
                     OpList::default().with_recursive(<span class="bool-val">true</span>).with_limit(<span class="number">1</span>),
                 )
                 .<span class="kw">await</span><span class="question-mark">?</span>;
@@ -1284,12 +1204,12 @@
             } <span class="kw">else </span>{
                 <span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::NotFound,
-                    <span class="string">&quot;the directory is not found&quot;</span>,
+                    <span class="string">"the directory is not found"</span>,
                 ))
             };
         }
 
-        <span class="comment">// Forward to underlying storage directly since we don&#39;t know how to handle stat dir.
+        <span class="comment">// Forward to underlying storage directly since we don't know how to handle stat dir.
         </span><span class="self">self</span>.inner.stat(path, args).<span class="kw">await</span>.map(|v| {
             v.map_metadata(|m| {
                 <span class="kw">let </span>bit = m.metakey();
@@ -1304,18 +1224,18 @@
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.new_unsupported_error(Operation::Stat));
         }
 
-        <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
+        <span class="kw">if </span>path == <span class="string">"/" </span>{
             <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
         }
 
         <span class="comment">// Forward to inner if create dir is supported.
-        </span><span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) &amp;&amp; capability.create_dir {
+        </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) &amp;&amp; capability.create_dir {
             <span class="kw">let </span>meta = <span class="self">self</span>.inner.blocking_stat(path, args)<span class="question-mark">?</span>.into_metadata();
 
             <span class="kw">if </span>meta.is_file() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::NotFound,
-                    <span class="string">&quot;stat expected a directory, but found a file&quot;</span>,
+                    <span class="string">"stat expected a directory, but found a file"</span>,
                 ));
             }
 
@@ -1323,9 +1243,9 @@
         }
 
         <span class="comment">// Otherwise, we can simulate stat a dir path via `list`.
-        </span><span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) &amp;&amp; capability.list_with_recursive {
+        </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) &amp;&amp; capability.list_with_recursive {
             <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw-2">mut </span>l) = <span class="self">self</span>.inner.blocking_list(
-                path.trim_end_matches(<span class="string">&#39;/&#39;</span>),
+                path.trim_end_matches(<span class="string">'/'</span>),
                 OpList::default().with_recursive(<span class="bool-val">true</span>).with_limit(<span class="number">1</span>),
             )<span class="question-mark">?</span>;
 
@@ -1334,12 +1254,12 @@
             } <span class="kw">else </span>{
                 <span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::NotFound,
-                    <span class="string">&quot;the directory is not found&quot;</span>,
+                    <span class="string">"the directory is not found"</span>,
                 ))
             };
         }
 
-        <span class="comment">// Forward to underlying storage directly since we don&#39;t know how to handle stat dir.
+        <span class="comment">// Forward to underlying storage directly since we don't know how to handle stat dir.
         </span><span class="self">self</span>.inner.blocking_stat(path, args).map(|v| {
             v.map_metadata(|m| {
                 <span class="kw">let </span>bit = m.metakey();
@@ -1360,28 +1280,35 @@
 
         <span class="kw">let </span>seekable = capability.read_can_seek;
         <span class="kw">let </span>streamable = capability.read_can_next;
+        <span class="kw">let </span>buffer_cap = args.buffer();
 
-        <span class="kw">match </span>(seekable, streamable) {
+        <span class="kw">let </span>r = <span class="kw">match </span>(seekable, streamable) {
             (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; {
                 <span class="kw">let </span>r = LazyReader::new(<span class="self">self</span>.inner.clone(), path, args);
-                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::AlreadyComplete(r)))
+                InnerCompleteReader::One(r)
             }
             (<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
                 <span class="kw">let </span>r = FileReader::new(<span class="self">self</span>.inner.clone(), path, args);
-
-                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedStreamable(r)))
+                InnerCompleteReader::Two(r)
             }
             <span class="kw">_ </span>=&gt; {
                 <span class="kw">let </span>r = RangeReader::new(<span class="self">self</span>.inner.clone(), path, args);
 
                 <span class="kw">if </span>streamable {
-                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedSeekable(r)))
+                    InnerCompleteReader::Three(r)
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>r = oio::into_streamable_read(r, <span class="number">256 </span>* <span class="number">1024</span>);
-                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedBoth(r)))
+                    InnerCompleteReader::Four(r)
                 }
             }
-        }
+        };
+
+        <span class="kw">let </span>r = <span class="kw">match </span>buffer_cap {
+            <span class="prelude-val">None </span>=&gt; CompleteReader::One(r),
+            <span class="prelude-val">Some</span>(cap) =&gt; CompleteReader::Two(BufferReader::new(r, cap)),
+        };
+
+        <span class="prelude-val">Ok</span>((RpRead::new(), r))
     }
 
     <span class="kw">fn </span>complete_blocking_read(
@@ -1396,27 +1323,35 @@
 
         <span class="kw">let </span>seekable = capability.read_can_seek;
         <span class="kw">let </span>streamable = capability.read_can_next;
+        <span class="kw">let </span>buffer_cap = args.buffer();
 
-        <span class="kw">match </span>(seekable, streamable) {
+        <span class="kw">let </span>r = <span class="kw">match </span>(seekable, streamable) {
             (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; {
                 <span class="kw">let </span>r = LazyReader::new(<span class="self">self</span>.inner.clone(), path, args);
-                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::AlreadyComplete(r)))
+                InnerCompleteReader::One(r)
             }
             (<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
                 <span class="kw">let </span>r = FileReader::new(<span class="self">self</span>.inner.clone(), path, args);
-                <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedStreamable(r)))
+                InnerCompleteReader::Two(r)
             }
             <span class="kw">_ </span>=&gt; {
                 <span class="kw">let </span>r = RangeReader::new(<span class="self">self</span>.inner.clone(), path, args);
 
                 <span class="kw">if </span>streamable {
-                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedSeekable(r)))
+                    InnerCompleteReader::Three(r)
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>r = oio::into_streamable_read(r, <span class="number">256 </span>* <span class="number">1024</span>);
-                    <span class="prelude-val">Ok</span>((RpRead::new(), CompleteReader::NeedBoth(r)))
+                    InnerCompleteReader::Four(r)
                 }
             }
-        }
+        };
+
+        <span class="kw">let </span>r = <span class="kw">match </span>buffer_cap {
+            <span class="prelude-val">None </span>=&gt; CompleteReader::One(r),
+            <span class="prelude-val">Some</span>(cap) =&gt; CompleteReader::Two(BufferReader::new(r, cap)),
+        };
+
+        <span class="prelude-val">Ok</span>((RpRead::new(), r))
     }
 
     <span class="kw">async fn </span>complete_list(
@@ -1435,25 +1370,33 @@
             <span class="comment">// - If service can list_with_recursive, we can forward list to it directly.
             </span>(<span class="kw">_</span>, <span class="bool-val">true</span>) =&gt; {
                 <span class="kw">let </span>(rp, p) = <span class="self">self</span>.inner.list(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((rp, CompleteLister::AlreadyComplete(p)))
+                <span class="prelude-val">Ok</span>((rp, CompleteLister::One(p)))
             }
-            <span class="comment">// If recursive is true but service can&#39;t list_with_recursive
+            <span class="comment">// If recursive is true but service can't list_with_recursive
             </span>(<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
-                <span class="kw">let </span>p = FlatLister::new(<span class="self">self</span>.inner.clone(), path);
-                <span class="prelude-val">Ok</span>((RpList::default(), CompleteLister::NeedFlat(p)))
+                <span class="comment">// Forward path that ends with /
+                </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) {
+                    <span class="kw">let </span>p = FlatLister::new(<span class="self">self</span>.inner.clone(), path);
+                    <span class="prelude-val">Ok</span>((RpList::default(), CompleteLister::Two(p)))
+                } <span class="kw">else </span>{
+                    <span class="kw">let </span>parent = get_parent(path);
+                    <span class="kw">let </span>p = FlatLister::new(<span class="self">self</span>.inner.clone(), parent);
+                    <span class="kw">let </span>p = PrefixLister::new(p, path);
+                    <span class="prelude-val">Ok</span>((RpList::default(), CompleteLister::Four(p)))
+                }
             }
-            <span class="comment">// If recursive and service doesn&#39;t support list_with_recursive, we need to handle
+            <span class="comment">// If recursive and service doesn't support list_with_recursive, we need to handle
             // list prefix by ourselves.
             </span>(<span class="bool-val">false</span>, <span class="bool-val">false</span>) =&gt; {
                 <span class="comment">// Forward path that ends with /
-                </span><span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) {
+                </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) {
                     <span class="kw">let </span>(rp, p) = <span class="self">self</span>.inner.list(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
-                    <span class="prelude-val">Ok</span>((rp, CompleteLister::AlreadyComplete(p)))
+                    <span class="prelude-val">Ok</span>((rp, CompleteLister::One(p)))
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>parent = get_parent(path);
                     <span class="kw">let </span>(rp, p) = <span class="self">self</span>.inner.list(parent, args).<span class="kw">await</span><span class="question-mark">?</span>;
                     <span class="kw">let </span>p = PrefixLister::new(p, path);
-                    <span class="prelude-val">Ok</span>((rp, CompleteLister::NeedPrefix(p)))
+                    <span class="prelude-val">Ok</span>((rp, CompleteLister::Three(p)))
                 }
             }
         }
@@ -1475,41 +1418,47 @@
             <span class="comment">// - If service can list_with_recursive, we can forward list to it directly.
             </span>(<span class="kw">_</span>, <span class="bool-val">true</span>) =&gt; {
                 <span class="kw">let </span>(rp, p) = <span class="self">self</span>.inner.blocking_list(path, args)<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((rp, CompleteLister::AlreadyComplete(p)))
+                <span class="prelude-val">Ok</span>((rp, CompleteLister::One(p)))
             }
-            <span class="comment">// If recursive is true but service can&#39;t list_with_recursive
+            <span class="comment">// If recursive is true but service can't list_with_recursive
             </span>(<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
-                <span class="kw">let </span>p = FlatLister::new(<span class="self">self</span>.inner.clone(), path);
-                <span class="prelude-val">Ok</span>((RpList::default(), CompleteLister::NeedFlat(p)))
+                <span class="comment">// Forward path that ends with /
+                </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) {
+                    <span class="kw">let </span>p = FlatLister::new(<span class="self">self</span>.inner.clone(), path);
+                    <span class="prelude-val">Ok</span>((RpList::default(), CompleteLister::Two(p)))
+                } <span class="kw">else </span>{
+                    <span class="kw">let </span>parent = get_parent(path);
+                    <span class="kw">let </span>p = FlatLister::new(<span class="self">self</span>.inner.clone(), parent);
+                    <span class="kw">let </span>p = PrefixLister::new(p, path);
+                    <span class="prelude-val">Ok</span>((RpList::default(), CompleteLister::Four(p)))
+                }
             }
-            <span class="comment">// If recursive and service doesn&#39;t support list_with_recursive, we need to handle
+            <span class="comment">// If recursive and service doesn't support list_with_recursive, we need to handle
             // list prefix by ourselves.
             </span>(<span class="bool-val">false</span>, <span class="bool-val">false</span>) =&gt; {
                 <span class="comment">// Forward path that ends with /
-                </span><span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) {
+                </span><span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) {
                     <span class="kw">let </span>(rp, p) = <span class="self">self</span>.inner.blocking_list(path, args)<span class="question-mark">?</span>;
-                    <span class="prelude-val">Ok</span>((rp, CompleteLister::AlreadyComplete(p)))
+                    <span class="prelude-val">Ok</span>((rp, CompleteLister::One(p)))
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>parent = get_parent(path);
                     <span class="kw">let </span>(rp, p) = <span class="self">self</span>.inner.blocking_list(parent, args)<span class="question-mark">?</span>;
                     <span class="kw">let </span>p = PrefixLister::new(p, path);
-                    <span class="prelude-val">Ok</span>((rp, CompleteLister::NeedPrefix(p)))
+                    <span class="prelude-val">Ok</span>((rp, CompleteLister::Three(p)))
                 }
             }
         }
     }
 }
 
-<span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
-#[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">"wasm32"</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">"wasm32"</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>CompleteAccessor&lt;A&gt; {
     <span class="kw">type </span>Inner = A;
     <span class="kw">type </span>Reader = CompleteReader&lt;A, A::Reader&gt;;
     <span class="kw">type </span>BlockingReader = CompleteReader&lt;A, A::BlockingReader&gt;;
-    <span class="kw">type </span>Writer = oio::TwoWaysWriter&lt;
-        CompleteWriter&lt;A::Writer&gt;,
-        oio::ExactBufWriter&lt;CompleteWriter&lt;A::Writer&gt;&gt;,
-    &gt;;
+    <span class="kw">type </span>Writer =
+        TwoWays&lt;CompleteWriter&lt;A::Writer&gt;, oio::ExactBufWriter&lt;CompleteWriter&lt;A::Writer&gt;&gt;&gt;;
     <span class="kw">type </span>BlockingWriter = CompleteWriter&lt;A::BlockingWriter&gt;;
     <span class="kw">type </span>Lister = CompleteLister&lt;A, A::Lister&gt;;
     <span class="kw">type </span>BlockingLister = CompleteLister&lt;A, A::BlockingLister&gt;;
@@ -1548,7 +1497,7 @@
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unsupported,
                 <span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                    <span class="string">&quot;service {} doesn&#39;t support operation write with append&quot;</span>,
+                    <span class="string">"service {} doesn't support operation write with append"</span>,
                     <span class="self">self</span>.info().scheme()
                 ),
             ));
@@ -1575,8 +1524,8 @@
         <span class="kw">let </span>w = CompleteWriter::new(w);
 
         <span class="kw">let </span>w = <span class="kw">match </span>buffer_size {
-            <span class="prelude-val">None </span>=&gt; oio::TwoWaysWriter::One(w),
-            <span class="prelude-val">Some</span>(size) =&gt; oio::TwoWaysWriter::Two(oio::ExactBufWriter::new(w, size)),
+            <span class="prelude-val">None </span>=&gt; TwoWays::One(w),
+            <span class="prelude-val">Some</span>(size) =&gt; TwoWays::Two(oio::ExactBufWriter::new(w, size)),
         };
 
         <span class="prelude-val">Ok</span>((rp, w))
@@ -1658,7 +1607,7 @@
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::Unsupported,
                 <span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                    <span class="string">&quot;service {} doesn&#39;t support operation write with append&quot;</span>,
+                    <span class="string">"service {} doesn't support operation write with append"</span>,
                     <span class="self">self</span>.info().scheme()
                 ),
             ));
@@ -1710,129 +1659,18 @@
     }
 }
 
-<span class="kw">pub enum </span>CompleteReader&lt;A: Accessor, R&gt; {
-    AlreadyComplete(LazyReader&lt;A, R&gt;),
-    NeedSeekable(RangeReader&lt;A, R&gt;),
-    NeedStreamable(FileReader&lt;A, R&gt;),
-    NeedBoth(StreamableReader&lt;RangeReader&lt;A, R&gt;&gt;),
-}
+<span class="kw">pub type </span>CompleteReader&lt;A, R&gt; =
+    TwoWays&lt;InnerCompleteReader&lt;A, R&gt;, BufferReader&lt;InnerCompleteReader&lt;A, R&gt;&gt;&gt;;
 
-<span class="kw">impl</span>&lt;A, R&gt; oio::Read <span class="kw">for </span>CompleteReader&lt;A, R&gt;
-<span class="kw">where
-    </span>A: Accessor&lt;Reader = R&gt;,
-    R: oio::Read,
-{
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
-        <span class="kw">use </span>CompleteReader::<span class="kw-2">*</span>;
+<span class="kw">type </span>InnerCompleteReader&lt;A, R&gt; = FourWays&lt;
+    LazyReader&lt;A, R&gt;,
+    FileReader&lt;A, R&gt;,
+    RangeReader&lt;A, R&gt;,
+    StreamableReader&lt;RangeReader&lt;A, R&gt;&gt;,
+&gt;;
 
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(r) =&gt; r.poll_read(cx, buf),
-            NeedSeekable(r) =&gt; r.poll_read(cx, buf),
-            NeedStreamable(r) =&gt; r.poll_read(cx, buf),
-            NeedBoth(r) =&gt; r.poll_read(cx, buf),
-        }
-    }
-
-    <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, pos: io::SeekFrom) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;u64&gt;&gt; {
-        <span class="kw">use </span>CompleteReader::<span class="kw-2">*</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(r) =&gt; r.poll_seek(cx, pos),
-            NeedSeekable(r) =&gt; r.poll_seek(cx, pos),
-            NeedStreamable(r) =&gt; r.poll_seek(cx, pos),
-            NeedBoth(r) =&gt; r.poll_seek(cx, pos),
-        }
-    }
-
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
-        <span class="kw">use </span>CompleteReader::<span class="kw-2">*</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(r) =&gt; r.poll_next(cx),
-            NeedSeekable(r) =&gt; r.poll_next(cx),
-            NeedStreamable(r) =&gt; r.poll_next(cx),
-            NeedBoth(r) =&gt; r.poll_next(cx),
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;A, R&gt; oio::BlockingRead <span class="kw">for </span>CompleteReader&lt;A, R&gt;
-<span class="kw">where
-    </span>A: Accessor&lt;BlockingReader = R&gt;,
-    R: oio::BlockingRead,
-{
-    <span class="kw">fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-        <span class="kw">use </span>CompleteReader::<span class="kw-2">*</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(r) =&gt; r.read(buf),
-            NeedSeekable(r) =&gt; r.read(buf),
-            NeedStreamable(r) =&gt; r.read(buf),
-            NeedBoth(r) =&gt; r.read(buf),
-        }
-    }
-
-    <span class="kw">fn </span>seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, pos: io::SeekFrom) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-        <span class="kw">use </span>CompleteReader::<span class="kw-2">*</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(r) =&gt; r.seek(pos),
-            NeedSeekable(r) =&gt; r.seek(pos),
-            NeedStreamable(r) =&gt; r.seek(pos),
-            NeedBoth(r) =&gt; r.seek(pos),
-        }
-    }
-
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt; {
-        <span class="kw">use </span>CompleteReader::<span class="kw-2">*</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(r) =&gt; r.next(),
-            NeedSeekable(r) =&gt; r.next(),
-            NeedStreamable(r) =&gt; r.next(),
-            NeedBoth(r) =&gt; r.next(),
-        }
-    }
-}
-
-<span class="kw">pub enum </span>CompleteLister&lt;A: Accessor, P&gt; {
-    AlreadyComplete(P),
-    NeedFlat(FlatLister&lt;Arc&lt;A&gt;, P&gt;),
-    NeedPrefix(PrefixLister&lt;P&gt;),
-}
-
-<span class="kw">impl</span>&lt;A, P&gt; oio::List <span class="kw">for </span>CompleteLister&lt;A, P&gt;
-<span class="kw">where
-    </span>A: Accessor&lt;Lister = P&gt;,
-    P: oio::List,
-{
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt;&gt; {
-        <span class="kw">use </span>CompleteLister::<span class="kw-2">*</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(p) =&gt; p.poll_next(cx),
-            NeedFlat(p) =&gt; p.poll_next(cx),
-            NeedPrefix(p) =&gt; p.poll_next(cx),
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;A, P&gt; oio::BlockingList <span class="kw">for </span>CompleteLister&lt;A, P&gt;
-<span class="kw">where
-    </span>A: Accessor&lt;BlockingLister = P&gt;,
-    P: oio::BlockingList,
-{
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;oio::Entry&gt;&gt; {
-        <span class="kw">use </span>CompleteLister::<span class="kw-2">*</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            AlreadyComplete(p) =&gt; p.next(),
-            NeedFlat(p) =&gt; p.next(),
-            NeedPrefix(p) =&gt; p.next(),
-        }
-    }
-}
+<span class="kw">pub type </span>CompleteLister&lt;A, P&gt; =
+    FourWays&lt;P, FlatLister&lt;Arc&lt;A&gt;, P&gt;, PrefixLister&lt;P&gt;, PrefixLister&lt;FlatLister&lt;Arc&lt;A&gt;, P&gt;&gt;&gt;;
 
 <span class="kw">pub struct </span>CompleteWriter&lt;W&gt; {
     inner: <span class="prelude-ty">Option</span>&lt;W&gt;,
@@ -1851,7 +1689,7 @@
     <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">if </span><span class="self">self</span>.inner.is_some() {
             <span class="comment">// Do we need to panic here?
-            </span><span class="macro">log::warn!</span>(<span class="string">&quot;writer has not been closed or aborted, must be a bug&quot;</span>)
+            </span><span class="macro">log::warn!</span>(<span class="string">"writer has not been closed or aborted, must be a bug"</span>)
         }
     }
 }
@@ -1860,18 +1698,18 @@
 <span class="kw">where
     </span>W: oio::Write,
 {
-    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
+            Error::new(ErrorKind::Unexpected, <span class="string">"writer has been closed or aborted"</span>)
         })<span class="question-mark">?</span>;
         <span class="kw">let </span>n = <span class="macro">ready!</span>(w.poll_write(cx, bs))<span class="question-mark">?</span>;
 
         Poll::Ready(<span class="prelude-val">Ok</span>(n))
     }
 
-    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
         <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
+            Error::new(ErrorKind::Unexpected, <span class="string">"writer has been closed or aborted"</span>)
         })<span class="question-mark">?</span>;
 
         <span class="macro">ready!</span>(w.poll_close(cx))<span class="question-mark">?</span>;
@@ -1880,9 +1718,9 @@
         Poll::Ready(<span class="prelude-val">Ok</span>(()))
     }
 
-    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
         <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
+            Error::new(ErrorKind::Unexpected, <span class="string">"writer has been closed or aborted"</span>)
         })<span class="question-mark">?</span>;
 
         <span class="macro">ready!</span>(w.poll_abort(cx))<span class="question-mark">?</span>;
@@ -1898,7 +1736,7 @@
 {
     <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
+            Error::new(ErrorKind::Unexpected, <span class="string">"writer has been closed or aborted"</span>)
         })<span class="question-mark">?</span>;
         <span class="kw">let </span>n = w.write(bs)<span class="question-mark">?</span>;
 
@@ -1907,7 +1745,7 @@
 
     <span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>w = <span class="self">self</span>.inner.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;writer has been closed or aborted&quot;</span>)
+            Error::new(ErrorKind::Unexpected, <span class="string">"writer has been closed or aborted"</span>)
         })<span class="question-mark">?</span>;
 
         w.close()<span class="question-mark">?</span>;
@@ -1931,14 +1769,14 @@
         capability: Capability,
     }
 
-    <span class="attr">#[cfg_attr(not(target_arch = <span class="string">&quot;wasm32&quot;</span>), async_trait)]
-    #[cfg_attr(target_arch = <span class="string">&quot;wasm32&quot;</span>, async_trait(<span class="question-mark">?</span>Send))]
+    <span class="attr">#[cfg_attr(not(target_arch = <span class="string">"wasm32"</span>), async_trait)]
+    #[cfg_attr(target_arch = <span class="string">"wasm32"</span>, async_trait(<span class="question-mark">?</span>Send))]
     </span><span class="kw">impl </span>Accessor <span class="kw">for </span>MockService {
         <span class="kw">type </span>Reader = oio::Reader;
-        <span class="kw">type </span>BlockingReader = oio::BlockingReader;
         <span class="kw">type </span>Writer = oio::Writer;
-        <span class="kw">type </span>BlockingWriter = oio::BlockingWriter;
         <span class="kw">type </span>Lister = oio::Lister;
+        <span class="kw">type </span>BlockingReader = oio::BlockingReader;
+        <span class="kw">type </span>BlockingWriter = oio::BlockingWriter;
         <span class="kw">type </span>BlockingLister = oio::BlockingLister;
 
         <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -1952,24 +1790,16 @@
             <span class="prelude-val">Ok</span>(RpCreateDir {})
         }
 
+        <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+            <span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::Unknown)))
+        }
+
         <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
             <span class="prelude-val">Ok</span>((RpRead::new(), Box::new(oio::Cursor::new())))
         }
 
         <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
             <span class="prelude-val">Ok</span>((RpWrite::new(), Box::new(())))
-        }
-
-        <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
-            <span class="prelude-val">Ok</span>(RpCopy {})
-        }
-
-        <span class="kw">async fn </span>rename(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
-            <span class="prelude-val">Ok</span>(RpRename {})
-        }
-
-        <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-            <span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::Unknown)))
         }
 
         <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
@@ -1980,10 +1810,18 @@
             <span class="prelude-val">Ok</span>((RpList {}, Box::new(())))
         }
 
+        <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+            <span class="prelude-val">Ok</span>(RpCopy {})
+        }
+
+        <span class="kw">async fn </span>rename(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
+            <span class="prelude-val">Ok</span>(RpRename {})
+        }
+
         <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
             <span class="prelude-val">Ok</span>(RpPresign::new(PresignedRequest::new(
                 HttpMethod::POST,
-                <span class="string">&quot;https://example.com/presign&quot;</span>.parse().expect(<span class="string">&quot;should parse&quot;</span>),
+                <span class="string">"https://example.com/presign"</span>.parse().expect(<span class="string">"should parse"</span>),
                 HeaderMap::new(),
             )))
         }
@@ -1998,7 +1836,7 @@
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_read() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.read(<span class="string">&quot;path&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.read(<span class="string">"path"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2007,14 +1845,14 @@
             stat: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.read(<span class="string">&quot;path&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.read(<span class="string">"path"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_stat() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.stat(<span class="string">&quot;path&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.stat(<span class="string">"path"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2022,14 +1860,14 @@
             stat: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.stat(<span class="string">&quot;path&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.stat(<span class="string">"path"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_writer() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.write(<span class="string">&quot;path&quot;</span>, <span class="macro">vec!</span>[]).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.write(<span class="string">"path"</span>, <span class="macro">vec!</span>[]).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2037,14 +1875,14 @@
             write: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.writer(<span class="string">&quot;path&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.writer(<span class="string">"path"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_create_dir() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.create_dir(<span class="string">&quot;path/&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.create_dir(<span class="string">"path/"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2052,14 +1890,14 @@
             create_dir: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.create_dir(<span class="string">&quot;path/&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.create_dir(<span class="string">"path/"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_delete() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.delete(<span class="string">&quot;path&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.delete(<span class="string">"path"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2067,14 +1905,14 @@
             delete: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.delete(<span class="string">&quot;path&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.delete(<span class="string">"path"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_copy() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.copy(<span class="string">&quot;path_a&quot;</span>, <span class="string">&quot;path_b&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.copy(<span class="string">"path_a"</span>, <span class="string">"path_b"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2082,14 +1920,14 @@
             copy: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.copy(<span class="string">&quot;path_a&quot;</span>, <span class="string">&quot;path_b&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.copy(<span class="string">"path_a"</span>, <span class="string">"path_b"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_rename() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.rename(<span class="string">&quot;path_a&quot;</span>, <span class="string">&quot;path_b&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.rename(<span class="string">"path_a"</span>, <span class="string">"path_b"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2097,14 +1935,14 @@
             rename: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.rename(<span class="string">&quot;path_a&quot;</span>, <span class="string">&quot;path_b&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.rename(<span class="string">"path_a"</span>, <span class="string">"path_b"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_list() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.list(<span class="string">&quot;path/&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.list(<span class="string">"path/"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2113,14 +1951,14 @@
             list_with_recursive: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.list(<span class="string">&quot;path/&quot;</span>).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.list(<span class="string">"path/"</span>).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 
     <span class="attr">#[tokio::test]
     </span><span class="kw">async fn </span>test_presign() {
         <span class="kw">let </span>op = new_test_operator(Capability::default());
-        <span class="kw">let </span>res = op.presign_read(<span class="string">&quot;path&quot;</span>, Duration::from_secs(<span class="number">1</span>)).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.presign_read(<span class="string">"path"</span>, Duration::from_secs(<span class="number">1</span>)).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_err());
         <span class="macro">assert_eq!</span>(res.unwrap_err().kind(), ErrorKind::Unsupported);
 
@@ -2128,7 +1966,7 @@
             presign: <span class="bool-val">true</span>,
             ..Default::default()
         });
-        <span class="kw">let </span>res = op.presign_read(<span class="string">&quot;path&quot;</span>, Duration::from_secs(<span class="number">1</span>)).<span class="kw">await</span>;
+        <span class="kw">let </span>res = op.presign_read(<span class="string">"path"</span>, Duration::from_secs(<span class="number">1</span>)).<span class="kw">await</span>;
         <span class="macro">assert!</span>(res.is_ok())
     }
 }

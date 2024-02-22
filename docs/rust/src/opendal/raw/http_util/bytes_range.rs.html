@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/raw/http_util/bytes_range.rs`."><title>bytes_range.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/raw/http_util/bytes_range.rs`."><title>bytes_range.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -341,14 +343,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -381,7 +383,7 @@
 /// # Notes
 ///
 /// BytesRange support construct via rust native range syntax like `..`, `1024..`, `..2048`.
-/// But it&#39;s has different semantic on `RangeTo`: `..&lt;end&gt;`.
+/// But it's has different semantic on `RangeTo`: `..&lt;end&gt;`.
 /// In rust, `..&lt;end&gt;` means all items that `&lt; end`, but in BytesRange, `..&lt;end&gt;` means the
 /// tailing part of content, a.k.a, the last `&lt;end&gt;` bytes of content.
 ///
@@ -422,7 +424,7 @@
 
     <span class="doccomment">/// Check if this range is full of this content.
     ///
-    /// If this range is full, we don&#39;t need to specify it in http request.
+    /// If this range is full, we don't need to specify it in http request.
     </span><span class="kw">pub fn </span>is_full(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.<span class="number">0</span>.unwrap_or_default() == <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.<span class="number">1</span>.is_none()
     }
@@ -434,7 +436,7 @@
     /// - `bytes=-1023` means get the suffix of the file.
     /// - `bytes=0-1023` means get the first 1024 bytes, we must set the end to 1023.
     </span><span class="kw">pub fn </span>to_header(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
-        <span class="macro">format!</span>(<span class="string">&quot;bytes={self}&quot;</span>)
+        <span class="macro">format!</span>(<span class="string">"bytes={self}"</span>)
     }
 
     <span class="doccomment">/// Convert bytes range into rust range.
@@ -484,12 +486,12 @@
 }
 
 <span class="kw">impl </span>Display <span class="kw">for </span>BytesRange {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         <span class="kw">match </span>(<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>) {
-            (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{offset}-&quot;</span>),
-            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;-{size}&quot;</span>),
-            (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}-{}&quot;</span>, offset, offset + size - <span class="number">1</span>),
-            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;0-&quot;</span>),
+            (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"{offset}-"</span>),
+            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(size)) =&gt; <span class="macro">write!</span>(f, <span class="string">"-{size}"</span>),
+            (<span class="prelude-val">Some</span>(offset), <span class="prelude-val">Some</span>(size)) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}-{}"</span>, offset, offset + size - <span class="number">1</span>),
+            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"0-"</span>),
         }
     }
 }
@@ -498,29 +500,29 @@
     <span class="kw">type </span><span class="prelude-val">Err </span>= Error;
 
     <span class="kw">fn </span>from_str(value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">let </span>s = value.strip_prefix(<span class="string">&quot;bytes=&quot;</span>).ok_or_else(|| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;header range is invalid&quot;</span>)
-                .with_operation(<span class="string">&quot;BytesRange::from_str&quot;</span>)
-                .with_context(<span class="string">&quot;value&quot;</span>, value)
+        <span class="kw">let </span>s = value.strip_prefix(<span class="string">"bytes="</span>).ok_or_else(|| {
+            Error::new(ErrorKind::Unexpected, <span class="string">"header range is invalid"</span>)
+                .with_operation(<span class="string">"BytesRange::from_str"</span>)
+                .with_context(<span class="string">"value"</span>, value)
         })<span class="question-mark">?</span>;
 
-        <span class="kw">if </span>s.contains(<span class="string">&#39;,&#39;</span>) {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">&quot;header range is invalid&quot;</span>)
-                .with_operation(<span class="string">&quot;BytesRange::from_str&quot;</span>)
-                .with_context(<span class="string">&quot;value&quot;</span>, value));
+        <span class="kw">if </span>s.contains(<span class="string">','</span>) {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">"header range is invalid"</span>)
+                .with_operation(<span class="string">"BytesRange::from_str"</span>)
+                .with_context(<span class="string">"value"</span>, value));
         }
 
-        <span class="kw">let </span>v = s.split(<span class="string">&#39;-&#39;</span>).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+        <span class="kw">let </span>v = s.split(<span class="string">'-'</span>).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
         <span class="kw">if </span>v.len() != <span class="number">2 </span>{
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">&quot;header range is invalid&quot;</span>)
-                .with_operation(<span class="string">&quot;BytesRange::from_str&quot;</span>)
-                .with_context(<span class="string">&quot;value&quot;</span>, value));
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">"header range is invalid"</span>)
+                .with_operation(<span class="string">"BytesRange::from_str"</span>)
+                .with_context(<span class="string">"value"</span>, value));
         }
 
         <span class="kw">let </span>parse_int_error = |e: std::num::ParseIntError| {
-            Error::new(ErrorKind::Unexpected, <span class="string">&quot;header range is invalid&quot;</span>)
-                .with_operation(<span class="string">&quot;BytesRange::from_str&quot;</span>)
-                .with_context(<span class="string">&quot;value&quot;</span>, value)
+            Error::new(ErrorKind::Unexpected, <span class="string">"header range is invalid"</span>)
+                .with_operation(<span class="string">"BytesRange::from_str"</span>)
+                .with_context(<span class="string">"value"</span>, value)
                 .set_source(e)
         };
 
@@ -572,31 +574,31 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_bytes_range_to_string() {
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1024</span>));
-        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">&quot;-1024&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">"-1024"</span>);
 
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">1024</span>));
-        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">&quot;0-1023&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">"0-1023"</span>);
 
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">1024</span>), <span class="prelude-val">None</span>);
-        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">&quot;1024-&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">"1024-"</span>);
 
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">1024</span>), <span class="prelude-val">Some</span>(<span class="number">1024</span>));
-        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">&quot;1024-2047&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_string(), <span class="string">"1024-2047"</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_bytes_range_to_header() {
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1024</span>));
-        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">&quot;bytes=-1024&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">"bytes=-1024"</span>);
 
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">1024</span>));
-        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">&quot;bytes=0-1023&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">"bytes=0-1023"</span>);
 
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">1024</span>), <span class="prelude-val">None</span>);
-        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">&quot;bytes=1024-&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">"bytes=1024-"</span>);
 
         <span class="kw">let </span>h = BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">1024</span>), <span class="prelude-val">Some</span>(<span class="number">1024</span>));
-        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">&quot;bytes=1024-2047&quot;</span>);
+        <span class="macro">assert_eq!</span>(h.to_header(), <span class="string">"bytes=1024-2047"</span>);
     }
 
     <span class="attr">#[test]
@@ -619,20 +621,20 @@
     </span><span class="kw">fn </span>test_bytes_range_from_str() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
             (
-                <span class="string">&quot;range-start&quot;</span>,
-                <span class="string">&quot;bytes=123-&quot;</span>,
+                <span class="string">"range-start"</span>,
+                <span class="string">"bytes=123-"</span>,
                 BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">123</span>), <span class="prelude-val">None</span>),
             ),
-            (<span class="string">&quot;suffix&quot;</span>, <span class="string">&quot;bytes=-123&quot;</span>, BytesRange::new(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">124</span>))),
+            (<span class="string">"suffix"</span>, <span class="string">"bytes=-123"</span>, BytesRange::new(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">124</span>))),
             (
-                <span class="string">&quot;range&quot;</span>,
-                <span class="string">&quot;bytes=123-124&quot;</span>,
+                <span class="string">"range"</span>,
+                <span class="string">"bytes=123-124"</span>,
                 BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">123</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>)),
             ),
-            (<span class="string">&quot;one byte&quot;</span>, <span class="string">&quot;bytes=0-0&quot;</span>, BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>))),
+            (<span class="string">"one byte"</span>, <span class="string">"bytes=0-0"</span>, BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>))),
             (
-                <span class="string">&quot;lower case header&quot;</span>,
-                <span class="string">&quot;bytes=0-0&quot;</span>,
+                <span class="string">"lower case header"</span>,
+                <span class="string">"bytes=0-0"</span>,
                 BytesRange::new(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>)),
             ),
         ];
@@ -640,7 +642,7 @@
         <span class="kw">for </span>(name, input, expected) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = input.parse()<span class="question-mark">?</span>;
 
-            <span class="macro">assert_eq!</span>(expected, actual, <span class="string">&quot;{name}&quot;</span>)
+            <span class="macro">assert_eq!</span>(expected, actual, <span class="string">"{name}"</span>)
         }
 
         <span class="prelude-val">Ok</span>(())
@@ -648,27 +650,27 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_apply_on_bytes() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>bs = Bytes::from_static(<span class="string">&quot;Hello, World!&quot;</span>.as_bytes());
+        <span class="kw">let </span>bs = Bytes::from_static(<span class="string">"Hello, World!"</span>.as_bytes());
 
         <span class="kw">let </span>cases = <span class="macro">vec!</span>[
-            (<span class="string">&quot;full&quot;</span>, (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>), <span class="string">&quot;Hello, World!&quot;</span>),
-            (<span class="string">&quot;with_offset&quot;</span>, (<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>), <span class="string">&quot;ello, World!&quot;</span>),
-            (<span class="string">&quot;with_size&quot;</span>, (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>)), <span class="string">&quot;!&quot;</span>),
-            (<span class="string">&quot;with_larger_size&quot;</span>, (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">100</span>)), <span class="string">&quot;Hello, World!&quot;</span>),
-            (<span class="string">&quot;with_offset_and_size&quot;</span>, (<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>)), <span class="string">&quot;e&quot;</span>),
+            (<span class="string">"full"</span>, (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>), <span class="string">"Hello, World!"</span>),
+            (<span class="string">"with_offset"</span>, (<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>), <span class="string">"ello, World!"</span>),
+            (<span class="string">"with_size"</span>, (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>)), <span class="string">"!"</span>),
+            (<span class="string">"with_larger_size"</span>, (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">100</span>)), <span class="string">"Hello, World!"</span>),
+            (<span class="string">"with_offset_and_size"</span>, (<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>)), <span class="string">"e"</span>),
             (
-                <span class="string">&quot;with_offset_and_larger_size&quot;</span>,
+                <span class="string">"with_offset_and_larger_size"</span>,
                 (<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">100</span>)),
-                <span class="string">&quot;ello, World!&quot;</span>,
+                <span class="string">"ello, World!"</span>,
             ),
-            (<span class="string">&quot;with_empty_offset&quot;</span>, (<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">100</span>)), <span class="string">&quot;Hello, World!&quot;</span>),
+            (<span class="string">"with_empty_offset"</span>, (<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">100</span>)), <span class="string">"Hello, World!"</span>),
         ];
 
         <span class="kw">for </span>(name, input, expected) <span class="kw">in </span>cases {
             <span class="kw">let </span>actual = BytesRange(input.<span class="number">0</span>, input.<span class="number">1</span>).apply_on_bytes(bs.clone());
             <span class="kw">let </span>actual = String::from_utf8_lossy(<span class="kw-2">&amp;</span>actual);
 
-            <span class="macro">assert_eq!</span>(expected, <span class="kw-2">&amp;</span>actual, <span class="string">&quot;{name}&quot;</span>);
+            <span class="macro">assert_eq!</span>(expected, <span class="kw-2">&amp;</span>actual, <span class="string">"{name}"</span>);
         }
 
         <span class="prelude-val">Ok</span>(())

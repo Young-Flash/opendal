@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/raw/http_util/client.rs`."><title>client.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/raw/http_util/client.rs`."><title>client.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -205,19 +207,22 @@
 <a href="#205" id="205">205</a>
 <a href="#206" id="206">206</a>
 <a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -233,6 +238,7 @@
 <span class="kw">use </span>http::Response;
 
 <span class="kw">use </span><span class="kw">super</span>::body::IncomingAsyncBody;
+<span class="kw">use </span><span class="kw">super</span>::parse_content_encoding;
 <span class="kw">use </span><span class="kw">super</span>::parse_content_length;
 <span class="kw">use </span><span class="kw">super</span>::AsyncBody;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
@@ -248,10 +254,10 @@
     client: reqwest::Client,
 }
 
-<span class="doccomment">/// We don&#39;t want users to know details about our clients.
+<span class="doccomment">/// We don't want users to know details about our clients.
 </span><span class="kw">impl </span>Debug <span class="kw">for </span>HttpClient {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;HttpClient&quot;</span>).finish()
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"HttpClient"</span>).finish()
     }
 }
 
@@ -262,33 +268,33 @@
     }
 
     <span class="doccomment">/// Build a new http client in async context.
-    </span><span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+    </span><span class="attr">#[cfg(not(target_arch = <span class="string">"wasm32"</span>))]
     </span><span class="kw">pub fn </span>build(<span class="kw-2">mut </span>builder: reqwest::ClientBuilder) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="comment">// Make sure we don&#39;t enable auto gzip decompress.
+        <span class="comment">// Make sure we don't enable auto gzip decompress.
         </span>builder = builder.no_gzip();
-        <span class="comment">// Make sure we don&#39;t enable auto brotli decompress.
+        <span class="comment">// Make sure we don't enable auto brotli decompress.
         </span>builder = builder.no_brotli();
-        <span class="comment">// Make sure we don&#39;t enable auto deflate decompress.
+        <span class="comment">// Make sure we don't enable auto deflate decompress.
         </span>builder = builder.no_deflate();
-        <span class="comment">// Make sure we don&#39;t wait a connection establishment forever.
+        <span class="comment">// Make sure we don't wait a connection establishment forever.
         </span>builder = builder.connect_timeout(DEFAULT_CONNECT_TIMEOUT);
 
-        <span class="attr">#[cfg(feature = <span class="string">&quot;trust-dns&quot;</span>)]
+        <span class="attr">#[cfg(feature = <span class="string">"trust-dns"</span>)]
         </span><span class="kw">let </span>builder = builder.trust_dns(<span class="bool-val">true</span>);
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             client: builder.build().map_err(|err| {
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;async client build failed&quot;</span>).set_source(err)
+                Error::new(ErrorKind::Unexpected, <span class="string">"async client build failed"</span>).set_source(err)
             })<span class="question-mark">?</span>,
         })
     }
 
     <span class="doccomment">/// Build a new http client in async context.
-    </span><span class="attr">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+    </span><span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
     </span><span class="kw">pub fn </span>build(<span class="kw-2">mut </span>builder: reqwest::ClientBuilder) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             client: builder.build().map_err(|err| {
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;async client build failed&quot;</span>).set_source(err)
+                Error::new(ErrorKind::Unexpected, <span class="string">"async client build failed"</span>).set_source(err)
             })<span class="question-mark">?</span>,
         })
     }
@@ -311,36 +317,36 @@
             </span>.client
             .request(
                 parts.method,
-                reqwest::Url::from_str(<span class="kw-2">&amp;</span>uri.to_string()).expect(<span class="string">&quot;input request url must be valid&quot;</span>),
+                reqwest::Url::from_str(<span class="kw-2">&amp;</span>uri.to_string()).expect(<span class="string">"input request url must be valid"</span>),
             )
             .headers(parts.headers);
 
-        <span class="comment">// Client under wasm doesn&#39;t support set version.
-        </span><span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+        <span class="comment">// Client under wasm doesn't support set version.
+        </span><span class="attr">#[cfg(not(target_arch = <span class="string">"wasm32"</span>))]
         </span>{
             req_builder = req_builder.version(parts.version);
         }
 
         req_builder = <span class="kw">match </span>body {
-            AsyncBody::Empty =&gt; req_builder.body(reqwest::Body::from(<span class="string">&quot;&quot;</span>)),
+            AsyncBody::Empty =&gt; req_builder.body(reqwest::Body::from(<span class="string">""</span>)),
             AsyncBody::Bytes(bs) =&gt; req_builder.body(reqwest::Body::from(bs)),
             AsyncBody::ChunkedBytes(bs) =&gt; {
-                <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+                <span class="attr">#[cfg(not(target_arch = <span class="string">"wasm32"</span>))]
                 </span>{
                     req_builder.body(reqwest::Body::wrap_stream(bs))
                 }
-                <span class="attr">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+                <span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
                 </span>{
                     <span class="kw">let </span>bs = oio::WriteBuf::bytes(<span class="kw-2">&amp;</span>bs, bs.len());
                     req_builder.body(reqwest::Body::from(bs))
                 }
             }
             AsyncBody::Stream(s) =&gt; {
-                <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+                <span class="attr">#[cfg(not(target_arch = <span class="string">"wasm32"</span>))]
                 </span>{
                     req_builder.body(reqwest::Body::wrap_stream(s))
                 }
-                <span class="attr">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+                <span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
                 </span>{
                     <span class="kw">let </span>bs = oio::StreamExt::collect(s).<span class="kw">await</span><span class="question-mark">?</span>;
                     req_builder.body(reqwest::Body::from(bs))
@@ -354,17 +360,17 @@
                 </span>err.is_builder() ||
                 <span class="comment">// Error returned by RedirectPolicy.
                 //
-                // We don&#39;t set this by hand, just don&#39;t allow retry.
+                // Don't retry error if we redirect too many.
                 </span>err.is_redirect() ||
-                <span class="comment">// We never use `Response::error_for_status`, just don&#39;t allow retry.
+                <span class="comment">// We never use `Response::error_for_status`, just don't allow retry.
                 //
                 // Status should be checked by our services.
                 </span>err.is_status()
             );
 
-            <span class="kw">let </span><span class="kw-2">mut </span>oerr = Error::new(ErrorKind::Unexpected, <span class="string">&quot;send async request&quot;</span>)
-                .with_operation(<span class="string">&quot;http_util::Client::send_async&quot;</span>)
-                .with_context(<span class="string">&quot;url&quot;</span>, uri.to_string())
+            <span class="kw">let </span><span class="kw-2">mut </span>oerr = Error::new(ErrorKind::Unexpected, <span class="string">"send http request"</span>)
+                .with_operation(<span class="string">"http_util::Client::send"</span>)
+                .with_context(<span class="string">"url"</span>, uri.to_string())
                 .set_source(err);
             <span class="kw">if </span>is_temporary {
                 oerr = oerr.set_temporary();
@@ -374,12 +380,14 @@
         })<span class="question-mark">?</span>;
 
         <span class="comment">// Get content length from header so that we can check it.
-        // If the request method is HEAD, we will ignore this.
-        </span><span class="kw">let </span>content_length = <span class="kw">if </span>is_head {
+        //
+        // - If the request method is HEAD, we will ignore content length.
+        // - If response contains content_encoding, we should omit it's content length.
+        </span><span class="kw">let </span>content_length = <span class="kw">if </span>is_head || parse_content_encoding(resp.headers())<span class="question-mark">?</span>.is_some() {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{
-            parse_content_length(resp.headers()).expect(<span class="string">&quot;response content length must be valid&quot;</span>)
-        };
+            parse_content_length(resp.headers())<span class="question-mark">?
+        </span>};
 
         <span class="kw">let </span><span class="kw-2">mut </span>hr = Response::builder()
             .status(resp.status())
@@ -387,8 +395,8 @@
             // it later.
             </span>.extension(uri.clone());
 
-        <span class="comment">// Response builder under wasm doesn&#39;t support set version.
-        </span><span class="attr">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+        <span class="comment">// Response builder under wasm doesn't support set version.
+        </span><span class="attr">#[cfg(not(target_arch = <span class="string">"wasm32"</span>))]
         </span>{
             hr = hr.version(resp.version());
         }
@@ -399,15 +407,15 @@
         <span class="kw">let </span>stream = resp.bytes_stream().map_err(<span class="kw">move </span>|err| {
             <span class="comment">// If stream returns a body related error, we can convert
             // it to interrupt so we can retry it.
-            </span>Error::new(ErrorKind::Unexpected, <span class="string">&quot;read data from http stream&quot;</span>)
+            </span>Error::new(ErrorKind::Unexpected, <span class="string">"read data from http stream"</span>)
                 .map(|v| <span class="kw">if </span>err.is_body() { v.set_temporary() } <span class="kw">else </span>{ v })
-                .with_context(<span class="string">&quot;url&quot;</span>, uri.to_string())
+                .with_context(<span class="string">"url"</span>, uri.to_string())
                 .set_source(err)
         });
 
         <span class="kw">let </span>body = IncomingAsyncBody::new(Box::new(oio::into_stream(stream)), content_length);
 
-        <span class="kw">let </span>resp = hr.body(body).expect(<span class="string">&quot;response must build succeed&quot;</span>);
+        <span class="kw">let </span>resp = hr.body(body).expect(<span class="string">"response must build succeed"</span>);
 
         <span class="prelude-val">Ok</span>(resp)
     }

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/huggingface/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/huggingface/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -352,14 +354,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -400,9 +402,9 @@
     ///
     /// Default is main.
     </span><span class="kw">pub </span>revision: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="doccomment">/// Root of this backend. Can be &quot;/path/to/dir&quot;.
+    <span class="doccomment">/// Root of this backend. Can be "/path/to/dir".
     ///
-    /// Default is &quot;/&quot;.
+    /// Default is "/".
     </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Token of this backend.
     ///
@@ -411,41 +413,41 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HuggingfaceConfig {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;HuggingfaceConfig&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"HuggingfaceConfig"</span>);
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(repo_type) = <span class="kw-2">&amp;</span><span class="self">self</span>.repo_type {
-            ds.field(<span class="string">&quot;repo_type&quot;</span>, <span class="kw-2">&amp;</span>repo_type);
+            ds.field(<span class="string">"repo_type"</span>, <span class="kw-2">&amp;</span>repo_type);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(repo_id) = <span class="kw-2">&amp;</span><span class="self">self</span>.repo_id {
-            ds.field(<span class="string">&quot;repo_id&quot;</span>, <span class="kw-2">&amp;</span>repo_id);
+            ds.field(<span class="string">"repo_id"</span>, <span class="kw-2">&amp;</span>repo_id);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(revision) = <span class="kw-2">&amp;</span><span class="self">self</span>.revision {
-            ds.field(<span class="string">&quot;revision&quot;</span>, <span class="kw-2">&amp;</span>revision);
+            ds.field(<span class="string">"revision"</span>, <span class="kw-2">&amp;</span>revision);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(root) = <span class="kw-2">&amp;</span><span class="self">self</span>.root {
-            ds.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span>root);
+            ds.field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span>root);
         }
         <span class="kw">if </span><span class="self">self</span>.token.is_some() {
-            ds.field(<span class="string">&quot;token&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
+            ds.field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="string">"&lt;redacted&gt;"</span>);
         }
 
         ds.finish()
     }
 }
 
-<span class="doccomment">/// [Huggingface](https://huggingface.co/docs/huggingface_hub/package_reference/hf_api)&#39;s API support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+<span class="doccomment">/// [Huggingface](https://huggingface.co/docs/huggingface_hub/package_reference/hf_api)'s API support.
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default, Clone)]
 </span><span class="kw">pub struct </span>HuggingfaceBuilder {
     config: HuggingfaceConfig,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HuggingfaceBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"Builder"</span>);
 
-        ds.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+        ds.field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
         ds.finish()
     }
 }
@@ -470,10 +472,10 @@
     ///
     /// Repo id consists of the account name and the repository name.
     ///
-    /// For example, model&#39;s repo id looks like:
+    /// For example, model's repo id looks like:
     /// - meta-llama/Llama-2-7b
     ///
-    /// Dataset&#39;s repo id looks like:
+    /// Dataset's repo id looks like:
     /// - databricks/databricks-dolly-15k
     </span><span class="kw">pub fn </span>repo_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, repo_id: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!repo_id.is_empty() {
@@ -523,54 +525,54 @@
 
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>config = HuggingfaceConfig::deserialize(ConfigDeserializer::new(map))
-            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
+            .expect(<span class="string">"config deserialize must succeed"</span>);
 
         HuggingfaceBuilder { config }
     }
 
     <span class="doccomment">/// Build a HuggingfaceBackend.
     </span><span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
         <span class="kw">let </span>repo_type = <span class="kw">match </span><span class="self">self</span>.config.repo_type.as_deref() {
-            <span class="prelude-val">Some</span>(<span class="string">&quot;model&quot;</span>) =&gt; <span class="prelude-val">Ok</span>(RepoType::Model),
-            <span class="prelude-val">Some</span>(<span class="string">&quot;dataset&quot;</span>) =&gt; <span class="prelude-val">Ok</span>(RepoType::Dataset),
-            <span class="prelude-val">Some</span>(<span class="string">&quot;space&quot;</span>) =&gt; <span class="prelude-val">Err</span>(Error::new(
+            <span class="prelude-val">Some</span>(<span class="string">"model"</span>) =&gt; <span class="prelude-val">Ok</span>(RepoType::Model),
+            <span class="prelude-val">Some</span>(<span class="string">"dataset"</span>) =&gt; <span class="prelude-val">Ok</span>(RepoType::Dataset),
+            <span class="prelude-val">Some</span>(<span class="string">"space"</span>) =&gt; <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ConfigInvalid,
-                <span class="string">&quot;repo type \&quot;space\&quot; is unsupported&quot;</span>,
+                <span class="string">"repo type \"space\" is unsupported"</span>,
             )),
             <span class="prelude-val">Some</span>(repo_type) =&gt; <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ConfigInvalid,
-                <span class="macro">format!</span>(<span class="string">&quot;unknown repo_type: {}&quot;</span>, repo_type).as_str(),
+                <span class="macro">format!</span>(<span class="string">"unknown repo_type: {}"</span>, repo_type).as_str(),
             )
-            .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-            .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Huggingface)),
+            .with_operation(<span class="string">"Builder::build"</span>)
+            .with_context(<span class="string">"service"</span>, Scheme::Huggingface)),
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(RepoType::Model),
         }<span class="question-mark">?</span>;
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use repo_type: {:?}&quot;</span>, <span class="kw-2">&amp;</span>repo_type);
+        <span class="macro">debug!</span>(<span class="string">"backend use repo_type: {:?}"</span>, <span class="kw-2">&amp;</span>repo_type);
 
         <span class="kw">let </span>repo_id = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.repo_id {
             <span class="prelude-val">Some</span>(repo_id) =&gt; <span class="prelude-val">Ok</span>(repo_id.clone()),
-            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;repo_id is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Huggingface)),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"repo_id is empty"</span>)
+                .with_operation(<span class="string">"Builder::build"</span>)
+                .with_context(<span class="string">"service"</span>, Scheme::Huggingface)),
         }<span class="question-mark">?</span>;
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use repo_id: {}&quot;</span>, <span class="kw-2">&amp;</span>repo_id);
+        <span class="macro">debug!</span>(<span class="string">"backend use repo_id: {}"</span>, <span class="kw-2">&amp;</span>repo_id);
 
         <span class="kw">let </span>revision = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.revision {
             <span class="prelude-val">Some</span>(revision) =&gt; revision.clone(),
-            <span class="prelude-val">None </span>=&gt; <span class="string">&quot;main&quot;</span>.to_string(),
+            <span class="prelude-val">None </span>=&gt; <span class="string">"main"</span>.to_string(),
         };
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use revision: {}&quot;</span>, <span class="kw-2">&amp;</span>revision);
+        <span class="macro">debug!</span>(<span class="string">"backend use revision: {}"</span>, <span class="kw-2">&amp;</span>revision);
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root: {}&quot;</span>, <span class="kw-2">&amp;</span>root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root: {}"</span>, <span class="kw-2">&amp;</span>root);
 
         <span class="kw">let </span>token = <span class="self">self</span>.config.token.as_ref().cloned();
 
         <span class="kw">let </span>client = HttpClient::new()<span class="question-mark">?</span>;
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build finished: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
         <span class="prelude-val">Ok</span>(HuggingfaceBackend {
             core: Arc::new(HuggingfaceCore {
                 repo_type,
@@ -593,10 +595,10 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>HuggingfaceBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
-    <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = ();
-    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>Lister = oio::PageLister&lt;HuggingfaceLister&gt;;
+    <span class="kw">type </span>BlockingReader = ();
+    <span class="kw">type </span>BlockingWriter = ();
     <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -617,6 +619,49 @@
         am
     }
 
+    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="comment">// Stat root always returns a DIR.
+        </span><span class="kw">if </span>path == <span class="string">"/" </span>{
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
+        }
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.hf_path_info(path).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
+                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+
+                <span class="kw">let </span>decoded_response = serde_json::from_slice::&lt;Vec&lt;HuggingfaceStatus&gt;&gt;(<span class="kw-2">&amp;</span>bs)
+                    .map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
+
+                <span class="comment">// NOTE: if the file is not found, the server will return 200 with an empty array
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(status) = decoded_response.first() {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(commit_info) = status.last_commit.as_ref() {
+                        meta.set_last_modified(parse_datetime_from_rfc3339(
+                            commit_info.date.as_str(),
+                        )<span class="question-mark">?</span>);
+                    }
+
+                    meta.set_content_length(status.size);
+
+                    <span class="kw">match </span>status.type_.as_str() {
+                        <span class="string">"directory" </span>=&gt; meta.set_mode(EntryMode::DIR),
+                        <span class="string">"file" </span>=&gt; meta.set_mode(EntryMode::FILE),
+                        <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">"unknown status type"</span>)),
+                    };
+                } <span class="kw">else </span>{
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::NotFound, <span class="string">"path not found"</span>));
+                }
+
+                <span class="prelude-val">Ok</span>(RpStat::new(meta))
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
         <span class="kw">let </span>resp = <span class="self">self</span>.core.hf_resolve(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -634,49 +679,6 @@
             StatusCode::RANGE_NOT_SATISFIABLE =&gt; {
                 resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>((RpRead::new().with_size(<span class="prelude-val">Some</span>(<span class="number">0</span>)), IncomingAsyncBody::empty()))
-            }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
-
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="comment">// Stat root always returns a DIR.
-        </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
-        }
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.core.hf_path_info(path).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-
-                <span class="kw">let </span>decoded_response = serde_json::from_slice::&lt;Vec&lt;HuggingfaceStatus&gt;&gt;(<span class="kw-2">&amp;</span>bs)
-                    .map_err(new_json_deserialize_error)<span class="question-mark">?</span>;
-
-                <span class="comment">// NOTE: if the file is not found, the server will return 200 with an empty array
-                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(status) = decoded_response.get(<span class="number">0</span>) {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(commit_info) = status.last_commit.as_ref() {
-                        meta.set_last_modified(parse_datetime_from_rfc3339(
-                            commit_info.date.as_str(),
-                        )<span class="question-mark">?</span>);
-                    }
-
-                    meta.set_content_length(status.size);
-
-                    <span class="kw">match </span>status.type_.as_str() {
-                        <span class="string">&quot;directory&quot; </span>=&gt; meta.set_mode(EntryMode::DIR),
-                        <span class="string">&quot;file&quot; </span>=&gt; meta.set_mode(EntryMode::FILE),
-                        <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::Unexpected, <span class="string">&quot;unknown status type&quot;</span>)),
-                    };
-                } <span class="kw">else </span>{
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::NotFound, <span class="string">&quot;path not found&quot;</span>));
-                }
-
-                <span class="prelude-val">Ok</span>(RpStat::new(meta))
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/docs/internals/accessor.rs`."><title>accessor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/docs/internals/accessor.rs`."><title>accessor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -330,21 +332,21 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
 
 </span><span class="doccomment">//! The internal implementation details of [`Accessor`].
 //!
-//! [`Accessor`] is the core trait of OpenDAL&#39;s raw API. We operate
+//! [`Accessor`] is the core trait of OpenDAL's raw API. We operate
 //! underlying storage services via APIs provided by [`Accessor`].
 //!
 //! # Introduction
@@ -355,7 +357,7 @@
 //! // Attributes
 //! #[async_trait]
 //! //                  &lt;----------Trait Bound--------------&gt;
-//! pub trait Accessor: Send + Sync + Debug + Unpin + &#39;static {
+//! pub trait Accessor: Send + Sync + Debug + Unpin + 'static {
 //!     type Reader: oio::Read;                    // --+
 //!     type BlockingReader: oio::BlockingRead;    //   +--&gt; Associated Type
 //!     type Lister: oio::Lister;                  //   +
@@ -367,7 +369,7 @@
 //! }
 //! ```
 //!
-//! Let&#39;s go deep into [`Accessor`] line by line.
+//! Let's go deep into [`Accessor`] line by line.
 //!
 //! ## Async Trait
 //!
@@ -389,21 +391,21 @@
 //!
 //! ```ignore
 //! pub trait Accessor {
-//!     fn create_dir&lt;&#39;async&gt;(
-//!         &amp;&#39;async self,
-//!     ) -&gt; Pin&lt;Box&lt;dyn core::future::Future&lt;Output = Result()&gt; + Send + &#39;async&gt;&gt;
-//!     where Self: Sync + &#39;async;
+//!     fn create_dir&lt;'async&gt;(
+//!         &amp;'async self,
+//!     ) -&gt; Pin&lt;Box&lt;dyn core::future::Future&lt;Output = Result()&gt; + Send + 'async&gt;&gt;
+//!     where Self: Sync + 'async;
 //! }
 //! ```
 //!
-//! It&#39;s not zero cost, and we will improve this part once the related features are stabilised.
+//! It's not zero cost, and we will improve this part once the related features are stabilised.
 //!
 //! ## Trait Bound
 //!
 //! Then we will read the declare of [`Accessor`] trait:
 //!
 //! ```ignore
-//! pub trait Accessor: Send + Sync + Debug + Unpin + &#39;static {}
+//! pub trait Accessor: Send + Sync + Debug + Unpin + 'static {}
 //! ```
 //!
 //! There are many trait boundings here. For now, [`Accessor`] requires the following bound:
@@ -411,12 +413,12 @@
 //! - [`Send`]: Allow user to send between threads without extra wrapper.
 //! - [`Sync`]: Allow user to sync between threads without extra lock.
 //! - [`Debug`][std::fmt::Debug]: Allow users to print underlying debug information of accessor.
-//! - [`Unpin`]: Make sure `Accessor` can be safely moved after being pinned, so users don&#39;t need to `Pin&lt;Box&lt;A&gt;&gt;`.
-//! - `&#39;static`: Make sure `Accessor` is not a short-time reference, allow users to use `Accessor` in closures and futures without playing with lifetime.
+//! - [`Unpin`]: Make sure `Accessor` can be safely moved after being pinned, so users don't need to `Pin&lt;Box&lt;A&gt;&gt;`.
+//! - `'static`: Make sure `Accessor` is not a short-time reference, allow users to use `Accessor` in closures and futures without playing with lifetime.
 //!
 //! Implementer of `Accessor` should take care of the following things:
 //!
-//! - Implement `Debug` for backend, but don&#39;t leak credentials.
+//! - Implement `Debug` for backend, but don't leak credentials.
 //! - Make sure the backend is `Send` and `Sync`, wrap the internal struct with `Arc&lt;Mutex&lt;T&gt;&gt;` if necessary.
 //!
 //! ## Associated Type
@@ -434,7 +436,7 @@
 //!
 //! Implementer of `Accessor` should take care the following things:
 //!
-//! - OpenDAL will erase those type at the final stage of Operator building. Please don&#39;t return dynamic trait object like `oio::Reader`.
+//! - OpenDAL will erase those type at the final stage of Operator building. Please don't return dynamic trait object like `oio::Reader`.
 //! - Use `()` as type if the operation is not supported.
 //!
 //! ## API Style
@@ -446,7 +448,7 @@
 //! - Most APIs accept `path` and `OpXxx`, and returns `RpXxx`.
 //! - Most APIs have `async` and `blocking` variants, they share the same semantics but may have different underlying implementations.
 //!
-//! [`Accessor`] can declare their capabilities via [`AccessorInfo`]&#39;s `set_capability`:
+//! [`Accessor`] can declare their capabilities via [`AccessorInfo`]'s `set_capability`:
 //!
 //! ```ignore
 //! impl Accessor for MyBackend {
@@ -464,7 +466,7 @@
 //! }
 //! ```
 //!
-//! Now that you have mastered [`Accessor`], let&#39;s go and implement our own backend!
+//! Now that you have mastered [`Accessor`], let's go and implement our own backend!
 //!
 //! # Tutorial
 //!
@@ -473,7 +475,7 @@
 //!
 //! ## Scheme
 //!
-//! First of all, let&#39;s pick a good [`Scheme`] for our duck service. The
+//! First of all, let's pick a good [`Scheme`] for our duck service. The
 //! scheme should be unique and easy to understand. Normally we should
 //! use its formal name.
 //!
@@ -482,7 +484,7 @@
 //! vendors that provide s3-like RESTful APIs, and our s3 service is
 //! implemented to support all of them, not just AWS S3.
 //!
-//! Obviously, we can use `duck` as scheme, let&#39;s add a new variant in [`Scheme`], and implement all required functions like `Scheme::from_str` and `Scheme::into_static`:
+//! Obviously, we can use `duck` as scheme, let's add a new variant in [`Scheme`], and implement all required functions like `Scheme::from_str` and `Scheme::into_static`:
 //!
 //! ```ignore
 //! pub enum Scheme {
@@ -496,7 +498,7 @@
 //! will provide APIs for users to configure, and they will create an
 //! instance of a particular service.
 //!
-//! Let&#39;s create a `backend` mod under `services/duck` directory, and adding the following code.
+//! Let's create a `backend` mod under `services/duck` directory, and adding the following code.
 //!
 //! ```ignore
 //! use crate::raw::*;
@@ -535,7 +537,7 @@
 //! ///     // Set the root for duck, all operations will happen under this root.
 //! ///     //
 //! ///     // NOTE: the root must be absolute path.
-//! ///     builder.root(&quot;/path/to/dir&quot;);
+//! ///     builder.root("/path/to/dir");
 //! ///
 //! ///     let op: Operator = Operator::new(builder)?.finish();
 //! ///
@@ -578,31 +580,31 @@
 //!     fn from_map(map: HashMap&lt;String, String&gt;) -&gt; Self {
 //!         let mut builder = DuckBuilder::default();
 //!
-//!         map.get(&quot;root&quot;).map(|v| builder.root(v));
+//!         map.get("root").map(|v| builder.root(v));
 //!
 //!         builder
 //!     }
 //!
 //!     fn build(&amp;mut self) -&gt; Result&lt;Self::Accessor&gt; {
-//!         debug!(&quot;backend build started: {:?}&quot;, &amp;self);
+//!         debug!("backend build started: {:?}", &amp;self);
 //!
 //!         let root = normalize_root(&amp;self.root.clone().unwrap_or_default());
-//!         debug!(&quot;backend use root {}&quot;, &amp;root);
+//!         debug!("backend use root {}", &amp;root);
 //!
 //!         Ok(DuckBackend { root })
 //!     }
 //! }
 //! ```
 //!
-//! `DuckBuilder` is ready now, let&#39;s try to play with real ducks!
+//! `DuckBuilder` is ready now, let's try to play with real ducks!
 //!
 //! ## Backend
 //!
-//! I&#39;m sure you can see it already: `DuckBuilder` will build a
+//! I'm sure you can see it already: `DuckBuilder` will build a
 //! `DuckBackend` that implements [`Accessor`]. The backend is what we used
 //! to communicate with the super-powered ducks!
 //!
-//! Let&#39;s keep adding more code under `backend.rs`:
+//! Let's keep adding more code under `backend.rs`:
 //!
 //! ```ignore
 //! /// Duck storage service backend
@@ -643,7 +645,7 @@
 //! Super Power Ducks!
 //!
 //! What!? There are no Super Power Ducks? So sad, but never mind, we have
-//! really powerful storage services [here](https://github.com/apache/incubator-opendal/issues/5). Welcome to pick one to implement. I promise you won&#39;t
+//! really powerful storage services [here](https://github.com/apache/opendal/issues/5). Welcome to pick one to implement. I promise you won't
 //! have to `gagaga!()` this time.
 //!
 //! [`Accessor`]: crate::raw::Accessor

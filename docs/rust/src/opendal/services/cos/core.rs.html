@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/cos/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/cos/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -583,14 +585,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -628,11 +630,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>CosCore {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;Backend&quot;</span>)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"Backend"</span>)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"bucket"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
+            .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
             .finish_non_exhaustive()
     }
 }
@@ -696,7 +698,7 @@
     <span class="kw">pub fn </span>cos_get_object_request(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: <span class="kw-2">&amp;</span>OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
 
@@ -729,7 +731,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(<span class="kw-2">&amp;</span>url);
 
@@ -766,7 +768,7 @@
     <span class="kw">pub fn </span>cos_head_object_request(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: <span class="kw-2">&amp;</span>OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::head(<span class="kw-2">&amp;</span>url);
 
@@ -788,7 +790,7 @@
     <span class="kw">pub async fn </span>cos_delete_object(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span>req = Request::delete(<span class="kw-2">&amp;</span>url);
 
@@ -811,7 +813,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}?append&amp;position={}&quot;</span>,
+            <span class="string">"{}/{}?append&amp;position={}"</span>,
             <span class="self">self</span>.endpoint,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
             position
@@ -845,11 +847,11 @@
         <span class="kw">let </span>source = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from);
         <span class="kw">let </span>target = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
 
-        <span class="kw">let </span>source = <span class="macro">format!</span>(<span class="string">&quot;/{}/{}&quot;</span>, <span class="self">self</span>.bucket, percent_encode_path(<span class="kw-2">&amp;</span>source));
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>target));
+        <span class="kw">let </span>source = <span class="macro">format!</span>(<span class="string">"/{}/{}"</span>, <span class="self">self</span>.bucket, percent_encode_path(<span class="kw-2">&amp;</span>source));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>target));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(<span class="kw-2">&amp;</span>url)
-            .header(<span class="string">&quot;x-cos-copy-source&quot;</span>, <span class="kw-2">&amp;</span>source)
+            .header(<span class="string">"x-cos-copy-source"</span>, <span class="kw-2">&amp;</span>source)
             .body(AsyncBody::Empty)
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
@@ -869,22 +871,22 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>queries = <span class="macro">vec!</span>[];
         <span class="kw">if </span>!p.is_empty() {
-            queries.push(<span class="macro">format!</span>(<span class="string">&quot;prefix={}&quot;</span>, percent_encode_path(<span class="kw-2">&amp;</span>p)));
+            queries.push(<span class="macro">format!</span>(<span class="string">"prefix={}"</span>, percent_encode_path(<span class="kw-2">&amp;</span>p)));
         }
         <span class="kw">if </span>!delimiter.is_empty() {
-            queries.push(<span class="macro">format!</span>(<span class="string">&quot;delimiter={delimiter}&quot;</span>));
+            queries.push(<span class="macro">format!</span>(<span class="string">"delimiter={delimiter}"</span>));
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(limit) = limit {
-            queries.push(<span class="macro">format!</span>(<span class="string">&quot;max-keys={limit}&quot;</span>));
+            queries.push(<span class="macro">format!</span>(<span class="string">"max-keys={limit}"</span>));
         }
         <span class="kw">if </span>!next_marker.is_empty() {
-            queries.push(<span class="macro">format!</span>(<span class="string">&quot;marker={next_marker}&quot;</span>));
+            queries.push(<span class="macro">format!</span>(<span class="string">"marker={next_marker}"</span>));
         }
 
         <span class="kw">let </span>url = <span class="kw">if </span>queries.is_empty() {
             <span class="self">self</span>.endpoint.to_string()
         } <span class="kw">else </span>{
-            <span class="macro">format!</span>(<span class="string">&quot;{}?{}&quot;</span>, <span class="self">self</span>.endpoint, queries.join(<span class="string">&quot;&amp;&quot;</span>))
+            <span class="macro">format!</span>(<span class="string">"{}?{}"</span>, <span class="self">self</span>.endpoint, queries.join(<span class="string">"&amp;"</span>))
         };
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url)
@@ -903,7 +905,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}?uploads&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}?uploads"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(<span class="kw-2">&amp;</span>url);
 
@@ -939,7 +941,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}?partNumber={}&amp;uploadId={}&quot;</span>,
+            <span class="string">"{}/{}?partNumber={}&amp;uploadId={}"</span>,
             <span class="self">self</span>.endpoint,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
             part_number,
@@ -965,7 +967,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}?uploadId={}&quot;</span>,
+            <span class="string">"{}/{}?uploadId={}"</span>,
             <span class="self">self</span>.endpoint,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
             percent_encode_path(upload_id)
@@ -978,7 +980,7 @@
         <span class="comment">// Make sure content length has been set to avoid post with chunked encoding.
         </span><span class="kw">let </span>req = req.header(CONTENT_LENGTH, content.len());
         <span class="comment">// Set content-type to `application/xml` to avoid mixed with form post.
-        </span><span class="kw">let </span>req = req.header(CONTENT_TYPE, <span class="string">&quot;application/xml&quot;</span>);
+        </span><span class="kw">let </span>req = req.header(CONTENT_TYPE, <span class="string">"application/xml"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = req
             .body(AsyncBody::Bytes(Bytes::from(content)))
@@ -998,7 +1000,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}?uploadId={}&quot;</span>,
+            <span class="string">"{}/{}?uploadId={}"</span>,
             <span class="self">self</span>.endpoint,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
             percent_encode_path(upload_id)
@@ -1014,37 +1016,37 @@
 
 <span class="doccomment">/// Result of CreateMultipartUpload
 </span><span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>InitiateMultipartUploadResult {
     <span class="kw">pub </span>upload_id: String,
 }
 
 <span class="doccomment">/// Request of CompleteMultipartUploadRequest
 </span><span class="attr">#[derive(Default, Debug, Serialize)]
-#[serde(default, rename = <span class="string">&quot;CompleteMultipartUpload&quot;</span>, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename = <span class="string">"CompleteMultipartUpload"</span>, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>CompleteMultipartUploadRequest {
     <span class="kw">pub </span>part: Vec&lt;CompleteMultipartUploadRequestPart&gt;,
 }
 
 <span class="attr">#[derive(Clone, Default, Debug, Serialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>CompleteMultipartUploadRequestPart {
-    <span class="attr">#[serde(rename = <span class="string">&quot;PartNumber&quot;</span>)]
+    <span class="attr">#[serde(rename = <span class="string">"PartNumber"</span>)]
     </span><span class="kw">pub </span>part_number: usize,
     <span class="doccomment">/// # TODO
     ///
-    /// quick-xml will do escape on `&quot;` which leads to our serialized output is
-    /// not the same as aws s3&#39;s example.
+    /// quick-xml will do escape on `"` which leads to our serialized output is
+    /// not the same as aws s3's example.
     ///
     /// Ideally, we could use `serialize_with` to address this (buf failed)
     ///
     /// ```ignore
     /// #[derive(Default, Debug, Serialize)]
-    /// #[serde(default, rename_all = &quot;PascalCase&quot;)]
+    /// #[serde(default, rename_all = "PascalCase")]
     /// struct CompleteMultipartUploadRequestPart {
-    ///     #[serde(rename = &quot;PartNumber&quot;)]
+    ///     #[serde(rename = "PartNumber")]
     ///     part_number: usize,
-    ///     #[serde(rename = &quot;ETag&quot;, serialize_with = &quot;partial_escape&quot;)]
+    ///     #[serde(rename = "ETag", serialize_with = "partial_escape")]
     ///     etag: String,
     /// }
     ///
@@ -1059,12 +1061,12 @@
     /// ```
     ///
     /// ref: &lt;https://github.com/tafia/quick-xml/issues/362&gt;
-    </span><span class="attr">#[serde(rename = <span class="string">&quot;ETag&quot;</span>)]
+    </span><span class="attr">#[serde(rename = <span class="string">"ETag"</span>)]
     </span><span class="kw">pub </span>etag: String,
 }
 
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>ListObjectsOutput {
     <span class="kw">pub </span>name: String,
     <span class="kw">pub </span>prefix: String,
@@ -1075,13 +1077,13 @@
 }
 
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>CommonPrefix {
     <span class="kw">pub </span>prefix: String,
 }
 
 <span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
+#[serde(default, rename_all = <span class="string">"PascalCase"</span>)]
 </span><span class="kw">pub struct </span>ListObjectsOutputContent {
     <span class="kw">pub </span>key: String,
     <span class="kw">pub </span>size: u64,
@@ -1096,7 +1098,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_parse_xml() {
         <span class="kw">let </span>bs = bytes::Bytes::from(
-            <span class="string">r#&quot;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+            <span class="string">r#"&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;ListBucketResult&gt;
     &lt;Name&gt;examplebucket&lt;/Name&gt;
     &lt;Prefix&gt;obj&lt;/Prefix&gt;
@@ -1107,7 +1109,7 @@
     &lt;Contents&gt;
         &lt;Key&gt;obj002&lt;/Key&gt;
         &lt;LastModified&gt;2015-07-01T02:11:19.775Z&lt;/LastModified&gt;
-        &lt;ETag&gt;&quot;a72e382246ac83e86bd203389849e71d&quot;&lt;/ETag&gt;
+        &lt;ETag&gt;"a72e382246ac83e86bd203389849e71d"&lt;/ETag&gt;
         &lt;Size&gt;9&lt;/Size&gt;
         &lt;Owner&gt;
             &lt;ID&gt;b4bf1b36d9ca43d984fbcb9491b6fce9&lt;/ID&gt;
@@ -1117,7 +1119,7 @@
     &lt;Contents&gt;
         &lt;Key&gt;obj003&lt;/Key&gt;
         &lt;LastModified&gt;2015-07-01T02:11:19.775Z&lt;/LastModified&gt;
-        &lt;ETag&gt;&quot;a72e382246ac83e86bd203389849e71d&quot;&lt;/ETag&gt;
+        &lt;ETag&gt;"a72e382246ac83e86bd203389849e71d"&lt;/ETag&gt;
         &lt;Size&gt;10&lt;/Size&gt;
         &lt;Owner&gt;
             &lt;ID&gt;b4bf1b36d9ca43d984fbcb9491b6fce9&lt;/ID&gt;
@@ -1130,20 +1132,20 @@
     &lt;CommonPrefixes&gt;
         &lt;Prefix&gt;world&lt;/Prefix&gt;
     &lt;/CommonPrefixes&gt;
-&lt;/ListBucketResult&gt;&quot;#</span>,
+&lt;/ListBucketResult&gt;"#</span>,
         );
-        <span class="kw">let </span>out: ListObjectsOutput = quick_xml::de::from_reader(bs.reader()).expect(<span class="string">&quot;must success&quot;</span>);
+        <span class="kw">let </span>out: ListObjectsOutput = quick_xml::de::from_reader(bs.reader()).expect(<span class="string">"must success"</span>);
 
-        <span class="macro">assert_eq!</span>(out.name, <span class="string">&quot;examplebucket&quot;</span>.to_string());
-        <span class="macro">assert_eq!</span>(out.prefix, <span class="string">&quot;obj&quot;</span>.to_string());
-        <span class="macro">assert_eq!</span>(out.marker, <span class="string">&quot;obj002&quot;</span>.to_string());
-        <span class="macro">assert_eq!</span>(out.next_marker, <span class="prelude-val">Some</span>(<span class="string">&quot;obj004&quot;</span>.to_string()),);
+        <span class="macro">assert_eq!</span>(out.name, <span class="string">"examplebucket"</span>.to_string());
+        <span class="macro">assert_eq!</span>(out.prefix, <span class="string">"obj"</span>.to_string());
+        <span class="macro">assert_eq!</span>(out.marker, <span class="string">"obj002"</span>.to_string());
+        <span class="macro">assert_eq!</span>(out.next_marker, <span class="prelude-val">Some</span>(<span class="string">"obj004"</span>.to_string()),);
         <span class="macro">assert_eq!</span>(
             out.contents
                 .iter()
                 .map(|v| v.key.clone())
                 .collect::&lt;Vec&lt;String&gt;&gt;(),
-            [<span class="string">&quot;obj002&quot;</span>, <span class="string">&quot;obj003&quot;</span>],
+            [<span class="string">"obj002"</span>, <span class="string">"obj003"</span>],
         );
         <span class="macro">assert_eq!</span>(
             out.contents.iter().map(|v| v.size).collect::&lt;Vec&lt;u64&gt;&gt;(),
@@ -1154,7 +1156,7 @@
                 .iter()
                 .map(|v| v.prefix.clone())
                 .collect::&lt;Vec&lt;String&gt;&gt;(),
-            [<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>],
+            [<span class="string">"hello"</span>, <span class="string">"world"</span>],
         )
     }
 }

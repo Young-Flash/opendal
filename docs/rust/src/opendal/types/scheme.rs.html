@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/types/scheme.rs`."><title>scheme.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/types/scheme.rs`."><title>scheme.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -418,19 +420,57 @@
 <a href="#418" id="418">418</a>
 <a href="#419" id="419">419</a>
 <a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -464,6 +504,16 @@
     </span>Seafile,
     <span class="doccomment">/// [Upyun][crate::services::Upyun]: Upyun Services.
     </span>Upyun,
+    <span class="doccomment">/// [VercelBlob][crate::services::VercelBlob]: VercelBlob Services.
+    </span>VercelBlob,
+    <span class="doccomment">/// [YandexDisk][crate::services::YandexDisk]: YandexDisk Services.
+    </span>YandexDisk,
+    <span class="doccomment">/// [Pcloud][crate::services::Pcloud]: Pcloud Services.
+    </span>Pcloud,
+    <span class="doccomment">/// [Koofr][crate::services::Koofr]: Koofr Services.
+    </span>Koofr,
+    <span class="doccomment">/// [Chainsafe][crate::services::Chainsafe]: Chainsafe Services.
+    </span>Chainsafe,
     <span class="doccomment">/// [cacache][crate::services::Cacache]: cacache backend support.
     </span>Cacache,
     <span class="doccomment">/// [cloudflare-kv][crate::services::CloudflareKv]: Cloudflare KV services.
@@ -502,6 +552,8 @@
     <span class="doccomment">/// [ipmfs][crate::services::Ipmfs]: IPFS mutable file system
     </span>Ipmfs,
     <span class="doccomment">/// [memcached][crate::services::Memcached]: Memcached service support.
+    </span>Icloud,
+    <span class="doccomment">/// [icloud][crate::services::Icloud]: APPLE icloud services.
     </span>Memcached,
     <span class="doccomment">/// [memory][crate::services::Memory]: In memory backend support.
     </span>Memory,
@@ -559,18 +611,20 @@
     </span>Mongodb,
     <span class="doccomment">/// [gridfs](crate::services::gridfs): MongoDB Gridfs Services
     </span>Gridfs,
+    <span class="doccomment">/// [Native HDFS](crate::services::hdfs_native): Hdfs Native service, using rust hdfs-native client for hdfs
+    </span>HdfsNative,
     <span class="doccomment">/// Custom that allow users to implement services outside of OpenDAL.
     ///
     /// # NOTE
     ///
     /// - Custom must not overwrite any existing services name.
     /// - Custom must be lowed cases.
-    </span>Custom(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str),
+    </span>Custom(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str),
 }
 
 <span class="kw">impl </span>Scheme {
     <span class="doccomment">/// Convert self into static str.
-    </span><span class="kw">pub fn </span>into_static(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str {
+    </span><span class="kw">pub fn </span>into_static(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
         <span class="self">self</span>.into()
     }
 
@@ -586,109 +640,119 @@
     ///
     /// let enabled_schemes = Scheme::enabled();
     /// if !enabled_schemes.contains(&amp;Scheme::Memory) {
-    ///     panic!(&quot;s3 support is not enabled&quot;)
+    ///     panic!("s3 support is not enabled")
     /// }
     /// ```
     </span><span class="kw">pub fn </span>enabled() -&gt; HashSet&lt;Scheme&gt; {
         HashSet::from([
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-atomicserver&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-atomicserver"</span>)]
             </span>Scheme::Atomicserver,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-alluxio&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-alluxio"</span>)]
             </span>Scheme::Alluxio,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-azblob&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-azblob"</span>)]
             </span>Scheme::Azblob,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-azdls&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-azdls"</span>)]
             </span>Scheme::Azdls,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-azfile&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-azfile"</span>)]
             </span>Scheme::Azfile,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-b2&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-b2"</span>)]
             </span>Scheme::B2,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-cacache&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-cacache"</span>)]
             </span>Scheme::Cacache,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-cos&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-cos"</span>)]
             </span>Scheme::Cos,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-dashmap&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-dashmap"</span>)]
             </span>Scheme::Dashmap,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-dropbox&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-dropbox"</span>)]
             </span>Scheme::Dropbox,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-etcd&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-etcd"</span>)]
             </span>Scheme::Etcd,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-foundationdb&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-foundationdb"</span>)]
             </span>Scheme::Foundationdb,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-fs&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-fs"</span>)]
             </span>Scheme::Fs,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-ftp&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-ftp"</span>)]
             </span>Scheme::Ftp,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-gcs&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-gcs"</span>)]
             </span>Scheme::Gcs,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-ghac&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-ghac"</span>)]
             </span>Scheme::Ghac,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-hdfs&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-hdfs"</span>)]
             </span>Scheme::Hdfs,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-http&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-http"</span>)]
             </span>Scheme::Http,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-huggingface&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-huggingface"</span>)]
             </span>Scheme::Huggingface,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-ipfs&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-ipfs"</span>)]
             </span>Scheme::Ipfs,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-ipmfs&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-ipmfs"</span>)]
             </span>Scheme::Ipmfs,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-libsql&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-icloud"</span>)]
+            </span>Scheme::Icloud,
+            <span class="attr">#[cfg(feature = <span class="string">"services-libsql"</span>)]
             </span>Scheme::Libsql,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-memcached&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-memcached"</span>)]
             </span>Scheme::Memcached,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-memory&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-memory"</span>)]
             </span>Scheme::Memory,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-mini-moka&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-mini-moka"</span>)]
             </span>Scheme::MiniMoka,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-moka&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-moka"</span>)]
             </span>Scheme::Moka,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-mysql&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-mysql"</span>)]
             </span>Scheme::Mysql,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-obs&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-obs"</span>)]
             </span>Scheme::Obs,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-onedrive&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-onedrive"</span>)]
             </span>Scheme::Onedrive,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-postgresql&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-postgresql"</span>)]
             </span>Scheme::Postgresql,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-gdrive&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-gdrive"</span>)]
             </span>Scheme::Gdrive,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-oss&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-oss"</span>)]
             </span>Scheme::Oss,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-persy&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-persy"</span>)]
             </span>Scheme::Persy,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-redis&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-redis"</span>)]
             </span>Scheme::Redis,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-rocksdb&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-rocksdb"</span>)]
             </span>Scheme::Rocksdb,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-s3&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-s3"</span>)]
             </span>Scheme::S3,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-seafile&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-seafile"</span>)]
             </span>Scheme::Seafile,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-upyun&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-upyun"</span>)]
             </span>Scheme::Upyun,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-sftp&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-yandex-disk"</span>)]
+            </span>Scheme::YandexDisk,
+            <span class="attr">#[cfg(feature = <span class="string">"services-pcloud"</span>)]
+            </span>Scheme::Pcloud,
+            <span class="attr">#[cfg(feature = <span class="string">"services-sftp"</span>)]
             </span>Scheme::Sftp,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-sled&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-sled"</span>)]
             </span>Scheme::Sled,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-sqlite&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-sqlite"</span>)]
             </span>Scheme::Sqlite,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-supabase&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-supabase"</span>)]
             </span>Scheme::Supabase,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-swift&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-swift"</span>)]
             </span>Scheme::Swift,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-tikv&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-tikv"</span>)]
             </span>Scheme::Tikv,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-vercel-artifacts&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-vercel-artifacts"</span>)]
             </span>Scheme::VercelArtifacts,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-webdav&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-vercel-blob"</span>)]
+            </span>Scheme::VercelBlob,
+            <span class="attr">#[cfg(feature = <span class="string">"services-webdav"</span>)]
             </span>Scheme::Webdav,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-webhdfs&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-webhdfs"</span>)]
             </span>Scheme::Webhdfs,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-redb&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-redb"</span>)]
             </span>Scheme::Redb,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;services-mongodb&quot;</span>)]
+            <span class="attr">#[cfg(feature = <span class="string">"services-mongodb"</span>)]
             </span>Scheme::Mongodb,
+            <span class="attr">#[cfg(feature = <span class="string">"services-hdfs-native"</span>)]
+            </span>Scheme::HdfsNative,
         ])
     }
 }
@@ -700,8 +764,8 @@
 }
 
 <span class="kw">impl </span>Display <span class="kw">for </span>Scheme {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.into_static())
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.into_static())
     }
 }
 
@@ -711,123 +775,137 @@
     <span class="kw">fn </span>from_str(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
         <span class="kw">let </span>s = s.to_lowercase();
         <span class="kw">match </span>s.as_str() {
-            <span class="string">&quot;atomicserver&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Atomicserver),
-            <span class="string">&quot;azblob&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azblob),
-            <span class="string">&quot;alluxio&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Alluxio),
+            <span class="string">"atomicserver" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Atomicserver),
+            <span class="string">"azblob" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azblob),
+            <span class="string">"alluxio" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Alluxio),
             <span class="comment">// Notes:
             //
             // OpenDAL used to call `azdls` as `azdfs`, we keep it for backward compatibility.
             // And abfs is widely used in hadoop ecosystem, keep it for easy to use.
-            </span><span class="string">&quot;azdls&quot; </span>| <span class="string">&quot;azdfs&quot; </span>| <span class="string">&quot;abfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azdls),
-            <span class="string">&quot;b2&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::B2),
-            <span class="string">&quot;cacache&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cacache),
-            <span class="string">&quot;cloudflare_kv&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::CloudflareKv),
-            <span class="string">&quot;cos&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cos),
-            <span class="string">&quot;d1&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::D1),
-            <span class="string">&quot;dashmap&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dashmap),
-            <span class="string">&quot;dropbox&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dropbox),
-            <span class="string">&quot;etcd&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Etcd),
-            <span class="string">&quot;dbfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dbfs),
-            <span class="string">&quot;fs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Fs),
-            <span class="string">&quot;gcs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gcs),
-            <span class="string">&quot;gdrive&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gdrive),
-            <span class="string">&quot;ghac&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ghac),
-            <span class="string">&quot;gridfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gridfs),
-            <span class="string">&quot;hdfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Hdfs),
-            <span class="string">&quot;http&quot; </span>| <span class="string">&quot;https&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Http),
-            <span class="string">&quot;huggingface&quot; </span>| <span class="string">&quot;hf&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Huggingface),
-            <span class="string">&quot;ftp&quot; </span>| <span class="string">&quot;ftps&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ftp),
-            <span class="string">&quot;ipfs&quot; </span>| <span class="string">&quot;ipns&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ipfs),
-            <span class="string">&quot;ipmfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ipmfs),
-            <span class="string">&quot;libsql&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Libsql),
-            <span class="string">&quot;memcached&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Memcached),
-            <span class="string">&quot;memory&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Memory),
-            <span class="string">&quot;mysql&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Mysql),
-            <span class="string">&quot;sqlite&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sqlite),
-            <span class="string">&quot;mini_moka&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::MiniMoka),
-            <span class="string">&quot;moka&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Moka),
-            <span class="string">&quot;obs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Obs),
-            <span class="string">&quot;onedrive&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Onedrive),
-            <span class="string">&quot;persy&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Persy),
-            <span class="string">&quot;postgresql&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Postgresql),
-            <span class="string">&quot;redb&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Redb),
-            <span class="string">&quot;redis&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Redis),
-            <span class="string">&quot;rocksdb&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Rocksdb),
-            <span class="string">&quot;s3&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::S3),
-            <span class="string">&quot;seafile&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Seafile),
-            <span class="string">&quot;upyun&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Upyun),
-            <span class="string">&quot;sftp&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sftp),
-            <span class="string">&quot;sled&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sled),
-            <span class="string">&quot;supabase&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Supabase),
-            <span class="string">&quot;swift&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Swift),
-            <span class="string">&quot;oss&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Oss),
-            <span class="string">&quot;vercel_artifacts&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::VercelArtifacts),
-            <span class="string">&quot;webdav&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Webdav),
-            <span class="string">&quot;webhdfs&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Webhdfs),
-            <span class="string">&quot;tikv&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Tikv),
-            <span class="string">&quot;azfile&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azfile),
-            <span class="string">&quot;mongodb&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Mongodb),
+            </span><span class="string">"azdls" </span>| <span class="string">"azdfs" </span>| <span class="string">"abfs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azdls),
+            <span class="string">"b2" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::B2),
+            <span class="string">"chainsafe" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Chainsafe),
+            <span class="string">"cacache" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cacache),
+            <span class="string">"cloudflare_kv" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::CloudflareKv),
+            <span class="string">"cos" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Cos),
+            <span class="string">"d1" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::D1),
+            <span class="string">"dashmap" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dashmap),
+            <span class="string">"dropbox" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dropbox),
+            <span class="string">"etcd" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Etcd),
+            <span class="string">"dbfs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Dbfs),
+            <span class="string">"fs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Fs),
+            <span class="string">"gcs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gcs),
+            <span class="string">"gdrive" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gdrive),
+            <span class="string">"ghac" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ghac),
+            <span class="string">"gridfs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Gridfs),
+            <span class="string">"hdfs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Hdfs),
+            <span class="string">"http" </span>| <span class="string">"https" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Http),
+            <span class="string">"huggingface" </span>| <span class="string">"hf" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Huggingface),
+            <span class="string">"ftp" </span>| <span class="string">"ftps" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ftp),
+            <span class="string">"ipfs" </span>| <span class="string">"ipns" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ipfs),
+            <span class="string">"ipmfs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Ipmfs),
+            <span class="string">"icloud" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Icloud),
+            <span class="string">"koofr" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Koofr),
+            <span class="string">"libsql" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Libsql),
+            <span class="string">"memcached" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Memcached),
+            <span class="string">"memory" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Memory),
+            <span class="string">"mysql" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Mysql),
+            <span class="string">"sqlite" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sqlite),
+            <span class="string">"mini_moka" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::MiniMoka),
+            <span class="string">"moka" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Moka),
+            <span class="string">"obs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Obs),
+            <span class="string">"onedrive" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Onedrive),
+            <span class="string">"persy" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Persy),
+            <span class="string">"postgresql" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Postgresql),
+            <span class="string">"redb" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Redb),
+            <span class="string">"redis" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Redis),
+            <span class="string">"rocksdb" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Rocksdb),
+            <span class="string">"s3" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::S3),
+            <span class="string">"seafile" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Seafile),
+            <span class="string">"upyun" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Upyun),
+            <span class="string">"yandex_disk" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::YandexDisk),
+            <span class="string">"pcloud" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Pcloud),
+            <span class="string">"sftp" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sftp),
+            <span class="string">"sled" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Sled),
+            <span class="string">"supabase" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Supabase),
+            <span class="string">"swift" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Swift),
+            <span class="string">"oss" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Oss),
+            <span class="string">"vercel_artifacts" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::VercelArtifacts),
+            <span class="string">"vercel_blob" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::VercelBlob),
+            <span class="string">"webdav" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Webdav),
+            <span class="string">"webhdfs" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Webhdfs),
+            <span class="string">"tikv" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Tikv),
+            <span class="string">"azfile" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Azfile),
+            <span class="string">"mongodb" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Mongodb),
+            <span class="string">"hdfs_native" </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::HdfsNative),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(Scheme::Custom(Box::leak(s.into_boxed_str()))),
         }
     }
 }
 
-<span class="kw">impl </span>From&lt;Scheme&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str {
+<span class="kw">impl </span>From&lt;Scheme&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
     <span class="kw">fn </span>from(v: Scheme) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span>v {
-            Scheme::Atomicserver =&gt; <span class="string">&quot;atomicserver&quot;</span>,
-            Scheme::Azblob =&gt; <span class="string">&quot;azblob&quot;</span>,
-            Scheme::Azdls =&gt; <span class="string">&quot;azdls&quot;</span>,
-            Scheme::B2 =&gt; <span class="string">&quot;b2&quot;</span>,
-            Scheme::Cacache =&gt; <span class="string">&quot;cacache&quot;</span>,
-            Scheme::CloudflareKv =&gt; <span class="string">&quot;cloudflare_kv&quot;</span>,
-            Scheme::Cos =&gt; <span class="string">&quot;cos&quot;</span>,
-            Scheme::D1 =&gt; <span class="string">&quot;d1&quot;</span>,
-            Scheme::Dashmap =&gt; <span class="string">&quot;dashmap&quot;</span>,
-            Scheme::Etcd =&gt; <span class="string">&quot;etcd&quot;</span>,
-            Scheme::Dbfs =&gt; <span class="string">&quot;dbfs&quot;</span>,
-            Scheme::Fs =&gt; <span class="string">&quot;fs&quot;</span>,
-            Scheme::Gcs =&gt; <span class="string">&quot;gcs&quot;</span>,
-            Scheme::Ghac =&gt; <span class="string">&quot;ghac&quot;</span>,
-            Scheme::Gridfs =&gt; <span class="string">&quot;gridfs&quot;</span>,
-            Scheme::Hdfs =&gt; <span class="string">&quot;hdfs&quot;</span>,
-            Scheme::Http =&gt; <span class="string">&quot;http&quot;</span>,
-            Scheme::Huggingface =&gt; <span class="string">&quot;huggingface&quot;</span>,
-            Scheme::Foundationdb =&gt; <span class="string">&quot;foundationdb&quot;</span>,
-            Scheme::Ftp =&gt; <span class="string">&quot;ftp&quot;</span>,
-            Scheme::Ipfs =&gt; <span class="string">&quot;ipfs&quot;</span>,
-            Scheme::Ipmfs =&gt; <span class="string">&quot;ipmfs&quot;</span>,
-            Scheme::Libsql =&gt; <span class="string">&quot;libsql&quot;</span>,
-            Scheme::Memcached =&gt; <span class="string">&quot;memcached&quot;</span>,
-            Scheme::Memory =&gt; <span class="string">&quot;memory&quot;</span>,
-            Scheme::MiniMoka =&gt; <span class="string">&quot;mini_moka&quot;</span>,
-            Scheme::Moka =&gt; <span class="string">&quot;moka&quot;</span>,
-            Scheme::Obs =&gt; <span class="string">&quot;obs&quot;</span>,
-            Scheme::Onedrive =&gt; <span class="string">&quot;onedrive&quot;</span>,
-            Scheme::Persy =&gt; <span class="string">&quot;persy&quot;</span>,
-            Scheme::Postgresql =&gt; <span class="string">&quot;postgresql&quot;</span>,
-            Scheme::Mysql =&gt; <span class="string">&quot;mysql&quot;</span>,
-            Scheme::Gdrive =&gt; <span class="string">&quot;gdrive&quot;</span>,
-            Scheme::Dropbox =&gt; <span class="string">&quot;dropbox&quot;</span>,
-            Scheme::Redis =&gt; <span class="string">&quot;redis&quot;</span>,
-            Scheme::Rocksdb =&gt; <span class="string">&quot;rocksdb&quot;</span>,
-            Scheme::S3 =&gt; <span class="string">&quot;s3&quot;</span>,
-            Scheme::Seafile =&gt; <span class="string">&quot;seafile&quot;</span>,
-            Scheme::Sftp =&gt; <span class="string">&quot;sftp&quot;</span>,
-            Scheme::Sled =&gt; <span class="string">&quot;sled&quot;</span>,
-            Scheme::Supabase =&gt; <span class="string">&quot;supabase&quot;</span>,
-            Scheme::Swift =&gt; <span class="string">&quot;swift&quot;</span>,
-            Scheme::VercelArtifacts =&gt; <span class="string">&quot;vercel_artifacts&quot;</span>,
-            Scheme::Oss =&gt; <span class="string">&quot;oss&quot;</span>,
-            Scheme::Webdav =&gt; <span class="string">&quot;webdav&quot;</span>,
-            Scheme::Webhdfs =&gt; <span class="string">&quot;webhdfs&quot;</span>,
-            Scheme::Redb =&gt; <span class="string">&quot;redb&quot;</span>,
-            Scheme::Tikv =&gt; <span class="string">&quot;tikv&quot;</span>,
-            Scheme::Azfile =&gt; <span class="string">&quot;azfile&quot;</span>,
-            Scheme::Sqlite =&gt; <span class="string">&quot;sqlite&quot;</span>,
-            Scheme::Mongodb =&gt; <span class="string">&quot;mongodb&quot;</span>,
-            Scheme::Alluxio =&gt; <span class="string">&quot;alluxio&quot;</span>,
-            Scheme::Upyun =&gt; <span class="string">&quot;upyun&quot;</span>,
+            Scheme::Atomicserver =&gt; <span class="string">"atomicserver"</span>,
+            Scheme::Azblob =&gt; <span class="string">"azblob"</span>,
+            Scheme::Azdls =&gt; <span class="string">"azdls"</span>,
+            Scheme::B2 =&gt; <span class="string">"b2"</span>,
+            Scheme::Chainsafe =&gt; <span class="string">"chainsafe"</span>,
+            Scheme::Cacache =&gt; <span class="string">"cacache"</span>,
+            Scheme::CloudflareKv =&gt; <span class="string">"cloudflare_kv"</span>,
+            Scheme::Cos =&gt; <span class="string">"cos"</span>,
+            Scheme::D1 =&gt; <span class="string">"d1"</span>,
+            Scheme::Dashmap =&gt; <span class="string">"dashmap"</span>,
+            Scheme::Etcd =&gt; <span class="string">"etcd"</span>,
+            Scheme::Dbfs =&gt; <span class="string">"dbfs"</span>,
+            Scheme::Fs =&gt; <span class="string">"fs"</span>,
+            Scheme::Gcs =&gt; <span class="string">"gcs"</span>,
+            Scheme::Ghac =&gt; <span class="string">"ghac"</span>,
+            Scheme::Gridfs =&gt; <span class="string">"gridfs"</span>,
+            Scheme::Hdfs =&gt; <span class="string">"hdfs"</span>,
+            Scheme::Http =&gt; <span class="string">"http"</span>,
+            Scheme::Huggingface =&gt; <span class="string">"huggingface"</span>,
+            Scheme::Foundationdb =&gt; <span class="string">"foundationdb"</span>,
+            Scheme::Ftp =&gt; <span class="string">"ftp"</span>,
+            Scheme::Ipfs =&gt; <span class="string">"ipfs"</span>,
+            Scheme::Ipmfs =&gt; <span class="string">"ipmfs"</span>,
+            Scheme::Icloud =&gt; <span class="string">"icloud"</span>,
+            Scheme::Koofr =&gt; <span class="string">"koofr"</span>,
+            Scheme::Libsql =&gt; <span class="string">"libsql"</span>,
+            Scheme::Memcached =&gt; <span class="string">"memcached"</span>,
+            Scheme::Memory =&gt; <span class="string">"memory"</span>,
+            Scheme::MiniMoka =&gt; <span class="string">"mini_moka"</span>,
+            Scheme::Moka =&gt; <span class="string">"moka"</span>,
+            Scheme::Obs =&gt; <span class="string">"obs"</span>,
+            Scheme::Onedrive =&gt; <span class="string">"onedrive"</span>,
+            Scheme::Persy =&gt; <span class="string">"persy"</span>,
+            Scheme::Postgresql =&gt; <span class="string">"postgresql"</span>,
+            Scheme::Mysql =&gt; <span class="string">"mysql"</span>,
+            Scheme::Gdrive =&gt; <span class="string">"gdrive"</span>,
+            Scheme::Dropbox =&gt; <span class="string">"dropbox"</span>,
+            Scheme::Redis =&gt; <span class="string">"redis"</span>,
+            Scheme::Rocksdb =&gt; <span class="string">"rocksdb"</span>,
+            Scheme::S3 =&gt; <span class="string">"s3"</span>,
+            Scheme::Seafile =&gt; <span class="string">"seafile"</span>,
+            Scheme::Sftp =&gt; <span class="string">"sftp"</span>,
+            Scheme::Sled =&gt; <span class="string">"sled"</span>,
+            Scheme::Supabase =&gt; <span class="string">"supabase"</span>,
+            Scheme::Swift =&gt; <span class="string">"swift"</span>,
+            Scheme::VercelArtifacts =&gt; <span class="string">"vercel_artifacts"</span>,
+            Scheme::VercelBlob =&gt; <span class="string">"vercel_blob"</span>,
+            Scheme::Oss =&gt; <span class="string">"oss"</span>,
+            Scheme::Webdav =&gt; <span class="string">"webdav"</span>,
+            Scheme::Webhdfs =&gt; <span class="string">"webhdfs"</span>,
+            Scheme::Redb =&gt; <span class="string">"redb"</span>,
+            Scheme::Tikv =&gt; <span class="string">"tikv"</span>,
+            Scheme::Azfile =&gt; <span class="string">"azfile"</span>,
+            Scheme::Sqlite =&gt; <span class="string">"sqlite"</span>,
+            Scheme::Mongodb =&gt; <span class="string">"mongodb"</span>,
+            Scheme::Alluxio =&gt; <span class="string">"alluxio"</span>,
+            Scheme::Upyun =&gt; <span class="string">"upyun"</span>,
+            Scheme::YandexDisk =&gt; <span class="string">"yandex_disk"</span>,
+            Scheme::Pcloud =&gt; <span class="string">"pcloud"</span>,
+            Scheme::HdfsNative =&gt; <span class="string">"hdfs_native"</span>,
             Scheme::Custom(v) =&gt; v,
         }
     }

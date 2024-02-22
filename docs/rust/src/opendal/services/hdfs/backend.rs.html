@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/hdfs/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/hdfs/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -583,25 +585,102 @@
 <a href="#583" id="583">583</a>
 <a href="#584" id="584">584</a>
 <a href="#585" id="585">585</a>
+<a href="#586" id="586">586</a>
+<a href="#587" id="587">587</a>
+<a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
+<a href="#626" id="626">626</a>
+<a href="#627" id="627">627</a>
+<a href="#628" id="628">628</a>
+<a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
+<a href="#632" id="632">632</a>
+<a href="#633" id="633">633</a>
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
 
 </span><span class="kw">use </span>std::collections::HashMap;
-<span class="kw">use </span>std::fmt::{Debug, Formatter};
+<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::fmt::Formatter;
 <span class="kw">use </span>std::io;
 <span class="kw">use </span>std::path::PathBuf;
 <span class="kw">use </span>std::sync::Arc;
@@ -610,6 +689,7 @@
 <span class="kw">use </span>futures::AsyncWriteExt;
 <span class="kw">use </span>log::debug;
 <span class="kw">use </span>serde::Deserialize;
+<span class="kw">use </span>uuid::Uuid;
 
 <span class="kw">use </span><span class="kw">super</span>::lister::HdfsLister;
 <span class="kw">use </span><span class="kw">super</span>::writer::HdfsWriter;
@@ -633,33 +713,36 @@
     </span><span class="kw">pub </span>user: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// enable the append capacity
     </span><span class="kw">pub </span>enable_append: bool,
+    <span class="doccomment">/// atomic_write_dir of this backend
+    </span><span class="kw">pub </span>atomic_write_dir: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HdfsConfig {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;HdfsConfig&quot;</span>)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;name_node&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.name_node)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"HdfsConfig"</span>)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"name_node"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.name_node)
             .field(
-                <span class="string">&quot;kerberos_ticket_cache_path&quot;</span>,
+                <span class="string">"kerberos_ticket_cache_path"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self</span>.kerberos_ticket_cache_path,
             )
-            .field(<span class="string">&quot;user&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.user)
-            .field(<span class="string">&quot;enable_append&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.enable_append)
+            .field(<span class="string">"user"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.user)
+            .field(<span class="string">"enable_append"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.enable_append)
+            .field(<span class="string">"atomic_write_dir"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.atomic_write_dir)
             .finish_non_exhaustive()
     }
 }
 
-<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+<span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Default)]
 </span><span class="kw">pub struct </span>HdfsBuilder {
     config: HdfsConfig,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>HdfsBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;HdfsBuilder&quot;</span>)
-            .field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"HdfsBuilder"</span>)
+            .field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config)
             .finish()
     }
 }
@@ -687,7 +770,7 @@
     </span><span class="kw">pub fn </span>name_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name_node: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!name_node.is_empty() {
             <span class="comment">// Trim trailing `/` so that we can accept `http://127.0.0.1:9000/`
-            </span><span class="self">self</span>.config.name_node = <span class="prelude-val">Some</span>(name_node.trim_end_matches(<span class="string">&#39;/&#39;</span>).to_string())
+            </span><span class="self">self</span>.config.name_node = <span class="prelude-val">Some</span>(name_node.trim_end_matches(<span class="string">'/'</span>).to_string())
         }
 
         <span class="self">self
@@ -718,6 +801,21 @@
         <span class="self">self</span>.config.enable_append = enable_append;
         <span class="self">self
     </span>}
+
+    <span class="doccomment">/// Set temp dir for atomic write.
+    ///
+    /// # Notes
+    ///
+    /// - When append is enabled, we will not use atomic write
+    /// to avoid data loss and performance issue.
+    </span><span class="kw">pub fn </span>atomic_write_dir(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dir: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.config.atomic_write_dir = <span class="kw">if </span>dir.is_empty() {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(String::from(dir))
+        };
+        <span class="self">self
+    </span>}
 }
 
 <span class="kw">impl </span>Builder <span class="kw">for </span>HdfsBuilder {
@@ -727,25 +825,25 @@
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="comment">// Deserialize the configuration from the HashMap.
         </span><span class="kw">let </span>config = HdfsConfig::deserialize(ConfigDeserializer::new(map))
-            .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>);
+            .expect(<span class="string">"config deserialize must succeed"</span>);
 
         <span class="comment">// Create an HdfsBuilder instance with the deserialized config.
         </span>HdfsBuilder { config }
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
         <span class="kw">let </span>name_node = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.name_node {
             <span class="prelude-val">Some</span>(v) =&gt; v,
             <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;name node is empty&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Hdfs))
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"name node is empty"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Hdfs))
             }
         };
 
         <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, root);
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = hdrs::ClientBuilder::new(name_node);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(ticket_cache_path) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.kerberos_ticket_cache_path {
@@ -760,25 +858,46 @@
         <span class="comment">// Create root dir if not exist.
         </span><span class="kw">if let </span><span class="prelude-val">Err</span>(e) = client.metadata(<span class="kw-2">&amp;</span>root) {
             <span class="kw">if </span>e.kind() == io::ErrorKind::NotFound {
-                <span class="macro">debug!</span>(<span class="string">&quot;root {} is not exist, creating now&quot;</span>, root);
+                <span class="macro">debug!</span>(<span class="string">"root {} is not exist, creating now"</span>, root);
 
                 client.create_dir(<span class="kw-2">&amp;</span>root).map_err(new_std_io_error)<span class="question-mark">?
             </span>}
         }
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="kw">let </span>atomic_write_dir = <span class="self">self</span>.config.atomic_write_dir.take();
+
+        <span class="comment">// If atomic write dir is not exist, we must create it.
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(d) = <span class="kw-2">&amp;</span>atomic_write_dir {
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = client.metadata(d) {
+                <span class="kw">if </span>e.kind() == io::ErrorKind::NotFound {
+                    client.create_dir(d).map_err(new_std_io_error)<span class="question-mark">?
+                </span>}
+            }
+        }
+
+        <span class="macro">debug!</span>(<span class="string">"backend build finished: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
         <span class="prelude-val">Ok</span>(HdfsBackend {
             root,
+            atomic_write_dir,
             client: Arc::new(client),
             enable_append: <span class="self">self</span>.config.enable_append,
         })
     }
 }
 
+<span class="attr">#[inline]
+</span><span class="kw">fn </span>tmp_file_of(path: <span class="kw-2">&amp;</span>str) -&gt; String {
+    <span class="kw">let </span>name = get_basename(path);
+    <span class="kw">let </span>uuid = Uuid::new_v4().to_string();
+
+    <span class="macro">format!</span>(<span class="string">"{name}.{uuid}"</span>)
+}
+
 <span class="doccomment">/// Backend for hdfs services.
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>HdfsBackend {
     root: String,
+    atomic_write_dir: <span class="prelude-ty">Option</span>&lt;String&gt;,
     client: Arc&lt;hdrs::Client&gt;,
     enable_append: bool,
 }
@@ -790,10 +909,10 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>HdfsBackend {
     <span class="kw">type </span>Reader = oio::FuturesReader&lt;hdrs::AsyncFile&gt;;
-    <span class="kw">type </span>BlockingReader = oio::StdReader&lt;hdrs::File&gt;;
     <span class="kw">type </span>Writer = HdfsWriter&lt;hdrs::AsyncFile&gt;;
-    <span class="kw">type </span>BlockingWriter = HdfsWriter&lt;hdrs::File&gt;;
     <span class="kw">type </span>Lister = <span class="prelude-ty">Option</span>&lt;HdfsLister&gt;;
+    <span class="kw">type </span>BlockingReader = oio::StdReader&lt;hdrs::File&gt;;
+    <span class="kw">type </span>BlockingWriter = HdfsWriter&lt;hdrs::File&gt;;
     <span class="kw">type </span>BlockingLister = <span class="prelude-ty">Option</span>&lt;HdfsLister&gt;;
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
@@ -831,109 +950,6 @@
         <span class="prelude-val">Ok</span>(RpCreateDir::default())
     }
 
-    <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
-        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-
-        <span class="kw">let </span>f = <span class="self">self
-            </span>.client
-            .open_file()
-            .read(<span class="bool-val">true</span>)
-            .async_open(<span class="kw-2">&amp;</span>p)
-            .<span class="kw">await
-            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>r = oio::FuturesReader::new(f);
-
-        <span class="prelude-val">Ok</span>((RpRead::new(), r))
-    }
-
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, op: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
-        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-
-        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>p) {
-            <span class="comment">// Early return if other error happened.
-            </span><span class="kw">if </span>err.kind() != io::ErrorKind::NotFound {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(new_std_io_error(err));
-            }
-
-            <span class="kw">let </span>parent = get_parent(<span class="kw-2">&amp;</span>p);
-
-            <span class="self">self</span>.client.create_dir(parent).map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-            <span class="kw">let </span><span class="kw-2">mut </span>f = <span class="self">self
-                </span>.client
-                .open_file()
-                .create(<span class="bool-val">true</span>)
-                .write(<span class="bool-val">true</span>)
-                .async_open(<span class="kw-2">&amp;</span>p)
-                .<span class="kw">await
-                </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
-            f.close().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
-        }
-
-        <span class="kw">let </span><span class="kw-2">mut </span>open_options = <span class="self">self</span>.client.open_file();
-        open_options.create(<span class="bool-val">true</span>);
-        <span class="kw">if </span>op.append() {
-            open_options.append(<span class="bool-val">true</span>);
-        } <span class="kw">else </span>{
-            open_options.write(<span class="bool-val">true</span>);
-        }
-
-        <span class="kw">let </span>f = open_options
-            .async_open(<span class="kw-2">&amp;</span>p)
-            .<span class="kw">await
-            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>((RpWrite::new(), HdfsWriter::new(f)))
-    }
-
-    <span class="kw">async fn </span>rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
-        <span class="kw">let </span>from_path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from);
-        <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>from_path).map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>to_path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
-        <span class="kw">let </span>result = <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>to_path);
-        <span class="kw">match </span>result {
-            <span class="prelude-val">Err</span>(err) =&gt; {
-                <span class="comment">// Early return if other error happened.
-                </span><span class="kw">if </span>err.kind() != io::ErrorKind::NotFound {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(new_std_io_error(err));
-                }
-
-                <span class="kw">let </span>parent = PathBuf::from(<span class="kw-2">&amp;</span>to_path)
-                    .parent()
-                    .ok_or_else(|| {
-                        Error::new(
-                            ErrorKind::Unexpected,
-                            <span class="string">&quot;path should have parent but not, it must be malformed&quot;</span>,
-                        )
-                        .with_context(<span class="string">&quot;input&quot;</span>, <span class="kw-2">&amp;</span>to_path)
-                    })<span class="question-mark">?
-                    </span>.to_path_buf();
-
-                <span class="self">self</span>.client
-                    .create_dir(<span class="kw-2">&amp;</span>parent.to_string_lossy())
-                    .map_err(new_std_io_error)<span class="question-mark">?</span>;
-            }
-            <span class="prelude-val">Ok</span>(metadata) =&gt; {
-                <span class="kw">if </span>metadata.is_file() {
-                    <span class="self">self</span>.client
-                        .remove_file(<span class="kw-2">&amp;</span>to_path)
-                        .map_err(new_std_io_error)<span class="question-mark">?</span>;
-                } <span class="kw">else </span>{
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::IsADirectory, <span class="string">&quot;path should be a file&quot;</span>)
-                        .with_context(<span class="string">&quot;input&quot;</span>, <span class="kw-2">&amp;</span>to_path));
-                }
-            }
-        }
-
-        <span class="self">self</span>.client
-            .rename_file(<span class="kw-2">&amp;</span>from_path, <span class="kw-2">&amp;</span>to_path)
-            .map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(RpRename::new())
-    }
-
     <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
         <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
@@ -953,6 +969,78 @@
         <span class="prelude-val">Ok</span>(RpStat::new(m))
     }
 
+    <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
+        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+
+        <span class="kw">let </span>f = <span class="self">self
+            </span>.client
+            .open_file()
+            .read(<span class="bool-val">true</span>)
+            .async_open(<span class="kw-2">&amp;</span>p)
+            .<span class="kw">await
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>r = oio::FuturesReader::new(f);
+
+        <span class="prelude-val">Ok</span>((RpRead::new(), r))
+    }
+
+    <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, op: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
+        <span class="kw">let </span>(target_path, tmp_path) = <span class="kw">if let </span><span class="prelude-val">Some</span>(atomic_write_dir) = <span class="kw-2">&amp;</span><span class="self">self</span>.atomic_write_dir {
+            <span class="kw">let </span>target_path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+            <span class="kw">let </span>tmp_path = build_rooted_abs_path(atomic_write_dir, <span class="kw-2">&amp;</span>tmp_file_of(path));
+
+            <span class="comment">// If the target file exists, we should append to the end of it directly.
+            </span><span class="kw">if </span>op.append() &amp;&amp; <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>target_path).is_ok() {
+                (target_path, <span class="prelude-val">None</span>)
+            } <span class="kw">else </span>{
+                (target_path, <span class="prelude-val">Some</span>(tmp_path))
+            }
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+            (p, <span class="prelude-val">None</span>)
+        };
+
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>target_path) {
+            <span class="comment">// Early return if other error happened.
+            </span><span class="kw">if </span>err.kind() != io::ErrorKind::NotFound {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(new_std_io_error(err));
+            }
+
+            <span class="kw">let </span>parent = get_parent(<span class="kw-2">&amp;</span>target_path);
+
+            <span class="self">self</span>.client.create_dir(parent).map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+            <span class="kw">let </span><span class="kw-2">mut </span>f = <span class="self">self
+                </span>.client
+                .open_file()
+                .create(<span class="bool-val">true</span>)
+                .write(<span class="bool-val">true</span>)
+                .async_open(<span class="kw-2">&amp;</span>target_path)
+                .<span class="kw">await
+                </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+            f.close().<span class="kw">await</span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>open_options = <span class="self">self</span>.client.open_file();
+        open_options.create(<span class="bool-val">true</span>);
+        <span class="kw">if </span>op.append() {
+            open_options.append(<span class="bool-val">true</span>);
+        } <span class="kw">else </span>{
+            open_options.write(<span class="bool-val">true</span>);
+        }
+
+        <span class="kw">let </span>f = open_options
+            .async_open(tmp_path.as_ref().unwrap_or(<span class="kw-2">&amp;</span>target_path))
+            .<span class="kw">await
+            </span>.map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>((
+            RpWrite::new(),
+            HdfsWriter::new(target_path, tmp_path, f, Arc::clone(<span class="kw-2">&amp;</span><span class="self">self</span>.client)),
+        ))
+    }
+
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
         <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
@@ -966,7 +1054,7 @@
             };
         }
 
-        <span class="comment">// Safety: Err branch has been checked, it&#39;s OK to unwrap.
+        <span class="comment">// Safety: Err branch has been checked, it's OK to unwrap.
         </span><span class="kw">let </span>meta = meta.ok().unwrap();
 
         <span class="kw">let </span>result = <span class="kw">if </span>meta.is_dir() {
@@ -999,64 +1087,7 @@
         <span class="prelude-val">Ok</span>((RpList::default(), <span class="prelude-val">Some</span>(rd)))
     }
 
-    <span class="kw">fn </span>blocking_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
-        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-
-        <span class="self">self</span>.client.create_dir(<span class="kw-2">&amp;</span>p).map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(RpCreateDir::default())
-    }
-
-    <span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
-        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-
-        <span class="kw">let </span>f = <span class="self">self
-            </span>.client
-            .open_file()
-            .read(<span class="bool-val">true</span>)
-            .open(<span class="kw-2">&amp;</span>p)
-            .map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>r = oio::StdReader::new(f);
-
-        <span class="prelude-val">Ok</span>((RpRead::new(), r))
-    }
-
-    <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, op: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
-        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-
-        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>p) {
-            <span class="comment">// Early return if other error happened.
-            </span><span class="kw">if </span>err.kind() != io::ErrorKind::NotFound {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(new_std_io_error(err));
-            }
-
-            <span class="kw">let </span>parent = get_parent(<span class="kw-2">&amp;</span>p);
-
-            <span class="self">self</span>.client.create_dir(parent).map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-            <span class="self">self</span>.client
-                .open_file()
-                .create(<span class="bool-val">true</span>)
-                .write(<span class="bool-val">true</span>)
-                .open(<span class="kw-2">&amp;</span>p)
-                .map_err(new_std_io_error)<span class="question-mark">?</span>;
-        }
-
-        <span class="kw">let </span><span class="kw-2">mut </span>open_options = <span class="self">self</span>.client.open_file();
-        open_options.create(<span class="bool-val">true</span>);
-        <span class="kw">if </span>op.append() {
-            open_options.append(<span class="bool-val">true</span>);
-        } <span class="kw">else </span>{
-            open_options.write(<span class="bool-val">true</span>);
-        }
-
-        <span class="kw">let </span>f = open_options.open(<span class="kw-2">&amp;</span>p).map_err(new_std_io_error)<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>((RpWrite::new(), HdfsWriter::new(f)))
-    }
-
-    <span class="kw">fn </span>blocking_rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
+    <span class="kw">async fn </span>rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
         <span class="kw">let </span>from_path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from);
         <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>from_path).map_err(new_std_io_error)<span class="question-mark">?</span>;
 
@@ -1074,9 +1105,9 @@
                     .ok_or_else(|| {
                         Error::new(
                             ErrorKind::Unexpected,
-                            <span class="string">&quot;path should have parent but not, it must be malformed&quot;</span>,
+                            <span class="string">"path should have parent but not, it must be malformed"</span>,
                         )
-                        .with_context(<span class="string">&quot;input&quot;</span>, <span class="kw-2">&amp;</span>to_path)
+                        .with_context(<span class="string">"input"</span>, <span class="kw-2">&amp;</span>to_path)
                     })<span class="question-mark">?
                     </span>.to_path_buf();
 
@@ -1090,8 +1121,8 @@
                         .remove_file(<span class="kw-2">&amp;</span>to_path)
                         .map_err(new_std_io_error)<span class="question-mark">?</span>;
                 } <span class="kw">else </span>{
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::IsADirectory, <span class="string">&quot;path should be a file&quot;</span>)
-                        .with_context(<span class="string">&quot;input&quot;</span>, <span class="kw-2">&amp;</span>to_path));
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::IsADirectory, <span class="string">"path should be a file"</span>)
+                        .with_context(<span class="string">"input"</span>, <span class="kw-2">&amp;</span>to_path));
                 }
             }
         }
@@ -1101,6 +1132,14 @@
             .map_err(new_std_io_error)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(RpRename::new())
+    }
+
+    <span class="kw">fn </span>blocking_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
+        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+
+        <span class="self">self</span>.client.create_dir(<span class="kw-2">&amp;</span>p).map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(RpCreateDir::default())
     }
 
     <span class="kw">fn </span>blocking_stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
@@ -1122,6 +1161,74 @@
         <span class="prelude-val">Ok</span>(RpStat::new(m))
     }
 
+    <span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
+        <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+
+        <span class="kw">let </span>f = <span class="self">self
+            </span>.client
+            .open_file()
+            .read(<span class="bool-val">true</span>)
+            .open(<span class="kw-2">&amp;</span>p)
+            .map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>r = oio::StdReader::new(f);
+
+        <span class="prelude-val">Ok</span>((RpRead::new(), r))
+    }
+
+    <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, op: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
+        <span class="kw">let </span>(target_path, tmp_path) = <span class="kw">if let </span><span class="prelude-val">Some</span>(atomic_write_dir) = <span class="kw-2">&amp;</span><span class="self">self</span>.atomic_write_dir {
+            <span class="kw">let </span>target_path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+            <span class="kw">let </span>tmp_path = build_rooted_abs_path(atomic_write_dir, <span class="kw-2">&amp;</span>tmp_file_of(path));
+
+            <span class="comment">// If the target file exists, we should append to the end of it directly.
+            </span><span class="kw">if </span>op.append() &amp;&amp; <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>target_path).is_ok() {
+                (target_path, <span class="prelude-val">None</span>)
+            } <span class="kw">else </span>{
+                (target_path, <span class="prelude-val">Some</span>(tmp_path))
+            }
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
+
+            (p, <span class="prelude-val">None</span>)
+        };
+
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>target_path) {
+            <span class="comment">// Early return if other error happened.
+            </span><span class="kw">if </span>err.kind() != io::ErrorKind::NotFound {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(new_std_io_error(err));
+            }
+
+            <span class="kw">let </span>parent = get_parent(<span class="kw-2">&amp;</span>target_path);
+
+            <span class="self">self</span>.client.create_dir(parent).map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+            <span class="self">self</span>.client
+                .open_file()
+                .create(<span class="bool-val">true</span>)
+                .write(<span class="bool-val">true</span>)
+                .open(<span class="kw-2">&amp;</span>target_path)
+                .map_err(new_std_io_error)<span class="question-mark">?</span>;
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>open_options = <span class="self">self</span>.client.open_file();
+        open_options.create(<span class="bool-val">true</span>);
+        <span class="kw">if </span>op.append() {
+            open_options.append(<span class="bool-val">true</span>);
+        } <span class="kw">else </span>{
+            open_options.write(<span class="bool-val">true</span>);
+        }
+
+        <span class="kw">let </span>f = open_options
+            .open(tmp_path.as_ref().unwrap_or(<span class="kw-2">&amp;</span>target_path))
+            .map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>((
+            RpWrite::new(),
+            HdfsWriter::new(target_path, tmp_path, f, Arc::clone(<span class="kw-2">&amp;</span><span class="self">self</span>.client)),
+        ))
+    }
+
     <span class="kw">fn </span>blocking_delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
         <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
@@ -1135,7 +1242,7 @@
             };
         }
 
-        <span class="comment">// Safety: Err branch has been checked, it&#39;s OK to unwrap.
+        <span class="comment">// Safety: Err branch has been checked, it's OK to unwrap.
         </span><span class="kw">let </span>meta = meta.ok().unwrap();
 
         <span class="kw">let </span>result = <span class="kw">if </span>meta.is_dir() {
@@ -1166,6 +1273,53 @@
         <span class="kw">let </span>rd = HdfsLister::new(<span class="kw-2">&amp;</span><span class="self">self</span>.root, f);
 
         <span class="prelude-val">Ok</span>((RpList::default(), <span class="prelude-val">Some</span>(rd)))
+    }
+
+    <span class="kw">fn </span>blocking_rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
+        <span class="kw">let </span>from_path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from);
+        <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>from_path).map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>to_path = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
+        <span class="kw">let </span>result = <span class="self">self</span>.client.metadata(<span class="kw-2">&amp;</span>to_path);
+        <span class="kw">match </span>result {
+            <span class="prelude-val">Err</span>(err) =&gt; {
+                <span class="comment">// Early return if other error happened.
+                </span><span class="kw">if </span>err.kind() != io::ErrorKind::NotFound {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(new_std_io_error(err));
+                }
+
+                <span class="kw">let </span>parent = PathBuf::from(<span class="kw-2">&amp;</span>to_path)
+                    .parent()
+                    .ok_or_else(|| {
+                        Error::new(
+                            ErrorKind::Unexpected,
+                            <span class="string">"path should have parent but not, it must be malformed"</span>,
+                        )
+                        .with_context(<span class="string">"input"</span>, <span class="kw-2">&amp;</span>to_path)
+                    })<span class="question-mark">?
+                    </span>.to_path_buf();
+
+                <span class="self">self</span>.client
+                    .create_dir(<span class="kw-2">&amp;</span>parent.to_string_lossy())
+                    .map_err(new_std_io_error)<span class="question-mark">?</span>;
+            }
+            <span class="prelude-val">Ok</span>(metadata) =&gt; {
+                <span class="kw">if </span>metadata.is_file() {
+                    <span class="self">self</span>.client
+                        .remove_file(<span class="kw-2">&amp;</span>to_path)
+                        .map_err(new_std_io_error)<span class="question-mark">?</span>;
+                } <span class="kw">else </span>{
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::IsADirectory, <span class="string">"path should be a file"</span>)
+                        .with_context(<span class="string">"input"</span>, <span class="kw-2">&amp;</span>to_path));
+                }
+            }
+        }
+
+        <span class="self">self</span>.client
+            .rename_file(<span class="kw-2">&amp;</span>from_path, <span class="kw-2">&amp;</span>to_path)
+            .map_err(new_std_io_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(RpRename::new())
     }
 }
 </code></pre></div></section></main></body></html>

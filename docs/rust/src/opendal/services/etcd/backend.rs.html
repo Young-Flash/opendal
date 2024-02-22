@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/etcd/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/etcd/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -394,19 +396,27 @@
 <a href="#394" id="394">394</a>
 <a href="#395" id="395">395</a>
 <a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -432,7 +442,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="kw">const </span>DEFAULT_ETCD_ENDPOINTS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;http://127.0.0.1:2379&quot;</span>;
+<span class="kw">const </span>DEFAULT_ETCD_ENDPOINTS: <span class="kw-2">&amp;</span>str = <span class="string">"http://127.0.0.1:2379"</span>;
 
 <span class="doccomment">/// Config for Etcd services support.
 </span><span class="attr">#[derive(Default, Deserialize, Clone)]
@@ -441,9 +451,9 @@
 </span><span class="kw">pub struct </span>EtcdConfig {
     <span class="doccomment">/// network address of the Etcd services.
     /// If use https, must set TLS options: `ca_path`, `cert_path`, `key_path`.
-    /// e.g. &quot;127.0.0.1:23790,127.0.0.1:23791,127.0.0.1:23792&quot; or &quot;http://127.0.0.1:23790,http://127.0.0.1:23791,http://127.0.0.1:23792&quot; or &quot;https://127.0.0.1:23790,https://127.0.0.1:23791,https://127.0.0.1:23792&quot;
+    /// e.g. "127.0.0.1:23790,127.0.0.1:23791,127.0.0.1:23792" or "http://127.0.0.1:23790,http://127.0.0.1:23791,http://127.0.0.1:23792" or "https://127.0.0.1:23790,https://127.0.0.1:23791,https://127.0.0.1:23792"
     ///
-    /// default is &quot;http://127.0.0.1:2379&quot;
+    /// default is "http://127.0.0.1:2379"
     </span><span class="kw">pub </span>endpoints: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// the username to connect etcd service.
     ///
@@ -453,9 +463,9 @@
     ///
     /// default is None
     </span><span class="kw">pub </span>password: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="doccomment">/// the working directory of the etcd service. Can be &quot;/path/to/dir&quot;
+    <span class="doccomment">/// the working directory of the etcd service. Can be "/path/to/dir"
     ///
-    /// default is &quot;/&quot;
+    /// default is "/"
     </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// certificate authority file path
     ///
@@ -472,44 +482,44 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>EtcdConfig {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;EtcdConfig&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"EtcdConfig"</span>);
 
-        ds.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
+        ds.field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(endpoints) = <span class="self">self</span>.endpoints.clone() {
-            ds.field(<span class="string">&quot;endpoints&quot;</span>, <span class="kw-2">&amp;</span>endpoints);
+            ds.field(<span class="string">"endpoints"</span>, <span class="kw-2">&amp;</span>endpoints);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(username) = <span class="self">self</span>.username.clone() {
-            ds.field(<span class="string">&quot;username&quot;</span>, <span class="kw-2">&amp;</span>username);
+            ds.field(<span class="string">"username"</span>, <span class="kw-2">&amp;</span>username);
         }
         <span class="kw">if </span><span class="self">self</span>.password.is_some() {
-            ds.field(<span class="string">&quot;password&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
+            ds.field(<span class="string">"password"</span>, <span class="kw-2">&amp;</span><span class="string">"&lt;redacted&gt;"</span>);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(ca_path) = <span class="self">self</span>.ca_path.clone() {
-            ds.field(<span class="string">&quot;ca_path&quot;</span>, <span class="kw-2">&amp;</span>ca_path);
+            ds.field(<span class="string">"ca_path"</span>, <span class="kw-2">&amp;</span>ca_path);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cert_path) = <span class="self">self</span>.cert_path.clone() {
-            ds.field(<span class="string">&quot;cert_path&quot;</span>, <span class="kw-2">&amp;</span>cert_path);
+            ds.field(<span class="string">"cert_path"</span>, <span class="kw-2">&amp;</span>cert_path);
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(key_path) = <span class="self">self</span>.key_path.clone() {
-            ds.field(<span class="string">&quot;key_path&quot;</span>, <span class="kw-2">&amp;</span>key_path);
+            ds.field(<span class="string">"key_path"</span>, <span class="kw-2">&amp;</span>key_path);
         }
         ds.finish()
     }
 }
 
 <span class="doccomment">/// [Etcd](https://etcd.io/) services support.
-</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">&quot;docs.md&quot;</span>)]
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
 #[derive(Clone, Default)]
 </span><span class="kw">pub struct </span>EtcdBuilder {
     config: EtcdConfig,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>EtcdBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"Builder"</span>);
 
-        ds.field(<span class="string">&quot;config&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+        ds.field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
         ds.finish()
     }
 }
@@ -517,7 +527,7 @@
 <span class="kw">impl </span>EtcdBuilder {
     <span class="doccomment">/// set the network address of etcd service.
     ///
-    /// default: &quot;http://127.0.0.1:2379&quot;
+    /// default: "http://127.0.0.1:2379"
     </span><span class="kw">pub fn </span>endpoints(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoints: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!endpoints.is_empty() {
             <span class="self">self</span>.config.endpoints = <span class="prelude-val">Some</span>(endpoints.to_owned());
@@ -547,7 +557,7 @@
 
     <span class="doccomment">/// set the working directory, all operations will be performed under it.
     ///
-    /// default: &quot;/&quot;
+    /// default: "/"
     </span><span class="kw">pub fn </span>root(<span class="kw-2">&amp;mut </span><span class="self">self</span>, root: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!root.is_empty() {
             <span class="self">self</span>.config.root = <span class="prelude-val">Some</span>(root.to_owned());
@@ -593,7 +603,7 @@
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         EtcdBuilder {
             config: EtcdConfig::deserialize(ConfigDeserializer::new(map))
-                .expect(<span class="string">&quot;config deserialize must succeed&quot;</span>),
+                .expect(<span class="string">"config deserialize must succeed"</span>),
         }
     }
 
@@ -604,7 +614,7 @@
             .clone()
             .unwrap_or_else(|| DEFAULT_ETCD_ENDPOINTS.to_string());
 
-        <span class="kw">let </span>endpoints: Vec&lt;String&gt; = endpoints.split(<span class="string">&#39;,&#39;</span>).map(|s| s.to_string()).collect();
+        <span class="kw">let </span>endpoints: Vec&lt;String&gt; = endpoints.split(<span class="string">','</span>).map(|s| s.to_string()).collect();
 
         <span class="kw">let </span><span class="kw-2">mut </span>options = ConnectOptions::new();
 
@@ -625,7 +635,7 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(username) = <span class="self">self</span>.config.username.clone() {
             options = options.with_user(
                 username,
-                <span class="self">self</span>.config.password.clone().unwrap_or(<span class="string">&quot;&quot;</span>.to_string()),
+                <span class="self">self</span>.config.password.clone().unwrap_or(<span class="string">""</span>.to_string()),
             );
         }
 
@@ -633,7 +643,7 @@
             <span class="self">self</span>.config
                 .root
                 .clone()
-                .unwrap_or_else(|| <span class="string">&quot;/&quot;</span>.to_string())
+                .unwrap_or_else(|| <span class="string">"/"</span>.to_string())
                 .as_str(),
         );
 
@@ -650,7 +660,7 @@
 <span class="kw">impl </span>EtcdBuilder {
     <span class="kw">fn </span>load_pem(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
         std::fs::read_to_string(path)
-            .map_err(|err| Error::new(ErrorKind::Unexpected, <span class="string">&quot;invalid file path&quot;</span>).set_source(err))
+            .map_err(|err| Error::new(ErrorKind::Unexpected, <span class="string">"invalid file path"</span>).set_source(err))
     }
 }
 
@@ -669,11 +679,15 @@
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">async fn </span>connect(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::result::Result&lt;<span class="self">Self</span>::Connection, <span class="self">Self</span>::Error&gt; {
-        <span class="prelude-val">Ok</span>(Client::connect(<span class="self">self</span>.endpoints.clone(), <span class="prelude-val">Some</span>(<span class="self">self</span>.options.clone())).<span class="kw">await</span><span class="question-mark">?</span>)
+        <span class="kw">let </span>conn = Client::connect(<span class="self">self</span>.endpoints.clone(), <span class="prelude-val">Some</span>(<span class="self">self</span>.options.clone()))
+            .<span class="kw">await
+            </span>.map_err(format_etcd_error)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(conn)
     }
 
     <span class="kw">async fn </span>is_valid(<span class="kw-2">&amp;</span><span class="self">self</span>, conn: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Connection) -&gt; std::result::Result&lt;(), <span class="self">Self</span>::Error&gt; {
-        <span class="kw">let _ </span>= conn.status().<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let _ </span>= conn.status().<span class="kw">await</span>.map_err(format_etcd_error)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -692,17 +706,17 @@
 
 <span class="comment">// implement `Debug` manually, or password may be leaked.
 </span><span class="kw">impl </span>Debug <span class="kw">for </span>Adapter {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">&quot;Adapter&quot;</span>);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>ds = f.debug_struct(<span class="string">"Adapter"</span>);
 
-        ds.field(<span class="string">&quot;endpoints&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoints.join(<span class="string">&quot;,&quot;</span>));
-        ds.field(<span class="string">&quot;options&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.options.clone());
+        ds.field(<span class="string">"endpoints"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoints.join(<span class="string">","</span>));
+        ds.field(<span class="string">"options"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.options.clone());
         ds.finish()
     }
 }
 
 <span class="kw">impl </span>Adapter {
-    <span class="kw">async fn </span>conn(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;PooledConnection&lt;<span class="lifetime">&#39;static</span>, Manager&gt;&gt; {
+    <span class="kw">async fn </span>conn(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;PooledConnection&lt;<span class="lifetime">'static</span>, Manager&gt;&gt; {
         <span class="kw">let </span>client = <span class="self">self
             </span>.client
             .get_or_try_init(|| <span class="kw">async </span>{
@@ -719,7 +733,7 @@
         client.get_owned().<span class="kw">await</span>.map_err(|err| <span class="kw">match </span>err {
             RunError::User(err) =&gt; err,
             RunError::TimedOut =&gt; {
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;connection request: timeout&quot;</span>).set_temporary()
+                Error::new(ErrorKind::Unexpected, <span class="string">"connection request: timeout"</span>).set_temporary()
             }
         })
     }
@@ -730,7 +744,7 @@
     <span class="kw">fn </span>metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; kv::Metadata {
         kv::Metadata::new(
             Scheme::Etcd,
-            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoints.join(<span class="string">&quot;,&quot;</span>),
+            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoints.join(<span class="string">","</span>),
             Capability {
                 read: <span class="bool-val">true</span>,
                 write: <span class="bool-val">true</span>,
@@ -743,7 +757,7 @@
 
     <span class="kw">async fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.conn().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>resp = client.get(key, <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = client.get(key, <span class="prelude-val">None</span>).<span class="kw">await</span>.map_err(format_etcd_error)<span class="question-mark">?</span>;
         <span class="kw">if let </span><span class="prelude-val">Some</span>(kv) = resp.kvs().first() {
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(kv.value().to_vec()))
         } <span class="kw">else </span>{
@@ -753,24 +767,30 @@
 
     <span class="kw">async fn </span>set(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>str, value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.conn().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let _ </span>= client.put(key, value, <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let _ </span>= client
+            .put(key, value, <span class="prelude-val">None</span>)
+            .<span class="kw">await
+            </span>.map_err(format_etcd_error)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.conn().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let _ </span>= client.delete(key, <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let _ </span>= client.delete(key, <span class="prelude-val">None</span>).<span class="kw">await</span>.map_err(format_etcd_error)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">async fn </span>scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.conn().<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>get_options = <span class="prelude-val">Some</span>(GetOptions::new().with_prefix().with_keys_only());
-        <span class="kw">let </span>resp = client.get(path, get_options).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = client
+            .get(path, get_options)
+            .<span class="kw">await
+            </span>.map_err(format_etcd_error)<span class="question-mark">?</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>res = Vec::default();
         <span class="kw">for </span>kv <span class="kw">in </span>resp.kvs() {
             <span class="kw">let </span>v = kv.key_str().map(String::from).map_err(|err| {
-                Error::new(ErrorKind::Unexpected, <span class="string">&quot;store key is not valid utf-8 string&quot;</span>)
+                Error::new(ErrorKind::Unexpected, <span class="string">"store key is not valid utf-8 string"</span>)
                     .set_source(err)
             })<span class="question-mark">?</span>;
             <span class="kw">if </span>v == path {
@@ -783,11 +803,9 @@
     }
 }
 
-<span class="kw">impl </span>From&lt;EtcdError&gt; <span class="kw">for </span>Error {
-    <span class="kw">fn </span>from(e: EtcdError) -&gt; <span class="self">Self </span>{
-        Error::new(ErrorKind::Unexpected, e.to_string().as_str())
-            .set_source(e)
-            .set_temporary()
-    }
+<span class="kw">pub fn </span>format_etcd_error(e: EtcdError) -&gt; Error {
+    Error::new(ErrorKind::Unexpected, e.to_string().as_str())
+        .set_source(e)
+        .set_temporary()
 }
 </code></pre></div></section></main></body></html>

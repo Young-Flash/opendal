@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/azfile/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/azfile/core.rs`."><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-bf502f66ec635d5d.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (e51e98dde 2023-12-31)" data-channel="nightly" data-search-js="search-c17e98913a53b3b7.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -455,14 +457,14 @@
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -489,12 +491,12 @@
 <span class="kw">use </span><span class="kw">crate</span>::services::azfile::error::parse_error;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="kw">const </span>X_MS_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-version&quot;</span>;
-<span class="kw">const </span>X_MS_WRITE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-write&quot;</span>;
-<span class="kw">const </span>X_MS_FILE_RENAME_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-file-rename-source&quot;</span>;
-<span class="kw">const </span>X_MS_CONTENT_LENGTH: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-content-length&quot;</span>;
-<span class="kw">const </span>X_MS_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-type&quot;</span>;
-<span class="kw">const </span>X_MS_FILE_RENAME_REPLACE_IF_EXISTS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;x-ms-file-rename-replace-if-exists&quot;</span>;
+<span class="kw">const </span>X_MS_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-version"</span>;
+<span class="kw">const </span>X_MS_WRITE: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-write"</span>;
+<span class="kw">const </span>X_MS_FILE_RENAME_SOURCE: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-file-rename-source"</span>;
+<span class="kw">const </span>X_MS_CONTENT_LENGTH: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-content-length"</span>;
+<span class="kw">const </span>X_MS_TYPE: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-type"</span>;
+<span class="kw">const </span>X_MS_FILE_RENAME_REPLACE_IF_EXISTS: <span class="kw-2">&amp;</span>str = <span class="string">"x-ms-file-rename-replace-if-exists"</span>;
 
 <span class="kw">pub struct </span>AzfileCore {
     <span class="kw">pub </span>root: String,
@@ -506,11 +508,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>AzfileCore {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;AzfileCore&quot;</span>)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">&quot;share_name&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.share_name)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"AzfileCore"</span>)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">"share_name"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.share_name)
             .finish_non_exhaustive()
     }
 }
@@ -528,7 +530,7 @@
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(Error::new(
                 ErrorKind::ConfigInvalid,
-                <span class="string">&quot;no valid credential found&quot;</span>,
+                <span class="string">"no valid credential found"</span>,
             ))
         }
     }
@@ -539,7 +541,7 @@
         </span>req.headers_mut().insert(
             HeaderName::from_static(X_MS_VERSION),
             <span class="comment">// consistent with azdls and azblob
-            </span>HeaderValue::from_static(<span class="string">&quot;2022-11-02&quot;</span>),
+            </span>HeaderValue::from_static(<span class="string">"2022-11-02"</span>),
         );
         <span class="self">self</span>.signer.sign(req, <span class="kw-2">&amp;</span>cred).map_err(new_request_sign_error)
     }
@@ -557,7 +559,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -566,13 +568,13 @@
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
 
         <span class="kw">if </span>!range.is_full() {
-            <span class="comment">// azfile doesn&#39;t support read with suffix range.
+            <span class="comment">// azfile doesn't support read with suffix range.
             //
             // ref: https://learn.microsoft.com/en-us/rest/api/storageservices/specifying-the-range-header-for-file-service-operations
             </span><span class="kw">if </span>range.offset().is_none() &amp;&amp; range.size().is_some() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
                     ErrorKind::Unsupported,
-                    <span class="string">&quot;azblob doesn&#39;t support read with suffix range&quot;</span>,
+                    <span class="string">"azblob doesn't support read with suffix range"</span>,
                 ));
             }
 
@@ -593,10 +595,10 @@
         args: <span class="kw-2">&amp;</span>OpWrite,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -608,7 +610,7 @@
         // https://learn.microsoft.com/en-us/rest/api/storageservices/create-file
         </span>req = req.header(X_MS_CONTENT_LENGTH, size);
 
-        req = req.header(X_MS_TYPE, <span class="string">&quot;file&quot;</span>);
+        req = req.header(X_MS_TYPE, <span class="string">"file"</span>);
 
         <span class="comment">// Content length must be 0 for create request.
         </span>req = req.header(CONTENT_LENGTH, <span class="number">0</span>);
@@ -636,11 +638,11 @@
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}?comp=range&quot;</span>,
+            <span class="string">"{}/{}/{}?comp=range"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -650,7 +652,7 @@
 
         req = req.header(CONTENT_LENGTH, size);
 
-        req = req.header(X_MS_WRITE, <span class="string">&quot;update&quot;</span>);
+        req = req.header(X_MS_WRITE, <span class="string">"update"</span>);
 
         req = req.header(
             RANGE,
@@ -668,7 +670,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -690,7 +692,7 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}?restype=directory&quot;</span>,
+            <span class="string">"{}/{}/{}?restype=directory"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -711,23 +713,23 @@
         new_path: <span class="kw-2">&amp;</span>str,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span>new_p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, new_path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
 
-        <span class="kw">let </span>url = <span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) {
+        <span class="kw">let </span>url = <span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) {
             <span class="macro">format!</span>(
-                <span class="string">&quot;{}/{}/{}?restype=directory&amp;comp=rename&quot;</span>,
+                <span class="string">"{}/{}/{}?restype=directory&amp;comp=rename"</span>,
                 <span class="self">self</span>.endpoint,
                 <span class="self">self</span>.share_name,
                 percent_encode_path(<span class="kw-2">&amp;</span>new_p)
             )
         } <span class="kw">else </span>{
             <span class="macro">format!</span>(
-                <span class="string">&quot;{}/{}/{}?comp=rename&quot;</span>,
+                <span class="string">"{}/{}/{}?comp=rename"</span>,
                 <span class="self">self</span>.endpoint,
                 <span class="self">self</span>.share_name,
                 percent_encode_path(<span class="kw-2">&amp;</span>new_p)
@@ -744,7 +746,7 @@
         // find the solution from the community FAQ and implementation of the Java-SDK
         // ref: https://learn.microsoft.com/en-us/answers/questions/799611/azure-file-service-rest-api(rename)?page=1
         </span><span class="kw">let </span>source_url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -752,7 +754,7 @@
 
         req = req.header(X_MS_FILE_RENAME_SOURCE, <span class="kw-2">&amp;</span>source_url);
 
-        req = req.header(X_MS_FILE_RENAME_REPLACE_IF_EXISTS, <span class="string">&quot;true&quot;</span>);
+        req = req.header(X_MS_FILE_RENAME_REPLACE_IF_EXISTS, <span class="string">"true"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = req
             .body(AsyncBody::Empty)
@@ -763,11 +765,11 @@
 
     <span class="kw">pub async fn </span>azfile_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}?restype=directory&quot;</span>,
+            <span class="string">"{}/{}/{}?restype=directory"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -786,11 +788,11 @@
 
     <span class="kw">pub async fn </span>azfile_delete_file(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}&quot;</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -807,11 +809,11 @@
 
     <span class="kw">pub async fn </span>azfile_delete_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}?restype=directory&quot;</span>,
+            <span class="string">"{}/{}/{}?restype=directory"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
@@ -833,22 +835,22 @@
         continuation: <span class="kw-2">&amp;</span>String,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path)
-            .trim_start_matches(<span class="string">&#39;/&#39;</span>)
+            .trim_start_matches(<span class="string">'/'</span>)
             .to_string();
 
         <span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/{}/{}?restype=directory&amp;comp=list&amp;include=Timestamps,ETag&quot;</span>,
+            <span class="string">"{}/{}/{}?restype=directory&amp;comp=list&amp;include=Timestamps,ETag"</span>,
             <span class="self">self</span>.endpoint,
             <span class="self">self</span>.share_name,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
         );
 
         <span class="kw">if </span>!continuation.is_empty() {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;marker={}&quot;</span>, <span class="kw-2">&amp;</span>continuation).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;marker={}"</span>, <span class="kw-2">&amp;</span>continuation).expect(<span class="string">"write into string must succeed"</span>);
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(limit) = limit {
-            <span class="macro">write!</span>(url, <span class="string">&quot;&amp;maxresults={}&quot;</span>, limit).expect(<span class="string">&quot;write into string must succeed&quot;</span>);
+            <span class="macro">write!</span>(url, <span class="string">"&amp;maxresults={}"</span>, limit).expect(<span class="string">"write into string must succeed"</span>);
         }
 
         <span class="kw">let </span>req = Request::get(<span class="kw-2">&amp;</span>url);
@@ -864,7 +866,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>dirs = VecDeque::default();
         <span class="comment">// azure file service does not support recursive directory creation
         </span><span class="kw">let </span><span class="kw-2">mut </span>p = path;
-        <span class="kw">while </span>p != <span class="string">&quot;/&quot; </span>{
+        <span class="kw">while </span>p != <span class="string">"/" </span>{
             p = get_parent(p);
             dirs.push_front(p);
         }
@@ -888,10 +890,10 @@
 
             <span class="kw">if </span>resp
                 .headers()
-                .get(<span class="string">&quot;x-ms-error-code&quot;</span>)
-                .map(|value| value.to_str().unwrap_or(<span class="string">&quot;&quot;</span>))
-                .unwrap_or_else(|| <span class="string">&quot;&quot;</span>)
-                == <span class="string">&quot;ResourceAlreadyExists&quot;
+                .get(<span class="string">"x-ms-error-code"</span>)
+                .map(|value| value.to_str().unwrap_or(<span class="string">""</span>))
+                .unwrap_or_else(|| <span class="string">""</span>)
+                == <span class="string">"ResourceAlreadyExists"
             </span>{
                 <span class="kw">continue</span>;
             }
