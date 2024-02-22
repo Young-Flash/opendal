@@ -21,6 +21,7 @@ use anyhow::Result;
 use oay::services::WebdavService;
 use oay::Config;
 use opendal::services::Fs;
+use opendal::services::Gdrive;
 use opendal::Operator;
 use tracing_subscriber::fmt;
 use tracing_subscriber::prelude::*;
@@ -33,28 +34,23 @@ async fn main() -> Result<()> {
         .with(EnvFilter::from_default_env())
         .init();
 
-    let cfg: Config = Config {
-        backend: oay::BackendConfig {
-            typ: "fs".to_string(),
-            ..Default::default()
-        },
-        frontends: oay::FrontendsConfig {
-            webdav: oay::WebdavConfig {
-                enable: true,
-                addr: "127.0.0.1:3000".to_string(),
-            },
-            ..Default::default()
-        },
-    };
+        std::env::set_var("http_proxy", "http://172.21.144.1:7890");
+    std::env::set_var("https_proxy", "http://172.21.144.1:7890");
 
-    let mut builder = Fs::default();
-    builder.root("/tmp");
-
-    let op = Operator::new(builder)?.finish();
-
-    let webdav = WebdavService::new(Arc::new(cfg), op);
-
-    webdav.serve().await?;
+        let mut cfg: Gdrive = Gdrive::default();
+        cfg
+            .access_token("ya29.a0AfB_byD-rppbuLS7ctJV75DGuuIjkqEdg-3P9XRvLS7R8LzGPI4eIfLQGbMUCY2XXLSlcC9k-LZW-JE3KLOw_zO6S0RWzizwAoI2cYlNxPh4gmSvOvz0PNKc6-mer4W4G0cpGDrymB5bjesp-EN_lEcfnyt_vBPpc5MSBX2vPbinUpJkvMhSaCgYKAdoSARMSFQHGX2Mi-qjhxUtyXSbnVt4VPnqaBQ0187")
+            .root("/tmp");
+    
+        let op = Operator::new(cfg).unwrap().finish();
+        op.write(
+            "test-gdrive-wasm",
+            "Hello, WASM! We are from OpenDAL at rust side!",
+        )
+        .await
+        .unwrap();
+        let bs = op.read("test-gdrive-wasm").await.unwrap();
+        println!("{}", String::from_utf8(bs).unwrap());
 
     Ok(())
 }

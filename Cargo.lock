@@ -2293,6 +2293,7 @@ name = "edge_test_s3_read_on_wasm"
 version = "0.0.0"
 dependencies = [
  "opendal",
+ "tokio",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-bindgen-test",

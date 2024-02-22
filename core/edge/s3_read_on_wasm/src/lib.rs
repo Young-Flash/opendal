@@ -16,28 +16,34 @@
 // under the License.
 
 use opendal::services::S3;
+use opendal::services::Gdrive;
 use opendal::Operator;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub async fn hello_world() -> String {
-    let mut cfg = S3::default();
-    cfg.endpoint("http://127.0.0.1:9900");
-    cfg.access_key_id("minioadmin");
-    cfg.secret_access_key("minioadmin");
-    cfg.bucket("opendal");
-    cfg.region("us-east-1");
+    // let mut cfg = S3::default();
+    // cfg.endpoint("http://127.0.0.1:9900");
+    // cfg.access_key_id("minioadmin");
+    // cfg.secret_access_key("minioadmin");
+    // cfg.bucket("opendal");
+    // cfg.region("us-east-1");
+
+    
+
+    let mut cfg: Gdrive = Gdrive::default();
+    cfg
+        .access_token("ya29.a0AfB_byD-rppbuLS7ctJV75DGuuIjkqEdg-3P9XRvLS7R8LzGPI4eIfLQGbMUCY2XXLSlcC9k-LZW-JE3KLOw_zO6S0RWzizwAoI2cYlNxPh4gmSvOvz0PNKc6-mer4W4G0cpGDrymB5bjesp-EN_lEcfnyt_vBPpc5MSBX2vPbinUpJkvMhSaCgYKAdoSARMSFQHGX2Mi-qjhxUtyXSbnVt4VPnqaBQ0187")
+        .root("/tmp");
 
     let op = Operator::new(cfg).unwrap().finish();
-    op.write(
-        "test",
-        "Hello, WASM! We are from OpenDAL at rust side!"
-            .as_bytes()
-            .to_vec(),
-    )
-    .await
-    .unwrap();
-    let bs = op.read("test").await.unwrap();
+    // op.write(
+    //     "test-gdrive-wasm",
+    //     "Hello, WASM! We are from OpenDAL at rust side!",
+    // )
+    // .await
+    // .unwrap();
+    let bs = op.read("test-gdrive-wasm").await.unwrap();
     String::from_utf8_lossy(&bs).to_string()
 }
 

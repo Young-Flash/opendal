@@ -42,6 +42,7 @@ default = [
   "services-fs",
   "services-gcs",
   "services-ghac",
+  "services-gdrive",
   "services-http",
   "services-ipmfs",
   "services-memory",
