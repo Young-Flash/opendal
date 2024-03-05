@@ -294,16 +294,6 @@
 <a href="#292" id="292">292</a>
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -334,7 +324,6 @@
 <span class="kw">pub struct </span>SwiftCore {
     <span class="kw">pub </span>root: String,
     <span class="kw">pub </span>endpoint: String,
-    <span class="kw">pub </span>account: String,
     <span class="kw">pub </span>container: String,
     <span class="kw">pub </span>token: String,
     <span class="kw">pub </span>client: HttpClient,
@@ -345,7 +334,6 @@
         f.debug_struct(<span class="string">"SwiftCore"</span>)
             .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">"account"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.account)
             .field(<span class="string">"container"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.container)
             .finish_non_exhaustive()
     }
@@ -356,10 +344,9 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">"{}/v1/{}/{}/{}"</span>,
-            <span class="self">self</span>.endpoint,
-            <span class="self">self</span>.account,
-            <span class="self">self</span>.container,
+            <span class="string">"{}/{}/{}"</span>,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
 
@@ -386,10 +373,9 @@
         <span class="comment">// The delimiter is used to disable recursive listing.
         // Swift returns a 200 status code when there is no such pseudo directory in prefix.
         </span><span class="kw">let </span><span class="kw-2">mut </span>url = <span class="macro">format!</span>(
-            <span class="string">"{}/v1/{}/{}/?prefix={}&amp;delimiter={}&amp;format=json"</span>,
-            <span class="self">self</span>.endpoint,
-            <span class="self">self</span>.account,
-            <span class="self">self</span>.container,
+            <span class="string">"{}/{}/?prefix={}&amp;delimiter={}&amp;format=json"</span>,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p),
             delimiter
         );
@@ -421,10 +407,9 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">"{}/v1/{}/{}/{}"</span>,
-            <span class="self">self</span>.endpoint,
-            <span class="self">self</span>.account,
-            <span class="self">self</span>.container,
+            <span class="string">"{}/{}/{}"</span>,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
 
@@ -446,10 +431,9 @@
             .to_string();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">"{}/v1/{}/{}/{}"</span>,
-            <span class="self">self</span>.endpoint,
-            <span class="self">self</span>.account,
-            <span class="self">self</span>.container,
+            <span class="string">"{}/{}/{}"</span>,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
 
@@ -486,10 +470,9 @@
             .to_string();
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">"{}/v1/{}/{}/{}"</span>,
-            <span class="self">self</span>.endpoint,
-            <span class="self">self</span>.account,
-            <span class="self">self</span>.container,
+            <span class="string">"{}/{}/{}"</span>,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>dst_p)
         );
 
@@ -514,9 +497,8 @@
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
         <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">"{}/v1/{}/{}/{}"</span>,
+            <span class="string">"{}/{}/{}"</span>,
             <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint,
-            <span class="kw-2">&amp;</span><span class="self">self</span>.account,
             <span class="kw-2">&amp;</span><span class="self">self</span>.container,
             percent_encode_path(<span class="kw-2">&amp;</span>p)
         );
@@ -543,8 +525,8 @@
         bytes: u64,
         hash: String,
         name: String,
-        content_type: String,
         last_modified: String,
+        content_type: <span class="prelude-ty">Option</span>&lt;String&gt;,
     },
 }
 
@@ -584,10 +566,8 @@
                 bytes: <span class="number">147</span>,
                 hash: <span class="string">"5e6b5b70b0426b1cc1968003e1afa5ad"</span>.to_string(),
                 name: <span class="string">"test.txt"</span>.to_string(),
-                content_type:
-                    <span class="string">"multipart/form-data;boundary=------------------------25004a866ee9c0cb"
-                        </span>.to_string(),
                 last_modified: <span class="string">"2023-11-01T03:00:23.147480"</span>.to_string(),
+                content_type: <span class="prelude-val">Some</span>(<span class="string">"text/plain"</span>.to_string()),
             }
         );
 
